@@ -1,0 +1,14 @@
+{
+  "name": "nestjs-auth-guard",
+  "version": "1.0.0",
+  "repository": "https://gitlab.com/castlecraft/building-blocks",
+  "description": "NestJS passport auth guard",
+  "license": "MIT",
+  "dependencies": {
+    "typescript": "^2.7.1",
+    "passport": "^0.4.0"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "^5.0.0"
+  }
+}

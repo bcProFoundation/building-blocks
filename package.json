@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "scripts": {
+    "test": "./scripts/tests.sh"
+  },
+  "workspaces": [
+    "libs/*",
+    "apps/*"
+  ]
+}

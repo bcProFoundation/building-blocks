@@ -1,0 +1,101 @@
+{
+  "name": "identity-provider",
+  "version": "1.0.0",
+  "repository": "https://gitlab.com/castlecraft/building-blocks",
+  "description": "Identity Provider",
+  "author": "CEPL",
+  "license": "MIT",
+  "scripts": {
+    "format": "prettier --write \"**/*.ts\"",
+    "start": "ts-node -r tsconfig-paths/register src/main.ts",
+    "start:dev": "export NODE_ENV=development && nodemon",
+    "prestart:prod": "rm -rf dist && tsc",
+    "start:prod": "export NODE_ENV=production && node dist/main.js",
+    "start:hmr": "node dist/server",
+    "test": "export NODE_ENV=test && jest",
+    "test:e2e": "export NODE_ENV=test && jest --config ./e2e/jest-e2e.json",
+    "test:cov": "jest --coverage",
+    "lint": "./node_modules/.bin/tslint -c tslint.json 'src/**/*.ts'",
+    "webpack": "webpack --config webpack.config.js"
+  },
+  "dependencies": {
+    "@nest-middlewares/cookie-parser": "^5.0.0",
+    "@nest-middlewares/express-session": "^5.0.0",
+    "@nest-middlewares/passport": "^5.0.2",
+    "@nestjs/common": "^5.0.0",
+    "@nestjs/core": "^5.0.0",
+    "@nestjs/microservices": "^5.0.0",
+    "@nestjs/passport": "^1.1.0",
+    "@nestjs/typeorm": "^5.0.0",
+    "@nestjs/websockets": "^5.0.0",
+    "@types/passport-local": "^1.0.33",
+    "class-transformer": "^0.1.9",
+    "class-validator": "^0.8.5",
+    "cookie-parser": "^1.4.3",
+    "dotenv": "^6.0.0",
+    "express-session": "^1.15.6",
+    "hbs": "^4.0.1",
+    "joi": "^13.4.0",
+    "mysql": "^2.15.0",
+    "nestjs-auth-guard": "^1.0.0",
+    "nestjs-ensureloggedin-guard": "^1.0.0",
+    "nestjs-session-store": "^1.0.0",
+    "oauth2orize": "^1.11.0",
+    "passport": "^0.4.0",
+    "passport-http": "^0.3.0",
+    "passport-http-bearer": "^1.0.1",
+    "passport-local": "^1.0.0",
+    "passport-oauth2-client-password": "^0.1.2",
+    "passport-oauth2-code": "^0.1.6",
+    "point-of-view": "^1.1.0",
+    "reflect-metadata": "^0.1.12",
+    "rxjs": "^6.0.0",
+    "typeorm": "^0.2.7",
+    "typescript": "^2.9.2"
+  },
+  "devDependencies": {
+    "@nestjs/testing": "^5.0.1",
+    "@types/express": "^4.0.39",
+    "@types/jest": "^21.1.8",
+    "@types/joi": "^13.3.0",
+    "@types/node": "^9.3.0",
+    "@types/supertest": "^2.0.4",
+    "jest": "^23.2.0",
+    "nodemon": "^1.14.1",
+    "prettier": "^1.11.1",
+    "supertest": "^3.0.0",
+    "ts-jest": "^23.0.0",
+    "ts-loader": "^4.1.0",
+    "ts-node": "^4.1.0",
+    "tsconfig-paths": "^3.1.1",
+    "tslint": "^5.10.0",
+    "webpack": "^4.2.0",
+    "webpack-cli": "^2.0.13",
+    "webpack-node-externals": "^1.6.0"
+  },
+  "jest": {
+    "moduleDirectories": [
+      "src",
+      "node_modules"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "json"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "/src/.*\\.(test|spec).(ts|tsx|js)$",
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,tsx,ts}",
+      "!**/node_modules/**",
+      "!**/vendor/**"
+    ],
+    "coverageReporters": [
+      "json",
+      "lcov"
+    ]
+  }
+}

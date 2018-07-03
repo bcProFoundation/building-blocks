@@ -1,0 +1,26 @@
+import { Controller, UseGuards, Body, Post } from '@nestjs/common';
+import { ClientService } from 'models/client/client.service';
+import { callback } from 'auth/passport/local.strategy';
+import { AuthGuard } from 'nestjs-auth-guard';
+
+@Controller('client')
+export class ClientController {
+  constructor(private readonly clientService: ClientService) {}
+
+  @Post('create')
+  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  create(@Body() body) {
+    this.clientService.save(body);
+  }
+
+  @Post('update')
+  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  async update(@Body() payload) {
+    const client = await this.clientService.findOne(payload.client_id);
+    client.name = payload.name;
+    client.clientSecret = payload.clientSecret;
+    client.isTrusted = payload.isTrusted;
+    client.redirectUri = payload.redirectUri;
+    client.save();
+  }
+}

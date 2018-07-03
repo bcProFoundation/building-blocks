@@ -1,0 +1,10 @@
+{
+  "name": "apps",
+  "version": "1.0.0",
+
+  "dependencies": {
+    "cross-env": "5.0.5",
+    "libs": "1.0.0"
+  }
+}
+

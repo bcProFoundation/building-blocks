@@ -1,0 +1,13 @@
+{
+  "name": "nestjs-ensureloggedin-guard",
+  "version": "1.0.0",
+  "repository": "https://gitlab.com/castlecraft/building-blocks",
+  "description": "NestJS ensure loggedin guard",
+  "license": "MIT",
+  "dependencies": {
+    "typescript": "^2.7.1"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "^5.0.0"
+  }
+}

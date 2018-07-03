@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Account</title>
+</head>
+<body>
+<p>Hi {{ email }}</p>
+<p><b>{{ client.name }}</b> is requesting access to your account.</p>
+<p>Do you approve?</p>
+
+<form action="/oauth2/authorize" method="post">
+  <input name="transaction_id" type="hidden" value="{{ transactionId }}" />
+  <div>
+    <input type="submit" value="Allow" id="allow" />
+    <input type="submit" value="Deny" name="cancel" id="deny" />
+  </div>
+</form>
+<div>
+  {{ request }}
+</div>
+</body>
+</html>
