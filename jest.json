@@ -1,0 +1,6 @@
+{
+    "projects": [
+        "<rootDir>/apps/*",
+        "<rootDir>/libs/*"
+    ]
+}

@@ -11,6 +11,8 @@ test_async:
   stage: tests
   script:
    - yarn install
+   - yarn lint
    - yarn test
+   - yarn test:e2e
   tags:
     - docker

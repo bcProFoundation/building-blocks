@@ -1,7 +1,9 @@
 {
   "private": true,
   "scripts": {
-    "test": "./scripts/tests.sh"
+    "test": "jest --config jest.json",
+    "test:e2e": "./scripts/e2e-tests.sh",
+    "lint": "./scripts/lint.sh"
   },
   "workspaces": [
     "libs/*",
