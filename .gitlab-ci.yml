@@ -13,4 +13,4 @@ test_async:
    - yarn install
    - yarn test
   tags:
-    - ci
+    - docker
