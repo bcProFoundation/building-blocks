@@ -2,29 +2,26 @@ import * as request from 'supertest';
 import { Test } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { AppService } from 'app.service';
-import { AppController } from 'app.controller';
-import { AuthController } from 'auth/controllers/auth/auth.controller';
-import { AuthService } from 'auth/controllers/auth/auth.service';
 import { AuthDataService } from 'models/auth-data/auth-data.service';
-import { BearerTokenService } from 'models/bearer-token/bearer-token.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { BearerToken } from 'models/bearer-token/bearer-token.entity';
 import { AuthData } from 'models/auth-data/auth-data.entity';
+import { AuthController } from 'auth/controllers/auth/auth.controller';
+import { BearerTokenService } from 'models/bearer-token/bearer-token.service';
+import { BearerToken } from 'models/bearer-token/bearer-token.entity';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
 
   beforeAll(async () => {
     const moduleFixture = await Test.createTestingModule({
-      controllers: [
-        AuthController,
-        AppController
-      ],
+      controllers: [AuthController],
       providers: [
         AppService,
         {
           provide: 'AuthService',
-          useValue: AuthService,
+          useValue: {
+            signUp(){}
+          },
         },
         {
           provide: 'AuthDataService',
@@ -49,17 +46,33 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/GET /', () => {
+  it('/POST /auth/login', () => {
     return request(app.getHttpServer())
-      .get('/')
+      .post('/auth/login')
+      .send({email: 'test@user.org', password: 'secret', redirect: '/account'})
       .expect(200)
-      .expect('IDP built using Nest.js');
+      .expect({user: 'test@user.org', path: '/account'});
   });
 
-  it('/GET /logout', () => {
+  it('/POST /auth/signup', () => {
     return request(app.getHttpServer())
-      .get('/logout')
+      .post('/auth/signup')
+      .send({email: 'test@user.org', password: 'secret', name: 'Test User'})
       .expect(200)
-      .expect({message: 'logout'});
+      .expect({user: 'test@user.org', message: 'success'});
+  });
+
+  it('/POST /auth/signup (invalid email)', () => {
+    return request(app.getHttpServer())
+      .post('/auth/signup')
+      .send({email: 'testuser.org', password: 'secret', name: 'Test User'})
+      .expect(400);
+  });
+
+  it('/POST /auth/signup (blank password)', () => {
+    return request(app.getHttpServer())
+      .post('/auth/signup')
+      .send({email: 'test@user.org', password: '', name: 'Test User'})
+      .expect(400);
   });
 });

@@ -11,7 +11,11 @@ import {
 import { AuthService } from './auth.service';
 import { callback } from 'auth/passport/local.strategy';
 import { CreateUserDto } from 'models/user/create-user.dto';
-import { AuthGuard } from 'nestjs-auth-guard';
+import { AuthGuard as AuthenticationGuard, TestAuthGuard } from 'nestjs-auth-guard';
+
+let AuthGuard;
+if(process.env.NODE_ENV === 'test') AuthGuard = TestAuthGuard;
+else AuthGuard = AuthenticationGuard;
 
 @Controller('auth')
 export class AuthController {

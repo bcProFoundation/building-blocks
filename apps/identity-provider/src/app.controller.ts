@@ -6,7 +6,6 @@ import {
   Res,
   UseGuards,
   UseFilters,
-  Body,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { EnsureLoginGuard } from 'nestjs-ensureloggedin-guard';
@@ -40,6 +39,6 @@ export class AppController {
   @Get('logout')
   logout(@Req() req, @Res() res) {
     req.logout();
-    res.redirect('/login');
+    res.json({message: 'logout'});
   }
 }
