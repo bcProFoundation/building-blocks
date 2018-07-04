@@ -1,1 +1,1 @@
-export { AuthGuard } from './src/auth.guard';
+export { AuthGuard, TestAuthGuard } from './src/auth.guard';
