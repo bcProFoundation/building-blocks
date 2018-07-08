@@ -5,7 +5,7 @@
   "username": "cepl-idp",
   "password": "secret",
   "database": "cepl-idp",
-  "entities": ["src/models/**/**.entity{.ts,.js}"],
+  "entities": ["src/**/**.entity{.ts,.js}"],
   "synchronize": true,
   "logging": false
 }

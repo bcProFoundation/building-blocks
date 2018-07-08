@@ -51,5 +51,4 @@ describe('Auth Controller', () => {
     );
     expect(controller.signup).toBeDefined();
   });
-
 });

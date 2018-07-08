@@ -16,10 +16,7 @@ describe('AppController (e2e)', () => {
 
   beforeAll(async () => {
     const moduleFixture = await Test.createTestingModule({
-      controllers: [
-        AuthController,
-        AppController
-      ],
+      controllers: [AuthController, AppController],
       providers: [
         AppService,
         {
@@ -36,11 +33,11 @@ describe('AppController (e2e)', () => {
         },
         {
           provide: getRepositoryToken(BearerToken),
-          useValue: {}
+          useValue: {},
         },
         {
           provide: getRepositoryToken(AuthData),
-          useValue: {}
+          useValue: {},
         },
       ],
     }).compile();
@@ -60,6 +57,6 @@ describe('AppController (e2e)', () => {
     return request(app.getHttpServer())
       .get('/logout')
       .expect(200)
-      .expect({message: 'logout'});
+      .expect({ message: 'logout' });
   });
 });

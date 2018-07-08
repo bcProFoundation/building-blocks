@@ -20,7 +20,7 @@ describe('AppController (e2e)', () => {
         {
           provide: 'AuthService',
           useValue: {
-            signUp(){}
+            signUp() {},
           },
         },
         {
@@ -33,11 +33,11 @@ describe('AppController (e2e)', () => {
         },
         {
           provide: getRepositoryToken(BearerToken),
-          useValue: {}
+          useValue: {},
         },
         {
           provide: getRepositoryToken(AuthData),
-          useValue: {}
+          useValue: {},
         },
       ],
     }).compile();
@@ -49,30 +49,34 @@ describe('AppController (e2e)', () => {
   it('/POST /auth/login', () => {
     return request(app.getHttpServer())
       .post('/auth/login')
-      .send({email: 'test@user.org', password: 'secret', redirect: '/account'})
+      .send({
+        email: 'test@user.org',
+        password: 'secret',
+        redirect: '/account',
+      })
       .expect(200)
-      .expect({user: 'test@user.org', path: '/account'});
+      .expect({ user: 'test@user.org', path: '/account' });
   });
 
   it('/POST /auth/signup', () => {
     return request(app.getHttpServer())
       .post('/auth/signup')
-      .send({email: 'test@user.org', password: 'secret', name: 'Test User'})
+      .send({ email: 'test@user.org', password: 'secret', name: 'Test User' })
       .expect(200)
-      .expect({user: 'test@user.org', message: 'success'});
+      .expect({ user: 'test@user.org', message: 'success' });
   });
 
   it('/POST /auth/signup (invalid email)', () => {
     return request(app.getHttpServer())
       .post('/auth/signup')
-      .send({email: 'testuser.org', password: 'secret', name: 'Test User'})
+      .send({ email: 'testuser.org', password: 'secret', name: 'Test User' })
       .expect(400);
   });
 
   it('/POST /auth/signup (blank password)', () => {
     return request(app.getHttpServer())
       .post('/auth/signup')
-      .send({email: 'test@user.org', password: '', name: 'Test User'})
+      .send({ email: 'test@user.org', password: '', name: 'Test User' })
       .expect(400);
   });
 });

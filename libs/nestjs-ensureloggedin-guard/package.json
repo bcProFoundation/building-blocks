@@ -8,6 +8,6 @@
     "typescript": "^2.7.1"
   },
   "peerDependencies": {
-    "@nestjs/common": "^5.0.0"
+    "@nestjs/common": "^5.1.0"
   }
 }

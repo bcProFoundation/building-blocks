@@ -1,6 +1,6 @@
 {
     "moduleDirectories": [
-        "../src",
+        "../src/server",
         "node_modules"
     ],
     "moduleFileExtensions": [

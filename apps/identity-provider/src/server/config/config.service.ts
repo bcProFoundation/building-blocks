@@ -43,6 +43,7 @@ export class ConfigService {
       CLIENT_REDIRECT_URI: Joi.string()
         .uri()
         .required(),
+      COOKIE_MAX_AGE: Joi.number().required(),
     });
 
     const { error, value: validatedEnvConfig } = Joi.validate(
@@ -63,7 +64,9 @@ export class ConfigService {
   getConfig(configName) {
     return JSON.parse(
       fs.readFileSync(
-        `src/config/${configName}/${configName}.${process.env.NODE_ENV}.json`,
+        `src/server/config/${configName}/${configName}.${
+          process.env.NODE_ENV
+        }.json`,
         'utf-8',
       ),
     );

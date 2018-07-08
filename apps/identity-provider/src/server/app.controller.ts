@@ -39,6 +39,6 @@ export class AppController {
   @Get('logout')
   logout(@Req() req, @Res() res) {
     req.logout();
-    res.json({message: 'logout'});
+    res.json({ message: 'logout' });
   }
 }

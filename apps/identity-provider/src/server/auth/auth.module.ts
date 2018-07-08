@@ -58,11 +58,11 @@ export class AuthModule implements NestModule {
       .forRoutes('/oauth2/confirmation')
       .apply(OAuth2AuthorizationMiddleware)
       .forRoutes('/oauth2/authorize')
-      .apply([
+      .apply(
         PassportAuthenticateMiddleware,
         OAuth2TokenMiddleware,
         OAuth2ErrorHandlerMiddleware,
-      ])
+      )
       .with(['oauth2-code', 'oauth2-client-password'], { session: false })
       .forRoutes('/oauth2/token');
   }
