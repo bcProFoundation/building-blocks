@@ -2,7 +2,7 @@
   "type": "mongodb",
   "host": "mongodb",
   "database": "cepl-rs",
-  "entities": ["src/models/**/**.entity{.ts,.js}"],
+  "entities": ["src/**/**.entity{.ts,.js}"],
   "synchronize": true,
   "logging": false
 }

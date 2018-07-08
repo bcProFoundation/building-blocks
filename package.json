@@ -5,8 +5,16 @@
     "test:e2e": "./scripts/e2e-tests.sh",
     "lint": "./scripts/lint.sh"
   },
-  "workspaces": [
-    "libs/*",
-    "apps/*"
-  ]
+  "workspaces": {
+    "packages": [
+      "libs/*",
+      "apps/*"
+    ],
+    "nohoist": [
+      "**/@angular*",
+      "**/@angular*/**",
+      "**/resource-server",
+      "**/resource-server/**"
+    ]
+  }
 }

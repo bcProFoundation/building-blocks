@@ -37,7 +37,9 @@ export class ConfigService {
   getConfig(configName) {
     return JSON.parse(
       fs.readFileSync(
-        `src/config/${configName}/${configName}.${process.env.NODE_ENV}.json`,
+        `src/server/config/${configName}/${configName}.${
+          process.env.NODE_ENV
+        }.json`,
         'utf-8',
       ),
     );

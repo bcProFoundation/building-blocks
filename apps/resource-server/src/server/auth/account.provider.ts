@@ -41,13 +41,13 @@ export class AccountManager implements OnModuleInit {
         grant_type: 'client_credentials',
       })
       .subscribe({
-        next: async (response) => {
+        next: async response => {
           client.accessToken = response.data.access_token;
           client.refreshToken = response.data.refresh_token;
           token = response.data.access_token;
           client.save();
         },
-        error: (error) => {
+        error: error => {
           if (opts) opts.callback(error);
         },
         complete: async () => {
@@ -59,7 +59,7 @@ export class AccountManager implements OnModuleInit {
                 },
               })
               .subscribe({
-                next: async (response) => {
+                next: async response => {
                   if (response.data.active) {
                     const user = await this.userService.findOne({
                       email: response.data.username,

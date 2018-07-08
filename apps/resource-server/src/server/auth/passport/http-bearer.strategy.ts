@@ -28,7 +28,7 @@ export class HttpBearerStrategy extends PassportStrategy(Strategy) {
       },
     };
     this.accountManager.post(url, { token }, options).subscribe({
-      next: async (response) => {
+      next: async response => {
         if (response.data.active && response.data.username) {
           const user = await this.userService.findOne({
             email: response.data.username,
@@ -36,7 +36,7 @@ export class HttpBearerStrategy extends PassportStrategy(Strategy) {
           done(null, user);
         } else done(null, false, { message: 'token inactive' });
       },
-      error: async (error) => {
+      error: async error => {
         if (error.response.data.statusCode === 401) {
           const opts: any = {
             url,

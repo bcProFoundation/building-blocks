@@ -29,6 +29,11 @@ export class AppController {
     res.redirect('/');
   }
 
+  @Get('ping')
+  ping() {
+    return { message: 'pong' };
+  }
+
   @Get('session/resource')
   @UseGuards(EnsureLoginGuard)
   sessionResource() {
