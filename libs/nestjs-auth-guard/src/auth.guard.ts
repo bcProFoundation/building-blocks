@@ -1,5 +1,9 @@
-import { CanActivate, ExecutionContext,
-  mixin, UnauthorizedException } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  mixin,
+  UnauthorizedException,
+} from '@nestjs/common';
 import * as passport from 'passport';
 
 interface AuthGuardOptions {
@@ -20,7 +24,7 @@ const defaultOptions = {
 };
 
 interface Type<T = any> extends Function {
-    new (...args: any[]): T;
+  new (...args: any[]): T;
 }
 
 export function AuthGuard(
@@ -30,7 +34,7 @@ export function AuthGuard(
   options = { ...defaultOptions, ...options };
   const guard = mixin(
     class implements CanActivate {
-      async canActivate(context: ExecutionContext): Promise<boolean> {
+      public async canActivate(context: ExecutionContext): Promise<boolean> {
         const httpContext = context.switchToHttp();
         const [request, response] = [
           httpContext.getRequest(),
@@ -43,9 +47,11 @@ export function AuthGuard(
         return true;
       }
 
-      async logIn<TRequest extends { logIn: (user, callback: (error) => any) => any } = any>(
-        request: TRequest,
-      ): Promise<void> {
+      public async logIn<
+        TRequest extends {
+          logIn: (user, callback: (error) => any) => any;
+        } = any
+      >(request: TRequest): Promise<void> {
         const user = request[options.property || defaultOptions.property];
         await new Promise((resolve, reject) =>
           request.logIn(user, err => (err ? reject(err) : resolve())),
@@ -78,7 +84,7 @@ export function TestAuthGuard(
   options = { ...defaultOptions, ...options };
   const guard = mixin(
     class implements CanActivate {
-      async canActivate(context: ExecutionContext): Promise<boolean> {
+      public async canActivate(context: ExecutionContext): Promise<boolean> {
         const httpContext = context.switchToHttp();
         const [request, response] = [
           httpContext.getRequest(),
@@ -86,15 +92,17 @@ export function TestAuthGuard(
         ];
         const user = {
           id: 1,
-          email: "test@user.org",
+          email: 'test@user.org',
         };
         request[options.property || defaultOptions.property] = user;
         return true;
       }
 
-      async logIn<TRequest extends { logIn: (user, callback: (error) => any) => any } = any>(
-        request: TRequest,
-      ): Promise<void> {
+      public async logIn<
+        TRequest extends {
+          logIn: (user, callback: (error) => any) => any;
+        } = any
+      >(request: TRequest): Promise<void> {
         const user = request[options.property || defaultOptions.property];
         await new Promise((resolve, reject) =>
           request.logIn(user, err => (err ? reject(err) : resolve())),

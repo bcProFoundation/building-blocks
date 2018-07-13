@@ -1,14 +1,11 @@
 import { Store } from 'express-session';
 
 export interface UserEntity {
-
   name: string;
   email: string;
-
 }
 
 export interface SessionEntity {
-
   sid: string;
   expiresAt: number;
   id: string;
@@ -16,7 +13,6 @@ export interface SessionEntity {
   passport: string;
   cookie: string;
   user: UserEntity;
-
 }
 
 export interface Options {
@@ -48,7 +44,7 @@ export class TypeormStore extends Store {
     this.ttl = options.ttl;
   }
 
-  public all = (callback: (error: any, result?: any) => void): void => {
+  public all(callback: (error: any, result?: any) => void): void {
     this.sessionService
       .find()
       .then((sessions: SessionEntity[]) =>
@@ -65,35 +61,37 @@ export class TypeormStore extends Store {
       .catch((error: any) => callback(error));
   }
 
-  public destroy = (sid: string, callback: (error: any) => void): void => {
+  public destroy(sid: string, callback: (error: any) => void): void {
     this.sessionService
       .delete(sid)
       .then(() => callback(null))
       .catch((error: any) => callback(error));
   }
 
-  public clear = (callback: (error: any) => void): void => {
+  public clear(callback: (error: any) => void): void {
     this.sessionService
       .clear()
       .then(() => callback(null))
       .catch((error: any) => callback(error));
   }
 
-  public length = (callback: (error: any, length: number) => void): void => {
+  public length(callback: (error: any, length: number) => void): void {
     this.sessionService
       .count()
       .then((length: number) => callback(null, length))
       .catch((error: any) => callback(error, 0));
   }
 
-  public get = (sid: string, callback: (error: any, session?: any) => void): void => {
+  public get(sid: string, callback: (error: any, session?: any) => void): void {
     this.sessionService
       .findOne({ where: { sid } })
       .then(async (session: any | undefined) => {
         const data: any = {};
         if (session && session.cookie) data.cookie = JSON.parse(session.cookie);
-        if (session && session.authorize) data.authorize = JSON.parse(session.authorize);
-        if (session && session.passport) data.passport = JSON.parse(session.passport);
+        if (session && session.authorize)
+          data.authorize = JSON.parse(session.authorize);
+        if (session && session.passport)
+          data.passport = JSON.parse(session.passport);
 
         // Set authorize to null, or it keeps adding here
         if (session) {
@@ -107,10 +105,11 @@ export class TypeormStore extends Store {
       .catch((error: any) => callback(error));
   }
 
-  public set = async (sid: string, session: any, callback: (error: any) => void) => {
+  public async set(sid: string, session: any, callback: (error: any) => void) {
     const ttl = this.getTTL(session);
     const expiresAt = Math.floor(new Date().getTime() / 1000) + ttl;
-    const userSession = await this.sessionService.findOne({sid}) || {} as SessionEntity;
+    const userSession =
+      (await this.sessionService.findOne({ sid })) || ({} as SessionEntity);
     // Set sid if new Session
     if (!userSession.sid) userSession.sid = sid;
 
@@ -118,15 +117,20 @@ export class TypeormStore extends Store {
     userSession.user = null;
 
     try {
-      if (session && session.cookie) userSession.cookie = JSON.stringify(session.cookie);
-      if (session && session.passport) userSession.passport = JSON.stringify(session.passport);
-      if (session && session.authorize) userSession.authorize = JSON.stringify(session.authorize);
+      if (session && session.cookie)
+        userSession.cookie = JSON.stringify(session.cookie);
+      if (session && session.passport)
+        userSession.passport = JSON.stringify(session.passport);
+      if (session && session.authorize)
+        userSession.authorize = JSON.stringify(session.authorize);
     } catch (error) {
       return callback(error);
     }
     userSession.expiresAt = expiresAt;
     if (session.passport && session.passport.user) {
-      userSession.user = await this.userService.findOne(session.passport.user.id);
+      userSession.user = await this.userService.findOne(
+        session.passport.user.id,
+      );
     }
     if (userSession.id) {
       this.sessionService
@@ -141,7 +145,11 @@ export class TypeormStore extends Store {
     }
   }
 
-  public touch = (sid: string, session: any, callback: (error: any) => void): void => {
+  public touch(
+    sid: string,
+    session: any,
+    callback: (error: any) => void,
+  ): void {
     const ttl = this.getTTL(session);
     const expiresAt = Math.floor(new Date().getTime() / 1000) + ttl;
 

@@ -3,12 +3,67 @@
   "version": "1.0.0",
   "repository": "https://gitlab.com/castlecraft/building-blocks",
   "description": "NestJS passport auth guard",
-  "license": "MIT",
-  "dependencies": {
-    "typescript": "^2.7.1",
-    "passport": "^0.4.0"
+  "main": "index.ts",
+  "typings": "index.d.ts",
+  "scripts": {
+    "build": "webpack || echo not ok",
+    "test": "jest",
+    "test:watch": "npm test -- --watch",
+    "coverage": "npm test -- --coverage --no-cache",
+    "coverage:watch": "npm run coverage -- --watch",
+    "release": "standard-version && npm pack",
+    "format": "prettier --write \"**/*.ts\"",
+    "lint": "tslint -c tslint.json 'src/**/*.ts'"
   },
-  "peerDependencies": {
-    "@nestjs/common": "^5.1.0"
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^23.1.4",
+    "@types/node": "^8.0.24",
+    "browserify": "^14.4.0",
+    "delete-empty": "^1.0.1",
+    "dts-bundle": "^0.7.3",
+    "jest": "^23.2.0",
+    "prettier": "^1.11.1",
+    "standard-version": "^4.2.0",
+    "ts-jest": "^23.0.0",
+    "ts-loader": "^2.3.3",
+    "tslint": "^5.6.0",
+    "tslint-loader": "^3.5.3",
+    "typescript": "2.4.2",
+    "webpack": "3.5.5",
+    "webpack-node-externals": "^1.6.0"
+  },
+  "dependencies": {
+    "@nestjs/common": "^5.1.0",
+    "@nestjs/core": "^5.1.0",
+    "@nestjs/passport": "^1.1.0",
+    "passport": "^0.4.0",
+    "reflect-metadata": "^0.1.12",
+    "rxjs": "^6.2.1"
+  },
+  "jest": {
+    "moduleDirectories": [
+      "src",
+      "node_modules"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "json"
+    ],
+    "transform": {
+      ".(ts|tsx)": "ts-jest"
+    },
+    "testRegex": "./__tests__/.*\\.(test|spec).(ts|tsx|js)$",
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,tsx,ts}",
+      "!**/node_modules/**",
+      "!**/vendor/**"
+    ],
+    "coverageReporters": [
+      "json",
+      "lcov"
+    ]
   }
 }
