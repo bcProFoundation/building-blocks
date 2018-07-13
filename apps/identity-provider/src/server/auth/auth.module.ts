@@ -2,7 +2,7 @@ import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { PassportAuthenticateMiddleware } from '@nest-middlewares/passport';
 import { AuthController } from './controllers/auth/auth.controller';
 import { AuthService } from './controllers/auth/auth.service';
-import { CookieSerializer } from './passport/passport-cookie.serializer';
+import { CookieSerializer } from 'nestjs-passport-cookie-serializer';
 import { LocalStrategy } from './passport/local.strategy';
 import { ModelsModule } from '../models/models.module';
 import { UtilitiesModule } from '../utilities/utilities.module';
