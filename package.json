@@ -3,18 +3,11 @@
   "scripts": {
     "test": "jest --config jest.json",
     "test:e2e": "./scripts/e2e-tests.sh",
-    "lint": "./scripts/lint.sh"
+    "lint": "./scripts/lint.sh",
+    "clean": "./scripts/clean.sh"
   },
-  "workspaces": {
-    "packages": [
-      "libs/*",
-      "apps/*"
-    ],
-    "nohoist": [
-      "**/@angular*",
-      "**/@angular*/**",
-      "**/resource-server",
-      "**/resource-server/**"
-    ]
+  "devDependencies": {
+    "jest": "^23.4.0",
+    "lerna": "^2.11.0"
   }
 }

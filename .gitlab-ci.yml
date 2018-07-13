@@ -1,16 +1,14 @@
 image: node:latest
 
-cache:
-  paths:
-  - node_modules/
-
 stages:
   - tests
 
 test_async:
   stage: tests
   script:
-   - yarn install
+   - npm install -g lerna
+   - yarn clean
+   - lerna bootstrap
    - yarn lint
    - yarn test
    - yarn test:e2e
