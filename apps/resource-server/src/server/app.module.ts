@@ -1,11 +1,4 @@
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
-import { ExpressSessionMiddleware } from '@nest-middlewares/express-session';
-import { CookieParserMiddleware } from '@nest-middlewares/cookie-parser';
-import {
-  PassportInitializeMiddleware,
-  PassportSessionMiddleware,
-} from '@nest-middlewares/passport';
-import { TypeormStore } from 'nestjs-session-store';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from 'auth/auth.module';
