@@ -1,5 +1,5 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { CryptographerService } from '../utilities/cryptographer.service';
+import { CryptographerService } from 'utilities/cryptographer.service';
 import { UserService } from './user/user.service';
 import { AuthData } from './auth-data/auth-data.entity';
 import { User } from './user/user.entity';
@@ -8,11 +8,14 @@ import { RoleService } from './role/role.service';
 import { Client } from './client/client.entity';
 import { ClientService } from './client/client.service';
 import { ConfigService } from 'config/config.service';
+import { ADMIN_ROLE, ADMINISTRATOR_NAME, ADMIN_EMAIL } from 'constants/user';
 
 @Injectable()
 export class ModelFixtures implements OnModuleInit {
+  private serverConfig: any;
+
   onModuleInit() {
-    if (this.configService.get('IMPORT_FIXTURES')) {
+    if (this.serverConfig.importFixtures) {
       this.setupAdmin();
       this.setupOAuth2Client();
     }
@@ -24,11 +27,13 @@ export class ModelFixtures implements OnModuleInit {
     private readonly roleService: RoleService,
     private readonly clientService: ClientService,
     private readonly configService: ConfigService,
-  ) {}
+  ) {
+    this.serverConfig = configService.getConfig('server');
+  }
 
   async setupAdmin() {
     // Add Role 'admin'
-    const roleName = 'admin';
+    const roleName = ADMIN_ROLE;
     const roleEntity = new Role();
     roleEntity.name = roleName;
     const localRole = await this.roleService.findOne({ name: roleName });
@@ -37,10 +42,10 @@ export class ModelFixtures implements OnModuleInit {
     // Add User
     const authData = new AuthData();
     const userEntity = new User();
-    userEntity.name = 'Administrator';
-    userEntity.email = 'admin@localhost';
+    userEntity.name = ADMINISTRATOR_NAME;
+    userEntity.email = ADMIN_EMAIL;
     authData.password = await this.cryptoService.hashPassword(
-      this.configService.get('ADMIN_PASSWORD'),
+      this.serverConfig.adminPassword,
     );
     authData.save();
     userEntity.password = Promise.resolve(authData);
@@ -55,10 +60,10 @@ export class ModelFixtures implements OnModuleInit {
 
   async setupOAuth2Client() {
     const client = new Client();
-    client.name = 'Developer Portal';
-    client.clientSecret = this.configService.get('CLIENT_SECRET');
+    client.name = 'TEST_CLIENT';
+    client.clientSecret = this.serverConfig.clientSecret;
     client.isTrusted = 1;
-    client.redirectUri = this.configService.get('CLIENT_REDIRECT_URI');
+    client.redirectUri = this.serverConfig.clientRedirectUri;
     const localClient = await this.clientService.findOne({
       name: client.name,
       clientSecret: client.clientSecret,

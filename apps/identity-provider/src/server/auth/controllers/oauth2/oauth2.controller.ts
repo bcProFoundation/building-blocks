@@ -17,6 +17,7 @@ import { ErrorFilter } from '../../filters/errors.filter';
 import { BearerTokenService } from 'models/bearer-token/bearer-token.service';
 import { callback } from '../../passport/local.strategy';
 import { Token } from '../../guards/auth.decorators';
+import { INVALID_TOKEN, TOKEN_NOT_FOUND } from 'constants/messages';
 
 @Controller('oauth2')
 export class OAuth2Controller {
@@ -66,7 +67,7 @@ export class OAuth2Controller {
     if (bearerToken) {
       bearerToken.remove();
     } else {
-      throw new HttpException('Invalid Token', HttpStatus.NOT_FOUND);
+      throw new HttpException(INVALID_TOKEN, HttpStatus.NOT_FOUND);
     }
   }
 
@@ -78,7 +79,7 @@ export class OAuth2Controller {
     });
 
     if (!bearerToken) {
-      throw new HttpException('Token not found', HttpStatus.NOT_FOUND);
+      throw new HttpException(TOKEN_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
     const exp = new Date(

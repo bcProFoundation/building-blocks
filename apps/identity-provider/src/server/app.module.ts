@@ -6,13 +6,12 @@ import { AuthModule } from 'auth/auth.module';
 import { ModelsModule } from 'models/models.module';
 import { ConfigModule } from 'config/config.module';
 import { ConfigService } from 'config/config.service';
-// import { ServerSideRenderingMiddleware } from 'auth/middlewares/server-side-rendering.middleware';
 
 const config = new ConfigService();
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(config.getORMConfig()),
+    TypeOrmModule.forRoot(config.getConfig('ormconfig')),
     ConfigModule,
     ModelsModule,
     AuthModule,
@@ -20,8 +19,4 @@ const config = new ConfigService();
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    // consumer.apply(ServerSideRenderingMiddleware).forRoutes(AppController);
-  }
-}
+export class AppModule {}

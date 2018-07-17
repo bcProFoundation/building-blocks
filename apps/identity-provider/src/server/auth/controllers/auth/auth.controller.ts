@@ -15,6 +15,7 @@ import {
   AuthGuard as AuthenticationGuard,
   TestAuthGuard,
 } from '../../guards/auth.guard';
+import { SUCCESS_MESSAGE } from 'constants/messages';
 
 let AuthGuard;
 if (process.env.NODE_ENV === 'test') AuthGuard = TestAuthGuard;
@@ -48,7 +49,7 @@ export class AuthController {
     await this.authService.signUp(body);
     res.json({
       user: body.email,
-      message: 'success',
+      message: SUCCESS_MESSAGE,
     });
   }
 }

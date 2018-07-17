@@ -1,9 +1,10 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { UserService } from '../../../models/user/user.service';
-import { CreateUserDto } from '../../../models/user/create-user.dto';
-import { CryptographerService } from '../../../utilities/cryptographer.service';
-import { AuthData } from '../../../models/auth-data/auth-data.entity';
-import { User } from '../../../models/user/user.entity';
+import { UserService } from 'models/user/user.service';
+import { CreateUserDto } from 'models/user/create-user.dto';
+import { CryptographerService } from 'utilities/cryptographer.service';
+import { AuthData } from 'models/auth-data/auth-data.entity';
+import { User } from 'models/user/user.entity';
+import { INVALID_PASSWORD } from 'constants/messages';
 
 @Injectable()
 export class AuthService {
@@ -33,7 +34,7 @@ export class AuthService {
           password,
         ))
           ? Promise.resolve(user)
-          : Promise.reject(new UnauthorizedException('Invalid password'));
+          : Promise.reject(new UnauthorizedException(INVALID_PASSWORD));
       })
       .catch(err => Promise.reject(err));
   }
