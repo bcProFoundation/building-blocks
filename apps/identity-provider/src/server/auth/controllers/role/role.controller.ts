@@ -1,7 +1,7 @@
 import { Controller, UseGuards, Body, Post } from '@nestjs/common';
-import { callback } from '../../../auth/passport/local.strategy';
+import { callback } from '../../passport/local.strategy';
 import { Roles } from '../../guards/roles.decorator';
-import { AuthGuard } from 'nestjs-auth-guard';
+import { AuthGuard } from '../../guards/auth.guard';
 
 @Controller('role')
 @Roles('admin')
