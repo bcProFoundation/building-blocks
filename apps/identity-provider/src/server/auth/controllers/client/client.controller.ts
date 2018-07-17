@@ -1,7 +1,7 @@
 import { Controller, UseGuards, Body, Post } from '@nestjs/common';
 import { ClientService } from 'models/client/client.service';
-import { callback } from 'auth/passport/local.strategy';
-import { AuthGuard } from 'nestjs-auth-guard';
+import { callback } from '../../passport/local.strategy';
+import { AuthGuard } from '../../guards/auth.guard';
 
 @Controller('client')
 export class ClientController {

@@ -9,12 +9,12 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { callback } from 'auth/passport/local.strategy';
+import { callback } from '../../passport/local.strategy';
 import { CreateUserDto } from 'models/user/create-user.dto';
 import {
   AuthGuard as AuthenticationGuard,
   TestAuthGuard,
-} from 'nestjs-auth-guard';
+} from '../../guards/auth.guard';
 
 let AuthGuard;
 if (process.env.NODE_ENV === 'test') AuthGuard = TestAuthGuard;

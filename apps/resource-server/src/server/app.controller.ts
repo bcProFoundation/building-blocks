@@ -7,7 +7,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { AppService } from './app.service';
-import { AuthGuard } from 'nestjs-auth-guard';
+import { AuthGuard } from './auth/guards/auth.guard';
 import { EnsureLoginGuard } from 'nestjs-ensureloggedin-guard';
 
 @Controller()

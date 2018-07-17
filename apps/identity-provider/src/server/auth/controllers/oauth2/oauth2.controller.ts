@@ -11,12 +11,12 @@ import {
   HttpStatus,
   Res,
 } from '@nestjs/common';
-import { AuthGuard } from 'nestjs-auth-guard';
+import { AuthGuard } from '../../guards/auth.guard';
 import { EnsureLoginGuard } from 'nestjs-ensureloggedin-guard';
-import { ErrorFilter } from 'auth/filters/errors.filter';
+import { ErrorFilter } from '../../filters/errors.filter';
 import { BearerTokenService } from 'models/bearer-token/bearer-token.service';
-import { callback } from 'auth/passport/local.strategy';
-import { Token } from 'auth/guards/auth.decorators';
+import { callback } from '../../passport/local.strategy';
+import { Token } from '../../guards/auth.decorators';
 
 @Controller('oauth2')
 export class OAuth2Controller {
