@@ -15,8 +15,7 @@ export class RolesGuard implements CanActivate {
       return true;
     }
     const request = context.switchToHttp().getRequest();
-    const requestUser = request.passport && request.passport.user;
-    const localUser = await this.userService.findOne(requestUser.id);
+    const localUser = await this.userService.findOne(request.user.id);
     if (localUser) {
       const localUserRoles = await localUser.roles;
       const hasRole = () => localUserRoles.some(role => roles.indexOf(role));
