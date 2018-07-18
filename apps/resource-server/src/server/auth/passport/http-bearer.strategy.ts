@@ -18,7 +18,7 @@ export class HttpBearerStrategy extends PassportStrategy(Strategy) {
     super();
   }
   async validate(token: any, done: (err?, user?, info?) => any) {
-    const clientFixture = this.configService.getOAuth2Client();
+    const clientFixture = this.configService.getConfig('oauth2client');
     const client = await this.clientService.findOne({
       clientID: clientFixture.clientID,
     });

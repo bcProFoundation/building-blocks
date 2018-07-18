@@ -17,7 +17,7 @@ export class ClientFixture implements OnModuleInit {
     let client = await this.clientService.find();
     if (!client.length) {
       client = await this.clientService.save(
-        this.configService.getOAuth2Client(),
+        this.configService.getConfig('oauth2client'),
       );
     }
   }
