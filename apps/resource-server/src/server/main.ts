@@ -46,7 +46,7 @@ function setupSession(app) {
   if (process.env.NODE_ENV !== 'production') cookie.secure = false;
 
   const sessionConfig = {
-    name: 'idp_session',
+    name: serverConfig.sessionName,
     secret: serverConfig.secretSession,
     store: new TypeormStore({
       sessionService: getRepository(Session),
