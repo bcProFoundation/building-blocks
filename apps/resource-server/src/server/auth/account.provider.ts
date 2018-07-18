@@ -2,7 +2,6 @@ import {
   Injectable,
   NotFoundException,
   HttpService,
-  InternalServerErrorException,
   OnModuleInit,
 } from '@nestjs/common';
 import { ClientService } from 'models/client/client.service';

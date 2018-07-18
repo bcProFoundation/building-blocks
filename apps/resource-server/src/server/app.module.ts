@@ -1,4 +1,4 @@
-import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from 'auth/auth.module';
@@ -11,7 +11,7 @@ const config = new ConfigService();
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(config.getORMConfig()),
+    TypeOrmModule.forRoot(config.getConfig('ormconfig')),
     AuthModule,
     ModelsModule,
     ConfigModule,

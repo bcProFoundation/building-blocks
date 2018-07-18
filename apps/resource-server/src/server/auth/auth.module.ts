@@ -1,7 +1,7 @@
 import { Module, HttpModule } from '@nestjs/common';
 import { IDPStrategy } from './passport/idp.strategy';
 import { AuthController } from './controllers/auth.controller';
-import { CookieSerializer } from 'nestjs-passport-cookie-serializer';
+import { CookieSerializer } from './passport/passport-cookie.serializer';
 import { ModelsModule } from 'models/models.module';
 import { AccountManager } from './account.provider';
 import { HttpBearerStrategy } from './passport/http-bearer.strategy';

@@ -1,0 +1,9 @@
+{
+    "authorizationURL": "http://localhost:3000/oauth2/confirmation",
+    "tokenURL": "http://localhost:3000/oauth2/token",
+    "clientID": "1",
+    "clientSecret": "client_secret",
+    "callbackURL": "http://localhost:4000/auth/callback",
+    "introspectionURL": "http://localhost:3000/oauth2/introspection",
+    "profileURL": "http://localhost:3000/oauth2/profile"
+}

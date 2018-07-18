@@ -1,0 +1,8 @@
+{
+  "type": "mongodb",
+  "host": "localhost",
+  "database": "cepl-rs",
+  "entities": ["src/**/**.entity{.ts,.js}"],
+  "synchronize": true,
+  "logging": false
+}

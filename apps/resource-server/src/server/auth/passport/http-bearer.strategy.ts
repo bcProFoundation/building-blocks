@@ -5,6 +5,7 @@ import { ClientService } from 'models/client/client.service';
 import { AccountManager } from '../account.provider';
 import { UserService } from 'models/user/user.service';
 import { ConfigService } from 'config/config.service';
+import { TOKEN_INACTIVE } from 'constants/messages';
 
 @Injectable()
 export class HttpBearerStrategy extends PassportStrategy(Strategy) {
@@ -34,7 +35,7 @@ export class HttpBearerStrategy extends PassportStrategy(Strategy) {
             email: response.data.username,
           });
           done(null, user);
-        } else done(null, false, { message: 'token inactive' });
+        } else done(null, false, { message: TOKEN_INACTIVE });
       },
       error: async error => {
         if (error.response.data.statusCode === 401) {

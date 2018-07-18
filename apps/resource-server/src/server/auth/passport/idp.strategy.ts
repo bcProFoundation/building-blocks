@@ -4,6 +4,7 @@ import { Strategy } from 'passport-oauth2';
 import { UserService } from 'models/user/user.service';
 import { User } from 'models/user/user.entity';
 import { ConfigService } from 'config/config.service';
+import { PROFILE_FETCH_FAILED } from 'constants/messages';
 
 const config = new ConfigService();
 
@@ -11,7 +12,7 @@ const config = new ConfigService();
 export class IDPStrategy extends PassportStrategy(Strategy) {
   _oauth2: any;
   constructor(private readonly userService: UserService) {
-    super(config.getOAuth2Client());
+    super(config.getConfig('oauth2client'));
   }
 
   async validate(accessToken, refreshToken, profile, verified) {
@@ -42,11 +43,11 @@ export class IDPStrategy extends PassportStrategy(Strategy) {
 
   async userProfile(accessToken, done) {
     this._oauth2.get(
-      config.getOAuth2Client().profileURL,
+      config.getConfig('oauth2client').profileURL,
       accessToken,
       (err, body, res) => {
         if (err) {
-          return done(new HttpException('failed to fetch user profile', err));
+          return done(new HttpException(PROFILE_FETCH_FAILED, err));
         }
         try {
           const json = JSON.parse(body);

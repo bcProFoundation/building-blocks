@@ -1,5 +1,6 @@
 import { Get, Controller, UseGuards, Res, Req } from '@nestjs/common';
 import { AuthGuard } from '../guards/auth.guard';
+import { ROOT_ROUTE } from 'constants/locations';
 
 @Controller('auth')
 export class AuthController {
@@ -7,6 +8,6 @@ export class AuthController {
   @Get('callback')
   callback(@Res() res) {
     // redirect to root after login;
-    res.redirect('/');
+    res.redirect(ROOT_ROUTE);
   }
 }
