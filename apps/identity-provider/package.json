@@ -54,6 +54,7 @@
     "hbs": "^4.0.1",
     "joi": "^13.4.0",
     "mysql": "^2.15.0",
+    "nestjs-console-connector": "^0.1.0",
     "nestjs-ensureloggedin-guard": "^1.0.0",
     "nestjs-session-store": "^1.0.0",
     "oauth2orize": "^1.11.0",
