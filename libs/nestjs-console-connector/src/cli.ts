@@ -1,7 +1,11 @@
 import * as yargs from 'yargs';
 
-export function createUserCLI(app, AuthService) {
+export function createUserCLI() {
   const args = yargs
+    .option('name', {
+      alias: 'n',
+      describe: 'full name of user',
+    })
     .option('email', {
       alias: 'e',
       describe: 'valid email id for user',
@@ -15,17 +19,10 @@ export function createUserCLI(app, AuthService) {
       'Please provide both email and password arguments.',
     )
     .help().argv;
-  app.then(r => {
-    const authService = r.get(AuthService);
-    const user: any = {
-      email: args.email,
-      password: args.password,
-    };
-    authService.signUp(user).then(() => process.exit());
-  });
+  return args;
 }
 
-export function createIDPClientCLI(app, ClientService) {
+export function createIDPClientCLI() {
   const args = yargs
     .option('client', {
       alias: 'c',
@@ -44,14 +41,5 @@ export function createIDPClientCLI(app, ClientService) {
       'Please provide client name, redirect_uri and secret arguments.',
     )
     .help().argv;
-  app.then(async r => {
-    const clientService = r.get(ClientService);
-    const client: any = {
-      clientSecret: args.secret,
-      redirectUri: args.redirect_uri,
-      name: args.client,
-      isTrusted: 1,
-    };
-    clientService.save(client).then(() => process.exit());
-  });
+  return args;
 }
