@@ -1,4 +1,9 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  Injectable,
+  HttpException,
+  HttpStatus,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-http-bearer';
 import { BearerTokenService } from '../../models/bearer-token/bearer-token.service';
@@ -39,3 +44,12 @@ export class HttpBearerStrategy extends PassportStrategy(Strategy) {
     }
   }
 }
+
+export const callback = (err, user, info) => {
+  if (typeof info !== 'undefined') {
+    throw new UnauthorizedException(info.message);
+  } else if (err || !user) {
+    throw err || new UnauthorizedException();
+  }
+  return user.user;
+};
