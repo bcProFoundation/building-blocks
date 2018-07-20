@@ -15,7 +15,6 @@ import { Role } from './role/role.entity';
 import { AuthData } from './auth-data/auth-data.entity';
 import { AuthDataService } from './auth-data/auth-data.service';
 import { RoleService } from './role/role.service';
-import { ModelFixtures } from './model.fixtures';
 import { ConfigModule } from 'config/config.module';
 
 @Module({
@@ -40,7 +39,6 @@ import { ConfigModule } from 'config/config.module';
     RoleService,
     SessionService,
     UserService,
-    ModelFixtures,
   ],
   exports: [
     AuthDataService,
