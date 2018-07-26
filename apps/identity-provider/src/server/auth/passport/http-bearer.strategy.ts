@@ -7,8 +7,8 @@ import {
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-http-bearer';
 import { BearerTokenService } from '../../models/bearer-token/bearer-token.service';
-import { ConfigService } from 'config/config.service';
-import { UNAUTHORIZED } from 'constants/messages';
+import { ConfigService } from '../../config/config.service';
+import { UNAUTHORIZED } from '../../constants/messages';
 
 @Injectable()
 export class HttpBearerStrategy extends PassportStrategy(Strategy) {

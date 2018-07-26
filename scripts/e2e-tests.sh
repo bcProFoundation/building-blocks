@@ -10,3 +10,8 @@ popd
 pushd apps/resource-server
 yarn test:e2e
 popd
+
+# IDP Angular Tests
+pushd apps/identity-provider
+yarn test:client
+popd

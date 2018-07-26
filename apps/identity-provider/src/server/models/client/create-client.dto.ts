@@ -5,7 +5,7 @@ import {
   CLIENT_SECRET_DESCRIPTION,
   CLIENT_IS_TRUSTED,
   CLIENT_REDIRECT_URI,
-} from 'constants/swagger';
+} from '../../constants/swagger';
 
 export class CreateClientDto {
   @IsAlphanumeric()

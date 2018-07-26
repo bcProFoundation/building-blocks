@@ -1,8 +1,8 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from 'app.module';
-import { ClientService } from 'models/client/client.service';
+import { AppModule } from '../app.module';
+import { ClientService } from '../models/client/client.service';
 import { createIDPClientCLI } from 'nestjs-console-connector';
-import { Client } from 'models/client/client.entity';
+import { Client } from '../models/client/client.entity';
 
 const app = NestFactory.create(AppModule);
 const args = createIDPClientCLI();

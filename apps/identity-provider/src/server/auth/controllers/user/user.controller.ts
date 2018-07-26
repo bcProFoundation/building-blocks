@@ -1,7 +1,7 @@
 import { Controller, UseGuards, Session, Body, Post } from '@nestjs/common';
 import { EnsureLoginGuard } from 'nestjs-ensureloggedin-guard';
-import { CryptographerService } from 'utilities/cryptographer.service';
-import { UserService } from 'models/user/user.service';
+import { CryptographerService } from '../../../utilities/cryptographer.service';
+import { UserService } from '../../../models/user/user.service';
 
 @Controller('user')
 export class UserController {

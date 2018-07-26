@@ -5,7 +5,7 @@ import {
   USERDTO_PASSWORD_DESCRIPTION,
   USERDTO_EMAIL_EXAMPLE,
   USERDTO_PASSWORD_EXAMPLE,
-} from 'constants/swagger';
+} from '../../constants/swagger';
 
 export class UserDto {
   @IsEmail()

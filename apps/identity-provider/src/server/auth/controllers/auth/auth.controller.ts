@@ -10,24 +10,24 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { callback } from '../../passport/local.strategy';
-import { CreateUserDto } from 'models/user/create-user.dto';
+import { CreateUserDto } from '../../../models/user/create-user.dto';
 import {
   AuthGuard as AuthenticationGuard,
   TestAuthGuard,
 } from '../../guards/auth.guard';
 
 // Constants
-import { SUCCESS_MESSAGE } from 'constants/messages';
+import { SUCCESS_MESSAGE } from '../../../constants/messages';
 import {
   AUTH_LOGIN_TITLE,
   AUTH_LOGIN_DESCRIPTION,
   AUTH_SIGNUP_DESCRIPTION,
   AUTH_SIGNUP_TITLE,
-} from 'constants/swagger';
+} from '../../../constants/swagger';
 
 // Swagger
 import { ApiOperation } from '@nestjs/swagger';
-import { LoginUserDto } from 'models/user/login-user.dto';
+import { LoginUserDto } from '../../../models/user/login-user.dto';
 
 let AuthGuard;
 if (process.env.NODE_ENV === 'test') AuthGuard = TestAuthGuard;

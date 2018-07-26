@@ -14,10 +14,10 @@ import {
 import { AuthGuard } from '../../guards/auth.guard';
 import { EnsureLoginGuard } from 'nestjs-ensureloggedin-guard';
 import { ErrorFilter } from '../../filters/errors.filter';
-import { BearerTokenService } from 'models/bearer-token/bearer-token.service';
+import { BearerTokenService } from '../../../models/bearer-token/bearer-token.service';
 import { callback } from '../../passport/local.strategy';
 import { Token } from '../../guards/auth.decorators';
-import { INVALID_TOKEN, TOKEN_NOT_FOUND } from 'constants/messages';
+import { INVALID_TOKEN, TOKEN_NOT_FOUND } from '../../../constants/messages';
 import { ApiExcludeEndpoint, ApiOperation } from '@nestjs/swagger';
 import {
   OAUTH2_AUTHORIZE_TITLE,
@@ -28,7 +28,7 @@ import {
   OAUTH2_REVOKE_DESCRIPTION,
   OAUTH2_TOKEN_INTROSPECTION_TITLE,
   OAUTH2_TOKEN_INTROSPECTION_DESCRIPTION,
-} from 'constants/swagger';
+} from '../../../constants/swagger';
 
 @Controller('oauth2')
 export class OAuth2Controller {

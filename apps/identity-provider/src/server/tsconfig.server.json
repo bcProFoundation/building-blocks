@@ -1,14 +1,15 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/",
+    "moduleResolution": "node",
+    "target": "es6",
+    "module": "commonjs",
+    "outDir": "../../dist/out-tsc",
     "baseUrl": "."
   },
-  "include": [
-    "./**/*"
-  ],
   "exclude": [
-    "node_modules",
-    "**/*.spec.ts"
+    "**/*.spec.ts",
+    "e2e",
+    "test"
   ]
 }

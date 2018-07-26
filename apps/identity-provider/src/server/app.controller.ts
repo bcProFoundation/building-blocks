@@ -7,15 +7,15 @@ import {
   UseGuards,
   UseFilters,
 } from '@nestjs/common';
-import { AppService } from 'app.service';
+import { AppService } from './app.service';
 import { EnsureLoginGuard } from 'nestjs-ensureloggedin-guard';
-import { ErrorFilter } from 'auth/filters/errors.filter';
+import { ErrorFilter } from './auth/filters/errors.filter';
 import { ApiOperation, ApiExcludeEndpoint } from '@nestjs/swagger';
 import {
   APP_ACCOUNT_TITLE,
   APP_ACCOUNT_DESCRIPTION,
   APP_LOGOUT_TITLE,
-} from 'constants/swagger';
+} from './constants/swagger';
 
 @Controller()
 export class AppController {

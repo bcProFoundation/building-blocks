@@ -2,8 +2,8 @@
   "name": "nestjs-ensureloggedin-guard",
   "version": "1.0.0",
   "description": "NestJS Ensure Loggedin Guard",
-  "main": "index.js",
-  "typings": "index.d.ts",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "scripts": {
     "build": "webpack || echo not ok",
     "test": "jest",

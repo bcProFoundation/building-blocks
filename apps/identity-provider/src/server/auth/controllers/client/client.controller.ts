@@ -1,8 +1,8 @@
 import { Controller, UseGuards, Body, Post } from '@nestjs/common';
-import { ClientService } from 'models/client/client.service';
+import { ClientService } from '../../../models/client/client.service';
 import { callback } from '../../passport/local.strategy';
 import { AuthGuard } from '../../guards/auth.guard';
-import { CreateClientDto } from 'models/client/create-client.dto';
+import { CreateClientDto } from '../../../models/client/create-client.dto';
 
 @Controller('client')
 export class ClientController {

@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from 'app.module';
-import { AuthService } from 'auth/controllers/auth/auth.service';
-import { CreateUserDto } from 'models/user/create-user.dto';
+import { AppModule } from '../app.module';
+import { AuthService } from '../auth/controllers/auth/auth.service';
+import { CreateUserDto } from '../models/user/create-user.dto';
 import { createUserCLI } from 'nestjs-console-connector';
 
 const app = NestFactory.create(AppModule);

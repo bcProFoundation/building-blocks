@@ -1,18 +1,20 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from 'app.module';
+import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
 import * as expressSession from 'express-session';
 import * as passport from 'passport';
 import { TypeormStore } from 'nestjs-session-store';
-import { ConfigService } from 'config/config.service';
+import { ConfigService } from './config/config.service';
 import { getRepository } from 'typeorm';
-import { User } from 'models/user/user.entity';
-import { Session } from 'models/session/session.entity';
-import { PUBLIC_DIR, ANGULAR_DIR, VIEWS_DIR } from 'constants/locations';
+import { User } from './models/user/user.entity';
+import { Session } from './models/session/session.entity';
+import { join } from 'path';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const BROWSER_DIR = join(process.cwd(), 'dist', 'identity-provider');
+  app.useStaticAssets(BROWSER_DIR);
 
   // Swagger
   const options = new DocumentBuilder()
@@ -24,10 +26,8 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   // Handlebars View engine
-  app.useStaticAssets(PUBLIC_DIR);
-  app.useStaticAssets(ANGULAR_DIR);
-  app.setBaseViewsDir(VIEWS_DIR);
-  app.setViewEngine('hbs');
+  // app.setBaseViewsDir(VIEWS_DIR);
+  // app.setViewEngine('hbs');
 
   setupSession(app);
 
