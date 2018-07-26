@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { AppModule } from 'app.module';
 import * as cookieParser from 'cookie-parser';
 import * as expressSession from 'express-session';
 import * as passport from 'passport';
@@ -9,9 +9,19 @@ import { getRepository } from 'typeorm';
 import { User } from 'models/user/user.entity';
 import { Session } from 'models/session/session.entity';
 import { PUBLIC_DIR, ANGULAR_DIR, VIEWS_DIR } from 'constants/locations';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // Swagger
+  const options = new DocumentBuilder()
+    .setTitle('Craft Building Blocks')
+    .setDescription('Buidling Blocks for apps built under Craft')
+    .setVersion('1.0')
+    .build();
+  const document = SwaggerModule.createDocument(app, options);
+  SwaggerModule.setup('api', app, document);
 
   // Handlebars View engine
   app.useStaticAssets(PUBLIC_DIR);

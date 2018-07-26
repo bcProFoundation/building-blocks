@@ -15,7 +15,19 @@ import {
   AuthGuard as AuthenticationGuard,
   TestAuthGuard,
 } from '../../guards/auth.guard';
+
+// Constants
 import { SUCCESS_MESSAGE } from 'constants/messages';
+import {
+  AUTH_LOGIN_TITLE,
+  AUTH_LOGIN_DESCRIPTION,
+  AUTH_SIGNUP_DESCRIPTION,
+  AUTH_SIGNUP_TITLE,
+} from 'constants/swagger';
+
+// Swagger
+import { ApiOperation } from '@nestjs/swagger';
+import { LoginUserDto } from 'models/user/login-user.dto';
 
 let AuthGuard;
 if (process.env.NODE_ENV === 'test') AuthGuard = TestAuthGuard;
@@ -32,7 +44,11 @@ export class AuthController {
       callback,
     }),
   )
-  login(@Body() body, @Req() req, @Res() res) {
+  @ApiOperation({
+    title: AUTH_LOGIN_TITLE,
+    description: AUTH_LOGIN_DESCRIPTION,
+  })
+  login(@Body() body: LoginUserDto, @Req() req, @Res() res) {
     const out: any = { user: req.user.email };
     if (body.redirect) out.path = body.redirect;
     res.json(out);
@@ -40,6 +56,10 @@ export class AuthController {
 
   @Post('signup')
   @UsePipes(new ValidationPipe())
+  @ApiOperation({
+    title: AUTH_SIGNUP_TITLE,
+    description: AUTH_SIGNUP_DESCRIPTION,
+  })
   async signup(@Body() body: CreateUserDto, @Res() res) {
     /** TODO:
      *  - Fire email to signup
