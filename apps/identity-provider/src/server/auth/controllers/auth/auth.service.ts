@@ -1,10 +1,10 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { UserService } from 'models/user/user.service';
-import { CreateUserDto } from 'models/user/create-user.dto';
-import { CryptographerService } from 'utilities/cryptographer.service';
-import { AuthData } from 'models/auth-data/auth-data.entity';
-import { User } from 'models/user/user.entity';
-import { INVALID_PASSWORD } from 'constants/messages';
+import { UserService } from '../../../models/user/user.service';
+import { CreateUserDto } from '../../../models/user/create-user.dto';
+import { CryptographerService } from '../../../utilities/cryptographer.service';
+import { AuthData } from '../../../models/auth-data/auth-data.entity';
+import { User } from '../../../models/user/user.entity';
+import { INVALID_PASSWORD } from '../../../constants/messages';
 
 @Injectable()
 export class AuthService {

@@ -14,10 +14,21 @@ import {
 import { AuthGuard } from '../../guards/auth.guard';
 import { EnsureLoginGuard } from 'nestjs-ensureloggedin-guard';
 import { ErrorFilter } from '../../filters/errors.filter';
-import { BearerTokenService } from 'models/bearer-token/bearer-token.service';
+import { BearerTokenService } from '../../../models/bearer-token/bearer-token.service';
 import { callback } from '../../passport/local.strategy';
 import { Token } from '../../guards/auth.decorators';
-import { INVALID_TOKEN, TOKEN_NOT_FOUND } from 'constants/messages';
+import { INVALID_TOKEN, TOKEN_NOT_FOUND } from '../../../constants/messages';
+import { ApiExcludeEndpoint, ApiOperation } from '@nestjs/swagger';
+import {
+  OAUTH2_AUTHORIZE_TITLE,
+  OAUTH2_AUTHORIZE_DESCRIPTION,
+  OAUTH2_TOKEN_TITLE,
+  OAUTH2_TOKEN_DESCRIPTION,
+  OAUTH2_REVOKE_TITLE,
+  OAUTH2_REVOKE_DESCRIPTION,
+  OAUTH2_TOKEN_INTROSPECTION_TITLE,
+  OAUTH2_TOKEN_INTROSPECTION_DESCRIPTION,
+} from '../../../constants/swagger';
 
 @Controller('oauth2')
 export class OAuth2Controller {
@@ -27,6 +38,7 @@ export class OAuth2Controller {
   @Render('dialog.hbs')
   @UseGuards(EnsureLoginGuard)
   @UseFilters(ErrorFilter)
+  @ApiExcludeEndpoint()
   confirmation(@Req() request) {
     return {
       transactionId: request.oauth2.transactionID,
@@ -37,6 +49,10 @@ export class OAuth2Controller {
 
   @Post('authorize')
   @UseGuards(EnsureLoginGuard)
+  @ApiOperation({
+    title: OAUTH2_AUTHORIZE_TITLE,
+    description: OAUTH2_AUTHORIZE_DESCRIPTION,
+  })
   async authorize() {}
 
   @Post('token')
@@ -46,6 +62,10 @@ export class OAuth2Controller {
       callback,
     }),
   )
+  @ApiOperation({
+    title: OAUTH2_TOKEN_TITLE,
+    description: OAUTH2_TOKEN_DESCRIPTION,
+  })
   async token() {}
 
   @Get('profile')
@@ -60,6 +80,10 @@ export class OAuth2Controller {
 
   @Post('revoke')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @ApiOperation({
+    title: OAUTH2_REVOKE_TITLE,
+    description: OAUTH2_REVOKE_DESCRIPTION,
+  })
   async tokenRevoke(@Body('token') token) {
     const bearerToken = await this.bearerTokenService.findOne({
       accessToken: token,
@@ -73,6 +97,10 @@ export class OAuth2Controller {
 
   @Post('introspection')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @ApiOperation({
+    title: OAUTH2_TOKEN_INTROSPECTION_TITLE,
+    description: OAUTH2_TOKEN_INTROSPECTION_DESCRIPTION,
+  })
   async tokenIntrospection(@Body() body, @Res() res) {
     const bearerToken = await this.bearerTokenService.findOne({
       accessToken: body.token,

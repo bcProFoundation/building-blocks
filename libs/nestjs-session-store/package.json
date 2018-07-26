@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "repository": "https://gitlab.com/castlecraft/building-blocks",
   "description": "NestJS Typeorm Session Store",
-  "main": "index.ts",
-  "typings": "index.d.ts",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "scripts": {
     "build": "webpack || echo not ok",
     "test": "jest",

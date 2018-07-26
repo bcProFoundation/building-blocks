@@ -169,6 +169,14 @@
   dependencies:
     tslib "^1.9.0"
 
+"@angular/platform-server@^6.1.0":
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/@angular/platform-server/-/platform-server-6.1.0.tgz#2522e480064b9ec59089bc81684ba006fa062c18"
+  dependencies:
+    domino "^2.0.1"
+    tslib "^1.9.0"
+    xhr2 "^0.1.4"
+
 "@angular/router@^6.0.3":
   version "6.0.9"
   resolved "https://registry.yarnpkg.com/@angular/router/-/router-6.0.9.tgz#c40572031c7ff2e1dfb5279a8cb508b962a85262"
@@ -246,6 +254,14 @@
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@nestjs/passport/-/passport-1.1.0.tgz#9edb581a7545a047721cd7430cdb4ea4b0388c83"
 
+"@nestjs/swagger@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/swagger/-/swagger-2.2.0.tgz#6f4931b2e1864838fd8f0afae8d7403a9cd41789"
+  dependencies:
+    lodash "^4.17.4"
+    path-to-regexp "^2.2.1"
+    swagger-ui-express "^3.0.8"
+
 "@nestjs/testing@^5.1.0":
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/@nestjs/testing/-/testing-5.1.0.tgz#a8fb8abd415a03bfcc9d6bf55282179a5d708a1f"
@@ -271,6 +287,10 @@
     "@angular-devkit/core" "0.6.8"
     tree-kill "^1.0.0"
     webpack-sources "^1.1.0"
+
+"@nguniversal/module-map-ngfactory-loader@^6.0.0":
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/@nguniversal/module-map-ngfactory-loader/-/module-map-ngfactory-loader-6.0.0.tgz#0dd26c3f1c26d17bb21b8dfc0da53d82b7f11028"
 
 "@schematics/angular@0.6.8":
   version "0.6.8"
@@ -2573,6 +2593,10 @@ domhandler@2.1:
   resolved "https://registry.yarnpkg.com/domhandler/-/domhandler-2.1.0.tgz#d2646f5e57f6c3bab11cf6cb05d3c0acf7412594"
   dependencies:
     domelementtype "1"
+
+domino@^2.0.1:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/domino/-/domino-2.0.3.tgz#729fc28e0a54249ba5aaf95d2a35750d12201b01"
 
 domutils@1.1:
   version "1.1.6"
@@ -6441,6 +6465,10 @@ path-to-regexp@0.1.7:
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-0.1.7.tgz#df604178005f522f15eb4490e7247a1bfaa67f8c"
 
+path-to-regexp@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-2.2.1.tgz#90b617025a16381a879bc82a38d4e8bdeb2bcf45"
+
 path-type@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/path-type/-/path-type-1.1.0.tgz#59c44f7ee491da704da415da5a4070ba4f8fe441"
@@ -8123,6 +8151,10 @@ supports-color@^5.1.0, supports-color@^5.2.0, supports-color@^5.3.0, supports-co
   dependencies:
     has-flag "^3.0.0"
 
+swagger-ui-express@^3.0.8:
+  version "3.0.10"
+  resolved "https://registry.yarnpkg.com/swagger-ui-express/-/swagger-ui-express-3.0.10.tgz#c72b32107a57a47913f3b46003e8fd62a7378ea2"
+
 symbol-observable@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-1.2.0.tgz#c22688aed4eab3cdc2dfeacbb561660560a00804"
@@ -9132,6 +9164,10 @@ ws@~3.3.1:
 xdg-basedir@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/xdg-basedir/-/xdg-basedir-3.0.0.tgz#496b2cc109eca8dbacfe2dc72b603c17c5870ad4"
+
+xhr2@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/xhr2/-/xhr2-0.1.4.tgz#7f87658847716db5026323812f818cadab387a5f"
 
 xml-name-validator@^3.0.0:
   version "3.0.0"

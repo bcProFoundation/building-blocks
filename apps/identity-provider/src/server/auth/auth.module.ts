@@ -4,8 +4,8 @@ import { AuthController } from './controllers/auth/auth.controller';
 import { AuthService } from './controllers/auth/auth.service';
 import { CookieSerializer } from './passport/passport-cookie.serializer';
 import { LocalStrategy } from './passport/local.strategy';
-import { ModelsModule } from 'models/models.module';
-import { UtilitiesModule } from 'utilities/utilities.module';
+import { ModelsModule } from '../models/models.module';
+import { UtilitiesModule } from '../utilities/utilities.module';
 import { HttpBearerStrategy } from './passport/http-bearer.strategy';
 import { ClientPasswordStrategy } from './passport/client-password.strategy';
 import { OAuth2Controller } from './controllers/oauth2/oauth2.controller';
@@ -19,7 +19,7 @@ import { UserController } from './controllers/user/user.controller';
 import { RolesGuard } from './guards/roles.guard';
 import { RoleController } from './controllers/role/role.controller';
 import { ClientController } from './controllers/client/client.controller';
-import { ConfigModule } from 'config/config.module';
+import { ConfigModule } from '../config/config.module';
 
 @Module({
   providers: [

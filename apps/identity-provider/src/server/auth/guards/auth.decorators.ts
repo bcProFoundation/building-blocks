@@ -1,6 +1,6 @@
 import { UnauthorizedException, createParamDecorator } from '@nestjs/common';
 import { getConnection } from 'typeorm';
-import { BearerToken } from 'models/bearer-token/bearer-token.entity';
+import { BearerToken } from '../../models/bearer-token/bearer-token.entity';
 
 export const Token = createParamDecorator(async (data, req) => {
   // headers are Bearer token_hash and not just token_hash

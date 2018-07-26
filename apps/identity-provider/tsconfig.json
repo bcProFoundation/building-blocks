@@ -1,14 +1,14 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./src/server",
-    "outDir": "./dist/out-tsc",
+    "baseUrl": "src",
+    "outDir": "dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es6",
+    "target": "es5",
     "typeRoots": [
       "node_modules/@types"
     ],
@@ -19,9 +19,5 @@
       "es2017",
       "dom"
     ]
-  },
-  "exclude": [
-    "./**/*.spec.ts",
-    "node_modules"
-  ]
+  }
 }
