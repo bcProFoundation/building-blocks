@@ -20,8 +20,3 @@ popd
 pushd libs/nestjs-session-store
 yarn lint
 popd
-
-# Lint for nestjs-session-store
-pushd libs/nestjs-console-connector
-yarn lint
-popd

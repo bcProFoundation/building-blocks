@@ -1,6 +1,6 @@
 // Create client DTO
 export const CLIENT_NAME_DESCRIPTION = 'e.g MyAwesomeApp';
-export const CLIENT_SECRET_DESCRIPTION = 'The OAuth2.0 Client\'s secret Key';
+export const CLIENT_SECRET_DESCRIPTION = 'The OAuth2.0 Client secret Key';
 export const CLIENT_IS_TRUSTED = 'Skips the Allow/Deny screen if value is 1.';
 export const CLIENT_REDIRECT_URI =
   'The endpoint which will receive the token/code from IDP.';
@@ -19,7 +19,7 @@ export const USERDTO_NAME_DESCRIPTION = 'Full name of the user';
 export const APP_LOGOUT_TITLE = 'Logout';
 export const APP_LOGOUT_DESCRIPTION = 'Logout of the session.';
 export const APP_ACCOUNT_TITLE = 'Account';
-export const APP_ACCOUNT_DESCRIPTION = 'View the logged in User\'s account.';
+export const APP_ACCOUNT_DESCRIPTION = 'View the logged in User account.';
 
 // Auth Controller
 export const AUTH_LOGIN_TITLE = 'Login';
