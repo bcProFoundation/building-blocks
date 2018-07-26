@@ -19,7 +19,7 @@
     "test": "export NODE_ENV=test && jest",
     "test:client": "ng test --watch=false",
     "test:cov": "jest --coverage",
-    "test:e2e": "jest --config ./e2e/jest-e2e.json",
+    "test:e2e": "export NODE_ENV=test && jest --config ./e2e/jest-e2e.json",
     "build": "ng build",
     "build:client-and-server-bundles": "ng build --prod && ng run identity-provider:server:production",
     "build:prerender": "npm run build:client-and-server-bundles && npm run webpack:server && npm run generate:prerender",
@@ -28,7 +28,9 @@
     "webpack:server": "webpack --config webpack.server.config.js --progress --colors",
     "serve:prerender": "cd dist/identity-provider && http-server",
     "serve:ssr": "node dist/server",
-    "start:dev": "concurrently --kill-others-on-fail \"npm run start\" \"npm run start:client\""
+    "start:dev": "concurrently --kill-others-on-fail \"npm run start\" \"npm run start:client\"",
+    "add:user": "ts-node -r tsconfig-paths/register --project src/server/tsconfig.server.json src/server/cli-connector/create-user.ts",
+    "add:oauth2-client": "ts-node -r tsconfig-paths/register --project src/server/tsconfig.server.json src/server/cli-connector/create-client.ts"
   },
   "dependencies": {
     "@angular/animations": "^6.0.3",
@@ -41,8 +43,6 @@
     "@angular/platform-browser-dynamic": "^6.0.3",
     "@angular/platform-server": "^6.1.0",
     "@angular/router": "^6.0.3",
-    "@nest-middlewares/cookie-parser": "^5.0.0",
-    "@nest-middlewares/express-session": "^5.0.0",
     "@nest-middlewares/passport": "^5.0.2",
     "@nestjs/common": "^5.1.0",
     "@nestjs/core": "^5.1.0",
@@ -60,9 +60,7 @@
     "dotenv": "^6.0.0",
     "express-session": "^1.15.6",
     "hbs": "^4.0.1",
-    "joi": "^13.4.0",
     "mysql": "^2.15.0",
-    "nestjs-console-connector": "^0.1.0",
     "nestjs-ensureloggedin-guard": "^1.0.0",
     "nestjs-session-store": "^1.0.0",
     "oauth2orize": "^1.11.0",
@@ -76,6 +74,7 @@
     "reflect-metadata": "^0.1.12",
     "rxjs": "^6.0.0",
     "typeorm": "^0.2.7",
+    "yargs": "^12.0.1",
     "zone.js": "^0.8.26"
   },
   "devDependencies": {
@@ -91,6 +90,7 @@
     "@types/joi": "^13.3.0",
     "@types/node": "10.5.2",
     "@types/supertest": "^2.0.4",
+    "@types/yargs": "^11.1.1",
     "codelyzer": "^4.4.2",
     "concurrently": "^3.6.0",
     "jasmine-core": "^3.1.0",
