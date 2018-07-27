@@ -1,4 +1,5 @@
 {
+    "testEnvironment": "node",
     "moduleDirectories": [
         "../src/server",
         "node_modules"

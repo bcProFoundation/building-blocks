@@ -86,6 +86,7 @@
     "not ie <= 10"
   ],
   "jest": {
+    "testEnvironment": "node",
     "moduleDirectories": [
       "src",
       "node_modules"

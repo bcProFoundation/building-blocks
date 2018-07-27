@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "test": "jest --config jest.json",
+    "test": "export NODE_ENV=test && jest --config jest.json",
     "test:e2e": "./scripts/e2e-tests.sh",
     "lint": "./scripts/lint.sh",
     "clean": "./scripts/clean.sh"
