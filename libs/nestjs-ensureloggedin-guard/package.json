@@ -1,6 +1,6 @@
 {
   "name": "nestjs-ensureloggedin-guard",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "NestJS Ensure Loggedin Guard",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -44,8 +44,13 @@
     "transform": {
       ".(ts|tsx)": "ts-jest"
     },
-    "collectCoverageFrom": ["src/**/*.ts"],
-    "coveragePathIgnorePatterns": ["\/__tests__\/", "\/node_modules\/"],
+    "collectCoverageFrom": [
+      "src/**/*.ts"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/__tests__/",
+      "/node_modules/"
+    ],
     "testEnvironment": "node",
     "testRegex": "__tests__/.*\\.spec\\.ts$",
     "moduleFileExtensions": [
@@ -53,8 +58,7 @@
       "js",
       "json"
     ]
-  }
-  ,
+  },
   "publishConfig": {
     "access": "public"
   }

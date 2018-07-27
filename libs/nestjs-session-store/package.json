@@ -1,6 +1,6 @@
 {
   "name": "nestjs-session-store",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "repository": "https://gitlab.com/castlecraft/building-blocks",
   "description": "NestJS Typeorm Session Store",
   "main": "dist/index.js",
@@ -37,7 +37,7 @@
     "@nestjs/common": "^5.1.0",
     "@nestjs/core": "^5.1.0",
     "@nestjs/passport": "^1.1.0",
-    "express-session":"^1.15.6",
+    "express-session": "^1.15.6",
     "reflect-metadata": "^0.1.12",
     "rxjs": "^6.2.1"
   },
