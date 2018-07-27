@@ -6,9 +6,9 @@ Provides a TypeORM store for storing and retrieving a session.
 
 This package requires:
  * [nestjs](https://nestjs.com/)
- * [express-session] (https://www.npmjs.com/package/express-session)
- * [reflect-metadata] (https://www.npmjs.com/package/reflect-metadata)
- * [rxjs] (https://www.npmjs.com/package/rxjs)
+ * [express-session](https://www.npmjs.com/package/express-session)
+ * [reflect-metadata](https://www.npmjs.com/package/reflect-metadata)
+ * [rxjs](https://www.npmjs.com/package/rxjs)
 
 ## Install
 
