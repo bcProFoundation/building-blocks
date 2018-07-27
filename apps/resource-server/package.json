@@ -5,6 +5,7 @@
   "description": "Resource Server",
   "author": "CEPL",
   "license": "MIT",
+  "private": true,
   "scripts": {
     "format": "prettier --write \"**/*.ts\"",
     "start:server": "nodemon",
