@@ -5,6 +5,7 @@
   "description": "Identity Provider",
   "author": "CEPL",
   "license": "MIT",
+  "private": true,
   "scripts": {
     "ng": "ng",
     "start:client": "ng serve --proxy-config proxy.config.json --open",

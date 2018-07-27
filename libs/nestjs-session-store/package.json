@@ -59,5 +59,8 @@
       "js",
       "json"
     ]
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

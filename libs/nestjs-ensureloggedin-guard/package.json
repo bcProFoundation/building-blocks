@@ -54,4 +54,8 @@
       "json"
     ]
   }
+  ,
+  "publishConfig": {
+    "access": "public"
+  }
 }
