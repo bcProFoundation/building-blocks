@@ -1,6 +1,6 @@
 {
   "name": "identity-provider",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "repository": "https://gitlab.com/castlecraft/building-blocks",
   "description": "Identity Provider",
   "author": "CEPL",
@@ -62,8 +62,8 @@
     "express-session": "^1.15.6",
     "hbs": "^4.0.1",
     "mysql": "^2.15.0",
-    "nestjs-ensureloggedin-guard": "^1.0.1",
-    "nestjs-session-store": "^1.0.1",
+    "nestjs-ensureloggedin-guard": "^1.0.2",
+    "nestjs-session-store": "^1.0.2",
     "oauth2orize": "^1.11.0",
     "passport": "^0.4.0",
     "passport-http": "^0.3.0",

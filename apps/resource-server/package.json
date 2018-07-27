@@ -1,6 +1,6 @@
 {
   "name": "resource-server",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "repository": "https://gitlab.com/castlecraft/building-blocks",
   "description": "Resource Server",
   "author": "CEPL",
@@ -35,8 +35,8 @@
     "express-session": "^1.15.6",
     "fastify-formbody": "^2.0.0",
     "mongodb": "^3.1.1",
-    "nestjs-ensureloggedin-guard": "^1.0.1",
-    "nestjs-session-store": "^1.0.1",
+    "nestjs-ensureloggedin-guard": "^1.0.2",
+    "nestjs-session-store": "^1.0.2",
     "passport": "^0.4.0",
     "passport-http-bearer": "^1.0.1",
     "passport-oauth2": "^1.4.0",
