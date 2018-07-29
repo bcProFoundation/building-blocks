@@ -9,8 +9,14 @@ import { User } from './user/user.entity';
 
 const config = new ConfigService();
 const typeormConnection = config.getConfig('ormconfig');
-typeormConnection.keepConnectionAlive = true;
-typeormConnection.entities = [
+let defaultConnection;
+typeormConnection.forEach(element => {
+  if (element.name === 'default') {
+    defaultConnection = element;
+  }
+});
+
+defaultConnection.entities = [
   AuthData,
   AuthorizationCode,
   BearerToken,
@@ -20,4 +26,4 @@ typeormConnection.entities = [
   User,
 ];
 
-export const TYPEORM_CONNECTION = typeormConnection;
+export const TYPEORM_CONNECTION = defaultConnection;
