@@ -1,7 +1,3 @@
-import 'zone.js/dist/zone-node';
-import 'reflect-metadata';
-
-import * as express from 'express';
 import {
   Module,
   Inject,
@@ -9,14 +5,14 @@ import {
   RequestMethod,
 } from '@nestjs/common';
 import { DynamicModule, NestModule } from '@nestjs/common/interfaces';
-import { readFileSync } from 'fs';
+import * as express from 'express';
 
-import { applyDomino } from './utils/domino.utils';
-import { AngularUniversalOptions } from './interfaces/angular-universal-options.interface';
+import { IAngularUniversalOptions } from './interfaces/angular-universal-options.interface';
 import { ANGULAR_UNIVERSAL_OPTIONS } from './angular-universal.constants';
 import { AngularUniversalController } from './angular-universal.controller';
 import { angularUniversalProviders } from './angular-universal.providers';
-import { join } from 'path';
+import { HTTP_SERVER_REF } from '@nestjs/core';
+import { FOLDER_DIST_BROWSER } from '../constants/filesystem';
 
 @Module({
   controllers: [AngularUniversalController],
@@ -25,33 +21,32 @@ import { join } from 'path';
 export class AngularUniversalModule implements NestModule {
   constructor(
     @Inject(ANGULAR_UNIVERSAL_OPTIONS)
-    private readonly ngOptions: AngularUniversalOptions,
-  ) {}
+    private readonly ngOptions: IAngularUniversalOptions,
+    @Inject(HTTP_SERVER_REF) private readonly serverRef: express.Application,
+  ) {
+    this.serverRef.get('*.*', express.static(this.ngOptions.viewsPath));
+  }
 
-  static forRoot(options: AngularUniversalOptions): DynamicModule {
-    options = {
-      templatePath: join(options.viewsPath, 'index.html'),
-      ...options,
+  static forRoot(): DynamicModule {
+    const options: IAngularUniversalOptions = {
+      viewsPath: FOLDER_DIST_BROWSER,
+      bundle: require('../../../dist/server/main.js'),
     };
-    const template = readFileSync(options.templatePath).toString();
 
     return {
       module: AngularUniversalModule,
       providers: [
         {
           provide: ANGULAR_UNIVERSAL_OPTIONS,
-          useValue: {
-            ...options,
-            template,
-          },
+          useValue: options,
         },
       ],
     };
   }
 
   configure(consumer: MiddlewareConsumer): void {
-    consumer;
-    // .apply(express.static(this.ngOptions.viewsPath))
-    // .forRoutes('*.*');
+    // consumer
+    //   .apply(express.static(this.ngOptions.viewsPath))
+    //   .forRoutes('*.*');
   }
 }

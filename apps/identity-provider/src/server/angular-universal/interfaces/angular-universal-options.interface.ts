@@ -1,5 +1,7 @@
-export interface AngularUniversalOptions {
+export interface IAngularUniversalOptions {
   viewsPath: string;
-  bundle: { AppServerModuleNgFactory; LAZY_MODULE_MAP };
-  templatePath?: string;
+  bundle: {
+    AppServerModuleNgFactory: any;
+    LAZY_MODULE_MAP: any;
+  };
 }
