@@ -7,6 +7,7 @@ import {
   Body,
   ValidationPipe,
   UsePipes,
+  Get,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { callback } from '../../passport/local.strategy';
@@ -23,6 +24,8 @@ import {
   AUTH_LOGIN_DESCRIPTION,
   AUTH_SIGNUP_DESCRIPTION,
   AUTH_SIGNUP_TITLE,
+  APP_LOGOUT_TITLE,
+  APP_ACCOUNT_DESCRIPTION,
 } from '../../../constants/swagger';
 
 // Swagger
@@ -71,5 +74,15 @@ export class AuthController {
       user: body.email,
       message: SUCCESS_MESSAGE,
     });
+  }
+
+  @Get('logout')
+  @ApiOperation({
+    title: APP_LOGOUT_TITLE,
+    description: APP_ACCOUNT_DESCRIPTION,
+  })
+  logout(@Req() req, @Res() res) {
+    req.logout();
+    res.json({ message: 'logout' });
   }
 }

@@ -28,6 +28,9 @@ export class User extends BaseEntity implements UserEntity {
 
   @Column() public name: string;
 
+  @Column({ type: 'varchar', length: 15 })
+  public phone: string;
+
   @Column({ type: 'varchar', length: 140, unique: true })
   public email: string;
 

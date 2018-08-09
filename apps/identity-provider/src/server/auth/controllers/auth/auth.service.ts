@@ -5,23 +5,28 @@ import { CryptographerService } from '../../../utilities/cryptographer.service';
 import { AuthData } from '../../../models/auth-data/auth-data.entity';
 import { User } from '../../../models/user/user.entity';
 import { INVALID_PASSWORD } from '../../../constants/messages';
+import { AuthDataService } from '../../../models/auth-data/auth-data.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly cryptoService: CryptographerService,
+    private readonly authDataService: AuthDataService,
   ) {}
 
-  public async signUp(user: CreateUserDto) {
-    // save passwords in different separate entities
-    const authData = new AuthData();
+  public async signUp(user) {
     const userEntity = new User();
-    Object.assign(userEntity, user);
+    userEntity.name = user.name;
+    userEntity.email = user.email;
+
+    await this.userService.save(userEntity);
+
+    const authData = new AuthData();
     authData.password = await this.cryptoService.hashPassword(user.password);
-    authData.save();
-    userEntity.password = Promise.resolve(authData);
-    await this.userService.create(userEntity);
+    userEntity.password = await this.authDataService.save(authData);
+
+    await this.userService.save(userEntity);
   }
 
   public async logIn(email, password) {

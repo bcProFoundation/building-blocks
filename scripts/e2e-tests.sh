@@ -14,4 +14,5 @@ popd
 # IDP Angular Tests
 pushd apps/identity-provider
 yarn test:client
+yarn e2e
 popd

@@ -94,10 +94,10 @@ export class TypeormStore extends Store {
           data.passport = JSON.parse(session.passport);
 
         // Set authorize to null, or it keeps adding here
-        if (session) {
-          session.authorize = null;
-          await session.save();
-        }
+        // if (session) {
+        //   session.authorize = null;
+        //   await session.save();
+        // }
 
         if (Object.keys(data).length) return callback(null, data);
         else return callback(null);

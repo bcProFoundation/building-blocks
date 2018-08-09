@@ -1,5 +1,16 @@
 image: castlecraft/node-latest-headless-chrome:1.0
 
+variables:
+  # Configure mysql service (https://hub.docker.com/_/mysql/)
+  MYSQL_DATABASE: test-idp
+  MYSQL_ROOT_PASSWORD: mysql_password
+
+before_script:
+  - apt-get update -qq
+  - apt-get install mysql-client -y -qq
+  - echo "use mysql; CREATE USER \`test-idp\`@'%' IDENTIFIED BY 'secret';" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mariadb
+  - echo "GRANT ALL PRIVILEGES ON \`test-idp\`.* TO \`test-idp\`@'%'; FLUSH PRIVILEGES;" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mariadb
+
 stages:
   - tests
 

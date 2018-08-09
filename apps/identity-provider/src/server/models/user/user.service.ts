@@ -9,7 +9,7 @@ export class UserService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
-  public async create(user) {
+  public async save(user) {
     return await this.userRepository.save(user);
   }
 

@@ -1,23 +1,96 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <title>Account</title>
-</head>
-<body>
-<p>Hi {{ email }}</p>
-<p><b>{{ client.name }}</b> is requesting access to your account.</p>
-<p>Do you approve?</p>
-
-<form action="/oauth2/authorize" method="post">
-  <input name="transaction_id" type="hidden" value="{{ transactionId }}" />
-  <div>
-    <input type="submit" value="Allow" id="allow" />
-    <input type="submit" value="Deny" name="cancel" id="deny" />
-  </div>
-</form>
-<div>
-  {{ request }}
-</div>
-</body>
+  <head>
+    <meta charset="utf-8">
+    <title>Account</title>
+  </head>
+  <body>
+    <div class="container flex-grid flex-grid-center">
+      <div class="craft-mat-card">
+        <p>Hi {{ email }}</p>
+        <br/>
+        <p><b>{{ client.name }}</b> is requesting access to your account.</p>
+        <p>Do you approve?</p>
+        <br/>
+        <form action="{{ action }}" method="post">
+          <input name="transaction_id" type="hidden" value="{{ transactionId }}" />
+          <div class="flex-grid flex-grid-buttons">
+              <input type="submit" value="Allow" id="allow" class="craft-mat-btn allow"/>
+              <input type="submit" value="Deny" name="cancel" id="deny" class="craft-mat-btn"/>
+            </ul>
+          </div>
+        </form>
+        <div>
+          {{ request }}
+        </div>
+      </div>
+    </div>
+    <style type="text/css">
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      }
+      .container {
+        padding-top:10%;
+      }
+      .flex-grid {
+        display: flex;
+      }
+      .flex-grid-center {
+        align-items: center;
+        justify-content: center;
+      }
+      .flex-grid-buttons {
+        justify-content: space-evenly;
+      }
+      .flex-grid-col {
+        flex: 1;
+      }
+      .craft-mat-card {
+        background: #fff;
+        border-radius: 2px;
+        display: inline-block;
+        padding: 2%;
+        margin: 1rem;
+        position: relative;
+        width: 300px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+      }
+      .craft-mat-btn {
+        font-size: 14px;
+        box-sizing: border-box;
+        position: relative;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+        outline: 0;
+        border: none;
+        -webkit-tap-highlight-color: transparent;
+        display: inline-block;
+        white-space: nowrap;
+        text-decoration: none;
+        vertical-align: baseline;
+        text-align: center;
+        margin: 0;
+        min-width: 88px;
+        line-height: 36px;
+        padding: 0 16px;
+        border-radius: 2px;
+        overflow: visible;
+      }
+      .craft-mat-btn:hover {
+        background-color: lightgray;
+      }
+      .allow {
+        background-color: #DCDCDC;
+      }
+      
+      @media (max-width: 400px) {
+        .flex-grid {
+          display: block;
+        }
+      }
+    </style>
+  </body>
 </html>
