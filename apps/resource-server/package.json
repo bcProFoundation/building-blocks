@@ -32,6 +32,7 @@
     "axios": "^0.18.0",
     "class-validator": "^0.8.5",
     "cookie-parser": "^1.4.3",
+    "craft-account-manager": "^0.1.0",
     "express-session": "^1.15.6",
     "fastify-formbody": "^2.0.0",
     "mongodb": "^3.1.1",

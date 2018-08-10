@@ -20,3 +20,8 @@ popd
 pushd libs/nestjs-session-store
 yarn lint
 popd
+
+# Lint for craft-account-manager
+pushd libs/craft-account-manager
+yarn lint
+popd

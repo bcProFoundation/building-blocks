@@ -1,21 +1,28 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpService } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-http-bearer';
 import { ClientService } from 'models/client/client.service';
-import { AccountManager } from '../account.provider';
+import { AccountManager } from 'craft-account-manager';
 import { UserService } from 'models/user/user.service';
 import { ConfigService } from 'config/config.service';
 import { TOKEN_INACTIVE } from 'constants/messages';
 
 @Injectable()
 export class HttpBearerStrategy extends PassportStrategy(Strategy) {
+  accountManager: AccountManager;
+
   constructor(
-    private readonly accountManager: AccountManager,
+    private readonly httpService: HttpService,
     private readonly clientService: ClientService,
     private readonly userService: UserService,
     private readonly configService: ConfigService,
   ) {
     super();
+    this.accountManager = new AccountManager(
+      this.clientService,
+      this.userService,
+      this.httpService,
+    );
   }
   async validate(token: any, done: (err?, user?, info?) => any) {
     const clientFixture = this.configService.getConfig('oauth2client');
@@ -28,26 +35,12 @@ export class HttpBearerStrategy extends PassportStrategy(Strategy) {
         Authorization: 'Bearer ' + client.accessToken,
       },
     };
-    this.accountManager.post(url, { token }, options).subscribe({
-      next: async response => {
-        if (response.data.active && response.data.username) {
-          const user = await this.userService.findOne({
-            email: response.data.username,
-          });
-          done(null, user);
-        } else done(null, false, { message: TOKEN_INACTIVE });
-      },
-      error: async error => {
-        if (error.response.data.statusCode === 401) {
-          const opts: any = {
-            url,
-            data: { token },
-            options,
-            callback: done,
-          };
-          await this.accountManager.getNewToken(opts);
-        } else done(null, false, error.response.data.message);
-      },
-    });
+    this.accountManager.introspectToken(
+      url,
+      token,
+      options,
+      TOKEN_INACTIVE,
+      done,
+    );
   }
 }
