@@ -1,26 +1,47 @@
-# Create image based on the official Node 6 image from the dockerhub
+# Create image based on the alpine Node 10 image from the dockerhub
 FROM node:10-alpine
 MAINTAINER Castlecraft
 
 # Install mysql client
-RUN apk add \
+RUN apk update \
+    && apk add --no-cache \
     mysql-client \
     git \
     tar
 
 # Install typescript and craft cli
-RUN yarn global add typescript "https://gitlab.com/castlecraft/craft-cli"
+RUN yarn --production=true global add typescript "https://gitlab.com/castlecraft/craft-cli" \
+    && yarn cache clean \
+    && mkdir -p /home/craft/identity-provider
 
-# Create app directory
-WORKDIR /usr/src/app
+COPY docker-entrypoint.sh usr/local/bin/docker-entrypoint.sh
+RUN ln -s usr/local/bin/docker-entrypoint.sh / # backwards compat
 
-# Get all the code needed to run the app
-COPY package.json /usr/src/app
+# Create home directory for craft
+WORKDIR /home/craft
 
-RUN yarn install --production=true
+# Add non root user
+RUN adduser -h /home/craft -D craft
+RUN chown -R craft:craft /home/craft
+USER craft
 
-# Bundle app source
-COPY . /usr/src/app
+# Image
+COPY . /home/craft/identity-provider
 
-# Expose the port the app runs in
+RUN rm -fr identity-provider/config identity-provider/docker-entrypoint.sh \
+    && cd identity-provider \
+    && yarn \
+    && yarn prestart:prod \
+    && rm -fr node_modules yarn.lock \
+    && yarn --production=true \
+    && yarn cache clean \
+    && mkdir -p /home/craft/identity-provider/config
+
+# set project directory
+WORKDIR /home/craft/identity-provider
+VOLUME /home/craft/identity-provider/config
+
 EXPOSE 3000
+
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["start"]
