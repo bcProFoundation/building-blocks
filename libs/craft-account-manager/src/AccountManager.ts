@@ -1,35 +1,46 @@
-import {
-  Injectable,
-  NotFoundException,
-  HttpService,
-  OnModuleInit,
-} from '@nestjs/common';
-import { ClientService } from 'models/client/client.service';
-import { UserService } from 'models/user/user.service';
+import { HttpService } from '@nestjs/common';
+import { AbstractClientService } from './interfaces/AbstractClientService';
+import { AbstractUserService } from './interfaces/AbstractUserService';
+import { IntrospectTokenOptions } from './interfaces/IntrospectTokenOptions';
 
-@Injectable()
-export class AccountManager implements OnModuleInit {
-  onModuleInit() {
-    this.setupClient();
-  }
-
+export class AccountManager {
   constructor(
-    private readonly clientService: ClientService,
-    private readonly userService: UserService,
+    private readonly clientService: AbstractClientService,
+    private readonly userService: AbstractUserService,
     private readonly httpService: HttpService,
   ) {}
 
-  async setupClient() {
-    let client;
-    const clients = await this.clientService.find();
-    if (clients.length) client = clients[0];
-    else throw new NotFoundException();
-    if (client && (!client.accessToken || !client.refreshToken)) {
-      await this.getNewToken();
-    }
+  async introspectToken(
+    url: string,
+    token: string,
+    options: any,
+    TOKEN_INACTIVE: string,
+    done: (err?, user?, info?) => any,
+  ) {
+    this.httpService.post(url, { token }, options).subscribe({
+      next: async response => {
+        if (response.data.active && response.data.username) {
+          const user = await this.userService.findOne({
+            email: response.data.username,
+          });
+          done(null, user);
+        } else done(null, false, { message: TOKEN_INACTIVE });
+      },
+      error: async error => {
+        if (error.response.data.statusCode === 401) {
+          const opts: any = {
+            url,
+            data: { token },
+            options,
+            callback: done,
+          };
+          await this.getNewToken(opts);
+        } else done(null, false, error.response.data.message);
+      },
+    });
   }
 
-  async getNewToken(opts?) {
+  async getNewToken(opts?: IntrospectTokenOptions) {
     let client, token;
     const clients = await this.clientService.find();
     if (clients.length) client = clients[0];
@@ -70,22 +81,5 @@ export class AccountManager implements OnModuleInit {
           }
         },
       });
-  }
-
-  async getUserToken(email) {
-    const user = await this.userService.findOne({ email });
-
-    if (!user) {
-      throw new NotFoundException();
-    }
-
-    return {
-      accessToken: user.accessToken,
-      refreshToken: user.refreshToken,
-    };
-  }
-
-  post(url, data, options?) {
-    return this.httpService.post(url, data, options);
   }
 }
