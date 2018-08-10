@@ -53,9 +53,9 @@ describe('AppController (e2e)', () => {
       .expect('IDP built using Nest.js');
   });
 
-  it('/GET /logout', () => {
+  it('/GET /auth/logout', () => {
     return request(app.getHttpServer())
-      .get('/logout')
+      .get('/auth/logout')
       .expect(200)
       .expect({ message: 'logout' });
   });

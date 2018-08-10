@@ -20,6 +20,9 @@ import { RolesGuard } from './guards/roles.guard';
 import { RoleController } from './controllers/role/role.controller';
 import { ClientController } from './controllers/client/client.controller';
 import { ConfigModule } from '../config/config.module';
+import { SSRMiddleware } from '../ssr.middleware';
+import { SSRController } from '../ssr.controller';
+import { OAuth2DecisionMiddleware } from './middlewares/oauth2-decision.middleware';
 
 @Module({
   providers: [
@@ -56,7 +59,7 @@ export class AuthModule implements NestModule {
     consumer
       .apply(OAuth2ConfirmationMiddleware)
       .forRoutes('/oauth2/confirmation')
-      .apply(OAuth2AuthorizationMiddleware)
+      .apply(OAuth2AuthorizationMiddleware, OAuth2DecisionMiddleware)
       .forRoutes('/oauth2/authorize')
       .apply(
         PassportAuthenticateMiddleware,

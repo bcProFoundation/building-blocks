@@ -11,6 +11,6 @@ export class AuthDataService {
   ) {}
 
   async save(authData) {
-    this.authDataRepository.save(authData);
+    return await this.authDataRepository.save(authData);
   }
 }

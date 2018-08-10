@@ -5,6 +5,8 @@ import { AuthService } from './auth.service';
 import { CryptographerService } from '../../../utilities/cryptographer.service';
 import { UserService } from '../../../models/user/user.service';
 import { User } from '../../../models/user/user.entity';
+import { AuthDataService } from '../../../models/auth-data/auth-data.service';
+import { AuthData } from '../../../models/auth-data/auth-data.entity';
 
 describe('Auth Controller', () => {
   let module: TestingModule;
@@ -25,7 +27,15 @@ describe('Auth Controller', () => {
           useClass: UserService,
         },
         {
+          provide: 'AuthDataService',
+          useClass: AuthDataService,
+        },
+        {
           provide: getRepositoryToken(User),
+          useValue: {}, // provide mock values
+        },
+        {
+          provide: getRepositoryToken(AuthData),
           useValue: {}, // provide mock values
         },
       ],

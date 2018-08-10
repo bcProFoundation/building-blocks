@@ -29,22 +29,28 @@ import {
   OAUTH2_TOKEN_INTROSPECTION_TITLE,
   OAUTH2_TOKEN_INTROSPECTION_DESCRIPTION,
 } from '../../../constants/swagger';
+import { stringify } from 'querystring';
 
 @Controller('oauth2')
 export class OAuth2Controller {
   constructor(private readonly bearerTokenService: BearerTokenService) {}
 
   @Get('confirmation')
-  @Render('dialog.hbs')
+  @Render('dialog')
   @UseGuards(EnsureLoginGuard)
   @UseFilters(ErrorFilter)
   @ApiExcludeEndpoint()
-  confirmation(@Req() request) {
-    return {
+  confirmation(@Req() request, @Res() response) {
+    const confirmationParams = {
       transactionId: request.oauth2.transactionID,
       email: request.user.email,
       client: request.oauth2.client,
+      action:
+        process.env.NODE_ENV === 'production'
+          ? '/oauth2/authorize'
+          : '/dev/oauth2/authorize',
     };
+    return confirmationParams;
   }
 
   @Post('authorize')

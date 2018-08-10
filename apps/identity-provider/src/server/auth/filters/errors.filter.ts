@@ -16,10 +16,12 @@ export class ErrorFilter implements ExceptionFilter {
         ? error.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    if (status === HttpStatus.FORBIDDEN)
+    if (status === HttpStatus.FORBIDDEN) {
       return response.redirect(
         '/login?redirect=' + encodeURIComponent(request.originalUrl),
       );
+    }
+
     if (status === HttpStatus.NOT_FOUND)
       return response.status(status).render('404');
     if (status === HttpStatus.INTERNAL_SERVER_ERROR) {
