@@ -1,0 +1,13 @@
+{
+    "secretKey": "secret",
+    "secretSession": "secret",
+    "cookieSecret": "secret",
+    "expiryDays": 1,
+    "tokenValidity": 3600,
+    "importFixtures": true,
+    "adminPassword": "secret",
+    "clientSecret": "secret",
+    "clientRedirectUri": "http://localhost:4000/auth/callback",
+    "cookieMaxAge": 43200,
+    "sessionName": "idp_session"
+}
