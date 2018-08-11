@@ -1,0 +1,7 @@
+[{
+    "type": "mongodb",
+    "name": "default",
+    "host": "database",
+    "database": "cepl-idp",
+    "logging": false
+}]
