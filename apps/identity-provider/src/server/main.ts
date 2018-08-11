@@ -7,7 +7,7 @@ import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
 import * as expressSession from 'express-session';
 import * as passport from 'passport';
-import { TypeormStore } from '../../../../libs/nestjs-session-store/dist';
+import { TypeormStore } from 'nestjs-session-store';
 import { ConfigService } from './config/config.service';
 import { getRepository } from 'typeorm';
 import { User } from './models/user/user.entity';

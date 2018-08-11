@@ -28,7 +28,7 @@ USER craft
 # Image
 COPY . /home/craft/identity-provider
 
-RUN rm -fr identity-provider/config identity-provider/docker-entrypoint.sh \
+RUN rm -fr identity-provider/config identity-provider/docker-entrypoint.sh identity-provider/package-lock.json \
     && cd identity-provider \
     && yarn \
     && yarn prestart:prod \
