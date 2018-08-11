@@ -1,6 +1,6 @@
 {
   "name": "nestjs-session-store",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "repository": "https://gitlab.com/castlecraft/building-blocks",
   "description": "NestJS Typeorm Session Store",
   "main": "dist/index.js",

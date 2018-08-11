@@ -1,6 +1,6 @@
 {
   "name": "craft-account-manager",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Account Manager for Resource Server",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
