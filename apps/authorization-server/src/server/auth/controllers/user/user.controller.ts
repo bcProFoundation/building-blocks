@@ -14,7 +14,7 @@ export class UserController {
   @UseGuards(EnsureLoginGuard)
   async update(@Body() payload, @Session() session) {
     const sessionUser = session.passport.user;
-    const user = await this.userService.findOne(sessionUser.id);
+    const user = await this.userService.findOne({ email: sessionUser.email });
     if (payload.password) {
       const authData = await user.password;
       authData.password = await this.cryptoService.hashPassword(

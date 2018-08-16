@@ -6,6 +6,7 @@ import { Client } from './client/client.entity';
 import { Role } from './role/role.entity';
 import { Session } from './session/session.entity';
 import { User } from './user/user.entity';
+import { Scope } from './scope/scope.entity';
 
 const config = new ConfigService();
 const typeormConnection = config.getConfig('ormconfig');
@@ -16,14 +17,17 @@ typeormConnection.forEach(element => {
   }
 });
 
-defaultConnection.entities = [
+export const documentSchemas = [
   AuthData,
   AuthorizationCode,
   BearerToken,
   Client,
   Role,
+  Scope,
   Session,
   User,
 ];
+
+defaultConnection.entities = documentSchemas;
 
 export const TYPEORM_CONNECTION = defaultConnection;

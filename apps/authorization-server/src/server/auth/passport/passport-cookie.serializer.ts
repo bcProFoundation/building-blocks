@@ -11,6 +11,7 @@ export class CookieSerializer extends PassportSerializer {
     done(null, {
       id: user.id,
       email: user.email,
+      uuid: user.uuid,
     });
   }
   deserializeUser(payload: any, done: (err, payload) => any): any {

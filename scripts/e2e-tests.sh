@@ -16,3 +16,8 @@ pushd apps/identity-provider
 yarn test:client
 yarn e2e
 popd
+
+# e2e Test for Authorization Server
+pushd apps/authorization-server
+yarn test:e2e
+popd

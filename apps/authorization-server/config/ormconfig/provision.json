@@ -3,5 +3,6 @@
     "name": "default",
     "host": "database",
     "database": "cepl-idp",
-    "logging": false
+    "logging": false,
+    "synchronize": true
 }]

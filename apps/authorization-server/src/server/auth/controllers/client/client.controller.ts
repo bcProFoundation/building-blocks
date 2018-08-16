@@ -21,7 +21,7 @@ export class ClientController {
     client.name = payload.name;
     client.clientSecret = payload.clientSecret;
     client.isTrusted = payload.isTrusted;
-    client.redirectUri = payload.redirectUri;
+    client.redirectUris = [payload.redirectUri];
     client.save();
   }
 }

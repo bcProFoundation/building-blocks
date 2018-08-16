@@ -2,6 +2,7 @@ image: castlecraft/node-latest-headless-chrome:1.0
 
 services:
   - docker:dind
+  - mongo
 
 stages:
   - tests

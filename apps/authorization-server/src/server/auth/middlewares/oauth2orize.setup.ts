@@ -1,21 +1,36 @@
-import {
-  Injectable,
-  OnModuleInit,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import * as oauth2orize from 'oauth2orize';
 import { ClientService } from '../../models/client/client.service';
 import { AuthorizationCodeService } from '../../models/authorization-code/authorization-code.service';
 import { CryptographerService } from '../../utilities/cryptographer.service';
 import { BearerTokenService } from '../../models/bearer-token/bearer-token.service';
 import { UserService } from '../../models/user/user.service';
-import { INVALID_CLIENT } from '../../constants/messages';
+import { Client } from '../../models/client/client.entity';
+import {
+  invalidClientException,
+  invalidScopeException,
+} from '../filters/exceptions';
+import { OAuth2TokenGeneratorService } from './oauth2-token-generator.service';
 
 @Injectable()
 export class OAuth2orizeSetup implements OnModuleInit {
+  public server;
+
+  constructor(
+    private readonly authorizationCodeService: AuthorizationCodeService,
+    private readonly cryptographerService: CryptographerService,
+    private readonly clientService: ClientService,
+    private readonly bearerTokenService: BearerTokenService,
+    private readonly userService: UserService,
+    private readonly tokenGeneratorService: OAuth2TokenGeneratorService,
+  ) {
+    // Initialize server
+    this.server = oauth2orize.createServer();
+  }
+
   onModuleInit() {
     // Serialize Client
-    this.server.serializeClient((client, done) => done(null, client.id));
+    this.server.serializeClient((client, done) => done(null, client.clientId));
 
     // Deserialize Client
     this.server.deserializeClient((id, done) => {
@@ -28,17 +43,6 @@ export class OAuth2orizeSetup implements OnModuleInit {
     });
 
     this.setupServer();
-  }
-  public server;
-  constructor(
-    private readonly authorizationCodeService: AuthorizationCodeService,
-    private readonly cryptographerService: CryptographerService,
-    private readonly clientService: ClientService,
-    private readonly bearerTokenService: BearerTokenService,
-    private readonly userService: UserService,
-  ) {
-    // Initialize server
-    this.server = oauth2orize.createServer();
   }
 
   setupServer() {
@@ -63,40 +67,58 @@ export class OAuth2orizeSetup implements OnModuleInit {
 
   setupCodeGrant() {
     this.server.grant(
-      oauth2orize.grant.code(async (client, redirectUri, user, ares, done) => {
-        try {
-          const code = this.cryptographerService.getUid(16);
-          const localClient = await this.clientService.findOne({
-            clientId: client.clientId,
-          });
-          const localUser = await this.userService.findOne(user.id);
-          await this.authorizationCodeService.save({
-            code,
-            client: localClient,
-            redirectUri,
-            user: localUser,
-            userKey: localUser.id,
-            clientKey: localClient.id,
-          });
-          done(null, code);
-        } catch (error) {
-          done(error, null);
-        }
-      }),
+      oauth2orize.grant.code(
+        async (client, redirectUri, user, ares, areq, done) => {
+          try {
+            const code = this.cryptographerService.getUid(16);
+            const localClient = await this.clientService.findOne({
+              clientId: areq.clientID,
+            });
+            const localUser = await this.userService.findOne({
+              email: user.email,
+            });
+            const scope = await this.tokenGeneratorService.getValidScopes(
+              localClient,
+              areq.scope,
+            );
+            await this.authorizationCodeService.save({
+              code,
+              client: localClient,
+              redirectUri,
+              user: localUser,
+              scope,
+            });
+            done(null, code);
+          } catch (error) {
+            done(error, null);
+          }
+        },
+      ),
     );
   }
 
   setupTokenGrant() {
     this.server.grant(
-      oauth2orize.grant.token(async (client, user, ares, done) => {
+      oauth2orize.grant.token(async (client, user, ares, areq, done) => {
         try {
           const localUser = await this.userService.findOne(user);
-          const [bearerToken, extraParams] = await this.getBearerToken(
+          const localClient = await this.clientService.findOne({
+            clientId: areq.clientID,
+          });
+          const scope = await this.tokenGeneratorService.getValidScopes(
             client,
+            areq.scope,
+          );
+          const [
+            bearerToken,
+            extraParams,
+          ] = await this.tokenGeneratorService.getBearerToken(
+            localClient,
             localUser,
+            scope,
             false,
           );
-          return done(null, bearerToken.accessToken);
+          return done(null, bearerToken.accessToken, extraParams);
         } catch (error) {
           return done(error);
         }
@@ -114,9 +136,13 @@ export class OAuth2orizeSetup implements OnModuleInit {
               where: { code },
             });
             if (!localCode) issued(null);
-            const [bearerToken, extraParams] = await this.getBearerToken(
+            const [
+              bearerToken,
+              extraParams,
+            ] = await this.tokenGeneratorService.getBearerToken(
               localCode.client,
               localCode.user,
+              localCode.scope,
             );
             await this.authorizationCodeService.delete({ localCode });
             issued(
@@ -137,6 +163,7 @@ export class OAuth2orizeSetup implements OnModuleInit {
     this.server.exchange(
       oauth2orize.exchange.password(
         async (client, username, password, scope, done) => {
+          if (!scope) done(invalidScopeException);
           // Validate the client
           try {
             const localClient = await this.clientService.findOne({
@@ -157,11 +184,19 @@ export class OAuth2orizeSetup implements OnModuleInit {
               return done(null, false);
             }
 
-            // TODO: Validate Scopes
+            // Validate Scopes
+            const validScope = await this.tokenGeneratorService.getValidScopes(
+              localClient,
+              scope,
+            );
             // Everything validated, return the token
-            const [bearerToken, extraParams] = await this.getBearerToken(
+            const [
+              bearerToken,
+              extraParams,
+            ] = await this.tokenGeneratorService.getBearerToken(
               localClient,
               user,
+              validScope,
             );
             return done(
               null,
@@ -180,6 +215,7 @@ export class OAuth2orizeSetup implements OnModuleInit {
   setupClientCredentialExchange() {
     this.server.exchange(
       oauth2orize.exchange.clientCredentials(async (client, scope, done) => {
+        if (!scope) done(invalidScopeException);
         // Validate the client
         try {
           const c = await this.clientService.findOne({
@@ -187,13 +223,22 @@ export class OAuth2orizeSetup implements OnModuleInit {
           });
           if (!c) done(null, false);
           if (c.clientSecret !== client.clientSecret) return done(null, false);
-          // TODO: Validate Scope
-
+          // Validate Scope
+          const validScope = await this.tokenGeneratorService.getValidScopes(
+            c,
+            scope,
+          );
           // Everything validated, return the token
           // Pass in a null for user id since there is no user with this grant type
-          const [bearerToken, extraParams] = await this.getBearerToken(
+          const [
+            bearerToken,
+            extraParams,
+          ] = await this.tokenGeneratorService.getBearerToken(
             client,
             null,
+            validScope,
+            true,
+            false,
           );
           return done(
             null,
@@ -219,20 +264,31 @@ export class OAuth2orizeSetup implements OnModuleInit {
           if (!localRefreshToken) done(null, false);
 
           // Validate Client
+          let localClient: Client;
           if (client) {
-            const localClient = await this.clientService.findOne({
+            localClient = await this.clientService.findOne({
               clientId: client.clientId,
             });
             if (!localClient) done(null, false);
           } else {
-            client = localRefreshToken.client;
+            localClient = localRefreshToken.client;
           }
 
-          // Everything validated, return the token
+          // Validate Scopes
+          const refreshTokenScope = localRefreshToken.scope.map(s => s.name);
+          const scope = await this.tokenGeneratorService.getValidScopes(
+            localClient,
+            refreshTokenScope,
+          );
 
-          const [bearerToken, extraParams] = await this.getBearerToken(
+          // Everything validated, return the token
+          const [
+            bearerToken,
+            extraParams,
+          ] = await this.tokenGeneratorService.getBearerToken(
             client,
             localRefreshToken.user,
+            scope,
           );
           return done(
             null,
@@ -252,12 +308,12 @@ export class OAuth2orizeSetup implements OnModuleInit {
       async (clientId, redirectUri, done) => {
         try {
           const localClient = await this.clientService.findOne({ clientId });
-          if (localClient && localClient.redirectUri !== redirectUri)
-            return done(
-              new UnauthorizedException(INVALID_CLIENT),
-              false,
-              false,
-            );
+          if (
+            (localClient && !localClient.redirectUris.includes(redirectUri)) ||
+            !localClient
+          ) {
+            return done(invalidClientException, false, false);
+          }
           return done(null, localClient, redirectUri);
         } catch (error) {
           return done(error);
@@ -273,8 +329,8 @@ export class OAuth2orizeSetup implements OnModuleInit {
           // findByUserIdAndClientId
           const tokens = await this.bearerTokenService.find({
             where: {
-              user: { id: user.id },
-              client: { id: client.id },
+              user: { email: user.email },
+              client: { clientId: client.clientId },
             },
           });
           // Auto-approve
@@ -286,29 +342,5 @@ export class OAuth2orizeSetup implements OnModuleInit {
         }
       },
     );
-  }
-
-  async getBearerToken(client, user, refresh = true) {
-    const bearerToken: any = {
-      accessToken: this.cryptographerService.getUid(64),
-      redirectUri: client.redirectUri,
-      client,
-    };
-
-    if (refresh)
-      bearerToken.refreshToken = this.cryptographerService.getUid(64);
-    if (user) bearerToken.user = user;
-
-    const extraParams: any = {
-      scope: 'all',
-      expires_in: 3600,
-    };
-
-    bearerToken.scope = extraParams.scope;
-    bearerToken.expiresIn = extraParams.expires_in;
-
-    await this.bearerTokenService.save(bearerToken);
-
-    return [bearerToken, extraParams];
   }
 }

@@ -2,7 +2,8 @@
     "type": "mongodb",
     "name": "default",
     "host": "mongo",
-    "database": "cepl-idp",
+    "database": "test-e2e-idp",
     "logging": false,
-    "synchronize": true
+    "synchronize": true,
+    "keepAlice": 20000
 }]

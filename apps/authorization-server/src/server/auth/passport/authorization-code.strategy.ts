@@ -13,7 +13,8 @@ export class AuthorizationCodeStrategy extends PassportStrategy(Strategy) {
     try {
       const client = await this.clientService.findOne({ clientId });
       if (!client) return verified(null, false);
-      if (client.redirectUri !== redirectURI) return verified(null, false);
+      if (!client.redirectUris.includes(redirectURI))
+        return verified(null, false);
       return verified(null, client);
     } catch (error) {
       return verified(error, null);
