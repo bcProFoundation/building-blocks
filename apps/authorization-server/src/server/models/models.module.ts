@@ -16,6 +16,8 @@ import { AuthData } from './auth-data/auth-data.entity';
 import { AuthDataService } from './auth-data/auth-data.service';
 import { RoleService } from './role/role.service';
 import { ConfigModule } from '../config/config.module';
+import { Scope } from './scope/scope.entity';
+import { ScopeService } from './scope/scope.service';
 
 @Module({
   imports: [
@@ -25,6 +27,7 @@ import { ConfigModule } from '../config/config.module';
       BearerToken,
       Client,
       Role,
+      Scope,
       Session,
       User,
     ]),
@@ -37,6 +40,7 @@ import { ConfigModule } from '../config/config.module';
     BearerTokenService,
     ClientService,
     RoleService,
+    ScopeService,
     SessionService,
     UserService,
   ],
@@ -46,6 +50,7 @@ import { ConfigModule } from '../config/config.module';
     BearerTokenService,
     ClientService,
     RoleService,
+    ScopeService,
     SessionService,
     UserService,
   ],

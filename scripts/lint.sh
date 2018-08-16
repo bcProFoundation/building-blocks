@@ -6,6 +6,11 @@ pushd apps/identity-provider
 yarn lint
 popd
 
+# Lint for Authorization Server
+pushd apps/authorization-server
+yarn lint && yarn format:check
+popd
+
 # Lint for Resource Server
 pushd apps/resource-server
 yarn lint

@@ -21,4 +21,8 @@ export class AuthorizationCodeService {
   async delete(params) {
     return await this.authorizationCodeRepository.delete(params);
   }
+
+  async clear() {
+    return await this.authorizationCodeRepository.clear();
+  }
 }

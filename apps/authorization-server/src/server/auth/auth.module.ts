@@ -20,13 +20,16 @@ import { RolesGuard } from './guards/roles.guard';
 import { RoleController } from './controllers/role/role.controller';
 import { ClientController } from './controllers/client/client.controller';
 import { ConfigModule } from '../config/config.module';
-import { SSRMiddleware } from '../ssr.middleware';
-import { SSRController } from '../ssr.controller';
 import { OAuth2DecisionMiddleware } from './middlewares/oauth2-decision.middleware';
+import { SetupController } from './controllers/setup/setup.controller';
+import { SetupService } from './controllers/setup/setup.service';
+import { OAuth2TokenGeneratorService } from './middlewares/oauth2-token-generator.service';
 
 @Module({
   providers: [
     AuthService,
+    SetupService,
+    OAuth2TokenGeneratorService,
 
     // Passport Strategies
     CookieSerializer,
@@ -51,6 +54,7 @@ import { OAuth2DecisionMiddleware } from './middlewares/oauth2-decision.middlewa
     UserController,
     RoleController,
     ClientController,
+    SetupController,
   ],
   imports: [ModelsModule, UtilitiesModule, ConfigModule],
 })

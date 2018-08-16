@@ -5,6 +5,7 @@ import {
   BaseEntity,
   ObjectIdColumn,
 } from 'typeorm';
+import { User } from './user/user.entity';
 
 export abstract class DocType extends BaseEntity {
   @ObjectIdColumn()
@@ -17,12 +18,12 @@ export abstract class DocType extends BaseEntity {
   modified: Date;
 
   // save user id as string
-  @Column()
-  createdBy: string;
+  @Column(type => User)
+  createdBy: User;
 
   // save user id as string
-  @Column()
-  modifiedBy: string;
+  @Column(type => User)
+  modifiedBy: User;
 
   @Column()
   docstatus: number;

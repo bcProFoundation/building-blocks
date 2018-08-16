@@ -17,4 +17,12 @@ export class ClientService {
   async save(params) {
     return await this.clientRepository.save(params);
   }
+
+  async find() {
+    return await this.clientRepository.find();
+  }
+
+  async clear() {
+    return await this.clientRepository.clear();
+  }
 }

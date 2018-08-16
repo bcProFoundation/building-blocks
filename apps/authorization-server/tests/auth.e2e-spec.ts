@@ -1,82 +1,55 @@
-import * as request from 'supertest';
 import { Test } from '@nestjs/testing';
+import * as request from 'supertest-session';
 import { INestApplication } from '@nestjs/common';
-import { AppService } from 'app.service';
-import { AuthDataService } from 'models/auth-data/auth-data.service';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { AuthData } from 'models/auth-data/auth-data.entity';
-import { AuthController } from 'auth/controllers/auth/auth.controller';
-import { BearerTokenService } from 'models/bearer-token/bearer-token.service';
-import { BearerToken } from 'models/bearer-token/bearer-token.entity';
+import { AppModule } from '../src/server/app.module';
+import { setupSession } from '../src/server/setup';
+import { UserService } from '../src/server/models/user/user.service';
 
-describe('AppController (e2e)', () => {
+describe('AuthController (e2e)', () => {
   let app: INestApplication;
+  let userService: UserService;
+  let sessionRequest;
 
   beforeAll(async () => {
     const moduleFixture = await Test.createTestingModule({
-      controllers: [AuthController],
-      providers: [
-        AppService,
-        {
-          provide: 'AuthService',
-          useValue: {
-            signUp() {},
-          },
-        },
-        {
-          provide: 'AuthDataService',
-          useValue: AuthDataService,
-        },
-        {
-          provide: 'BearerTokenService',
-          useValue: BearerTokenService,
-        },
-        {
-          provide: getRepositoryToken(BearerToken),
-          useValue: {},
-        },
-        {
-          provide: getRepositoryToken(AuthData),
-          useValue: {},
-        },
-      ],
+      imports: [AppModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    userService = moduleFixture.get(UserService);
+    setupSession(app);
+    sessionRequest = request(app.getHttpServer());
     await app.init();
   });
 
-  it('/POST /auth/login', () => {
-    return request(app.getHttpServer())
-      .post('/auth/login')
-      .send({
-        email: 'test@user.org',
-        password: 'secret',
-        redirect: '/account',
-      })
-      .expect(200)
-      .expect({ user: 'test@user.org', path: '/account' });
-  });
-
-  it('/POST /auth/signup', () => {
-    return request(app.getHttpServer())
+  it('/POST /auth/signup', async () => {
+    await userService.deleteByEmail('test@user.org');
+    return sessionRequest
       .post('/auth/signup')
       .send({ email: 'test@user.org', password: 'secret', name: 'Test User' })
-      .expect(200)
-      .expect({ user: 'test@user.org', message: 'success' });
+      .expect(200);
   });
 
   it('/POST /auth/signup (invalid email)', () => {
-    return request(app.getHttpServer())
+    return sessionRequest
       .post('/auth/signup')
       .send({ email: 'testuser.org', password: 'secret', name: 'Test User' })
       .expect(400);
   });
 
   it('/POST /auth/signup (blank password)', () => {
-    return request(app.getHttpServer())
+    return sessionRequest
       .post('/auth/signup')
-      .send({ email: 'test@user.org', password: '', name: 'Test User' })
+      .send({ email: 'other@user.org', password: '', name: 'Test User' })
       .expect(400);
   });
+
+  it('/POST /auth/logout', () => {
+    return sessionRequest
+      .get('/auth/logout')
+      .expect(200)
+      .expect({ message: 'logout' });
+  });
+
+  afterAll(async () => await app.close());
 });

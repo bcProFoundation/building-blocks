@@ -78,7 +78,7 @@ export class OAuth2Controller {
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
   profile(@Token('user') user) {
     return {
-      id: user.id,
+      uuid: user.uuid,
       name: user.name,
       email: user.email,
     };
@@ -121,12 +121,12 @@ export class OAuth2Controller {
     );
 
     const tokenData: any = {
-      client_id: bearerToken.client.id,
+      client_id: bearerToken.client.clientId,
       active: exp.valueOf() > new Date().valueOf(),
       exp: exp.valueOf(),
     };
 
-    if (bearerToken.user && bearerToken.user.id)
+    if (bearerToken.user && bearerToken.user.uuid)
       tokenData.username = bearerToken.user.email;
     if (bearerToken.scope) tokenData.scope = bearerToken.scope;
 

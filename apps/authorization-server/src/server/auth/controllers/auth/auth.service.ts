@@ -1,10 +1,13 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../../../models/user/user.service';
-import { CreateUserDto } from '../../../models/user/create-user.dto';
 import { CryptographerService } from '../../../utilities/cryptographer.service';
 import { AuthData } from '../../../models/auth-data/auth-data.entity';
 import { User } from '../../../models/user/user.entity';
-import { INVALID_PASSWORD } from '../../../constants/messages';
+import {
+  INVALID_PASSWORD,
+  INVALID_USER,
+  USER_DISABLED,
+} from '../../../constants/messages';
 import { AuthDataService } from '../../../models/auth-data/auth-data.service';
 
 @Injectable()
@@ -31,6 +34,8 @@ export class AuthService {
     return await this.userService
       .findOne({ email })
       .then(async user => {
+        if (!user) throw new UnauthorizedException(INVALID_USER);
+        if (user.disabled !== 0) throw new UnauthorizedException(USER_DISABLED);
         const userPassword = await user.password;
         return (await this.cryptoService.checkPassword(
           userPassword.password,
