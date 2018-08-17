@@ -61,6 +61,11 @@ export class OAuth2TokenGeneratorService {
         claims.roles = user.roles.map(role => role.name);
       }
 
+      if (scopeStrings.includes('email')) {
+        claims.email = user.email;
+        claims.verified_email = user.email;
+      }
+
       const jwt = njwt.create(claims, client.clientSecret);
       extraParams.id_token = jwt.compact();
 
