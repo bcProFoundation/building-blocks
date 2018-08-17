@@ -1,18 +1,25 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { SetupService } from './setup.service';
+import { SetupFormDTO } from './setup-form-dto';
 
 @Controller('setup')
 export class SetupController {
   constructor(private readonly setupService: SetupService) {}
 
   @Post('infrastructure')
-  async setupInfrastructure(
-    @Body('serverUrl') serverUrl,
-    @Body('adminPassword') adminPassword,
-  ) {
+  @UsePipes(new ValidationPipe())
+  async setupInfrastructure(@Body() setupForm: SetupFormDTO) {
     return await this.setupService.setupInfrastructureClient(
-      serverUrl,
-      adminPassword,
+      setupForm.fullName,
+      setupForm.email,
+      setupForm.serverUrl,
+      setupForm.adminPassword,
     );
   }
 }

@@ -15,7 +15,7 @@ import { ClientService } from '../src/server/models/client/client.service';
 import { SessionService } from '../src/server/models/session/session.service';
 import { AuthorizationCodeService } from '../src/server/models/authorization-code/authorization-code.service';
 import { BearerTokenService } from '../src/server/models/bearer-token/bearer-token.service';
-import { getConnection } from 'typeorm';
+import { RoleService } from '../src/server/models/role/role.service';
 
 describe('OAuth2Controller (e2e)', () => {
   let app: INestApplication;
@@ -44,20 +44,27 @@ describe('OAuth2Controller (e2e)', () => {
     const userService = moduleFixture.get(UserService);
     const setupService = moduleFixture.get(SetupService);
     const authCodeService = moduleFixture.get(AuthorizationCodeService);
+    const roleService = moduleFixture.get(RoleService);
+    const clientService = moduleFixture.get(ClientService);
+    const sessionService = moduleFixture.get(SessionService);
+    const scopeService = moduleFixture.get(ScopeService);
+
     bearerTokenService = moduleFixture.get(BearerTokenService);
     bearerTokenService.clear();
     authCodeService.clear();
-    await userService.deleteByEmail('Administrator');
-    await setupService.createUser('secret');
+    roleService.clear();
 
-    const clientService = moduleFixture.get(ClientService);
-    const sessionService = moduleFixture.get(SessionService);
     await sessionService.clear();
-    const scopeService = moduleFixture.get(ScopeService);
     await scopeService.clear();
     await clientService.clear();
 
-    const client = await setupService.createClient('http://localhost:4000');
+    await userService.deleteByEmail('Administrator');
+    await setupService.createUser('Administrator', 'Administrator', 'secret');
+
+    const client = await setupService.createClient(
+      'Administrator',
+      'http://localhost:4000',
+    );
     clientId = client.clientId;
     clientSecret = client.clientSecret;
     allowedScopes = client.allowedScopes.map(scope => scope.name);

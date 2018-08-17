@@ -20,4 +20,5 @@ export interface IDTokenClaims {
   zoneinfo?: string;
   locale?: string;
   updated_at?: Date;
+  roles?: string[];
 }

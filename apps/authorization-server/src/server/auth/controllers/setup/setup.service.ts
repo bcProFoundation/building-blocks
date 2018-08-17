@@ -4,9 +4,6 @@ import { ClientService } from '../../../models/client/client.service';
 import {
   SETUP_ALREADY_COMPLETE,
   INFRASTRUCTURE_CONSOLE,
-  SPECIFY_SERVER_URL,
-  ADMIN_PASSWORD_MISSING,
-  ADMIN_USER,
 } from '../../../constants/messages';
 import { Client } from '../../../models/client/client.entity';
 import { Scope } from '../../../models/scope/scope.entity';
@@ -14,6 +11,7 @@ import { AuthService } from '../auth/auth.service';
 import { CreateUserDto } from '../../../models/user/create-user.dto';
 import { UserService } from '../../../models/user/user.service';
 import { randomBytes } from 'crypto';
+import { RoleService } from '../../../models/role/role.service';
 
 @Injectable()
 export class SetupService {
@@ -21,10 +19,16 @@ export class SetupService {
     private readonly scopeService: ScopeService,
     private readonly clientService: ClientService,
     private readonly userService: UserService,
+    private readonly roleService: RoleService,
     private readonly authService: AuthService,
   ) {}
 
-  async setupInfrastructureClient(serverUrl: string, adminPassword: string) {
+  async setupInfrastructureClient(
+    fullName: string,
+    email: string,
+    serverUrl: string,
+    adminPassword: string,
+  ) {
     const existingClients = await this.clientService.find();
     const existingUsers = await this.userService.find();
 
@@ -32,21 +36,24 @@ export class SetupService {
       throw new HttpException(SETUP_ALREADY_COMPLETE, HttpStatus.UNAUTHORIZED);
     }
 
-    if (!serverUrl)
-      throw new HttpException(SPECIFY_SERVER_URL, HttpStatus.BAD_REQUEST);
-
-    if (!adminPassword)
-      throw new HttpException(ADMIN_PASSWORD_MISSING, HttpStatus.BAD_REQUEST);
-
-    await this.createUser(adminPassword);
-    return await this.createClient(serverUrl);
+    await this.createUser(fullName, email, adminPassword);
+    return await this.createClient(email, serverUrl);
   }
 
-  async createClient(serverUrl) {
-    const scope: Scope = await this.scopeService.save({ name: 'openid' });
-    const createdBy = await this.userService.findOne({ email: ADMIN_USER });
+  /**
+   * Creates Client as specified user's email and serverUrl
+   *
+   * @param email
+   * @param serverUrl
+   */
+  async createClient(email: string, serverUrl: string) {
+    const openid: Scope = await this.scopeService.save({ name: 'openid' });
+    const roles: Scope = await this.scopeService.save({ name: 'roles' });
+    const createdBy = await this.userService.findOne({ email });
+
     const allowedScopes: Scope[] = [];
-    allowedScopes.push(scope);
+    allowedScopes.push(openid);
+    allowedScopes.push(roles);
 
     const client = new Client();
     client.clientSecret = randomBytes(32).toString('hex');
@@ -66,13 +73,13 @@ export class SetupService {
     return response;
   }
 
-  async createUser(adminPassword) {
+  async createUser(fullName: string, email: string, adminPassword: string) {
+    const adminRole = await this.roleService.save({ name: 'administrator' });
     const user: CreateUserDto = {
-      name: ADMIN_USER,
-      email: ADMIN_USER,
+      name: fullName,
+      email,
       password: adminPassword,
     };
-    // TODO: Setup Admin Role
-    return await this.authService.signUp(user);
+    return await this.authService.signUp(user, [adminRole]);
   }
 }

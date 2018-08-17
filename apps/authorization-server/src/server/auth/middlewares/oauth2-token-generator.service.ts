@@ -54,8 +54,11 @@ export class OAuth2TokenGeneratorService {
         exp: Date.parse(bToken.creation) + extraParams.expires_in * 1000, // seconds * milliseconds
         iat: Date.parse(bToken.creation),
       };
-      if (bToken.user) {
-        claims.sub = bToken.user.uuid;
+
+      claims.sub = user.uuid;
+
+      if (scopeStrings.includes('roles')) {
+        claims.roles = user.roles.map(role => role.name);
       }
 
       const jwt = njwt.create(claims, client.clientSecret);
