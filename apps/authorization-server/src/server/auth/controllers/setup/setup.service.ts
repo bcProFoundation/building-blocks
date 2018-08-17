@@ -47,13 +47,15 @@ export class SetupService {
    * @param serverUrl
    */
   async createClient(email: string, serverUrl: string) {
-    const openid: Scope = await this.scopeService.save({ name: 'openid' });
-    const roles: Scope = await this.scopeService.save({ name: 'roles' });
+    const openidScope: Scope = await this.scopeService.save({ name: 'openid' });
+    const rolesScope: Scope = await this.scopeService.save({ name: 'roles' });
+    const emailScope: Scope = await this.scopeService.save({ name: 'email' });
     const createdBy = await this.userService.findOne({ email });
 
     const allowedScopes: Scope[] = [];
-    allowedScopes.push(openid);
-    allowedScopes.push(roles);
+    allowedScopes.push(openidScope);
+    allowedScopes.push(rolesScope);
+    allowedScopes.push(emailScope);
 
     const client = new Client();
     client.clientSecret = randomBytes(32).toString('hex');
