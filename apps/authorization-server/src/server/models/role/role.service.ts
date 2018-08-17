@@ -16,4 +16,8 @@ export class RoleService {
   async findOne(params) {
     return await this.roleRepository.findOne(params);
   }
+
+  async clear() {
+    return await this.roleRepository.clear();
+  }
 }

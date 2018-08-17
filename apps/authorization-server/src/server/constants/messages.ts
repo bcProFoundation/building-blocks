@@ -13,3 +13,4 @@ export const USER_DELETED = 'User deleted';
 export const ADMIN_USER = 'Administrator';
 export const INVALID_USER = 'Invalid User';
 export const USER_DISABLED = 'User disabled';
+export const INVALID_AUTHORIZATION_CODE = 'Invalid Authorization Code';

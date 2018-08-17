@@ -18,7 +18,12 @@ export class AuthService {
     private readonly authDataService: AuthDataService,
   ) {}
 
-  public async signUp(user) {
+  /**
+   * Creates User with hash password
+   * @param user : UserEntity
+   * @param roles : Roles Array
+   */
+  public async signUp(user, roles?) {
     const userEntity = new User();
     userEntity.name = user.name;
     userEntity.email = user.email;
@@ -27,7 +32,11 @@ export class AuthService {
     authData.password = await this.cryptoService.hashPassword(user.password);
     userEntity.password = await this.authDataService.save(authData);
 
-    await this.userService.save(userEntity);
+    if (roles && roles.length) {
+      userEntity.roles = roles;
+    }
+
+    return await this.userService.save(userEntity);
   }
 
   public async logIn(email, password) {

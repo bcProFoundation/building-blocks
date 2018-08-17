@@ -9,6 +9,7 @@ import { Client } from '../../models/client/client.entity';
 import {
   invalidClientException,
   invalidScopeException,
+  invalidAuthorizationCodeException,
 } from '../filters/exceptions';
 import { OAuth2TokenGeneratorService } from './oauth2-token-generator.service';
 
@@ -68,6 +69,7 @@ export class OAuth2orizeSetup implements OnModuleInit {
   setupCodeGrant() {
     this.server.grant(
       oauth2orize.grant.code(
+        { scopeSeparator: [' ', ','] }, // violates the specification, promote flexibility
         async (client, redirectUri, user, ares, areq, done) => {
           try {
             const code = this.cryptographerService.getUid(16);
@@ -99,30 +101,35 @@ export class OAuth2orizeSetup implements OnModuleInit {
 
   setupTokenGrant() {
     this.server.grant(
-      oauth2orize.grant.token(async (client, user, ares, areq, done) => {
-        try {
-          const localUser = await this.userService.findOne(user);
-          const localClient = await this.clientService.findOne({
-            clientId: areq.clientID,
-          });
-          const scope = await this.tokenGeneratorService.getValidScopes(
-            client,
-            areq.scope,
-          );
-          const [
-            bearerToken,
-            extraParams,
-          ] = await this.tokenGeneratorService.getBearerToken(
-            localClient,
-            localUser,
-            scope,
-            false,
-          );
-          return done(null, bearerToken.accessToken, extraParams);
-        } catch (error) {
-          return done(error);
-        }
-      }),
+      oauth2orize.grant.token(
+        { scopeSeparator: [' ', ','] }, // violates the specification, promote flexibility
+        async (client, user, ares, areq, done) => {
+          try {
+            const localUser = await this.userService.findOne({
+              email: user.email,
+            });
+            const localClient = await this.clientService.findOne({
+              clientId: areq.clientID,
+            });
+            const scope = await this.tokenGeneratorService.getValidScopes(
+              client,
+              areq.scope,
+            );
+            const [
+              bearerToken,
+              extraParams,
+            ] = await this.tokenGeneratorService.getBearerToken(
+              localClient,
+              localUser,
+              scope,
+              false,
+            );
+            return done(null, bearerToken.accessToken, extraParams);
+          } catch (error) {
+            return done(error);
+          }
+        },
+      ),
     );
   }
 
@@ -135,22 +142,26 @@ export class OAuth2orizeSetup implements OnModuleInit {
             const localCode = await this.authorizationCodeService.findOne({
               where: { code },
             });
-            if (!localCode) issued(null);
-            const [
-              bearerToken,
-              extraParams,
-            ] = await this.tokenGeneratorService.getBearerToken(
-              localCode.client,
-              localCode.user,
-              localCode.scope,
-            );
-            await this.authorizationCodeService.delete({ localCode });
-            issued(
-              null,
-              bearerToken.accessToken,
-              bearerToken.refreshToken,
-              extraParams,
-            );
+
+            if (!localCode) {
+              issued(invalidAuthorizationCodeException);
+            } else {
+              const [
+                bearerToken,
+                extraParams,
+              ] = await this.tokenGeneratorService.getBearerToken(
+                localCode.client,
+                localCode.user,
+                localCode.scope,
+              );
+              await this.authorizationCodeService.delete({ localCode });
+              issued(
+                null,
+                bearerToken.accessToken,
+                bearerToken.refreshToken,
+                extraParams,
+              );
+            }
           } catch (error) {
             issued(error);
           }
@@ -162,6 +173,7 @@ export class OAuth2orizeSetup implements OnModuleInit {
   setupPasswordExchange() {
     this.server.exchange(
       oauth2orize.exchange.password(
+        { scopeSeparator: [' ', ','] }, // violates the specification, promote flexibility
         async (client, username, password, scope, done) => {
           if (!scope) done(invalidScopeException);
           // Validate the client
@@ -214,92 +226,99 @@ export class OAuth2orizeSetup implements OnModuleInit {
 
   setupClientCredentialExchange() {
     this.server.exchange(
-      oauth2orize.exchange.clientCredentials(async (client, scope, done) => {
-        if (!scope) done(invalidScopeException);
-        // Validate the client
-        try {
-          const c = await this.clientService.findOne({
-            clientId: client.clientId,
-          });
-          if (!c) done(null, false);
-          if (c.clientSecret !== client.clientSecret) return done(null, false);
-          // Validate Scope
-          const validScope = await this.tokenGeneratorService.getValidScopes(
-            c,
-            scope,
-          );
-          // Everything validated, return the token
-          // Pass in a null for user id since there is no user with this grant type
-          const [
-            bearerToken,
-            extraParams,
-          ] = await this.tokenGeneratorService.getBearerToken(
-            client,
-            null,
-            validScope,
-            true,
-            false,
-          );
-          return done(
-            null,
-            bearerToken.accessToken,
-            bearerToken.refreshToken,
-            extraParams,
-          );
-        } catch (error) {
-          done(error);
-        }
-      }),
+      oauth2orize.exchange.clientCredentials(
+        { scopeSeparator: [' ', ','] }, // violates the specification, promote flexibility
+        async (client, scope, done) => {
+          if (!scope) done(invalidScopeException);
+          // Validate the client
+          try {
+            const c = await this.clientService.findOne({
+              clientId: client.clientId,
+            });
+            if (!c) done(null, false);
+            if (c.clientSecret !== client.clientSecret)
+              return done(null, false);
+            // Validate Scope
+            const validScope = await this.tokenGeneratorService.getValidScopes(
+              c,
+              scope,
+            );
+            // Everything validated, return the token
+            // Pass in a null for user id since there is no user with this grant type
+            const [
+              bearerToken,
+              extraParams,
+            ] = await this.tokenGeneratorService.getBearerToken(
+              client,
+              null,
+              validScope,
+              true,
+              false,
+            );
+            return done(
+              null,
+              bearerToken.accessToken,
+              bearerToken.refreshToken,
+              extraParams,
+            );
+          } catch (error) {
+            done(error);
+          }
+        },
+      ),
     );
   }
 
   setupRefreshTokenExchange() {
     this.server.exchange(
-      oauth2orize.exchange.refreshToken(async (client, refreshToken, done) => {
-        try {
-          // Validate Refresh Token
-          const localRefreshToken = await this.bearerTokenService.findOne({
-            refreshToken,
-          });
-          if (!localRefreshToken) done(null, false);
-
-          // Validate Client
-          let localClient: Client;
-          if (client) {
-            localClient = await this.clientService.findOne({
-              clientId: client.clientId,
+      oauth2orize.exchange.refreshToken(
+        { scopeSeparator: [' ', ','] }, // violates the specification, promote flexibility
+        async (client, refreshToken, done) => {
+          try {
+            // Validate Refresh Token
+            const localRefreshToken = await this.bearerTokenService.findOne({
+              refreshToken,
             });
-            if (!localClient) done(null, false);
-          } else {
-            localClient = localRefreshToken.client;
+            if (!localRefreshToken) done(null, false);
+
+            // Validate Client
+            let localClient: Client;
+            if (client) {
+              localClient = await this.clientService.findOne({
+                clientId: client.clientId,
+              });
+              if (!localClient) done(null, false);
+            } else {
+              localClient = localRefreshToken.client;
+            }
+
+            // Validate Scopes
+            const refreshTokenScope = localRefreshToken.scope.map(s => s.name);
+            const scope = await this.tokenGeneratorService.getValidScopes(
+              localClient,
+              refreshTokenScope,
+            );
+
+            // Everything validated, return the token
+            const [
+              bearerToken,
+              extraParams,
+            ] = await this.tokenGeneratorService.getBearerToken(
+              client,
+              localRefreshToken.user,
+              scope,
+            );
+            return done(
+              null,
+              bearerToken.accessToken,
+              bearerToken.refreshToken,
+              extraParams,
+            );
+          } catch (error) {
+            done(error);
           }
-
-          // Validate Scopes
-          const refreshTokenScope = localRefreshToken.scope.map(s => s.name);
-          const scope = await this.tokenGeneratorService.getValidScopes(
-            localClient,
-            refreshTokenScope,
-          );
-
-          // Everything validated, return the token
-          const [
-            bearerToken,
-            extraParams,
-          ] = await this.tokenGeneratorService.getBearerToken(
-            client,
-            localRefreshToken.user,
-            scope,
-          );
-          return done(
-            null,
-            bearerToken.accessToken,
-            bearerToken.refreshToken,
-            extraParams,
-          );
-        } catch (error) {
-          done(error);
-        }
-      }),
+        },
+      ),
     );
   }
 
