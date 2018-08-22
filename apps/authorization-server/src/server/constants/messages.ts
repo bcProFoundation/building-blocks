@@ -14,3 +14,5 @@ export const ADMIN_USER = 'Administrator';
 export const INVALID_USER = 'Invalid User';
 export const USER_DISABLED = 'User disabled';
 export const INVALID_AUTHORIZATION_CODE = 'Invalid Authorization Code';
+export const USER_ALREADY_EXISTS = 'User already exists';
+export const MOBILE_FORMAT_ERROR = 'Mobile format must be E.164';

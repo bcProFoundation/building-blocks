@@ -1,31 +1,11 @@
-import {
-  Entity,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-  BaseEntity,
-  ObjectIdColumn,
-  Index,
-} from 'typeorm';
-import { Role } from '../role/role.entity';
-import { AuthData } from '../auth-data/auth-data.entity';
-import { UserEntity } from 'nestjs-session-store';
-import * as uuid from 'uuid/v4';
+import { Entity, Column, Index } from 'typeorm';
+import { DocType } from '../base.doctype';
 
 @Entity()
-@Index(['email', 'phone', 'uuid'], { unique: true })
-export class User extends BaseEntity implements UserEntity {
-  @ObjectIdColumn()
-  id: string;
-
-  @CreateDateColumn()
-  creation: Date;
-
-  @UpdateDateColumn()
-  modified: Date;
-
+@Index(['email', 'phone'], { unique: true })
+export class User extends DocType {
   @Column()
-  disabled: number = 0;
+  disabled: boolean = false;
 
   @Column()
   name: string;
@@ -36,17 +16,12 @@ export class User extends BaseEntity implements UserEntity {
   @Column()
   email: string;
 
+  /**
+   * Store UUID of AuthData
+   */
   @Column()
-  password: AuthData;
-
-  @Column(type => Role)
-  roles: Role[];
+  password: string;
 
   @Column()
-  uuid: string;
-
-  constructor() {
-    super();
-    if (!this.uuid) this.uuid = uuid();
-  }
+  roles: string[];
 }

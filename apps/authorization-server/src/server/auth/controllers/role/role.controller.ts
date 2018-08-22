@@ -9,7 +9,7 @@ import {
   Res,
 } from '@nestjs/common';
 import { callback } from '../../passport/http-bearer.strategy';
-import { Roles } from '../../guards/roles.decorator';
+import { Roles } from '../../decorators/roles.decorator';
 import { AuthGuard } from '../../guards/auth.guard';
 import { RolesGuard } from '../../guards/roles.guard';
 import { EnsureLoginGuard } from 'nestjs-ensureloggedin-guard';

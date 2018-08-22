@@ -14,6 +14,7 @@ export const USERDTO_PASSWORD_EXAMPLE = 'h4cv_4%b2#D:-)';
 export const USERDTO_REDIRECT_DESCRIPTION =
   'URL to which the user will be redirected after login';
 export const USERDTO_NAME_DESCRIPTION = 'Full name of the user';
+export const USERDTO_PHONE_DESCRIPTION = 'Mobile phone of the user';
 
 // App Controller
 export const APP_LOGOUT_TITLE = 'Logout';

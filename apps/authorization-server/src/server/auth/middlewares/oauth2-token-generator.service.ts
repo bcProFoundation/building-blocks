@@ -4,40 +4,60 @@ import { CryptographerService } from '../../utilities/cryptographer.service';
 import { BearerTokenService } from '../../models/bearer-token/bearer-token.service';
 import { IDTokenClaims } from './interfaces';
 import { Client } from '../../models/client/client.entity';
-import { ScopeService } from '../../models/scope/scope.service';
-import { invalidScopeException } from '../filters/exceptions';
-import { Scope } from '../../models/scope/scope.entity';
+import {
+  invalidScopeException,
+  invalidClientException,
+} from '../filters/exceptions';
 import { BearerToken } from '../../models/bearer-token/bearer-token.entity';
+import { ClientService } from '../../models/client/client.service';
+import { UserService } from '../../models/user/user.service';
 
 @Injectable()
 export class OAuth2TokenGeneratorService {
   constructor(
     private readonly cryptographerService: CryptographerService,
     private readonly bearerTokenService: BearerTokenService,
-    private readonly scopeService: ScopeService,
+    private readonly clientService: ClientService,
+    private readonly userService: UserService,
   ) {}
+
+  /**
+   * Generates Bearer token as per the parameters passed,
+   * @param client clientId to be stored on Bearer Token
+   * @param user user's uuid to be stored on Bearer Token
+   * @param scope scopes to be stored on Bearer Token
+   * @param refresh if set, adds Refresh Token on Bearer Token
+   * @param idToken if set adds id_token to response
+   */
   async getBearerToken(
-    client,
-    user,
-    scope: Scope[],
-    refresh = true,
-    idToken = true,
+    client: string,
+    user: string,
+    scope: string[],
+    refresh: boolean = true,
+    idToken: boolean = true,
   ) {
+    const localClient = await this.clientService.findOne({ clientId: client });
+    if (!localClient) throw invalidClientException;
+
+    const localUser = await this.userService.findOne({ uuid: user });
+
     const bearerToken = new BearerToken();
     bearerToken.accessToken = this.cryptographerService.getUid(64);
-    bearerToken.redirectUri = client.redirectUri;
-    bearerToken.client = client;
+    bearerToken.redirectUris = localClient.redirectUris;
+
+    // Saves client by clientId NOT uuid
+    bearerToken.client = localClient.clientId;
+
     bearerToken.creation = new Date();
     bearerToken.modified = bearerToken.creation;
 
     if (refresh)
       bearerToken.refreshToken = this.cryptographerService.getUid(64);
-    if (user) bearerToken.user = user;
+    if (user) bearerToken.user = localUser.uuid;
 
-    const scopeStrings: string[] = scope.map(s => s.name);
     const extraParams: any = {
-      // list of scopes to comma separated string
-      scope: scopeStrings.toString(),
+      // list of scopes to space separated string
+      scope: scope.join(' '),
       expires_in: 3600,
     };
 
@@ -47,26 +67,26 @@ export class OAuth2TokenGeneratorService {
     const bToken = await this.bearerTokenService.save(bearerToken);
 
     // OIDC scope: openid
-    if (idToken && scopeStrings.includes('openid')) {
+    if (idToken && scope.includes('openid')) {
       const claims: IDTokenClaims = {
         // iss: this.getAuthorizationServerUrl,
-        aud: client.clientId,
+        aud: localClient.clientId,
         exp: Date.parse(bToken.creation) + extraParams.expires_in * 1000, // seconds * milliseconds
         iat: Date.parse(bToken.creation),
       };
 
-      claims.sub = user.uuid;
+      claims.sub = localUser.uuid;
 
-      if (scopeStrings.includes('roles')) {
-        claims.roles = user.roles.map(role => role.name);
+      if (scope.includes('roles')) {
+        claims.roles = localUser.roles;
       }
 
-      if (scopeStrings.includes('email')) {
-        claims.email = user.email;
-        claims.verified_email = user.email;
+      if (scope.includes('email')) {
+        claims.email = localUser.email;
+        claims.verified_email = localUser.email;
       }
 
-      const jwt = njwt.create(claims, client.clientSecret);
+      const jwt = njwt.create(claims, localClient.clientSecret);
       extraParams.id_token = jwt.compact();
 
       // OIDC scope: openid email > add email, verified_email
@@ -82,24 +102,15 @@ export class OAuth2TokenGeneratorService {
     return [bearerToken, extraParams];
   }
 
-  async getValidScopes(client: Client, scope: string[]): Promise<Scope[]> {
-    const allowedScopes =
-      (client &&
-        client.allowedScopes &&
-        client.allowedScopes.map(clientScope => clientScope.name)) ||
-      [];
+  async getValidScopes(client: Client, scope: string[]): Promise<string[]> {
+    const allowedScopes = (client && client.allowedScopes) || [];
     if (
-      scope &&
-      !scope.every(checkScope => allowedScopes.includes(checkScope))
+      !scope ||
+      (scope && !scope.every(checkScope => allowedScopes.includes(checkScope)))
     ) {
       throw invalidScopeException;
     }
 
-    const requestScopes: Scope[] = [];
-    for (const reqScope of scope) {
-      requestScopes.push(await this.scopeService.findOne({ name: reqScope }));
-    }
-
-    return requestScopes;
+    return scope;
   }
 }

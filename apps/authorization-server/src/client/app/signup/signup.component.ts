@@ -11,14 +11,17 @@ export class SignupComponent implements OnInit {
 
   public name: string;
   public email: string;
+  public phone: string;
   public password: string;
 
   ngOnInit() {}
 
   onSubmit() {
-    this.authService.signUp(this.name, this.email, this.password).subscribe({
-      next: (response: any) => {},
-      error: error => {},
-    });
+    this.authService
+      .signUp(this.name, this.email, this.phone, this.password)
+      .subscribe({
+        next: (response: any) => {},
+        error: error => {},
+      });
   }
 }

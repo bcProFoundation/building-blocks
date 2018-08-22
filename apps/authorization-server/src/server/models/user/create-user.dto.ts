@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsString, IsMobilePhone, IsEmail, IsNotEmpty } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 import {
   USERDTO_NAME_DESCRIPTION,
@@ -7,7 +7,8 @@ import {
   USERDTO_PASSWORD_DESCRIPTION,
   USERDTO_PASSWORD_EXAMPLE,
 } from '../../constants/swagger';
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { IsMobileE164 } from '../../auth/decorators/is-mobile-e164.decorator';
+import { MOBILE_FORMAT_ERROR } from '../../constants/messages';
 
 export class CreateUserDto {
   @IsEmail()
@@ -34,4 +35,14 @@ export class CreateUserDto {
   })
   @IsString()
   readonly name: string;
+
+  @ApiModelProperty({
+    description: USERDTO_NAME_DESCRIPTION,
+    type: 'string',
+    required: true,
+  })
+  @IsMobileE164({
+    message: MOBILE_FORMAT_ERROR,
+  })
+  phone: string;
 }

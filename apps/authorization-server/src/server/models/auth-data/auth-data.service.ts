@@ -13,4 +13,8 @@ export class AuthDataService {
   async save(authData) {
     return await this.authDataRepository.save(authData);
   }
+
+  async findOne(params) {
+    return await this.authDataRepository.findOne(params);
+  }
 }

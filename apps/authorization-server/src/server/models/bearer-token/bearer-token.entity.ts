@@ -1,8 +1,5 @@
 import { Column, Entity } from 'typeorm';
-import { User } from '../user/user.entity';
-import { Client } from '../client/client.entity';
 import { DocType } from '../base.doctype';
-import { Scope } from '../scope/scope.entity';
 
 @Entity()
 export class BearerToken extends DocType {
@@ -13,17 +10,17 @@ export class BearerToken extends DocType {
   refreshToken: string;
 
   @Column()
-  redirectUri: string;
+  redirectUris: string[];
 
-  @Column(type => Scope)
-  scope: Scope[];
+  @Column()
+  scope: string[];
 
   @Column()
   expiresIn: number;
 
-  @Column(type => User)
-  user: User;
+  @Column()
+  user: string;
 
-  @Column(type => Client)
-  client: Client;
+  @Column()
+  client: string;
 }

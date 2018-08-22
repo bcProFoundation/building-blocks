@@ -1,13 +1,19 @@
-import { BaseEntity, Column, Entity, ObjectIdColumn } from 'typeorm';
-import { SessionEntity } from 'nestjs-session-store';
-import { User } from '../user/user.entity';
+import {
+  Column,
+  Entity,
+  BaseEntity,
+  ObjectID,
+  Index,
+  ObjectIdColumn,
+} from 'typeorm';
 
 @Entity()
-export class Session extends BaseEntity implements SessionEntity {
+export class Session extends BaseEntity {
   @ObjectIdColumn()
-  id: string;
+  _id: ObjectID;
 
   @Column()
+  @Index({ unique: true })
   sid: string;
 
   @Column()
@@ -22,6 +28,6 @@ export class Session extends BaseEntity implements SessionEntity {
   @Column()
   authorize: string;
 
-  @Column(type => User)
-  user: User;
+  @Column()
+  user: string;
 }
