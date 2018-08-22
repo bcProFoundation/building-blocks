@@ -18,6 +18,7 @@ export class SetupController {
     return await this.setupService.setupInfrastructureClient(
       setupForm.fullName,
       setupForm.email,
+      setupForm.phone,
       setupForm.serverUrl,
       setupForm.adminPassword,
     );

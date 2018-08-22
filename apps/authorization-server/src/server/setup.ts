@@ -1,11 +1,11 @@
 import * as cookieParser from 'cookie-parser';
 import * as expressSession from 'express-session';
 import * as passport from 'passport';
-import { TypeormStore } from 'nestjs-session-store';
 import { ConfigService } from './config/config.service';
 import { getRepository } from 'typeorm';
 import { User } from './models/user/user.entity';
 import { Session } from './models/session/session.entity';
+import { TypeormStore } from './auth/passport/typeorm-session.store';
 
 export function setupSession(app) {
   const configService = new ConfigService();

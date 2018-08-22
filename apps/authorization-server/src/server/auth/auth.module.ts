@@ -24,11 +24,13 @@ import { OAuth2DecisionMiddleware } from './middlewares/oauth2-decision.middlewa
 import { SetupController } from './controllers/setup/setup.controller';
 import { SetupService } from './controllers/setup/setup.service';
 import { OAuth2TokenGeneratorService } from './middlewares/oauth2-token-generator.service';
+import { OAuth2Service } from './controllers/oauth2/oauth2.service';
 
 @Module({
   providers: [
     AuthService,
     SetupService,
+    OAuth2Service,
     OAuth2TokenGeneratorService,
 
     // Passport Strategies

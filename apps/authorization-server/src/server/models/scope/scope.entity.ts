@@ -1,11 +1,18 @@
-import { Entity, Column, BaseEntity, ObjectIdColumn, Index } from 'typeorm';
+import {
+  Entity,
+  Column,
+  ObjectIdColumn,
+  ObjectID,
+  Index,
+  BaseEntity,
+} from 'typeorm';
 
 @Entity()
-@Index(['name'], { unique: true })
 export class Scope extends BaseEntity {
   @ObjectIdColumn()
-  id: string;
+  _id: ObjectID;
 
+  @Index({ unique: true })
   @Column()
   name: string;
 

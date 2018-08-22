@@ -7,17 +7,13 @@ import {
   Render,
   UseFilters,
   Body,
-  HttpException,
-  HttpStatus,
   Res,
 } from '@nestjs/common';
 import { AuthGuard } from '../../guards/auth.guard';
 import { EnsureLoginGuard } from 'nestjs-ensureloggedin-guard';
 import { ErrorFilter } from '../../filters/errors.filter';
-import { BearerTokenService } from '../../../models/bearer-token/bearer-token.service';
 import { callback } from '../../passport/local.strategy';
-import { Token } from '../../guards/auth.decorators';
-import { INVALID_TOKEN, TOKEN_NOT_FOUND } from '../../../constants/messages';
+import { Token } from '../../decorators/auth.decorators';
 import { ApiExcludeEndpoint, ApiOperation } from '@nestjs/swagger';
 import {
   OAUTH2_AUTHORIZE_TITLE,
@@ -29,28 +25,24 @@ import {
   OAUTH2_TOKEN_INTROSPECTION_TITLE,
   OAUTH2_TOKEN_INTROSPECTION_DESCRIPTION,
 } from '../../../constants/swagger';
-import { stringify } from 'querystring';
+import { OAuth2Service } from './oauth2.service';
 
 @Controller('oauth2')
 export class OAuth2Controller {
-  constructor(private readonly bearerTokenService: BearerTokenService) {}
+  constructor(private readonly oauth2Service: OAuth2Service) {}
 
   @Get('confirmation')
   @Render('dialog')
   @UseGuards(EnsureLoginGuard)
   @UseFilters(ErrorFilter)
   @ApiExcludeEndpoint()
-  confirmation(@Req() request, @Res() response) {
-    const confirmationParams = {
+  confirmation(@Req() request) {
+    return {
       transactionId: request.oauth2.transactionID,
       email: request.user.email,
       client: request.oauth2.client,
-      action:
-        process.env.NODE_ENV === 'production'
-          ? '/oauth2/authorize'
-          : '/dev/oauth2/authorize',
+      action: '/oauth2/authorize',
     };
-    return confirmationParams;
   }
 
   @Post('authorize')
@@ -91,14 +83,7 @@ export class OAuth2Controller {
     description: OAUTH2_REVOKE_DESCRIPTION,
   })
   async tokenRevoke(@Body('token') token) {
-    const bearerToken = await this.bearerTokenService.findOne({
-      accessToken: token,
-    });
-    if (bearerToken) {
-      bearerToken.remove();
-    } else {
-      throw new HttpException(INVALID_TOKEN, HttpStatus.NOT_FOUND);
-    }
+    await this.oauth2Service.tokenRevoke(token);
   }
 
   @Post('introspection')
@@ -107,29 +92,8 @@ export class OAuth2Controller {
     title: OAUTH2_TOKEN_INTROSPECTION_TITLE,
     description: OAUTH2_TOKEN_INTROSPECTION_DESCRIPTION,
   })
-  async tokenIntrospection(@Body() body, @Res() res) {
-    const bearerToken = await this.bearerTokenService.findOne({
-      accessToken: body.token,
-    });
-
-    if (!bearerToken) {
-      throw new HttpException(TOKEN_NOT_FOUND, HttpStatus.NOT_FOUND);
-    }
-
-    const exp = new Date(
-      bearerToken.creation.getTime() + bearerToken.expiresIn * 1000,
-    );
-
-    const tokenData: any = {
-      client_id: bearerToken.client.clientId,
-      active: exp.valueOf() > new Date().valueOf(),
-      exp: exp.valueOf(),
-    };
-
-    if (bearerToken.user && bearerToken.user.uuid)
-      tokenData.username = bearerToken.user.email;
-    if (bearerToken.scope) tokenData.scope = bearerToken.scope;
-
+  async tokenIntrospection(@Body('token') token, @Res() res) {
+    const tokenData = await this.oauth2Service.tokenIntrospection(token);
     res.json(tokenData);
   }
 }

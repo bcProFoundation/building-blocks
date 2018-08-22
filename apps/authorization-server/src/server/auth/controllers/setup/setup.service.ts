@@ -6,7 +6,6 @@ import {
   INFRASTRUCTURE_CONSOLE,
 } from '../../../constants/messages';
 import { Client } from '../../../models/client/client.entity';
-import { Scope } from '../../../models/scope/scope.entity';
 import { AuthService } from '../auth/auth.service';
 import { CreateUserDto } from '../../../models/user/create-user.dto';
 import { UserService } from '../../../models/user/user.service';
@@ -26,6 +25,7 @@ export class SetupService {
   async setupInfrastructureClient(
     fullName: string,
     email: string,
+    phone: string,
     serverUrl: string,
     adminPassword: string,
   ) {
@@ -36,7 +36,7 @@ export class SetupService {
       throw new HttpException(SETUP_ALREADY_COMPLETE, HttpStatus.UNAUTHORIZED);
     }
 
-    await this.createUser(fullName, email, adminPassword);
+    await this.createUser(fullName, email, phone, adminPassword);
     return await this.createClient(email, serverUrl);
   }
 
@@ -47,23 +47,22 @@ export class SetupService {
    * @param serverUrl
    */
   async createClient(email: string, serverUrl: string) {
-    const openidScope: Scope = await this.scopeService.save({ name: 'openid' });
-    const rolesScope: Scope = await this.scopeService.save({ name: 'roles' });
-    const emailScope: Scope = await this.scopeService.save({ name: 'email' });
-    const createdBy = await this.userService.findOne({ email });
+    const scope = await this.scopeService.save([
+      { name: 'openid' },
+      { name: 'roles' },
+      { name: 'email' },
+    ]);
 
-    const allowedScopes: Scope[] = [];
-    allowedScopes.push(openidScope);
-    allowedScopes.push(rolesScope);
-    allowedScopes.push(emailScope);
+    const createdBy = await this.userService.findOne({ email });
+    const allowedScopes: string[] = scope.map(r => r.name);
 
     const client = new Client();
     client.clientSecret = randomBytes(32).toString('hex');
     client.redirectUris = [`${serverUrl}/auth/callback`];
     client.name = INFRASTRUCTURE_CONSOLE;
     client.allowedScopes = allowedScopes;
-    client.createdBy = createdBy;
-    client.modifiedBy = createdBy;
+    client.createdBy = createdBy.uuid;
+    client.modifiedBy = createdBy.uuid;
     client.isTrusted = 1;
 
     const response = await this.clientService.save(client);
@@ -72,15 +71,24 @@ export class SetupService {
     delete response.createdBy;
     delete response.modifiedBy;
 
+    // delete ObjectId key
+    delete response._id;
+
     return response;
   }
 
-  async createUser(fullName: string, email: string, adminPassword: string) {
+  async createUser(
+    fullName: string,
+    email: string,
+    phone: string,
+    adminPassword: string,
+  ) {
     const adminRole = await this.roleService.save({ name: 'administrator' });
     const user: CreateUserDto = {
       name: fullName,
       email,
       password: adminPassword,
+      phone,
     };
     return await this.authService.signUp(user, [adminRole]);
   }

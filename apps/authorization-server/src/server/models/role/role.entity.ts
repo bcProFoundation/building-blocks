@@ -1,10 +1,17 @@
-import { Entity, Column, BaseEntity, ObjectIdColumn, Index } from 'typeorm';
+import {
+  Entity,
+  Column,
+  Index,
+  BaseEntity,
+  ObjectIdColumn,
+  ObjectID,
+} from 'typeorm';
 
 @Entity()
 @Index(['name'], { unique: true })
 export class Role extends BaseEntity {
   @ObjectIdColumn()
-  id: string;
+  _id: ObjectID;
 
   @Column()
   name: string;
