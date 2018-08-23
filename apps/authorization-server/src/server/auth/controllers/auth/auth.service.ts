@@ -11,6 +11,7 @@ import {
 import { userAlreadyExistsException } from '../../filters/exceptions';
 import { Role } from '../../../models/role/role.entity';
 import { AuthDataService } from '../../../models/auth-data/auth-data.service';
+import { CreateUserDto } from '../../../models/user/create-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -22,10 +23,10 @@ export class AuthService {
 
   /**
    * Creates User with hash password
-   * @param user : UserEntity
-   * @param roles : Roles Array
+   * @param user
+   * @param roles
    */
-  public async signUp(user, roles?: Role[]) {
+  public async signUp(user: CreateUserDto, roles?: Role[]) {
     const userEntity = new User();
     userEntity.name = user.name;
 

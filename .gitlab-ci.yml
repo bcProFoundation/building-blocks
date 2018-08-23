@@ -17,12 +17,15 @@ test_async:
    - export DISPLAY=:99
   script:
    - npm install -g lerna
-   - yarn clean
+   - yarn
+   - lerna clean -y
    - lerna bootstrap
-   - export NODE_ENV=test
-   - yarn lint
+   - lerna run lint
+   - lerna run format:check
    - yarn test
-   - yarn test:e2e
+   - lerna run test:e2e
+   - export NODE_ENV=test && lerna run test:client
+   - yarn e2e
   tags:
     - docker
 
