@@ -1,15 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { OAuth2Service } from './oauth2.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { OAuth2Controller } from './oauth2.controller';
+import { AuthData } from '../../../models/auth-data/auth-data.entity';
 import { BearerTokenService } from '../../../models/bearer-token/bearer-token.service';
 import { BearerToken } from '../../../models/bearer-token/bearer-token.entity';
-import { OAuth2Service } from './oauth2.service';
 
-describe('OAuth2Controller', () => {
-  let module: TestingModule;
+describe('OAuth2Service', () => {
+  let service: OAuth2Service;
   beforeAll(async () => {
-    module = await Test.createTestingModule({
-      controllers: [OAuth2Controller],
+    const module: TestingModule = await Test.createTestingModule({
       providers: [
         OAuth2Service,
         BearerTokenService,
@@ -17,13 +16,15 @@ describe('OAuth2Controller', () => {
           provide: getRepositoryToken(BearerToken),
           useValue: {}, // provide mock values
         },
+        {
+          provide: getRepositoryToken(AuthData),
+          useValue: {}, // provide mock values
+        },
       ],
     }).compile();
+    service = module.get<OAuth2Service>(OAuth2Service);
   });
   it('should be defined', () => {
-    const controller: OAuth2Controller = module.get<OAuth2Controller>(
-      OAuth2Controller,
-    );
-    expect(controller).toBeDefined();
+    expect(service).toBeDefined();
   });
 });

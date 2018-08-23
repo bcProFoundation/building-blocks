@@ -2,10 +2,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { OAuth2TokenGeneratorService } from './oauth2-token-generator.service';
 import { CryptographerService } from '../../utilities/cryptographer.service';
 import { BearerTokenService } from '../../models/bearer-token/bearer-token.service';
-import { ScopeService } from '../../models/scope/scope.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { BearerToken } from '../../models/bearer-token/bearer-token.entity';
-import { Scope } from '../../models/scope/scope.entity';
+import { ClientService } from '../../models/client/client.service';
+import { UserService } from '../../models/user/user.service';
+import { User } from '../../models/user/user.entity';
+import { Client } from '../../models/client/client.entity';
 
 describe('OAuth2TokenGeneratorService', () => {
   let service: OAuth2TokenGeneratorService;
@@ -15,13 +17,18 @@ describe('OAuth2TokenGeneratorService', () => {
         OAuth2TokenGeneratorService,
         CryptographerService,
         BearerTokenService,
-        ScopeService,
+        ClientService,
+        UserService,
         {
           provide: getRepositoryToken(BearerToken),
           useValue: {},
         },
         {
-          provide: getRepositoryToken(Scope),
+          provide: getRepositoryToken(User),
+          useValue: {},
+        },
+        {
+          provide: getRepositoryToken(Client),
           useValue: {},
         },
       ],

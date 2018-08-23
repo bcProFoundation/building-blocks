@@ -12,6 +12,7 @@ import {
   invalidAuthorizationCodeException,
 } from '../filters/exceptions';
 import { OAuth2TokenGeneratorService } from './oauth2-token-generator.service';
+import { AuthDataService } from '../../models/auth-data/auth-data.service';
 
 @Injectable()
 export class OAuth2orizeSetup implements OnModuleInit {
@@ -24,6 +25,7 @@ export class OAuth2orizeSetup implements OnModuleInit {
     private readonly bearerTokenService: BearerTokenService,
     private readonly userService: UserService,
     private readonly tokenGeneratorService: OAuth2TokenGeneratorService,
+    private readonly authDataService: AuthDataService,
   ) {
     // Initialize server
     this.server = oauth2orize.createServer();
@@ -85,9 +87,9 @@ export class OAuth2orizeSetup implements OnModuleInit {
             );
             await this.authorizationCodeService.save({
               code,
-              client: localClient,
+              client: localClient.clientId,
               redirectUri,
-              user: localUser,
+              user: localUser.uuid,
               scope,
             });
             done(null, code);
@@ -119,8 +121,8 @@ export class OAuth2orizeSetup implements OnModuleInit {
               bearerToken,
               extraParams,
             ] = await this.tokenGeneratorService.getBearerToken(
-              localClient,
-              localUser,
+              localClient.clientId,
+              localUser.uuid,
               scope,
               false,
             );
@@ -140,19 +142,20 @@ export class OAuth2orizeSetup implements OnModuleInit {
           // Validate the code issued(err, accessToken, refreshToken, params)
           try {
             const localCode = await this.authorizationCodeService.findOne({
-              where: { code },
+              code,
             });
 
             if (!localCode) {
               issued(invalidAuthorizationCodeException);
             } else {
+              const scope: string[] = localCode.scope;
               const [
                 bearerToken,
                 extraParams,
               ] = await this.tokenGeneratorService.getBearerToken(
                 localCode.client,
                 localCode.user,
-                localCode.scope,
+                scope,
               );
               await this.authorizationCodeService.delete({ localCode });
               issued(
@@ -187,7 +190,9 @@ export class OAuth2orizeSetup implements OnModuleInit {
             // Validate the user
             const user = await this.userService.findOne({ email: username });
             if (!user) return done(null, false);
-            const authData = await user.password;
+            const authData = await this.authDataService.findOne({
+              uuid: user.password,
+            });
             const validPassword = await this.cryptographerService.checkPassword(
               authData.password,
               password,
@@ -206,8 +211,8 @@ export class OAuth2orizeSetup implements OnModuleInit {
               bearerToken,
               extraParams,
             ] = await this.tokenGeneratorService.getBearerToken(
-              localClient,
-              user,
+              localClient.clientId,
+              user.uuid,
               validScope,
             );
             return done(
@@ -249,7 +254,7 @@ export class OAuth2orizeSetup implements OnModuleInit {
               bearerToken,
               extraParams,
             ] = await this.tokenGeneratorService.getBearerToken(
-              client,
+              client.clientId,
               null,
               validScope,
               true,
@@ -289,14 +294,15 @@ export class OAuth2orizeSetup implements OnModuleInit {
               });
               if (!localClient) done(null, false);
             } else {
-              localClient = localRefreshToken.client;
+              localClient = await this.clientService.findOne({
+                uuid: localRefreshToken.client,
+              });
             }
 
             // Validate Scopes
-            const refreshTokenScope = localRefreshToken.scope.map(s => s.name);
             const scope = await this.tokenGeneratorService.getValidScopes(
               localClient,
-              refreshTokenScope,
+              localRefreshToken.scope,
             );
 
             // Everything validated, return the token
@@ -304,7 +310,7 @@ export class OAuth2orizeSetup implements OnModuleInit {
               bearerToken,
               extraParams,
             ] = await this.tokenGeneratorService.getBearerToken(
-              client,
+              client.clientId,
               localRefreshToken.user,
               scope,
             );
@@ -348,7 +354,7 @@ export class OAuth2orizeSetup implements OnModuleInit {
           // findByUserIdAndClientId
           const tokens = await this.bearerTokenService.find({
             where: {
-              user: { email: user.email },
+              user: { uuid: user.uuid },
               client: { clientId: client.clientId },
             },
           });

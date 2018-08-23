@@ -1,15 +1,13 @@
-import { Column, Entity, Index, Generated } from 'typeorm';
+import { Column, Entity, Index } from 'typeorm';
+import * as uuidv4 from 'uuid/v4';
 import { DocType } from '../base.doctype';
-import { Role } from '../role/role.entity';
-import * as uuid from 'uuid/v4';
-import { Scope } from '../scope/scope.entity';
 
 @Entity()
-@Index(['clientId'], { unique: true })
 export class Client extends DocType {
   @Column()
   name: string;
 
+  @Index({ unique: true })
   @Column()
   clientId: string;
 
@@ -22,14 +20,11 @@ export class Client extends DocType {
   @Column()
   redirectUris: string[];
 
-  @Column(type => Role)
-  allowedRoles: Role[];
-
-  @Column(type => Scope)
-  allowedScopes: Scope[];
+  @Column()
+  allowedScopes: string[];
 
   constructor() {
     super();
-    if (!this.clientId) this.clientId = uuid();
+    if (!this.clientId) this.clientId = uuidv4();
   }
 }

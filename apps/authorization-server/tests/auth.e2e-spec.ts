@@ -26,21 +26,36 @@ describe('AuthController (e2e)', () => {
     await userService.deleteByEmail('test@user.org');
     return sessionRequest
       .post('/auth/signup')
-      .send({ email: 'test@user.org', password: 'secret', name: 'Test User' })
+      .send({
+        email: 'test@user.org',
+        phone: '+919876543211', // admin@user.org is +919876543210
+        password: 'secret',
+        name: 'Test User',
+      })
       .expect(200);
   });
 
   it('/POST /auth/signup (invalid email)', () => {
     return sessionRequest
       .post('/auth/signup')
-      .send({ email: 'testuser.org', password: 'secret', name: 'Test User' })
+      .send({
+        email: 'testuser.org',
+        password: 'secret',
+        phone: '+910987654321',
+        name: 'Test User',
+      })
       .expect(400);
   });
 
   it('/POST /auth/signup (blank password)', () => {
     return sessionRequest
       .post('/auth/signup')
-      .send({ email: 'other@user.org', password: '', name: 'Test User' })
+      .send({
+        email: 'testuser.org',
+        password: '',
+        phone: '+910987654321',
+        name: 'Test User',
+      })
       .expect(400);
   });
 

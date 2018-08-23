@@ -69,7 +69,6 @@
     "hbs": "^4.0.1",
     "mongodb": "~3.0.11",
     "nestjs-ensureloggedin-guard": "^1.0.2",
-    "nestjs-session-store": "^1.0.3",
     "njwt": "^0.4.0",
     "oauth2orize": "^1.11.0",
     "passport": "^0.4.0",

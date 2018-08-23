@@ -8,46 +8,65 @@ import {
   INVALID_USER,
   USER_DISABLED,
 } from '../../../constants/messages';
-import { AuthDataService } from '../../../models/auth-data/auth-data.service';
+import { userAlreadyExistsException } from '../../filters/exceptions';
 import { Role } from '../../../models/role/role.entity';
+import { AuthDataService } from '../../../models/auth-data/auth-data.service';
 import { CreateUserDto } from '../../../models/user/create-user.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
-    private readonly cryptoService: CryptographerService,
     private readonly authDataService: AuthDataService,
+    private readonly cryptoService: CryptographerService,
   ) {}
 
   /**
    * Creates User with hash password
-   * @param user 
-   * @param roles 
+   * @param user
+   * @param roles
    */
   public async signUp(user: CreateUserDto, roles?: Role[]) {
     const userEntity = new User();
     userEntity.name = user.name;
-    userEntity.email = user.email;
+
+    // process email field
+    userEntity.email = user.email.toLowerCase().trim();
+    userEntity.phone = user.phone;
 
     const authData = new AuthData();
     authData.password = await this.cryptoService.hashPassword(user.password);
-    userEntity.password = await this.authDataService.save(authData);
+    await authData.save();
+    userEntity.password = authData.uuid;
 
     if (roles && roles.length) {
-      userEntity.roles = roles;
+      userEntity.roles = roles.map(r => r.name);
     }
 
-    return await this.userService.save(userEntity);
+    const checkUser = await this.checkExistingUser(userEntity);
+
+    if (checkUser) {
+      await authData.remove();
+      throw userAlreadyExistsException;
+    } else {
+      return await this.userService.save(userEntity);
+    }
   }
 
+  /**
+   * Returns User if credentials match
+   * @param email
+   * @param password
+   */
   public async logIn(email, password) {
     return await this.userService
       .findOne({ email })
       .then(async user => {
         if (!user) throw new UnauthorizedException(INVALID_USER);
-        if (user.disabled !== 0) throw new UnauthorizedException(USER_DISABLED);
-        const userPassword = await user.password;
+        if (user.disabled) throw new UnauthorizedException(USER_DISABLED);
+        const userPassword = await this.authDataService.findOne({
+          uuid: user.password,
+        });
         return (await this.cryptoService.checkPassword(
           userPassword.password,
           password,
@@ -56,5 +75,32 @@ export class AuthService {
           : Promise.reject(new UnauthorizedException(INVALID_PASSWORD));
       })
       .catch(err => Promise.reject(err));
+  }
+
+  async checkExistingUser(user: User) {
+    const userByEmail = await this.userService.findOne({ email: user.email });
+    const userByPhone = await this.userService.findOne({ phone: user.phone });
+    if (userByEmail) {
+      return true;
+    } else if (userByPhone) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Returns User by phone
+   * @param phone
+   */
+  async getUserByPhone(phone: string) {
+    return await this.userService.findOne({ phone });
+  }
+
+  /**
+   * Returns User by email
+   * @param email
+   */
+  async getUserByEmail(email: string) {
+    return await this.userService.findOne({ email });
   }
 }

@@ -3,13 +3,19 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   BaseEntity,
+  Index,
   ObjectIdColumn,
+  ObjectID,
 } from 'typeorm';
-import { User } from './user/user.entity';
+import * as uuidv4 from 'uuid/v4';
 
 export abstract class DocType extends BaseEntity {
   @ObjectIdColumn()
-  id: string;
+  _id: ObjectID;
+
+  @Index({ unique: true })
+  @Column()
+  uuid: string;
 
   @CreateDateColumn()
   creation: Date;
@@ -18,13 +24,18 @@ export abstract class DocType extends BaseEntity {
   modified: Date;
 
   // save user id as string
-  @Column(type => User)
-  createdBy: User;
+  @Column()
+  createdBy: string;
 
   // save user id as string
-  @Column(type => User)
-  modifiedBy: User;
+  @Column()
+  modifiedBy: string;
 
   @Column()
   docstatus: number;
+
+  constructor() {
+    super();
+    if (!this.uuid) this.uuid = uuidv4();
+  }
 }

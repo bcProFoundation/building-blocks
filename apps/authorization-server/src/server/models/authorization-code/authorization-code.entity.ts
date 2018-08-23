@@ -1,23 +1,30 @@
-import { Column, Entity } from 'typeorm';
-import { User } from '../user/user.entity';
-import { Client } from '../client/client.entity';
-import { DocType } from '../base.doctype';
-import { Scope } from '../scope/scope.entity';
+import {
+  Column,
+  Entity,
+  Index,
+  BaseEntity,
+  ObjectIdColumn,
+  ObjectID,
+} from 'typeorm';
 
 @Entity()
-export class AuthorizationCode extends DocType {
+@Index(['code'], { unique: true })
+export class AuthorizationCode extends BaseEntity {
+  @ObjectIdColumn()
+  _id: ObjectID;
+
   @Column()
   code: string;
 
   @Column()
   redirectUri: string;
 
-  @Column(type => Client)
-  client: Client;
+  @Column()
+  client: string;
 
-  @Column(type => User)
-  user: User;
+  @Column()
+  user: string;
 
-  @Column(type => Scope)
-  scope: Scope[];
+  @Column()
+  scope: string[];
 }

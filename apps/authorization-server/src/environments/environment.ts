@@ -5,10 +5,10 @@
 export const environment = {
   production: false,
   routes: {
-    LOGIN: '/dev/auth/login',
-    SIGNUP: '/dev/auth/signup',
-    CONFIRMATION: '/dev/oauth2/confirmation',
-    AUTHORIZE: '/dev/oauth2/authorize',
+    LOGIN: '/auth/login',
+    SIGNUP: '/auth/signup',
+    CONFIRMATION: '/oauth2/confirmation',
+    AUTHORIZE: '/oauth2/authorize',
   },
 };
 

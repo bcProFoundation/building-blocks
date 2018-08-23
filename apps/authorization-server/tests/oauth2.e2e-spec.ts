@@ -58,16 +58,20 @@ describe('OAuth2Controller (e2e)', () => {
     await scopeService.clear();
     await clientService.clear();
 
-    await userService.deleteByEmail('Administrator');
-    await setupService.createUser('Administrator', 'Administrator', 'secret');
-
-    const client = await setupService.createClient(
+    await userService.deleteByEmail('admin@user.org');
+    await setupService.createUser(
       'Administrator',
+      'admin@user.org',
+      '+919876543210',
+      'secret',
+    );
+    const client = await setupService.createClient(
+      'admin@user.org',
       'http://localhost:4000',
     );
     clientId = client.clientId;
     clientSecret = client.clientSecret;
-    allowedScopes = client.allowedScopes.map(scope => scope.name);
+    allowedScopes = client.allowedScopes;
     redirectUris = client.redirectUris;
 
     sessionRequest = session(app.getHttpServer());
@@ -84,7 +88,7 @@ describe('OAuth2Controller (e2e)', () => {
     return sessionRequest
       .post('/auth/login')
       .send({
-        email: 'Administrator',
+        email: 'admin@user.org',
         password: 'secret',
         redirect: '/account',
       })
@@ -152,7 +156,7 @@ describe('OAuth2Controller (e2e)', () => {
       .post('/oauth2/token')
       .send({
         grant_type: 'password',
-        username: 'Administrator',
+        username: 'admin@user.org',
         redirect_uri: redirectUris[0],
         password: 'secret',
         scope: allowedScopes.toString(),

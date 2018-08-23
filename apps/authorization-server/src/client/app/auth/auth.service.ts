@@ -43,10 +43,11 @@ export class AuthService {
       });
   }
 
-  signUp(name: string, email: string, password: string) {
+  signUp(name: string, email: string, phone: string, password: string) {
     return this.http.post(environment.routes.SIGNUP, {
       name,
       email,
+      phone,
       password,
     });
   }
