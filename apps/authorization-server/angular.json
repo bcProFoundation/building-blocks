@@ -74,6 +74,9 @@
           "configurations": {
             "production": {
               "browserTarget": "authorization-server:build:production"
+            },
+            "ci": {
+              "progress": false
             }
           }
         },
@@ -127,6 +130,9 @@
           "configurations": {
             "production": {
               "devServerTarget": "authorization-server:serve:production"
+            },
+            "ci": {
+              "devServerTarget": "authorization-server:serve:ci"
             }
           }
         },
