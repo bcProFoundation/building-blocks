@@ -74,6 +74,9 @@
           "configurations": {
             "production": {
               "browserTarget": "identity-provider:build:production"
+            },
+            "ci": {
+              "progress": false
             }
           }
         },
@@ -127,6 +130,9 @@
           "configurations": {
             "production": {
               "devServerTarget": "identity-provider:serve:production"
+            },
+            "ci": {
+              "devServerTarget": "identity-provider:serve:ci"
             }
           }
         },

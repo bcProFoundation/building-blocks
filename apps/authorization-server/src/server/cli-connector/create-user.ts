@@ -12,6 +12,7 @@ app.then(r => {
     name: args.name || 'Administartor',
     email: args.email,
     password: args.password,
+    phone: args.phone,
   };
   authService.signUp(user).then(() => process.exit());
 });
@@ -30,9 +31,13 @@ function createUserCLI() {
       alias: 'p',
       describe: 'password for user',
     })
+    .option('phone', {
+      alias: 'm',
+      describe: 'phone number of user',
+    })
     .demandOption(
-      ['email', 'password'],
-      'Please provide both email and password arguments.',
+      ['email', 'phone', 'password'],
+      'Please provide email, phone and password arguments.',
     )
     .help().argv;
 }

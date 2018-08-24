@@ -1,38 +1,7 @@
-# authorization-server
+# Authorization Server
 
-## Description
+### More:
 
-Authorization Server
-
-## Installation
-
-```bash
-$ yarn install
-```
-
-## Running the app
-
-```bash
-# development
-$ yarn start
-
-# watch mode
-$ yarn start:dev
-
-# production mode
-$ yarn start:prod
-```
-
-## Test
-
-```bash
-# unit tests
-$ yarn test
-
-# e2e tests
-$ yarn test:e2e
-
-# test coverage
-$ yarn test:cov
-```
-
+    * [API](http://castlecraft.gitlab.io/building-blocks/api/authorization-server/)
+    * [Developers](http://castlecraft.gitlab.io/building-blocks/authorization-server/README)
+    * [Users](https://gitlab.com/castlecraft/building-blocks/wikis/home)
