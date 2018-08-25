@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    container_name: mongo
+
+  as:
+    image: auth-server:latest
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    links:
+      - mongo
+    environment:
+      - SESSION_SECRET=${SESSION_SECRET}
+      - EXPIRY_DAYS=${EXPIRY_DAYS}
+      - COOKIE_MAX_AGE=${COOKIE_MAX_AGE}
+      - SESSION_NAME=${SESSION_NAME}
+      - TOKEN_VALIDITY=${TOKEN_VALIDITY}
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+    container_name: authorization-server

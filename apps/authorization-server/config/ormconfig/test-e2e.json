@@ -1,9 +1,0 @@
-[{
-    "type": "mongodb",
-    "name": "default",
-    "host": "mongo",
-    "database": "test-e2e-idp",
-    "logging": false,
-    "synchronize": true,
-    "keepAlice": 20000
-}]

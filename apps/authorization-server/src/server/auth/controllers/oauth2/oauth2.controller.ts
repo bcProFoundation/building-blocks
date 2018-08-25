@@ -92,7 +92,7 @@ export class OAuth2Controller {
     title: OAUTH2_TOKEN_INTROSPECTION_TITLE,
     description: OAUTH2_TOKEN_INTROSPECTION_DESCRIPTION,
   })
-  async tokenIntrospection(@Body('token') token, @Res() res) {
+  async tokenIntrospection(@Body('token') token, @Res() res, @Req() req) {
     const tokenData = await this.oauth2Service.tokenIntrospection(token);
     res.json(tokenData);
   }

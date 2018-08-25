@@ -2,19 +2,14 @@
 FROM node:10-alpine
 MAINTAINER Castlecraft
 
-# Install mysql client
-RUN apk update \
-    && apk add --no-cache \
-    mysql-client \
-    git \
-    tar
+# Install mysql Dockerize
+RUN apk add --no-cache openssl
+ENV DOCKERIZE_VERSION v0.6.1
+RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
-# Install typescript and craft cli
-RUN yarn --production=true global add typescript "https://gitlab.com/castlecraft/craft-cli" \
-    && yarn cache clean \
-    && mkdir -p /home/craft/authorization-server
-
-COPY docker-entrypoint.sh usr/local/bin/docker-entrypoint.sh
+COPY docker/docker-entrypoint.sh usr/local/bin/docker-entrypoint.sh
 RUN ln -s usr/local/bin/docker-entrypoint.sh / # backwards compat
 
 # Create home directory for craft
@@ -22,10 +17,8 @@ WORKDIR /home/craft
 
 # Add non root user
 RUN adduser -h /home/craft -D craft
-RUN chown -R craft:craft /home/craft
-USER craft
 
-# Image
+# Copy app
 COPY . /home/craft/authorization-server
 
 RUN rm -fr authorization-server/config authorization-server/docker-entrypoint.sh \
@@ -34,12 +27,14 @@ RUN rm -fr authorization-server/config authorization-server/docker-entrypoint.sh
     && yarn prestart:prod \
     && rm -fr node_modules yarn.lock \
     && yarn --production=true \
-    && yarn cache clean \
-    && mkdir -p /home/craft/authorization-server/config
+    && yarn cache clean
 
 # set project directory
+
 WORKDIR /home/craft/authorization-server
-VOLUME /home/craft/authorization-server/config
+VOLUME /home/craft/authorization-server
+RUN chown -R craft:craft /home/craft
+USER craft
 
 EXPOSE 3000
 
