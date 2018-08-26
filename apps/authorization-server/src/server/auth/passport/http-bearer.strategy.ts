@@ -12,13 +12,11 @@ import { UNAUTHORIZED } from '../../constants/messages';
 
 @Injectable()
 export class HttpBearerStrategy extends PassportStrategy(Strategy) {
-  serverConfig: any;
   constructor(
     private readonly bearerTokenService: BearerTokenService,
     private readonly configService: ConfigService,
   ) {
     super();
-    this.serverConfig = configService.getConfig('server');
   }
   async validate(token: any, done: (err?, user?, info?) => any) {
     try {
@@ -31,7 +29,8 @@ export class HttpBearerStrategy extends PassportStrategy(Strategy) {
       });
       if (!localToken) done(unauthorizedError);
       const validity =
-        localToken.expiresIn || Number(this.serverConfig.tokenValidity);
+        localToken.expiresIn ||
+        Number(this.configService.get('TOKEN_VALIDITY'));
       const expires = new Date(
         new Date(localToken.creation).getTime() + validity * 1000,
       );

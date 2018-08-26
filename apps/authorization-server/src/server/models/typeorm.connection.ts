@@ -7,27 +7,24 @@ import { Role } from './role/role.entity';
 import { Session } from './session/session.entity';
 import { User } from './user/user.entity';
 import { Scope } from './scope/scope.entity';
+import { MongoConnectionOptions } from 'typeorm/driver/mongodb/MongoConnectionOptions';
 
 const config = new ConfigService();
-const typeormConnection = config.getConfig('ormconfig');
-let defaultConnection;
-typeormConnection.forEach(element => {
-  if (element.name === 'default') {
-    defaultConnection = element;
-  }
-});
 
-export const documentSchemas = [
-  AuthData,
-  AuthorizationCode,
-  BearerToken,
-  Client,
-  Role,
-  Scope,
-  Session,
-  User,
-];
-
-defaultConnection.entities = documentSchemas;
-
-export const TYPEORM_CONNECTION = defaultConnection;
+export const TYPEORM_CONNECTION: MongoConnectionOptions = {
+  type: 'mongodb',
+  host: config.get('DB_HOST'),
+  database: config.get('DB_NAME'),
+  logging: false,
+  synchronize: true,
+  entities: [
+    AuthData,
+    AuthorizationCode,
+    BearerToken,
+    Client,
+    Role,
+    Scope,
+    Session,
+    User,
+  ],
+};

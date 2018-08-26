@@ -1,8 +1,0 @@
-[{
-    "type": "mongodb",
-    "name": "default",
-    "host": "mongo",
-    "database": "cepl-idp",
-    "logging": false,
-    "synchronize": true
-}]
