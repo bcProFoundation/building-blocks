@@ -1,9 +1,17 @@
-import { Controller, UseGuards, Session, Body, Post } from '@nestjs/common';
+import {
+  Controller,
+  UseGuards,
+  Session,
+  Body,
+  Post,
+  Req,
+  Query,
+} from '@nestjs/common';
 import { EnsureLoginGuard } from 'nestjs-ensureloggedin-guard';
 import { CryptographerService } from '../../../utilities/cryptographer.service';
 import { UserService } from '../../../models/user/user.service';
 
-@Controller('user')
+@Controller('v1/user')
 export class UserController {
   constructor(
     private readonly userService: UserService,
@@ -36,4 +44,19 @@ export class UserController {
   // revoke all tokens of used client(s) for the logged in user
   @Post('revoke/client')
   revokeClient() {}
+
+  @Post('initialize-2fa')
+  @UseGuards(EnsureLoginGuard)
+  async initialize2fa(@Req() req, @Query('restart') restart) {
+    return await this.userService.initializeMfa(
+      req.user.email,
+      restart || false,
+    );
+  }
+
+  @Post('verify-2fa')
+  @UseGuards(EnsureLoginGuard)
+  async verify2fa(@Req() req, @Body('otp') otp) {
+    return await this.userService.verify2fa(req.user.email, otp);
+  }
 }

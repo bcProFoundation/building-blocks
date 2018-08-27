@@ -1,12 +1,4 @@
-import {
-  Get,
-  Controller,
-  Render,
-  Req,
-  Res,
-  UseGuards,
-  UseFilters,
-} from '@nestjs/common';
+import { Get, Controller, Res, UseGuards, UseFilters } from '@nestjs/common';
 import { AppService } from './app.service';
 import { EnsureLoginGuard } from 'nestjs-ensureloggedin-guard';
 import { ErrorFilter } from './auth/filters/errors.filter';

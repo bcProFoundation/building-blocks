@@ -9,9 +9,11 @@ export class CookieSerializer extends PassportSerializer {
   async serializeUser(user: any, done: (err, user) => any) {
     // add user into array of users for multi-user per session?
     done(null, {
-      id: user.id,
       email: user.email,
       uuid: user.uuid,
+      phone: user.phone,
+      disabled: user.disabled,
+      enable2fa: user.enable2fa,
     });
   }
   deserializeUser(payload: any, done: (err, payload) => any): any {

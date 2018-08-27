@@ -1,4 +1,5 @@
 import { IsEmail, IsUrl, IsNotEmpty, IsMobilePhone } from 'class-validator';
+import { IsMobileE164 } from '../../decorators/is-mobile-e164.decorator';
 
 export class SetupFormDTO {
   @IsNotEmpty()
@@ -13,6 +14,6 @@ export class SetupFormDTO {
   @IsNotEmpty()
   adminPassword: string;
 
-  @IsMobilePhone('en-US')
+  @IsMobileE164()
   phone: string;
 }

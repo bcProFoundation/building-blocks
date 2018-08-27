@@ -16,3 +16,7 @@ export const USER_DISABLED = 'User disabled';
 export const INVALID_AUTHORIZATION_CODE = 'Invalid Authorization Code';
 export const USER_ALREADY_EXISTS = 'User already exists';
 export const MOBILE_FORMAT_ERROR = 'Mobile format must be E.164';
+export const TWO_FACTOR_ALREADY_ENABLED =
+  'Two factor authentication already enabled';
+export const TWO_FACTOR_NOT_ENABLED = 'Two factor authentication not enabled';
+export const INVALID_OTP = 'Invalid OTP';
