@@ -4,6 +4,9 @@ import {
   INVALID_AUTHORIZATION_CODE,
   USER_ALREADY_EXISTS,
   INVALID_USER,
+  TWO_FACTOR_ALREADY_ENABLED,
+  TWO_FACTOR_NOT_ENABLED,
+  INVALID_OTP,
 } from '../../constants/messages';
 import { HttpStatus, HttpException } from '@nestjs/common';
 
@@ -29,5 +32,20 @@ export const userAlreadyExistsException = new HttpException(
 
 export const invalidUserException = new HttpException(
   INVALID_USER,
+  HttpStatus.BAD_REQUEST,
+);
+
+export const twoFactorEnabledException = new HttpException(
+  TWO_FACTOR_ALREADY_ENABLED,
+  HttpStatus.BAD_REQUEST,
+);
+
+export const twoFactorNotEnabledException = new HttpException(
+  TWO_FACTOR_NOT_ENABLED,
+  HttpStatus.BAD_REQUEST,
+);
+
+export const invalidOTPException = new HttpException(
+  INVALID_OTP,
   HttpStatus.BAD_REQUEST,
 );

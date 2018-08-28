@@ -31,6 +31,7 @@ import {
 // Swagger
 import { ApiOperation } from '@nestjs/swagger';
 import { LoginUserDto } from '../../../models/user/login-user.dto';
+import { EnsureLoginGuard } from 'nestjs-ensureloggedin-guard';
 
 let AuthGuard;
 if (process.env.NODE_ENV === 'test') AuthGuard = TestAuthGuard;
@@ -82,6 +83,8 @@ export class AuthController {
     description: APP_ACCOUNT_DESCRIPTION,
   })
   logout(@Req() req, @Res() res) {
+    if (req.session && req.session.secondFactor)
+      delete res.session.secondFactor;
     req.logout();
     res.json({ message: 'logout' });
   }

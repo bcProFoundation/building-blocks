@@ -8,10 +8,14 @@ import {
   INVALID_USER,
   USER_DISABLED,
 } from '../../../constants/messages';
-import { userAlreadyExistsException } from '../../filters/exceptions';
+import {
+  userAlreadyExistsException,
+  invalidOTPException,
+} from '../../filters/exceptions';
 import { Role } from '../../../models/role/role.entity';
 import { AuthDataService } from '../../../models/auth-data/auth-data.service';
 import { CreateUserDto } from '../../../models/user/create-user.dto';
+import * as speakeasy from 'speakeasy';
 
 @Injectable()
 export class AuthService {
@@ -58,23 +62,44 @@ export class AuthService {
    * @param email
    * @param password
    */
-  public async logIn(email, password) {
-    return await this.userService
-      .findOne({ email })
-      .then(async user => {
-        if (!user) throw new UnauthorizedException(INVALID_USER);
-        if (user.disabled) throw new UnauthorizedException(USER_DISABLED);
-        const userPassword = await this.authDataService.findOne({
-          uuid: user.password,
+  public async logIn(username, password, code?) {
+    const user: User = await this.userService.findUserByEmailOrPhone(username);
+    if (!user) throw new UnauthorizedException(INVALID_USER);
+    if (user.disabled) throw new UnauthorizedException(USER_DISABLED);
+    const userPassword = await this.authDataService.findOne({
+      uuid: user.password,
+    });
+
+    const passwordVerified = await this.cryptoService.checkPassword(
+      userPassword.password,
+      password,
+    );
+
+    if (!passwordVerified) new UnauthorizedException(INVALID_PASSWORD);
+
+    if (user.enable2fa) {
+      if (!code) throw invalidOTPException;
+
+      const totp = speakeasy.totp({
+        secret: user.sharedSecret,
+        encoding: 'base32',
+        window: 6,
+      });
+
+      if (totp === code) {
+        return user;
+      } else if (totp !== code) {
+        const hotp = speakeasy.hotp({
+          secret: user.sharedSecret,
+          encoding: 'base32',
+          counter: user.otpCounter,
         });
-        return (await this.cryptoService.checkPassword(
-          userPassword.password,
-          password,
-        ))
-          ? Promise.resolve(user)
-          : Promise.reject(new UnauthorizedException(INVALID_PASSWORD));
-      })
-      .catch(err => Promise.reject(err));
+        if (hotp === code) return user;
+        else if (hotp !== code) throw invalidOTPException;
+      }
+    } else {
+      return user;
+    }
   }
 
   async checkExistingUser(user: User) {
@@ -102,5 +127,9 @@ export class AuthService {
    */
   async getUserByEmail(email: string) {
     return await this.userService.findOne({ email });
+  }
+
+  async findUserByEmailOrPhone(emailOrPhone: string) {
+    return await this.userService.findUserByEmailOrPhone(emailOrPhone);
   }
 }

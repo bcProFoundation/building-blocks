@@ -8,18 +8,39 @@ import { ACCOUNTS_ROUTE } from '../../constants/locations';
 export class LocalStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly authService: AuthService) {
     super({
-      usernameField: 'email',
-      passReqToCallback: false,
+      passReqToCallback: true,
       successRedirect: ACCOUNTS_ROUTE,
     });
   }
 
-  async validate(email, password, done: (err, user) => any) {
+  async validate(req, username, password, done: (err, user) => any) {
+    const code = lookup(req.body, 'code') || lookup(req.query, 'code');
     await this.authService
-      .logIn(email, password)
+      .logIn(username, password, code)
       .then(user => done(null, user))
       .catch(err => done(err, false));
   }
+}
+
+function lookup(obj, field) {
+  if (!obj) {
+    return null;
+  }
+  const chain = field
+    .split(']')
+    .join('')
+    .split('[');
+  for (let i = 0, len = chain.length; i < len; i++) {
+    const prop = obj[chain[i]];
+    if (typeof prop === 'undefined') {
+      return null;
+    }
+    if (typeof prop !== 'object') {
+      return prop;
+    }
+    obj = prop;
+  }
+  return null;
 }
 
 export const callback = (err, user, info) => {

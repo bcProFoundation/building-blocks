@@ -8,7 +8,7 @@ import { AuthService } from '../auth/auth.service';
 })
 export class LoginComponent implements OnInit {
   // Declared Public to allow Ahead of Time compilation for production
-  public email: string = '';
+  public username: string = '';
   public password: string = '';
 
   constructor(private authService: AuthService) {}
@@ -16,6 +16,6 @@ export class LoginComponent implements OnInit {
   ngOnInit() {}
 
   onSubmit() {
-    this.authService.logIn(this.email, this.password);
+    this.authService.logIn(this.username, this.password);
   }
 }

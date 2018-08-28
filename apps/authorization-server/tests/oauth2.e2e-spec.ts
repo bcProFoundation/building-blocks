@@ -88,7 +88,7 @@ describe('OAuth2Controller (e2e)', () => {
     return sessionRequest
       .post('/auth/login')
       .send({
-        email: 'admin@user.org',
+        username: 'admin@user.org',
         password: 'secret',
         redirect: '/account',
       })
