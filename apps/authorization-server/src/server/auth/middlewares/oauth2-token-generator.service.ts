@@ -64,40 +64,15 @@ export class OAuth2TokenGeneratorService {
     bearerToken.scope = scope;
     bearerToken.expiresIn = extraParams.expires_in;
 
-    const bToken = await this.bearerTokenService.save(bearerToken);
+    await this.bearerTokenService.save(bearerToken);
 
-    // OIDC scope: openid
-    if (idToken && scope.includes('openid')) {
-      const claims: IDTokenClaims = {
-        // iss: this.getAuthorizationServerUrl,
-        aud: localClient.clientId,
-        exp: Date.parse(bToken.creation) + extraParams.expires_in * 1000, // seconds * milliseconds
-        iat: Date.parse(bToken.creation),
-      };
-
-      claims.sub = localUser.uuid;
-
-      if (scope.includes('roles')) {
-        claims.roles = localUser.roles;
-      }
-
-      if (scope.includes('email')) {
-        claims.email = localUser.email;
-        claims.verified_email = localUser.email;
-      }
-
-      const jwt = njwt.create(claims, localClient.clientSecret);
-      extraParams.id_token = jwt.compact();
-
-      // OIDC scope: openid email > add email, verified_email
-
-      /**
-       * OIDC scope: openid profile >
-       * add name, family_name, given_name, middle_name, nickname,
-       * preferred_username, profile, picture, website, gender,
-       * birthdate, zoneinfo, locale, updated_at
-       */
-    }
+    //   /**
+    //    * OIDC scope: openid profile >
+    //    * add name, family_name, given_name, middle_name, nickname,
+    //    * preferred_username, profile, picture, website, gender,
+    //    * birthdate, zoneinfo, locale, updated_at
+    //    */
+    // }
 
     return [bearerToken, extraParams];
   }

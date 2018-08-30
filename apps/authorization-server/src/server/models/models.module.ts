@@ -18,6 +18,9 @@ import { RoleService } from './role/role.service';
 import { ConfigModule } from '../config/config.module';
 import { Scope } from './scope/scope.entity';
 import { ScopeService } from './scope/scope.service';
+import { ServerSettingsService } from './server-settings/server-settings.service';
+import { ServerSettings } from './server-settings/server-settings.entity';
+import { WellKnownService } from './well-known/well-known.service';
 
 @Module({
   imports: [
@@ -30,6 +33,7 @@ import { ScopeService } from './scope/scope.service';
       Scope,
       Session,
       User,
+      ServerSettings,
     ]),
     UtilitiesModule,
     ConfigModule,
@@ -43,6 +47,8 @@ import { ScopeService } from './scope/scope.service';
     ScopeService,
     SessionService,
     UserService,
+    ServerSettingsService,
+    WellKnownService,
   ],
   exports: [
     AuthDataService,
@@ -53,6 +59,8 @@ import { ScopeService } from './scope/scope.service';
     ScopeService,
     SessionService,
     UserService,
+    ServerSettingsService,
+    WellKnownService,
   ],
 })
 export class ModelsModule {}

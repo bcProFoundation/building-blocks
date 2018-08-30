@@ -10,6 +10,9 @@ import { FormsModule } from '@angular/forms';
 import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
 import { AccountComponent } from './account/account.component';
+import { AuthService } from './auth/auth.service';
+import { ServerSettingsComponent } from './server-settings/server-settings.component';
+import { ServerSettingsService } from './server-settings/server-settings.service';
 
 @NgModule({
   declarations: [
@@ -17,6 +20,7 @@ import { AccountComponent } from './account/account.component';
     LoginComponent,
     SignupComponent,
     AccountComponent,
+    ServerSettingsComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'authorization-server' }),
@@ -26,7 +30,7 @@ import { AccountComponent } from './account/account.component';
     AuthServerMaterialModule,
     FormsModule,
   ],
-  providers: [],
+  providers: [AuthService, ServerSettingsService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

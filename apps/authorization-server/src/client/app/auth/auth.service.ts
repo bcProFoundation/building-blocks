@@ -11,11 +11,7 @@ export class AuthService {
   ) {
     this.activatedroute.queryParams.subscribe(params => {
       if (params.redirect) {
-        if (!environment.production) {
-          this.redirectTo = `/dev${params.redirect}`;
-        } else {
-          this.redirectTo = params.redirect;
-        }
+        this.redirectTo = params.redirect;
       } else {
         this.redirectTo = '/account';
       }
@@ -29,10 +25,10 @@ export class AuthService {
     // TODO: Check if session exists.
   }
 
-  logIn(email: string, password: string) {
+  logIn(username: string, password: string) {
     this.http
       .post(environment.routes.LOGIN, {
-        email,
+        username,
         password,
         redirect: this.redirectTo,
       })

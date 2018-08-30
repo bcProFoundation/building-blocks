@@ -25,6 +25,15 @@ import { SetupController } from './controllers/setup/setup.controller';
 import { SetupService } from './controllers/setup/setup.service';
 import { OAuth2TokenGeneratorService } from './middlewares/oauth2-token-generator.service';
 import { OAuth2Service } from './controllers/oauth2/oauth2.service';
+import { CodeGrantService } from './oauth2-services/code-grant/code-grant.service';
+import { TokenGrantService } from './oauth2-services/token-grant/token-grant.service';
+import { CodeExchangeService } from './oauth2-services/code-exchange/code-exchange.service';
+import { PasswordExchangeService } from './oauth2-services/password-exchange/password-exchange.service';
+import { ClientCredentialExchangeService } from './oauth2-services/client-credential-exchange/client-credential-exchange.service';
+import { RefreshTokenExchangeService } from './oauth2-services/refresh-token-exchange/refresh-token-exchange.service';
+import { IDTokenGrantService } from './oauth2-services/id-token-grant/id-token-grant.service';
+import { ServerSettingsController } from './controllers/server-settings/server-settings.controller';
+import { WellKnownController } from './controllers/well-known/well-known.controller';
 
 @Module({
   providers: [
@@ -32,6 +41,13 @@ import { OAuth2Service } from './controllers/oauth2/oauth2.service';
     SetupService,
     OAuth2Service,
     OAuth2TokenGeneratorService,
+    CodeGrantService,
+    TokenGrantService,
+    CodeExchangeService,
+    PasswordExchangeService,
+    ClientCredentialExchangeService,
+    RefreshTokenExchangeService,
+    IDTokenGrantService,
 
     // Passport Strategies
     CookieSerializer,
@@ -57,6 +73,8 @@ import { OAuth2Service } from './controllers/oauth2/oauth2.service';
     RoleController,
     ClientController,
     SetupController,
+    ServerSettingsController,
+    WellKnownController,
   ],
   imports: [ModelsModule, UtilitiesModule, ConfigModule],
 })

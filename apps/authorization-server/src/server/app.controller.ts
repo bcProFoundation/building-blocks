@@ -40,4 +40,11 @@ export class AppController {
   account(@Res() res) {
     res.sendFile(INDEX_HTML);
   }
+
+  @Get('settings')
+  @UseGuards(EnsureLoginGuard)
+  @UseFilters(ErrorFilter)
+  settings(@Res() res) {
+    res.sendFile(INDEX_HTML);
+  }
 }

@@ -72,6 +72,7 @@
     "nestjs-ensureloggedin-guard": "^1.0.2",
     "njwt": "^0.4.0",
     "oauth2orize": "^1.11.0",
+    "oauth2orize-openid": "^0.4.0",
     "passport": "^0.4.0",
     "passport-http": "^0.3.0",
     "passport-http-bearer": "^1.0.1",

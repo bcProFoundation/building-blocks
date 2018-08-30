@@ -20,3 +20,4 @@ export const TWO_FACTOR_ALREADY_ENABLED =
   'Two factor authentication already enabled';
 export const TWO_FACTOR_NOT_ENABLED = 'Two factor authentication not enabled';
 export const INVALID_OTP = 'Invalid OTP';
+export const SETTING_NOT_FOUND = 'Setting does not exist';

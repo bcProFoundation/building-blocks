@@ -209,6 +209,109 @@ describe('OAuth2Controller (e2e)', () => {
       });
   });
 
+  it('/GET /oauth2/confirmation (OIDC IDToken Grant)', () => {
+    const request = `/oauth2/confirmation?scope=openid&response_type=id_token&client_id=${clientId}&redirect_uri=${
+      redirectUris[0]
+    }&state=420&nonce=tHc_Cbd`;
+    return sessionRequest.get(request).then(response => {
+      const oidcIDToken = getParameterByName(
+        response.headers.location,
+        'id_token',
+      );
+      const state = getParameterByName(response.headers.location, 'state');
+      expect(state).toEqual('420');
+      expect(oidcIDToken).not.toBeNull();
+    });
+  });
+
+  it('/GET /oauth2/confirmation (OIDC IDToken Token Grant)', () => {
+    const request = `/oauth2/confirmation?scope=openid&response_type=id_token%20token&client_id=${clientId}&redirect_uri=${
+      redirectUris[0]
+    }&state=420&nonce=tHc_Cbd`;
+    return sessionRequest
+      .get(request)
+      .expect(302)
+      .then(response => {
+        const oidcIDToken = getParameterByName(
+          response.headers.location,
+          'id_token',
+        );
+        const oidcToken = getParameterByName(
+          response.headers.location,
+          'access_token',
+        );
+        const state = getParameterByName(response.headers.location, 'state');
+        expect(state).toEqual('420');
+        expect(oidcIDToken).not.toBeNull();
+        expect(oidcToken).not.toBeNull();
+      });
+  });
+
+  it('/GET /oauth2/confirmation (OIDC Code IDToken Grant)', () => {
+    const request = `/oauth2/confirmation?scope=openid&response_type=code%20id_token&client_id=${clientId}&redirect_uri=${
+      redirectUris[0]
+    }&state=420&nonce=tHc_Cbd`;
+    return sessionRequest
+      .get(request)
+      .expect(302)
+      .then(response => {
+        const oidcIDToken = getParameterByName(
+          response.headers.location,
+          'id_token',
+        );
+        const oidcCode = getParameterByName(response.headers.location, 'code');
+        const state = getParameterByName(response.headers.location, 'state');
+        expect(state).toEqual('420');
+        expect(oidcIDToken).not.toBeNull();
+        expect(oidcCode).not.toBeNull();
+      });
+  });
+
+  it('/GET /oauth2/confirmation (OIDC Code Token Grant)', () => {
+    const request = `/oauth2/confirmation?scope=openid&response_type=code%20token&client_id=${clientId}&redirect_uri=${
+      redirectUris[0]
+    }&state=420&nonce=tHc_Cbd`;
+    return sessionRequest
+      .get(request)
+      .expect(302)
+      .then(response => {
+        const oidcToken = getParameterByName(
+          response.headers.location,
+          'access_token',
+        );
+        const oidcCode = getParameterByName(response.headers.location, 'code');
+        const state = getParameterByName(response.headers.location, 'state');
+        expect(state).toEqual('420');
+        expect(oidcToken).not.toBeNull();
+        expect(oidcCode).not.toBeNull();
+      });
+  });
+
+  it('/GET /oauth2/confirmation (OIDC Code IDToken Token Grant)', () => {
+    const request = `/oauth2/confirmation?scope=openid&response_type=code%20id_token%20token&client_id=${clientId}&redirect_uri=${
+      redirectUris[0]
+    }&state=420&nonce=tHc_Cbd`;
+    return sessionRequest
+      .get(request)
+      .expect(302)
+      .then(response => {
+        const oidcToken = getParameterByName(
+          response.headers.location,
+          'access_token',
+        );
+        const oidcCode = getParameterByName(response.headers.location, 'code');
+        const oidcIDToken = getParameterByName(
+          response.headers.location,
+          'id_token',
+        );
+        const state = getParameterByName(response.headers.location, 'state');
+        expect(state).toEqual('420');
+        expect(oidcIDToken).not.toBeNull();
+        expect(oidcToken).not.toBeNull();
+        expect(oidcCode).not.toBeNull();
+      });
+  });
+
   afterAll(async () => {
     await bearerTokenService.clear();
     // await getConnection().close();
