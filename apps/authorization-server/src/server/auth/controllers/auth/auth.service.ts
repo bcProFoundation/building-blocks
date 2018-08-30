@@ -75,7 +75,7 @@ export class AuthService {
       password,
     );
 
-    if (!passwordVerified) new UnauthorizedException(INVALID_PASSWORD);
+    if (!passwordVerified) throw new UnauthorizedException(INVALID_PASSWORD);
 
     if (user.enable2fa) {
       if (!code) throw invalidOTPException;

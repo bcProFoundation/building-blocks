@@ -45,10 +45,7 @@ export class OAuth2Controller {
       transactionId: request.oauth2.transactionID,
       email: request.user.email,
       client: request.oauth2.client,
-      action:
-        process.env.NODE_ENV === 'production'
-          ? '/oauth2/authorize'
-          : '/dev/oauth2/authorize',
+      action: '/oauth2/authorize',
     };
     return confirmationParams;
   }

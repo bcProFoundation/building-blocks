@@ -1,31 +1,31 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import * as oauth2orize from 'oauth2orize';
+import * as oauth2orize_ext from 'oauth2orize-openid';
 import { ClientService } from '../../models/client/client.service';
-import { AuthorizationCodeService } from '../../models/authorization-code/authorization-code.service';
-import { CryptographerService } from '../../utilities/cryptographer.service';
 import { BearerTokenService } from '../../models/bearer-token/bearer-token.service';
-import { UserService } from '../../models/user/user.service';
-import { Client } from '../../models/client/client.entity';
-import {
-  invalidClientException,
-  invalidScopeException,
-  invalidAuthorizationCodeException,
-} from '../filters/exceptions';
-import { OAuth2TokenGeneratorService } from './oauth2-token-generator.service';
-import { AuthDataService } from '../../models/auth-data/auth-data.service';
+import { invalidClientException } from '../filters/exceptions';
+import { CodeGrantService } from '../oauth2-services/code-grant/code-grant.service';
+import { TokenGrantService } from '../oauth2-services/token-grant/token-grant.service';
+import { CodeExchangeService } from '../oauth2-services/code-exchange/code-exchange.service';
+import { PasswordExchangeService } from '../oauth2-services/password-exchange/password-exchange.service';
+import { ClientCredentialExchangeService } from '../oauth2-services/client-credential-exchange/client-credential-exchange.service';
+import { RefreshTokenExchangeService } from '../oauth2-services/refresh-token-exchange/refresh-token-exchange.service';
+import { IDTokenGrantService } from '../oauth2-services/id-token-grant/id-token-grant.service';
 
 @Injectable()
 export class OAuth2orizeSetup implements OnModuleInit {
   public server;
 
   constructor(
-    private readonly authorizationCodeService: AuthorizationCodeService,
-    private readonly cryptographerService: CryptographerService,
     private readonly clientService: ClientService,
     private readonly bearerTokenService: BearerTokenService,
-    private readonly userService: UserService,
-    private readonly tokenGeneratorService: OAuth2TokenGeneratorService,
-    private readonly authDataService: AuthDataService,
+    private readonly codeGrantService: CodeGrantService,
+    private readonly tokenGrantService: TokenGrantService,
+    private readonly codeExchangeService: CodeExchangeService,
+    private readonly passwordExchangeService: PasswordExchangeService,
+    private readonly clientCredentialExchangeService: ClientCredentialExchangeService,
+    private readonly refreshTokenExchangeService: RefreshTokenExchangeService,
+    private readonly idTokenGrantService: IDTokenGrantService,
   ) {
     // Initialize server
     this.server = oauth2orize.createServer();
@@ -66,6 +66,13 @@ export class OAuth2orizeSetup implements OnModuleInit {
 
     // Setup Refresh Token Exchange
     this.setupRefreshTokenExchange();
+
+    // Setup OIDC Grants
+    this.setupIDTokenGrant();
+    this.setupIDTokenTokenGrant();
+    this.setupCodeIDTokenGrant();
+    this.setupCodeTokenGrant();
+    this.setupCodeIdTokenTokenGrant();
   }
 
   setupCodeGrant() {
@@ -73,29 +80,14 @@ export class OAuth2orizeSetup implements OnModuleInit {
       oauth2orize.grant.code(
         { scopeSeparator: [' ', ','] }, // violates the specification, promote flexibility
         async (client, redirectUri, user, ares, areq, done) => {
-          try {
-            const code = this.cryptographerService.getUid(16);
-            const localClient = await this.clientService.findOne({
-              clientId: areq.clientID,
-            });
-            const localUser = await this.userService.findOne({
-              email: user.email,
-            });
-            const scope = await this.tokenGeneratorService.getValidScopes(
-              localClient,
-              areq.scope,
-            );
-            await this.authorizationCodeService.save({
-              code,
-              client: localClient.clientId,
-              redirectUri,
-              user: localUser.uuid,
-              scope,
-            });
-            done(null, code);
-          } catch (error) {
-            done(error, null);
-          }
+          await this.codeGrantService.grantCode(
+            client,
+            redirectUri,
+            user,
+            ares,
+            areq,
+            done,
+          );
         },
       ),
     );
@@ -106,30 +98,13 @@ export class OAuth2orizeSetup implements OnModuleInit {
       oauth2orize.grant.token(
         { scopeSeparator: [' ', ','] }, // violates the specification, promote flexibility
         async (client, user, ares, areq, done) => {
-          try {
-            const localUser = await this.userService.findOne({
-              email: user.email,
-            });
-            const localClient = await this.clientService.findOne({
-              clientId: areq.clientID,
-            });
-            const scope = await this.tokenGeneratorService.getValidScopes(
-              client,
-              areq.scope,
-            );
-            const [
-              bearerToken,
-              extraParams,
-            ] = await this.tokenGeneratorService.getBearerToken(
-              localClient.clientId,
-              localUser.uuid,
-              scope,
-              false,
-            );
-            return done(null, bearerToken.accessToken, extraParams);
-          } catch (error) {
-            return done(error);
-          }
+          await this.tokenGrantService.grantToken(
+            client,
+            user,
+            ares,
+            areq,
+            done,
+          );
         },
       ),
     );
@@ -139,35 +114,13 @@ export class OAuth2orizeSetup implements OnModuleInit {
     this.server.exchange(
       oauth2orize.exchange.code(
         async (client, code, redirectUri, body, issued) => {
-          // Validate the code issued(err, accessToken, refreshToken, params)
-          try {
-            const localCode = await this.authorizationCodeService.findOne({
-              code,
-            });
-
-            if (!localCode) {
-              issued(invalidAuthorizationCodeException);
-            } else {
-              const scope: string[] = localCode.scope;
-              const [
-                bearerToken,
-                extraParams,
-              ] = await this.tokenGeneratorService.getBearerToken(
-                localCode.client,
-                localCode.user,
-                scope,
-              );
-              await this.authorizationCodeService.delete({ localCode });
-              issued(
-                null,
-                bearerToken.accessToken,
-                bearerToken.refreshToken,
-                extraParams,
-              );
-            }
-          } catch (error) {
-            issued(error);
-          }
+          await this.codeExchangeService.exchangeCode(
+            client,
+            code,
+            redirectUri,
+            body,
+            issued,
+          );
         },
       ),
     );
@@ -178,52 +131,13 @@ export class OAuth2orizeSetup implements OnModuleInit {
       oauth2orize.exchange.password(
         { scopeSeparator: [' ', ','] }, // violates the specification, promote flexibility
         async (client, username, password, scope, done) => {
-          if (!scope) done(invalidScopeException);
-          // Validate the client
-          try {
-            const localClient = await this.clientService.findOne({
-              clientId: client.clientId,
-            });
-            if (!localClient) return done(null, false);
-            if (localClient.clientSecret !== client.clientSecret)
-              return done(null, false);
-            // Validate the user
-            const user = await this.userService.findOne({ email: username });
-            if (!user) return done(null, false);
-            const authData = await this.authDataService.findOne({
-              uuid: user.password,
-            });
-            const validPassword = await this.cryptographerService.checkPassword(
-              authData.password,
-              password,
-            );
-            if (!validPassword) {
-              return done(null, false);
-            }
-
-            // Validate Scopes
-            const validScope = await this.tokenGeneratorService.getValidScopes(
-              localClient,
-              scope,
-            );
-            // Everything validated, return the token
-            const [
-              bearerToken,
-              extraParams,
-            ] = await this.tokenGeneratorService.getBearerToken(
-              localClient.clientId,
-              user.uuid,
-              validScope,
-            );
-            return done(
-              null,
-              bearerToken.accessToken,
-              bearerToken.refreshToken,
-              extraParams,
-            );
-          } catch (error) {
-            return done(error);
-          }
+          await this.passwordExchangeService.exchangePassword(
+            client,
+            username,
+            password,
+            scope,
+            done,
+          );
         },
       ),
     );
@@ -234,41 +148,11 @@ export class OAuth2orizeSetup implements OnModuleInit {
       oauth2orize.exchange.clientCredentials(
         { scopeSeparator: [' ', ','] }, // violates the specification, promote flexibility
         async (client, scope, done) => {
-          if (!scope) done(invalidScopeException);
-          // Validate the client
-          try {
-            const c = await this.clientService.findOne({
-              clientId: client.clientId,
-            });
-            if (!c) done(null, false);
-            if (c.clientSecret !== client.clientSecret)
-              return done(null, false);
-            // Validate Scope
-            const validScope = await this.tokenGeneratorService.getValidScopes(
-              c,
-              scope,
-            );
-            // Everything validated, return the token
-            // Pass in a null for user id since there is no user with this grant type
-            const [
-              bearerToken,
-              extraParams,
-            ] = await this.tokenGeneratorService.getBearerToken(
-              client.clientId,
-              null,
-              validScope,
-              true,
-              false,
-            );
-            return done(
-              null,
-              bearerToken.accessToken,
-              bearerToken.refreshToken,
-              extraParams,
-            );
-          } catch (error) {
-            done(error);
-          }
+          await this.clientCredentialExchangeService.exchangeClientCredentials(
+            client,
+            scope,
+            done,
+          );
         },
       ),
     );
@@ -279,50 +163,11 @@ export class OAuth2orizeSetup implements OnModuleInit {
       oauth2orize.exchange.refreshToken(
         { scopeSeparator: [' ', ','] }, // violates the specification, promote flexibility
         async (client, refreshToken, done) => {
-          try {
-            // Validate Refresh Token
-            const localRefreshToken = await this.bearerTokenService.findOne({
-              refreshToken,
-            });
-            if (!localRefreshToken) done(null, false);
-
-            // Validate Client
-            let localClient: Client;
-            if (client) {
-              localClient = await this.clientService.findOne({
-                clientId: client.clientId,
-              });
-              if (!localClient) done(null, false);
-            } else {
-              localClient = await this.clientService.findOne({
-                uuid: localRefreshToken.client,
-              });
-            }
-
-            // Validate Scopes
-            const scope = await this.tokenGeneratorService.getValidScopes(
-              localClient,
-              localRefreshToken.scope,
-            );
-
-            // Everything validated, return the token
-            const [
-              bearerToken,
-              extraParams,
-            ] = await this.tokenGeneratorService.getBearerToken(
-              client.clientId,
-              localRefreshToken.user,
-              scope,
-            );
-            return done(
-              null,
-              bearerToken.accessToken,
-              bearerToken.refreshToken,
-              extraParams,
-            );
-          } catch (error) {
-            done(error);
-          }
+          await this.refreshTokenExchangeService.exchangeRefreshToken(
+            client,
+            refreshToken,
+            done,
+          );
         },
       ),
     );
@@ -366,6 +211,90 @@ export class OAuth2orizeSetup implements OnModuleInit {
           done(error);
         }
       },
+    );
+  }
+
+  setupIDTokenGrant() {
+    this.server.grant(
+      oauth2orize_ext.grant.idToken(async (client, user, req, done) => {
+        await this.idTokenGrantService.grantIDToken(client, user, req, done);
+      }),
+    );
+  }
+
+  setupIDTokenTokenGrant() {
+    this.server.grant(
+      oauth2orize_ext.grant.idTokenToken(
+        async (client, user, res, req, done) => {
+          await this.tokenGrantService.grantToken(client, user, res, req, done);
+        },
+        async (client, user, req, done) => {
+          await this.idTokenGrantService.grantIDToken(client, user, req, done);
+        },
+      ),
+    );
+  }
+
+  setupCodeIDTokenGrant() {
+    this.server.grant(
+      oauth2orize_ext.grant.codeIDToken(
+        async (client, redirectUri, user, res, req, done) => {
+          await this.codeGrantService.grantCode(
+            client,
+            redirectUri,
+            user,
+            res,
+            req,
+            done,
+          );
+        },
+        async (client, user, req, done) => {
+          await this.idTokenGrantService.grantIDToken(client, user, req, done);
+        },
+      ),
+    );
+  }
+
+  setupCodeTokenGrant() {
+    this.server.grant(
+      oauth2orize_ext.grant.codeToken(
+        async (client, user, res, req, done) => {
+          await this.tokenGrantService.grantToken(client, user, res, req, done);
+        },
+        async (client, redirectUri, user, res, req, done) => {
+          await this.codeGrantService.grantCode(
+            client,
+            redirectUri,
+            user,
+            res,
+            req,
+            done,
+          );
+        },
+      ),
+    );
+  }
+
+  setupCodeIdTokenTokenGrant() {
+    this.server.grant(
+      oauth2orize_ext.grant.codeIDTokenToken(
+        async (client, user, res, req, done) => {
+          await this.tokenGrantService.grantToken(client, user, res, req, done);
+        },
+        async (client, redirectUri, user, res, req, done) => {
+          await this.codeGrantService.grantCode(
+            client,
+            redirectUri,
+            user,
+            res,
+            req,
+            done,
+          );
+        },
+        async (client, user, req, done) => {
+          await this.idTokenGrantService.grantIDToken(client, user, req, done);
+        },
+      ),
     );
   }
 }
