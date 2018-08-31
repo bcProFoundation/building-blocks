@@ -26,7 +26,7 @@ module.exports = function (config) {
     logLevel: config.LOG_INFO,
     autoWatch: true,
     browsers: ['Chrome'],
-    singleRun: false
+    singleRun: true
   };
   if (process.env.NODE_ENV === 'test') {
       options.browsers = ['ChromeHeadlessNoSandbox'];

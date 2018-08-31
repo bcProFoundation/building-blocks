@@ -10,7 +10,7 @@ describe('workspace-project App', () => {
 
   it('should route to login', () => {
     page.navigateTo();
-    //expect(page.getParagraphText()).toEqual('Welcome to angular-tour-of-heroes!');
-    expect(browser.getCurrentUrl()).toEqual('http://localhost:4200/login');
+    expect(page.getParagraphText()).toEqual('Sign in');
+    // expect(browser.getCurrentUrl()).toEqual('http://localhost:4200/login');
   });
 });

@@ -55,6 +55,9 @@
           "configurations": {
             "production": {
               "browserTarget": "communication-server:build:production"
+            },
+            "ci": {
+              "progress": false
             }
           }
         },
@@ -108,6 +111,9 @@
           "configurations": {
             "production": {
               "devServerTarget": "communication-server:serve:production"
+            },
+            "ci": {
+              "devServerTarget": "communication-server:serve:ci"
             }
           }
         },
