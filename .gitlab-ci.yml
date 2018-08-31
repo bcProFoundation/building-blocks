@@ -1,4 +1,4 @@
-image: castlecraft/node-latest-headless-chrome:1.0
+image: castlecraft/node-latest-headless-chrome:1.1
 
 services:
   - docker:dind
@@ -19,10 +19,7 @@ test_async:
     SESSION_NAME: "E2E_SESSION"
     DB_HOST: "mongo"
     DB_NAME: "test-e2e-idp"
-    DOCKERIZE_VERSION: "v0.6.1"
   before_script:
-   - apt-get install -y wget
-   - wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
    # Launch Xvfb
    - Xvfb :0 -ac -screen 0 1024x768x24 &
    # Export display for Chrome
