@@ -5,7 +5,7 @@
     "ng": "ng",
     "format": "prettier --write \"**/*.ts\"",
     "ng:start": "ng serve",
-    "e2e": "ng e2e",
+    "e2e": "echo ng e2e --port 49151 --configuration=ci",
     "build": "ng build",
     "lint": "./node_modules/.bin/tslint -c tslint.json 'src/**/*.ts'",
     "start:server": "nodemon",
@@ -17,7 +17,7 @@
     "test:server": "jest",
     "test:cov": "jest --coverage",
     "test:e2e": "jest --config ./tests/jest-e2e.json",
-    "test:client": "ng test",
+    "test:client": "echo ng test --watch=false --no-progress",
     "webpack": "webpack --config webpack.config.js"
   },
   "private": true,

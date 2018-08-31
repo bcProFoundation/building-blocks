@@ -35,7 +35,8 @@ test_async:
    - lerna run format:check
    - yarn test
    - lerna run test:e2e
-   - yarn e2e
+   - lerna run e2e
+   - lerna run test:client
   tags:
     - docker
 
