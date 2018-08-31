@@ -1,4 +1,4 @@
-image: castlecraft/node-latest-headless-chrome:1.1
+image: castlecraft/node-latest-headless-chrome:1.2
 
 services:
   - docker:dind
@@ -9,7 +9,13 @@ stages:
   - pack
   - docs
 
-test_async:
+before_script:
+  - npm install -g lerna
+  - yarn
+  - lerna clean -y
+  - lerna bootstrap
+
+test_backend:
   stage: tests
   variables:
     SESSION_SECRET: "secret"
@@ -19,24 +25,25 @@ test_async:
     SESSION_NAME: "E2E_SESSION"
     DB_HOST: "mongo"
     DB_NAME: "test-e2e-idp"
-  before_script:
-   # Launch Xvfb
-   - Xvfb :0 -ac -screen 0 1024x768x24 &
-   # Export display for Chrome
-   - export DISPLAY=:99
-   # Create .env file
-   - dockerize -template apps/authorization-server/docker/env.tmpl:apps/authorization-server/.env
   script:
-   - npm install -g lerna
-   - yarn
-   - lerna clean -y
-   - lerna bootstrap
-   - lerna run lint
-   - lerna run format:check
-   - yarn test
-   - lerna run test:e2e
-   - lerna run e2e
-   - lerna run test:client
+    # Create .env file
+    - dockerize -template apps/authorization-server/docker/env.tmpl:apps/authorization-server/.env
+    - lerna run lint
+    - lerna run format:check
+    - yarn test
+    - lerna run test:e2e
+  tags:
+    - docker
+
+test_frontend_authorization_server:
+  stage: tests
+  script:
+    # Launch Xvfb
+    - Xvfb :0 -ac -screen 0 1024x768x24 &
+    # Export display for Chrome
+    - export DISPLAY=:99
+    - export NODE_ENV=test && lerna run e2e --scope authorization-server
+    - export NODE_ENV=test && lerna run test:client --scope authorization-server
   tags:
     - docker
 
@@ -76,15 +83,11 @@ pack_production:
 
 pages:
   stage: docs
-  before_script:
-    - npm install lerna -g
+  script:
     - npm install gitbook-cli -g
     - npm install typedoc -g
     - gitbook fetch latest # fetch latest stable version
     # - gitbook install # add any requested plugins in book.json
-  script:
-    - yarn
-    - lerna bootstrap
     - gitbook build docs public # build to public path
     - yarn docs
   artifacts:
