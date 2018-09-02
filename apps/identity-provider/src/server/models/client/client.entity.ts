@@ -5,16 +5,21 @@ import { DocType } from '../base.doctype';
 
 @Entity()
 export class Client extends DocType {
-  @Column() name: string;
+  @Column()
+  name: string;
 
   // TODO: move from id to clientId
-  @Column() clientId: string;
+  @Column()
+  clientId: string;
 
-  @Column() clientSecret: string;
+  @Column()
+  clientSecret: string;
 
-  @Column() isTrusted: number;
+  @Column()
+  isTrusted: number;
 
-  @Column() redirectUri: string;
+  @Column()
+  redirectUri: string;
 
   @OneToMany(type => AuthorizationCode, code => code.client)
   public codes: Promise<AuthorizationCode[]>;
