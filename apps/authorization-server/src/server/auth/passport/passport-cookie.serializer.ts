@@ -1,4 +1,4 @@
-import { PassportSerializer } from '@nestjs/passport/dist/passport.serializer';
+import { PassportSerializer } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()

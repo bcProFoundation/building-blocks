@@ -10,15 +10,20 @@ import { User } from '../user/user.entity';
 
 @Entity()
 export class Session extends BaseEntity implements SessionEntity {
-  @PrimaryGeneratedColumn() id: string;
+  @PrimaryGeneratedColumn()
+  id: string;
 
-  @Column() sid: string;
+  @Column()
+  sid: string;
 
-  @Column() expiresAt: number;
+  @Column()
+  expiresAt: number;
 
-  @Column() cookie: string;
+  @Column()
+  cookie: string;
 
-  @Column() passport: string;
+  @Column()
+  passport: string;
 
   @Column({ type: 'varchar', length: 1000 })
   authorize: string;

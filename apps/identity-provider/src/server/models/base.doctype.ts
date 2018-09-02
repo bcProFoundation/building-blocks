@@ -7,17 +7,23 @@ import {
 } from 'typeorm';
 
 export abstract class DocType extends BaseEntity {
-  @PrimaryGeneratedColumn() id: string;
+  @PrimaryGeneratedColumn()
+  id: string;
 
-  @CreateDateColumn() creation: Date;
+  @CreateDateColumn()
+  creation: Date;
 
-  @UpdateDateColumn() modified: Date;
+  @UpdateDateColumn()
+  modified: Date;
 
   // save user id as string
-  @Column() createdBy: string;
+  @Column()
+  createdBy: string;
 
   // save user id as string
-  @Column() modifiedBy: string;
+  @Column()
+  modifiedBy: string;
 
-  @Column() docstatus: number;
+  @Column()
+  docstatus: number;
 }

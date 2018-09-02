@@ -9,7 +9,8 @@ import { User } from '../user/user.entity';
 
 @Entity()
 export class Role extends BaseEntity {
-  @PrimaryGeneratedColumn() id: string;
+  @PrimaryGeneratedColumn()
+  id: string;
 
   @Column({
     type: 'varchar',

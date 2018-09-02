@@ -20,13 +20,17 @@ import { UserEntity } from 'nestjs-session-store';
 
 @Entity()
 export class User extends BaseEntity implements UserEntity {
-  @PrimaryGeneratedColumn() id: string;
+  @PrimaryGeneratedColumn()
+  id: string;
 
-  @CreateDateColumn() creation: Date;
+  @CreateDateColumn()
+  creation: Date;
 
-  @UpdateDateColumn() modified: Date;
+  @UpdateDateColumn()
+  modified: Date;
 
-  @Column() public name: string;
+  @Column()
+  public name: string;
 
   @Column({ type: 'varchar', length: 15 })
   public phone: string;
