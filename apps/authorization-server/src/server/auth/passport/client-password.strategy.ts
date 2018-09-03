@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PassportStrategy } from '@nestjs/passport';
+import { PassportStrategy } from './passport.strategy';
 import { Strategy } from 'passport-oauth2-client-password';
 import { ClientService } from '../../models/client/client.service';
 

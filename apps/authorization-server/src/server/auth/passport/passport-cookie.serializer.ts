@@ -1,11 +1,15 @@
-import { PassportSerializer } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
+import * as passport from 'passport';
 
 @Injectable()
-export class CookieSerializer extends PassportSerializer {
+export class CookieSerializer {
   constructor() {
-    super();
+    passport.serializeUser((user, done) => this.serializeUser(user, done));
+    passport.deserializeUser((payload, done) =>
+      this.deserializeUser(payload, done),
+    );
   }
+
   async serializeUser(user: any, done: (err, user) => any) {
     // add user into array of users for multi-user per session?
     done(null, {
