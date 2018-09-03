@@ -339,10 +339,6 @@
     json-socket "^0.2.1"
     optional "0.1.4"
 
-"@nestjs/passport@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@nestjs/passport/-/passport-1.1.0.tgz#9edb581a7545a047721cd7430cdb4ea4b0388c83"
-
 "@nestjs/swagger@^2.4.6":
   version "2.4.6"
   resolved "https://registry.yarnpkg.com/@nestjs/swagger/-/swagger-2.4.6.tgz#552334d0d080de252586c6155b6cfae70ff3b5d4"

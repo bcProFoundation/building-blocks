@@ -4,7 +4,7 @@ import {
   HttpStatus,
   UnauthorizedException,
 } from '@nestjs/common';
-import { PassportStrategy } from '@nestjs/passport';
+import { PassportStrategy } from './passport.strategy';
 import { Strategy } from 'passport-http-bearer';
 import { BearerTokenService } from '../../models/bearer-token/bearer-token.service';
 import { ConfigService } from '../../config/config.service';
