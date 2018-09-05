@@ -6,6 +6,7 @@
     * [Development](authorization-server/README.md)
     * [Backend](authorization-server/backend.md)
     * [Frontend](authorization-server/frontend.md)
+    * [Testing](authorization-server/testing.md)
     * [API](http://castlecraft.gitlab.io/building-blocks/api/authorization-server/)
 
 * Development
