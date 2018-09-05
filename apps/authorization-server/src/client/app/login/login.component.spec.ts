@@ -12,15 +12,14 @@ import { ActivatedRoute } from '@angular/router';
 describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
+  const authServiceStub: Partial<AuthService> = {};
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       providers: [
-        AuthService,
-        HttpClient,
-        HttpHandler,
         {
-          provide: ActivatedRoute,
-          useValue: { queryParams: from([{ redirect: '/account' }]) },
+          provide: AuthService,
+          useValue: authServiceStub, // mock values
         },
       ],
       declarations: [LoginComponent],
@@ -33,6 +32,6 @@ describe('LoginComponent', () => {
     fixture.detectChanges();
   });
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(component).toBeDefined();
   });
 });

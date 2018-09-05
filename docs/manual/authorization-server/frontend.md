@@ -12,4 +12,4 @@ Guards
 
 ### Tests
 
-read [more](testing.md)
+read [more](testing)

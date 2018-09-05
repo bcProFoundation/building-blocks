@@ -4,16 +4,24 @@ import { ServerSettingsComponent } from './server-settings.component';
 import { AuthServerMaterialModule } from '../auth-server-material/auth-server-material.module';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClient, HttpHandler } from '@angular/common/http';
 import { ServerSettingsService } from './server-settings.service';
-import { AuthService } from '../auth/auth.service';
+import { from } from 'rxjs';
 
 describe('ServerSettingsComponent', () => {
   let component: ServerSettingsComponent;
   let fixture: ComponentFixture<ServerSettingsComponent>;
+  let stubServerSettingsService: Partial<ServerSettingsService>;
   beforeEach(async(() => {
+    stubServerSettingsService = {
+      get: () => {
+        return from([]);
+      },
+    };
+
     TestBed.configureTestingModule({
-      providers: [AuthService, ServerSettingsService, HttpClient, HttpHandler],
+      providers: [
+        { provide: ServerSettingsService, useValue: stubServerSettingsService },
+      ],
       declarations: [ServerSettingsComponent],
       imports: [FormsModule, AuthServerMaterialModule, BrowserAnimationsModule],
     }).compileComponents();
