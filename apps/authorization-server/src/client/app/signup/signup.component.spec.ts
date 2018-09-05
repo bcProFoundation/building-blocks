@@ -8,38 +8,34 @@ import {
 import { SignupComponent } from './signup.component';
 import { AuthServerMaterialModule } from '../auth-server-material/auth-server-material.module';
 import { FormsModule } from '@angular/forms';
-import { HttpClient, HttpHandler } from '@angular/common/http';
 import { AuthService } from '../auth/auth.service';
-import { from } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('SignupComponent', () => {
   let fixture: ComponentFixture<SignupComponent>;
+  const authServiceStub: Partial<AuthService> = {};
+  let component: SignupComponent;
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [SignupComponent],
       providers: [
-        AuthService,
-        HttpClient,
-        HttpHandler,
         {
-          provide: ActivatedRoute,
-          useValue: { queryParams: from([{ redirect: '/account' }]) },
+          provide: AuthService,
+          useValue: authServiceStub, // mock values
         },
       ],
       imports: [AuthServerMaterialModule, FormsModule, BrowserAnimationsModule],
     }).compileComponents();
   }));
+
   beforeEach(() => {
     fixture = TestBed.createComponent(SignupComponent);
+    component = fixture.componentInstance;
     fixture.detectChanges();
   });
-  it('should create', async(
-    inject([AuthService], (authService: AuthService) => {
-      fixture = TestBed.createComponent(SignupComponent);
-      const component: SignupComponent = fixture.componentInstance;
-      expect(component).toBeTruthy();
-    }),
-  ));
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });
