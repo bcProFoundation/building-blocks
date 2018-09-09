@@ -10,5 +10,5 @@
   "ignore": [
     "src/server/**/*.spec.ts"
   ],
-  "exec": "ts-node -r tsconfig-paths/register --project src/server/tsconfig.server.json src/server/main.ts"
+  "exec": "ts-node -r tsconfig-paths/register src/server/main.ts"
 }

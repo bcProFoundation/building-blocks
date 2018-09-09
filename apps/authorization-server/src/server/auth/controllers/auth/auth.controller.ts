@@ -31,7 +31,6 @@ import {
 // Swagger
 import { ApiOperation } from '@nestjs/swagger';
 import { LoginUserDto } from '../../../models/user/login-user.dto';
-import { EnsureLoginGuard } from 'nestjs-ensureloggedin-guard';
 
 let AuthGuard;
 if (process.env.NODE_ENV === 'test') AuthGuard = TestAuthGuard;

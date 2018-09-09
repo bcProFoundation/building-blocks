@@ -1,53 +1,17 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './user/user.entity';
-import { UserService } from './user/user.service';
-import { Session } from './session/session.entity';
-import { SessionService } from './session/session.service';
-import { UtilitiesModule } from '../utilities/utilities.module';
-import { AuthorizationCodeService } from './authorization-code/authorization-code.service';
-import { AuthorizationCode } from './authorization-code/authorization-code.entity';
-import { Client } from './client/client.entity';
-import { ClientService } from './client/client.service';
-import { BearerToken } from './bearer-token/bearer-token.entity';
-import { BearerTokenService } from './bearer-token/bearer-token.service';
-import { Role } from './role/role.entity';
-import { AuthData } from './auth-data/auth-data.entity';
-import { AuthDataService } from './auth-data/auth-data.service';
-import { RoleService } from './role/role.service';
 import { ConfigModule } from '../config/config.module';
+import { IdentityProviderSettings } from './identity-provider-settings/identity-provider-settings.entity';
+import { IdentityProviderSettingsService } from './identity-provider-settings/identity-provider-settings.service';
+import { Profile } from './profile/profile.entity';
+import { ProfileService } from './profile/profile.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      AuthData,
-      AuthorizationCode,
-      BearerToken,
-      Client,
-      Role,
-      Session,
-      User,
-    ]),
-    UtilitiesModule,
+    TypeOrmModule.forFeature([IdentityProviderSettings, Profile]),
     ConfigModule,
   ],
-  providers: [
-    AuthDataService,
-    AuthorizationCodeService,
-    BearerTokenService,
-    ClientService,
-    RoleService,
-    SessionService,
-    UserService,
-  ],
-  exports: [
-    AuthDataService,
-    AuthorizationCodeService,
-    BearerTokenService,
-    ClientService,
-    RoleService,
-    SessionService,
-    UserService,
-  ],
+  providers: [IdentityProviderSettingsService, ProfileService],
+  exports: [IdentityProviderSettingsService, ProfileService],
 })
 export class ModelsModule {}

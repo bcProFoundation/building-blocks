@@ -86,10 +86,7 @@ export function TestAuthGuard(
     class implements CanActivate {
       public async canActivate(context: ExecutionContext): Promise<boolean> {
         const httpContext = context.switchToHttp();
-        const [request, response] = [
-          httpContext.getRequest(),
-          httpContext.getResponse(),
-        ];
+        const request = httpContext.getRequest();
         const user = {
           id: 1,
           email: 'test@user.org',

@@ -12,10 +12,10 @@ describe('AppController', () => {
     }).compile();
   });
 
-  describe('root', () => {
-    it('should return "IDP built using Nest.js"', () => {
+  describe('message', () => {
+    it('should return "NestJS"', () => {
       const appController = app.get<AppController>(AppController);
-      expect(appController.root()).toBe('IDP built using Nest.js');
+      expect(appController.message()).toEqual({ message: 'NestJS' });
     });
   });
 });

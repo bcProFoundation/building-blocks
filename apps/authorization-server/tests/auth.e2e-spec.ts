@@ -2,22 +2,22 @@ import { Test } from '@nestjs/testing';
 import * as request from 'supertest-session';
 import { INestApplication } from '@nestjs/common';
 import { AppModule } from '../src/server/app.module';
-import { setupSession } from '../src/server/setup';
+import { ExpressServer } from '../src/server/express-server';
 import { UserService } from '../src/server/models/user/user.service';
 
 describe('AuthController (e2e)', () => {
   let app: INestApplication;
   let userService: UserService;
   let sessionRequest;
+  const authServer = new ExpressServer();
 
   beforeAll(async () => {
     const moduleFixture = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
-
-    app = moduleFixture.createNestApplication();
+    app = moduleFixture.createNestApplication(authServer.server);
     userService = moduleFixture.get(UserService);
-    setupSession(app);
+    authServer.setupSession(app);
     sessionRequest = request(app.getHttpServer());
     await app.init();
   });
