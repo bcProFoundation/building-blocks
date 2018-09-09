@@ -4,12 +4,6 @@
 
 export const environment = {
   production: false,
-  routes: {
-    LOGIN: '/dev/auth/login',
-    SIGNUP: '/dev/auth/signup',
-    CONFIRMATION: '/dev/oauth2/confirmation',
-    AUTHORIZE: '/dev/oauth2/authorize',
-  },
 };
 
 /*

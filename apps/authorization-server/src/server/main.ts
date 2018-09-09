@@ -25,6 +25,7 @@ async function bootstrap() {
   app.setViewEngine('hbs');
 
   authServer.setupSession(app);
+  authServer.setupCsurf(app);
   await authServer.setupCORS(app);
   await app.listen(3000);
 }

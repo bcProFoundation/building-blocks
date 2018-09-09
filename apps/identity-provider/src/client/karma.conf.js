@@ -3,7 +3,6 @@
 
 module.exports = function (config) {
   const options = {
-    singleRun: true,
     basePath: '',
     frameworks: ['jasmine', '@angular-devkit/build-angular'],
     plugins: [

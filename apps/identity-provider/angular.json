@@ -5,7 +5,7 @@
   "projects": {
     "identity-provider": {
       "root": "",
-      "sourceRoot": "src",
+      "sourceRoot": "src/client",
       "projectType": "application",
       "prefix": "app",
       "schematics": {},
@@ -46,25 +46,6 @@
               "buildOptimizer": true
             }
           }
-        },
-        "server": {
-          "builder": "@angular-devkit/build-angular:server",
-          "options": {
-            "outputPath": "dist/server",
-            "main": "src/client/main.server.ts",
-            "tsConfig": "src/client/tsconfig.server.json"
-          },
-          "configurations": {
-            "production": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ]
-            }
-          }
-
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",

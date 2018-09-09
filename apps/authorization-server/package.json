@@ -21,7 +21,7 @@
     "test": "export NODE_ENV=test && jest",
     "test:client": "ng test --no-progress",
     "test:cov": "jest --coverage",
-    "test:e2e": "export NODE_ENV=test-e2e && jest --config ./tests/jest-e2e.json",
+    "test:e2e": "export NODE_ENV=test-e2e && jest --config ./tests/jest-e2e.json --detectOpenHandles --forceExit",
     "build": "ng build",
     "build:client-and-server-bundles": "ng build --prod && ng run authorization-server:server:production",
     "build:prerender": "npm run build:client-and-server-bundles && npm run webpack:server && npm run generate:prerender",

@@ -25,9 +25,6 @@ export class ExpressServer {
     // Helmet
     this.server.use(helmet());
 
-    // CSRF
-    this.server.use(csurf());
-
     // Rate-limit
     this.server.use(
       rateLimit({
@@ -101,5 +98,10 @@ export class ExpressServer {
     app.enableCors({
       origin: allowedOrigins,
     });
+  }
+
+  setupCsurf(app: INestApplication) {
+    // CSRF
+    app.use(csurf());
   }
 }

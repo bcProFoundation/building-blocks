@@ -16,6 +16,7 @@ import { SessionService } from '../src/server/models/session/session.service';
 import { AuthorizationCodeService } from '../src/server/models/authorization-code/authorization-code.service';
 import { BearerTokenService } from '../src/server/models/bearer-token/bearer-token.service';
 import { RoleService } from '../src/server/models/role/role.service';
+import { getConnection } from 'typeorm';
 
 describe('OAuth2Controller (e2e)', () => {
   let app: INestApplication;
@@ -119,7 +120,7 @@ describe('OAuth2Controller (e2e)', () => {
       });
   });
 
-  it('/GET /oauth2/confirmation (Authorization Code Grant)', () => {
+  it('/GET /oauth2/confirmation (Authorization Code Grant)', done => {
     const request = `/oauth2/confirmation?scope=${allowedScopes.toString()}&response_type=code&client_id=${clientId}&redirect_uri=${
       redirectUris[0]
     }&state=420`;
@@ -127,6 +128,7 @@ describe('OAuth2Controller (e2e)', () => {
       code = getParameterByName(response.headers.location, 'code');
       const state = getParameterByName(response.headers.location, 'state');
       expect(state).toEqual('420');
+      done();
     });
   });
 
@@ -210,7 +212,7 @@ describe('OAuth2Controller (e2e)', () => {
       });
   });
 
-  it('/GET /oauth2/confirmation (OIDC IDToken Grant)', () => {
+  it('/GET /oauth2/confirmation (OIDC IDToken Grant)', done => {
     const request = `/oauth2/confirmation?scope=openid&response_type=id_token&client_id=${clientId}&redirect_uri=${
       redirectUris[0]
     }&state=420&nonce=tHc_Cbd`;
@@ -222,10 +224,11 @@ describe('OAuth2Controller (e2e)', () => {
       const state = getParameterByName(response.headers.location, 'state');
       expect(state).toEqual('420');
       expect(oidcIDToken).not.toBeNull();
+      done();
     });
   });
 
-  it('/GET /oauth2/confirmation (OIDC IDToken Token Grant)', () => {
+  it('/GET /oauth2/confirmation (OIDC IDToken Token Grant)', done => {
     const request = `/oauth2/confirmation?scope=openid&response_type=id_token%20token&client_id=${clientId}&redirect_uri=${
       redirectUris[0]
     }&state=420&nonce=tHc_Cbd`;
@@ -245,10 +248,11 @@ describe('OAuth2Controller (e2e)', () => {
         expect(state).toEqual('420');
         expect(oidcIDToken).not.toBeNull();
         expect(oidcToken).not.toBeNull();
+        done();
       });
   });
 
-  it('/GET /oauth2/confirmation (OIDC Code IDToken Grant)', () => {
+  it('/GET /oauth2/confirmation (OIDC Code IDToken Grant)', done => {
     const request = `/oauth2/confirmation?scope=openid&response_type=code%20id_token&client_id=${clientId}&redirect_uri=${
       redirectUris[0]
     }&state=420&nonce=tHc_Cbd`;
@@ -265,10 +269,11 @@ describe('OAuth2Controller (e2e)', () => {
         expect(state).toEqual('420');
         expect(oidcIDToken).not.toBeNull();
         expect(oidcCode).not.toBeNull();
+        done();
       });
   });
 
-  it('/GET /oauth2/confirmation (OIDC Code Token Grant)', () => {
+  it('/GET /oauth2/confirmation (OIDC Code Token Grant)', done => {
     const request = `/oauth2/confirmation?scope=openid&response_type=code%20token&client_id=${clientId}&redirect_uri=${
       redirectUris[0]
     }&state=420&nonce=tHc_Cbd`;
@@ -285,10 +290,11 @@ describe('OAuth2Controller (e2e)', () => {
         expect(state).toEqual('420');
         expect(oidcToken).not.toBeNull();
         expect(oidcCode).not.toBeNull();
+        done();
       });
   });
 
-  it('/GET /oauth2/confirmation (OIDC Code IDToken Token Grant)', () => {
+  it('/GET /oauth2/confirmation (OIDC Code IDToken Token Grant)', done => {
     const request = `/oauth2/confirmation?scope=openid&response_type=code%20id_token%20token&client_id=${clientId}&redirect_uri=${
       redirectUris[0]
     }&state=420&nonce=tHc_Cbd`;
@@ -310,12 +316,13 @@ describe('OAuth2Controller (e2e)', () => {
         expect(oidcIDToken).not.toBeNull();
         expect(oidcToken).not.toBeNull();
         expect(oidcCode).not.toBeNull();
+        done();
       });
   });
 
   afterAll(async () => {
     await bearerTokenService.clear();
-    // await getConnection().close();
+    await getConnection().close();
     setTimeout(await app.close(), 1000);
   });
 });

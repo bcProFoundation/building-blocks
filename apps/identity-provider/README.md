@@ -1,38 +1,23 @@
-# identity-provider
+# NestJS Angular Starter
 
-## Description
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.0.8. and [NestJS CLI](https://github.com/nestjs/nest-cli)
 
-Identity Provider
+## Development server
 
-## Installation
+Run `yarn start:dev` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files. Proxy to localhost:3000 (NestJS) is also setup for development.
 
-```bash
-$ yarn install
-```
+## Build
 
-## Running the app
+Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
 
-```bash
-# development
-$ yarn start
+## Running unit tests
 
-# watch mode
-$ yarn start:dev
+Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-# production mode
-$ yarn start:prod
-```
+## Running end-to-end tests
 
-## Test
+Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 
-```bash
-# unit tests
-$ yarn test
+## Further help
 
-# e2e tests
-$ yarn test:e2e
-
-# test coverage
-$ yarn test:cov
-```
-
+To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).

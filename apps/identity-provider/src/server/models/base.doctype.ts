@@ -2,13 +2,19 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  PrimaryGeneratedColumn,
   BaseEntity,
+  Index,
+  ObjectIdColumn,
+  ObjectID,
 } from 'typeorm';
 
 export abstract class DocType extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: string;
+  @ObjectIdColumn()
+  _id: ObjectID;
+
+  @Index({ unique: true })
+  @Column()
+  uuid: string;
 
   @CreateDateColumn()
   creation: Date;
