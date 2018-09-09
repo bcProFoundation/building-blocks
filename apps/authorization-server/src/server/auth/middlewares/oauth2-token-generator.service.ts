@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import * as njwt from 'njwt';
 import { CryptographerService } from '../../utilities/cryptographer.service';
 import { BearerTokenService } from '../../models/bearer-token/bearer-token.service';
-import { IDTokenClaims } from './interfaces';
 import { Client } from '../../models/client/client.entity';
 import {
   invalidScopeException,

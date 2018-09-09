@@ -16,7 +16,7 @@
     "start:hmr": "node dist/server",
     "test:server": "jest",
     "test:cov": "jest --coverage",
-    "test:e2e": "jest --config ./tests/jest-e2e.json",
+    "test:e2e": "export NODE_ENV=test-e2e && jest --config ./tests/jest-e2e.json",
     "test:client": "echo ng test --watch=false --no-progress",
     "webpack": "webpack --config webpack.config.js"
   },

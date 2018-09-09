@@ -10,8 +10,8 @@ export interface Options {
 
 export class TypeormStore extends Store {
   private readonly sessionService;
-  private readonly database?: string;
   private readonly ttl: number | undefined;
+  database?: string;
 
   constructor(options: Options) {
     super(options);

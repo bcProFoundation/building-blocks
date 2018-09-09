@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing';
 import * as session from 'supertest-session';
 import { INestApplication } from '@nestjs/common';
 import { AppModule } from '../src/server/app.module';
-import { setupSession } from '../src/server/setup';
+import { ExpressServer } from '../src/server/express-server';
 import {
   getParameterByName,
   extractToken,
@@ -31,14 +31,15 @@ describe('OAuth2Controller (e2e)', () => {
   let refreshToken: string;
   let bearerTokenService;
   let idToken: string;
+  const authServer = new ExpressServer();
 
   beforeAll(async () => {
     moduleFixture = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
 
-    app = moduleFixture.createNestApplication();
-    setupSession(app);
+    app = moduleFixture.createNestApplication(authServer.server);
+    authServer.setupSession(app);
     await app.init();
 
     const userService = moduleFixture.get(UserService);

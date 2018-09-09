@@ -1,4 +1,4 @@
-import { IsString, IsMobilePhone, IsEmail, IsNotEmpty } from 'class-validator';
+import { IsString, IsEmail, IsNotEmpty } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 import {
   USERDTO_NAME_DESCRIPTION,

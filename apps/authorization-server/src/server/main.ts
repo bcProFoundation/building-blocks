@@ -1,24 +1,16 @@
 // import './polyfills';
 
-// import 'zone.js/dist/zone-node';
-
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { join } from 'path';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import * as express from 'express';
 import { VIEWS_DIR } from './constants/locations';
-import { setupSession } from './setup';
-
-const server = express();
-server.use(express.static(join(process.cwd(), 'dist/authorization-server')));
+import { ExpressServer } from './express-server';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, server);
-
-  // const BROWSER_DIR = join(process.cwd(), 'dist', 'authorization-server');
-  // app.useStaticAssets(BROWSER_DIR);
-
+  const authServer = new ExpressServer();
+  authServer.setupSecurity();
+  authServer.setupAssetDir();
+  const app = await NestFactory.create(AppModule, authServer.server);
   // Swagger
   const options = new DocumentBuilder()
     .setTitle('Craft Building Blocks')
@@ -32,8 +24,8 @@ async function bootstrap() {
   app.setBaseViewsDir(VIEWS_DIR);
   app.setViewEngine('hbs');
 
-  setupSession(app);
-
+  authServer.setupSession(app);
+  await authServer.setupCORS(app);
   await app.listen(3000);
 }
 

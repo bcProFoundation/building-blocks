@@ -23,4 +23,8 @@ export class BearerTokenService {
   async clear() {
     return await this.bearerTokenRepository.clear();
   }
+
+  async getAll() {
+    return await this.bearerTokenRepository.find();
+  }
 }

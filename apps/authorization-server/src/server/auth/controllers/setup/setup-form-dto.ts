@@ -1,4 +1,4 @@
-import { IsEmail, IsUrl, IsNotEmpty, IsMobilePhone } from 'class-validator';
+import { IsEmail, IsUrl, IsNotEmpty } from 'class-validator';
 import { IsMobileE164 } from '../../decorators/is-mobile-e164.decorator';
 
 export class SetupFormDTO {
