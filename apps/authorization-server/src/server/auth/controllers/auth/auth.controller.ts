@@ -87,4 +87,15 @@ export class AuthController {
     req.logout();
     res.json({ message: 'logout' });
   }
+
+  @Post('verify_user')
+  @ApiOperation({
+    title: 'Verify User',
+    description: 'Check whether the user exists and retrieve a record',
+  })
+  async verifyUser(@Body('username') username, @Res() res) {
+    const user = await this.authService.findUserByEmailOrPhone(username);
+    delete user._id, user.password;
+    res.json({ user });
+  }
 }

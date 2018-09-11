@@ -5,6 +5,8 @@ import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class AuthService {
+  public redirectTo;
+
   constructor(
     private http: HttpClient,
     private activatedroute: ActivatedRoute,
@@ -18,18 +20,17 @@ export class AuthService {
     });
   }
 
-  public redirectTo;
-
   isAuthenticated(): boolean {
     return true;
     // TODO: Check if session exists.
   }
 
-  logIn(username: string, password: string) {
+  logIn(username: string, password: string, code?: string) {
     this.http
       .post(environment.routes.LOGIN, {
         username,
         password,
+        code,
         redirect: this.redirectTo,
       })
       .subscribe({
@@ -52,6 +53,12 @@ export class AuthService {
     return this.http.post(environment.routes.AUTHORIZE, {
       value: consent,
       transaction_id: transactionId,
+    });
+  }
+
+  verifyUser(username: string) {
+    return this.http.post(environment.routes.CHECK_USER, {
+      username,
     });
   }
 }

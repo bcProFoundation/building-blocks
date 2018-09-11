@@ -3,7 +3,11 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HttpClientModule } from '@angular/common/http';
+import {
+  HttpClientModule,
+  HttpClientXsrfModule,
+  HTTP_INTERCEPTORS,
+} from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthServerMaterialModule } from './auth-server-material/auth-server-material.module';
 import { FormsModule } from '@angular/forms';
@@ -13,6 +17,7 @@ import { AccountComponent } from './account/account.component';
 import { AuthService } from './auth/auth.service';
 import { ServerSettingsComponent } from './server-settings/server-settings.component';
 import { ServerSettingsService } from './server-settings/server-settings.service';
+import { XsrfInterceptor } from './interceptors/xsrf.interceptor';
 
 @NgModule({
   declarations: [
@@ -29,8 +34,16 @@ import { ServerSettingsService } from './server-settings/server-settings.service
     BrowserAnimationsModule,
     AuthServerMaterialModule,
     FormsModule,
+    HttpClientXsrfModule.withOptions({
+      cookieName: '_csrf',
+      headerName: 'xsrf-token',
+    }),
   ],
-  providers: [AuthService, ServerSettingsService],
+  providers: [
+    AuthService,
+    ServerSettingsService,
+    { provide: HTTP_INTERCEPTORS, useClass: XsrfInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

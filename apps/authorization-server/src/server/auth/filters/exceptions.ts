@@ -7,6 +7,8 @@ import {
   TWO_FACTOR_ALREADY_ENABLED,
   TWO_FACTOR_NOT_ENABLED,
   INVALID_OTP,
+  SETTING_NOT_FOUND,
+  JWKS_NOT_FOUND,
 } from '../../constants/messages';
 import { HttpStatus, HttpException } from '@nestjs/common';
 
@@ -47,5 +49,15 @@ export const twoFactorNotEnabledException = new HttpException(
 
 export const invalidOTPException = new HttpException(
   INVALID_OTP,
+  HttpStatus.BAD_REQUEST,
+);
+
+export const settingsNotFoundException = new HttpException(
+  SETTING_NOT_FOUND,
+  HttpStatus.BAD_REQUEST,
+);
+
+export const JWKSNotFound = new HttpException(
+  JWKS_NOT_FOUND,
   HttpStatus.BAD_REQUEST,
 );

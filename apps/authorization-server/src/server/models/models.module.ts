@@ -21,6 +21,8 @@ import { ScopeService } from './scope/scope.service';
 import { ServerSettingsService } from './server-settings/server-settings.service';
 import { ServerSettings } from './server-settings/server-settings.entity';
 import { WellKnownService } from './well-known/well-known.service';
+import { OIDCKey } from './oidc-key/oidc-key.entity';
+import { OIDCKeyService } from './oidc-key/oidc-key.service';
 
 @Module({
   imports: [
@@ -34,6 +36,7 @@ import { WellKnownService } from './well-known/well-known.service';
       Session,
       User,
       ServerSettings,
+      OIDCKey,
     ]),
     UtilitiesModule,
     ConfigModule,
@@ -49,6 +52,7 @@ import { WellKnownService } from './well-known/well-known.service';
     UserService,
     ServerSettingsService,
     WellKnownService,
+    OIDCKeyService,
   ],
   exports: [
     AuthDataService,

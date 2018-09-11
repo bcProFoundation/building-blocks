@@ -21,4 +21,14 @@ export interface IDTokenClaims {
   locale?: string;
   updated_at?: Date;
   roles?: string[];
+  nonce?: string;
+}
+
+export interface JWK {
+  iss?: string;
+  kty?: string;
+  alg?: string;
+  n?: string;
+  e?: string;
+  kid?: string;
 }

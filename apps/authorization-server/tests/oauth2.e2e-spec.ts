@@ -7,6 +7,7 @@ import {
   getParameterByName,
   extractToken,
   introspectToken,
+  OIDCKey,
 } from './e2e-helpers';
 import { SetupService } from '../src/server/auth/controllers/setup/setup.service';
 import { ScopeService } from '../src/server/models/scope/scope.service';
@@ -17,6 +18,8 @@ import { AuthorizationCodeService } from '../src/server/models/authorization-cod
 import { BearerTokenService } from '../src/server/models/bearer-token/bearer-token.service';
 import { RoleService } from '../src/server/models/role/role.service';
 import { getConnection } from 'typeorm';
+import { ServerSettingsService } from '../src/server/models/server-settings/server-settings.service';
+import { OIDCKeyService } from '../src/server/models/oidc-key/oidc-key.service';
 
 describe('OAuth2Controller (e2e)', () => {
   let app: INestApplication;
@@ -50,6 +53,8 @@ describe('OAuth2Controller (e2e)', () => {
     const clientService = moduleFixture.get(ClientService);
     const sessionService = moduleFixture.get(SessionService);
     const scopeService = moduleFixture.get(ScopeService);
+    const serverSettingsService = moduleFixture.get(ServerSettingsService);
+    const oidcKeyService = moduleFixture.get(OIDCKeyService);
 
     bearerTokenService = moduleFixture.get(BearerTokenService);
     bearerTokenService.clear();
@@ -75,6 +80,13 @@ describe('OAuth2Controller (e2e)', () => {
     clientSecret = client.clientSecret;
     allowedScopes = client.allowedScopes;
     redirectUris = client.redirectUris;
+
+    await oidcKeyService.save(OIDCKey);
+
+    const serverSettings = {
+      appURL: 'http://localhost:3000',
+    };
+    await serverSettingsService.save(serverSettings);
 
     sessionRequest = session(app.getHttpServer());
   });
