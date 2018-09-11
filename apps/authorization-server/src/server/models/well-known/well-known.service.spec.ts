@@ -3,6 +3,7 @@ import { WellKnownService } from './well-known.service';
 import { ServerSettingsService } from '../server-settings/server-settings.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ServerSettings } from '../server-settings/server-settings.entity';
+import { OIDCKeyService } from '../oidc-key/oidc-key.service';
 
 describe('WellKnownService', () => {
   let service: WellKnownService;
@@ -14,6 +15,10 @@ describe('WellKnownService', () => {
         {
           provide: getRepositoryToken(ServerSettings),
           useValue: {}, // provide mock values
+        },
+        {
+          provide: OIDCKeyService,
+          useValue: {},
         },
       ],
     }).compile();

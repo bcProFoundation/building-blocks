@@ -1,5 +1,6 @@
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { PassportAuthenticateMiddleware } from '@nest-middlewares/passport';
+import * as csurf from 'csurf';
 import { AuthController } from './controllers/auth/auth.controller';
 import { AuthService } from './controllers/auth/auth.service';
 import { CookieSerializer } from './passport/passport-cookie.serializer';
@@ -34,6 +35,7 @@ import { RefreshTokenExchangeService } from './oauth2-services/refresh-token-exc
 import { IDTokenGrantService } from './oauth2-services/id-token-grant/id-token-grant.service';
 import { ServerSettingsController } from './controllers/server-settings/server-settings.controller';
 import { WellKnownController } from './controllers/well-known/well-known.controller';
+import { OIDCKeyService } from '../models/oidc-key/oidc-key.service';
 
 @Module({
   providers: [
@@ -48,6 +50,7 @@ import { WellKnownController } from './controllers/well-known/well-known.control
     ClientCredentialExchangeService,
     RefreshTokenExchangeService,
     IDTokenGrantService,
+    OIDCKeyService,
 
     // Passport Strategies
     CookieSerializer,
@@ -91,6 +94,8 @@ export class AuthModule implements NestModule {
         OAuth2ErrorHandlerMiddleware,
       )
       .with(['oauth2-code', 'oauth2-client-password'], { session: false })
-      .forRoutes('/oauth2/token');
+      .forRoutes('/oauth2/token')
+      .apply(csurf({ cookie: true, ignoreMethods: ['POST'] }))
+      .forRoutes('/auth/login', '/auth/signup');
   }
 }

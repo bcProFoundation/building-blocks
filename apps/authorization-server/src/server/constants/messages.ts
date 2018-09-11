@@ -1,3 +1,5 @@
+export const APP_NAME = 'Authorization Server';
+export const APP_DESCRIPTION = 'OAuth 2.0 OpenID Connect Authorization Server';
 export const SUCCESS_MESSAGE = 'success';
 export const INVALID_PASSWORD = 'Invalid password';
 export const INVALID_CLIENT = 'Unauthorized Client';
@@ -21,3 +23,4 @@ export const TWO_FACTOR_ALREADY_ENABLED =
 export const TWO_FACTOR_NOT_ENABLED = 'Two factor authentication not enabled';
 export const INVALID_OTP = 'Invalid OTP';
 export const SETTING_NOT_FOUND = 'Setting does not exist';
+export const JWKS_NOT_FOUND = 'JWK Not Found';

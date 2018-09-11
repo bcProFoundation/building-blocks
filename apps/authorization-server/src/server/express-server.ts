@@ -3,7 +3,6 @@ import * as cookieParser from 'cookie-parser';
 import * as expressSession from 'express-session';
 import * as passport from 'passport';
 import * as helmet from 'helmet';
-import * as csurf from 'csurf';
 import * as rateLimit from 'express-rate-limit';
 import { ConfigService } from './config/config.service';
 import { getRepository } from 'typeorm';
@@ -98,10 +97,5 @@ export class ExpressServer {
     app.enableCors({
       origin: allowedOrigins,
     });
-  }
-
-  setupCsurf(app: INestApplication) {
-    // CSRF
-    app.use(csurf());
   }
 }

@@ -9,6 +9,7 @@ import { User } from './user/user.entity';
 import { Scope } from './scope/scope.entity';
 import { MongoConnectionOptions } from 'typeorm/driver/mongodb/MongoConnectionOptions';
 import { ServerSettings } from './server-settings/server-settings.entity';
+import { OIDCKey } from './oidc-key/oidc-key.entity';
 
 const config = new ConfigService();
 
@@ -28,5 +29,6 @@ export const TYPEORM_CONNECTION: MongoConnectionOptions = {
     Session,
     User,
     ServerSettings,
+    OIDCKey,
   ],
 };

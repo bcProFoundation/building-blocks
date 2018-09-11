@@ -1,19 +1,48 @@
 <mat-grid-list cols="1" rowHeight="3:1">
   <mat-grid-tile>
-    <form (ngSubmit)="onSubmit()">
+    <form>
       <mat-card>
         <mat-card-title>Sign in</mat-card-title>
         <mat-card-content>
-          <mat-form-field class="full-width">
-            <input [(ngModel)]="username" matInput placeholder="Username or phone" name="username" required>
-          </mat-form-field>
-          <mat-form-field class="full-width">
-            <input [(ngModel)]="password" matInput placeholder="Password" type="password" name="password" required>
-          </mat-form-field>
-        </mat-card-content>
-        <mat-card-actions>
-          <button type="submit" mat-button>Login</button>
-        </mat-card-actions>
+          <div class="login container" *ngIf="showUsername">
+            <mat-form-field class="full-width">
+              <input [(ngModel)]="username" matInput placeholder="Username or phone" name="username" 
+              class="form-control" required>
+            </mat-form-field>
+            <div>
+                <div>
+                  <div>
+                    <button (click)="verifyUser()" mat-flat-button>Next</button>
+                    <a routerLink="/signup" class="left-margin-30">Signup</a>
+                  </div>
+                </div>
+            </div>
+          </div> 
+          <div class="password" *ngIf="showPassword">
+            <mat-form-field class="full-width">
+              <input [(ngModel)]="password" matInput placeholder="Password" type="password" name="password" required>
+              <mat-error *ngIf="invalidPasswordError">{{ invalidPasswordError }}</mat-error>
+            </mat-form-field>
+            <div>
+                <div>
+                  <button (click)="onSubmit()" mat-flat-button>Login</button>
+                  <a (click)="forgotPassword()" class="left-margin-30">Forgot?</a>
+                </div>
+            </div>
+          </div> 
+          <div class="otp" *ngIf="showCode">
+            <mat-form-field class="full-width">
+                <input [(ngModel)]="code" matInput placeholder="OTP" name="code">
+            </mat-form-field>
+            <div>
+                <div>
+                  <button (click)="onSubmit()" mat-flat-button>Login</button>
+                  <a (click)="resendOTP()" class="left-margin-30">Resend OTP?</a>
+                </div>
+            </div>
+          </div>
+          <mat-error *ngIf="formError">{{formError}}</mat-error>
+        </mat-card-content>        
       </mat-card>    
     </form>
   </mat-grid-tile>

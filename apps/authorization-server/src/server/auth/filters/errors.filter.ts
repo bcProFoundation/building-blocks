@@ -25,12 +25,8 @@ export class ErrorFilter implements ExceptionFilter {
     if (status === HttpStatus.NOT_FOUND)
       return response.status(status).render('404');
     if (status === HttpStatus.INTERNAL_SERVER_ERROR) {
-      if (process.env.NODE_ENV === 'production') {
-        return response.status(status).render('500');
-      } else {
-        const message = error.message;
-        return response.status(status).json({ error: message });
-      }
+      const message = error.message;
+      return response.status(status).json({ error: message });
     }
   }
 }

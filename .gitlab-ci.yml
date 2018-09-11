@@ -31,7 +31,7 @@ test_backend:
     - lerna run lint
     - lerna run format:check
     - yarn test
-    - lerna run test:e2e --stream --concurrency 1
+    - lerna run test:e2e --stream
   tags:
     - docker
 
