@@ -11,6 +11,7 @@ import { Client } from '../../../models/client/client.entity';
 import { AuthorizationCodeService } from '../../../models/authorization-code/authorization-code.service';
 import { CodeExchangeService } from './code-exchange.service';
 import { AuthorizationCode } from '../../../models/authorization-code/authorization-code.entity';
+import { AuthData } from '../../../models/auth-data/auth-data.entity';
 
 describe('CodeExchangeService', () => {
   let service: CodeExchangeService;
@@ -31,6 +32,10 @@ describe('CodeExchangeService', () => {
         },
         {
           provide: getRepositoryToken(User),
+          useValue: {},
+        },
+        {
+          provide: getRepositoryToken(AuthData),
           useValue: {},
         },
         {

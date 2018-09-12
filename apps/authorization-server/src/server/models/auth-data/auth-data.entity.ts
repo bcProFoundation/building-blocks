@@ -10,10 +10,10 @@ export class AuthData extends BaseEntity {
   uuid: string;
 
   /**
-   * Store UUID of AuthData
+   * Store UUID of AuthData on any entity to store secrets
    */
   @Column()
-  password: string;
+  password: string | number;
 
   constructor() {
     super();

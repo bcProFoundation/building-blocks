@@ -8,6 +8,7 @@ import { ClientService } from '../../models/client/client.service';
 import { UserService } from '../../models/user/user.service';
 import { User } from '../../models/user/user.entity';
 import { Client } from '../../models/client/client.entity';
+import { AuthData } from '../../models/auth-data/auth-data.entity';
 
 describe('OAuth2TokenGeneratorService', () => {
   let service: OAuth2TokenGeneratorService;
@@ -25,6 +26,10 @@ describe('OAuth2TokenGeneratorService', () => {
         },
         {
           provide: getRepositoryToken(User),
+          useValue: {},
+        },
+        {
+          provide: getRepositoryToken(AuthData),
           useValue: {},
         },
         {

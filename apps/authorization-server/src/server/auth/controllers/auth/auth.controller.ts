@@ -8,6 +8,7 @@ import {
   ValidationPipe,
   UsePipes,
   Get,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { callback } from '../../passport/local.strategy';
@@ -18,7 +19,7 @@ import {
 } from '../../guards/auth.guard';
 
 // Constants
-import { SUCCESS_MESSAGE } from '../../../constants/messages';
+import { SUCCESS_MESSAGE, INVALID_PASSWORD } from '../../../constants/messages';
 import {
   AUTH_LOGIN_TITLE,
   AUTH_LOGIN_DESCRIPTION,
@@ -93,8 +94,18 @@ export class AuthController {
     title: 'Verify User',
     description: 'Check whether the user exists and retrieve a record',
   })
-  async verifyUser(@Body('username') username, @Res() res) {
-    const user = await this.authService.findUserByEmailOrPhone(username);
+  async verifyUser(
+    @Res() res,
+    @Body('username') username: string,
+    @Body('password') password?: string,
+  ) {
+    let user = await this.authService.findUserByEmailOrPhone(username);
+
+    if (password) {
+      user = await this.authService.logIn(username, password);
+      if (!user) throw new UnauthorizedException(INVALID_PASSWORD);
+    }
+
     delete user._id, user.password;
     res.json({ user });
   }
