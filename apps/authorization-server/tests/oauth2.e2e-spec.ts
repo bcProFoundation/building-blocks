@@ -3,12 +3,7 @@ import * as session from 'supertest-session';
 import { INestApplication } from '@nestjs/common';
 import { AppModule } from '../src/server/app.module';
 import { ExpressServer } from '../src/server/express-server';
-import {
-  getParameterByName,
-  extractToken,
-  introspectToken,
-  OIDCKey,
-} from './e2e-helpers';
+import { getParameterByName, extractToken, OIDCKey } from './e2e-helpers';
 import { SetupService } from '../src/server/auth/controllers/setup/setup.service';
 import { ScopeService } from '../src/server/models/scope/scope.service';
 import { UserService } from '../src/server/models/user/user.service';
@@ -31,10 +26,9 @@ describe('OAuth2Controller (e2e)', () => {
   let sessionRequest;
   let code: string;
   let clientAccessToken: string;
-  let accessTokenToRevoke: string;
   let refreshToken: string;
   let bearerTokenService;
-  let idToken: string;
+  let userService;
   const authServer = new ExpressServer();
 
   beforeAll(async () => {
@@ -46,7 +40,7 @@ describe('OAuth2Controller (e2e)', () => {
     authServer.setupSession(app);
     await app.init();
 
-    const userService = moduleFixture.get(UserService);
+    userService = moduleFixture.get(UserService);
     const setupService = moduleFixture.get(SetupService);
     const authCodeService = moduleFixture.get(AuthorizationCodeService);
     const roleService = moduleFixture.get(RoleService);
@@ -57,9 +51,10 @@ describe('OAuth2Controller (e2e)', () => {
     const oidcKeyService = moduleFixture.get(OIDCKeyService);
 
     bearerTokenService = moduleFixture.get(BearerTokenService);
-    bearerTokenService.clear();
-    authCodeService.clear();
-    roleService.clear();
+
+    await bearerTokenService.clear();
+    await authCodeService.clear();
+    await roleService.clear();
 
     await sessionService.clear();
     await scopeService.clear();
@@ -98,7 +93,7 @@ describe('OAuth2Controller (e2e)', () => {
       .expect(401);
   });
 
-  it('/POST /auth/login', async () => {
+  it('/POST /auth/login', () => {
     return sessionRequest
       .post('/auth/login')
       .send({
@@ -123,11 +118,22 @@ describe('OAuth2Controller (e2e)', () => {
       .then(response => {
         clientAccessToken = response.body.access_token;
         expect(response.body.token_type).toEqual('Bearer');
-        introspectToken(
-          session(app.getHttpServer()),
-          clientAccessToken,
-          clientAccessToken,
-        );
+        done();
+      });
+  });
+
+  it('/POST /oauth2/introspection (Token Introspection)', done => {
+    const clientCredentials = Buffer.from(
+      clientId + ':' + clientSecret,
+    ).toString('base64');
+    return session(app.getHttpServer())
+      .post('/oauth2/introspection')
+      .send({
+        token: clientAccessToken,
+      })
+      .set('Authorization', 'Basic ' + clientCredentials)
+      .expect(200)
+      .then(res => {
         done();
       });
   });
@@ -157,11 +163,8 @@ describe('OAuth2Controller (e2e)', () => {
       .send(req)
       .expect(200)
       .then(response => {
-        accessTokenToRevoke = response.body.access_token;
         refreshToken = response.body.refresh_token;
-        idToken = response.body.id_token;
         expect(response.body.token_type).toEqual('Bearer');
-        introspectToken(sessionRequest, accessTokenToRevoke, clientAccessToken);
         done();
       });
   });
@@ -180,11 +183,6 @@ describe('OAuth2Controller (e2e)', () => {
       .expect(200)
       .then(response => {
         expect(response.body.token_type).toEqual('Bearer');
-        introspectToken(
-          session(app.getHttpServer()),
-          response.body.access_token,
-          clientAccessToken,
-        );
         done();
       });
   });
@@ -197,7 +195,6 @@ describe('OAuth2Controller (e2e)', () => {
       const token = extractToken(response.headers.location);
       const state = getParameterByName(response.headers.location, 'state');
       expect(state).toEqual('420');
-      introspectToken(session(app.getHttpServer()), token, clientAccessToken);
       done();
     });
   });
@@ -215,11 +212,6 @@ describe('OAuth2Controller (e2e)', () => {
       .expect(200)
       .then(response => {
         expect(response.body.token_type).toEqual('Bearer');
-        introspectToken(
-          session(app.getHttpServer()),
-          response.body.access_token,
-          clientAccessToken,
-        );
         done();
       });
   });
@@ -334,7 +326,7 @@ describe('OAuth2Controller (e2e)', () => {
 
   afterAll(async () => {
     await bearerTokenService.clear();
-    await getConnection().close();
-    setTimeout(await app.close(), 1000);
+    await userService.deleteByEmail('admin@user.org');
+    await app.close();
   });
 });

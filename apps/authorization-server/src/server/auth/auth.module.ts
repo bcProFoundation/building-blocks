@@ -36,6 +36,7 @@ import { IDTokenGrantService } from './oauth2-services/id-token-grant/id-token-g
 import { ServerSettingsController } from './controllers/server-settings/server-settings.controller';
 import { WellKnownController } from './controllers/well-known/well-known.controller';
 import { OIDCKeyService } from '../models/oidc-key/oidc-key.service';
+import { TokenIntrospectionGuard } from './guards/token-introspection.guard';
 
 @Module({
   providers: [
@@ -68,6 +69,7 @@ import { OIDCKeyService } from '../models/oidc-key/oidc-key.service';
 
     // Guards
     RolesGuard,
+    TokenIntrospectionGuard,
   ],
   controllers: [
     AuthController,
