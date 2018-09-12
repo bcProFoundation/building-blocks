@@ -12,16 +12,6 @@ export function extractToken(hash) {
   return !!match && match[1];
 }
 
-export function introspectToken(request, accessToken, clientAccessToken) {
-  request
-    .post('/oauth2/introspection')
-    .send({
-      token: accessToken,
-    })
-    .set('Authorization', 'Bearer ' + clientAccessToken)
-    .expect(200);
-}
-
 export const OIDCKey = {
   keyPair: {
     kty: 'RSA',

@@ -39,3 +39,16 @@ export class AgendaService implements OnModuleInit {
     await this.agenda.every(interval, names, data);
   }
 }
+
+export class MockAgendaService {
+  define(
+    name: string,
+    callback: (job: Agenda.Job, done: (err?: Error) => void) => void,
+  ) {}
+
+  async every(
+    interval: string,
+    names: string,
+    data?: Agenda.JobAttributesData,
+  ) {}
+}

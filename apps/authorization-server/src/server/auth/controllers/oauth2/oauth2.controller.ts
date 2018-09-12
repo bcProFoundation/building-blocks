@@ -26,6 +26,7 @@ import {
   OAUTH2_TOKEN_INTROSPECTION_DESCRIPTION,
 } from '../../../constants/swagger';
 import { OAuth2Service } from './oauth2.service';
+import { TokenIntrospectionGuard } from '../../guards/token-introspection.guard';
 
 @Controller('oauth2')
 export class OAuth2Controller {
@@ -87,7 +88,7 @@ export class OAuth2Controller {
   }
 
   @Post('introspection')
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @UseGuards(TokenIntrospectionGuard)
   @ApiOperation({
     title: OAUTH2_TOKEN_INTROSPECTION_TITLE,
     description: OAUTH2_TOKEN_INTROSPECTION_DESCRIPTION,
