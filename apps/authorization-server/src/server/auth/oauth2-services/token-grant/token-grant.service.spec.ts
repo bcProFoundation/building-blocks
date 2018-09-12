@@ -10,6 +10,7 @@ import { AuthorizationCode } from '../../../models/authorization-code/authorizat
 import { TokenGrantService } from './token-grant.service';
 import { CryptographerService } from '../../../utilities/cryptographer.service';
 import { BearerTokenService } from '../../../models/bearer-token/bearer-token.service';
+import { AuthData } from '../../../models/auth-data/auth-data.entity';
 
 describe('TokenGrantService', () => {
   let service: TokenGrantService;
@@ -28,6 +29,10 @@ describe('TokenGrantService', () => {
         },
         {
           provide: getRepositoryToken(User),
+          useValue: {},
+        },
+        {
+          provide: getRepositoryToken(AuthData),
           useValue: {},
         },
         {

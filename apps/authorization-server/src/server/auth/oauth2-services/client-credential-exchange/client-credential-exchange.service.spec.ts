@@ -10,6 +10,7 @@ import { ClientCredentialExchangeService } from './client-credential-exchange.se
 import { UserService } from '../../../models/user/user.service';
 import { BearerTokenService } from '../../../models/bearer-token/bearer-token.service';
 import { CryptographerService } from '../../../utilities/cryptographer.service';
+import { AuthData } from '../../../models/auth-data/auth-data.entity';
 
 describe('ClientCredentialExchangeService', () => {
   let service: ClientCredentialExchangeService;
@@ -29,6 +30,10 @@ describe('ClientCredentialExchangeService', () => {
         },
         {
           provide: getRepositoryToken(User),
+          useValue: {},
+        },
+        {
+          provide: getRepositoryToken(AuthData),
           useValue: {},
         },
         {

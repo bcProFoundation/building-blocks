@@ -44,7 +44,7 @@ export class User extends DocType {
   enable2fa: boolean = false;
 
   /**
-   * Shared secret to generate OTP
+   * Shared secret to generate OTP (AuthData uuid)
    */
   @Column()
   sharedSecret: string;
@@ -57,12 +57,13 @@ export class User extends DocType {
 
   /**
    * Stores otp counter to validate otp sent over email or phone
+   * (AuthData uuid)
    */
   @Column()
-  otpCounter: number;
+  otpCounter: string;
 
   /**
-   * Key to store temporary 2fa secret
+   * Key to store temporary 2fa secret (AuthData uuid)
    */
   @Column()
   twoFactorTempSecret: string;

@@ -11,6 +11,7 @@ import { BearerToken } from '../../../models/bearer-token/bearer-token.entity';
 import { User } from '../../../models/user/user.entity';
 import { Client } from '../../../models/client/client.entity';
 import { AuthorizationCode } from '../../../models/authorization-code/authorization-code.entity';
+import { AuthData } from '../../../models/auth-data/auth-data.entity';
 
 describe('CodeGrantService', () => {
   let service: CodeGrantService;
@@ -31,6 +32,10 @@ describe('CodeGrantService', () => {
         },
         {
           provide: getRepositoryToken(User),
+          useValue: {},
+        },
+        {
+          provide: getRepositoryToken(AuthData),
           useValue: {},
         },
         {

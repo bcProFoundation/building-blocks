@@ -64,6 +64,9 @@ export class AuthService {
    */
   public async logIn(username, password, code?) {
     const user: User = await this.userService.findUserByEmailOrPhone(username);
+    const sharedSecret = await this.authDataService.findOne({
+      uuid: user.sharedSecret,
+    });
     if (!user) throw new UnauthorizedException(INVALID_USER);
     if (user.disabled) throw new UnauthorizedException(USER_DISABLED);
     const userPassword = await this.authDataService.findOne({
@@ -81,7 +84,7 @@ export class AuthService {
       if (!code) throw invalidOTPException;
 
       const totp = speakeasy.totp({
-        secret: user.sharedSecret,
+        secret: sharedSecret.password,
         encoding: 'base32',
         window: 6,
       });
@@ -89,10 +92,13 @@ export class AuthService {
       if (totp === code) {
         return user;
       } else if (totp !== code) {
+        const otpCounter = await this.authDataService.findOne({
+          uuid: user.otpCounter,
+        });
         const hotp = speakeasy.hotp({
-          secret: user.sharedSecret,
+          secret: sharedSecret.password,
           encoding: 'base32',
-          counter: user.otpCounter,
+          counter: otpCounter.password,
         });
         if (hotp === code) return user;
         else if (hotp !== code) throw invalidOTPException;
