@@ -25,7 +25,7 @@ export class RabbitMQServer extends Server implements CustomTransportStrategy {
   private async handleMessage(message) {
     const { content } = message;
     const messageObj = JSON.parse(content.toString());
-    const handlers = this.getHandlers();
+    // const handlers = this.getHandlers();
     const pattern = JSON.stringify(messageObj.pattern);
     if (!this.messageHandlers[pattern]) {
       return;

@@ -15,6 +15,7 @@
     "baseUrl": "./src/server",
     "outDir": "./dist/out-tsc",
     "moduleResolution": "node",
+    "noUnusedLocals": true,
     "typeRoots": [
       "node_modules/@types"
     ],

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Client } from './client.entity';
 import { Repository } from 'typeorm';
+import { clientNotSetupException } from 'constants/exceptions';
 
 @Injectable()
 export class ClientService {
@@ -39,6 +40,9 @@ export class ClientService {
   }
 
   async getClient() {
-    return await this.clientRepository.find()[0];
+    const clients = await this.clientRepository.find();
+    if (!clients.length) throw clientNotSetupException;
+    const client = clients[0];
+    return client;
   }
 }

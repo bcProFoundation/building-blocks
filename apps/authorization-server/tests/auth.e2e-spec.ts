@@ -4,6 +4,8 @@ import { INestApplication } from '@nestjs/common';
 import { AppModule } from '../src/server/app.module';
 import { ExpressServer } from '../src/server/express-server';
 import { UserService } from '../src/server/models/user/user.service';
+import 'jest';
+jest.setTimeout(30000);
 
 describe('AuthController (e2e)', () => {
   let app: INestApplication;

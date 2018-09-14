@@ -1,5 +1,4 @@
 import * as Joi from 'joi';
-import * as fs from 'fs';
 import * as dotenv from 'dotenv';
 
 export interface EnvConfig {

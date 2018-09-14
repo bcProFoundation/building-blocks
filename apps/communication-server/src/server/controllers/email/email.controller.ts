@@ -1,6 +1,6 @@
-import { Controller, Post, Body, UseGuards, Get } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards } from '@nestjs/common';
 import { EmailService } from './email.service';
-import { AuthServerVerificationGuard } from 'guards/authserver-verification.guard';
+import { AuthServerVerificationGuard } from '../../guards/authserver-verification.guard';
 import { MessagePattern } from '@nestjs/microservices';
 import { from, Observable } from 'rxjs';
 
