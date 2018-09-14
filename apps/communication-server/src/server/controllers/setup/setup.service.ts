@@ -1,8 +1,5 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import {
-  SETUP_ALREADY_COMPLETE,
-  COMMUNICATION_SERVER,
-} from '../../constants/messages';
+import { SETUP_ALREADY_COMPLETE } from '../../constants/messages';
 import { ClientService } from '../../models/client/client.service';
 import { Client } from '../../models/client/client.entity';
 import { SetupFormDTO } from './setup-form-dto';

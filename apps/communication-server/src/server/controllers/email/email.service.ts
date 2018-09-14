@@ -1,17 +1,17 @@
 import {
   Injectable,
-  HttpException,
-  HttpStatus,
+  // HttpException,
+  // HttpStatus,
   OnModuleInit,
   OnModuleDestroy,
 } from '@nestjs/common';
-import {
-  SETUP_ALREADY_COMPLETE,
-  COMMUNICATION_SERVER,
-  SYSTEM_EMAIL_ACCOUNT_NOT_FOUND,
-} from '../../constants/messages';
+// import {
+//   SETUP_ALREADY_COMPLETE,
+//   COMMUNICATION_SERVER,
+//   SYSTEM_EMAIL_ACCOUNT_NOT_FOUND,
+// } from '../../constants/messages';
 import * as nodemailer from 'nodemailer';
-import { EmailAccountService } from '../../models/email-account/email-account.service';
+// import { EmailAccountService } from '../../models/email-account/email-account.service';
 import { RabbitMQClient } from 'rabbitmq/rabbitmq-client';
 import { ConfigService } from 'config/config.service';
 
@@ -19,8 +19,8 @@ import { ConfigService } from 'config/config.service';
 export class EmailService implements OnModuleInit, OnModuleDestroy {
   rabbitMQClient: RabbitMQClient;
   constructor(
-    private readonly configService: ConfigService,
-    private readonly emailAccountService: EmailAccountService,
+    configService: ConfigService,
+    // private readonly emailAccountService: EmailAccountService,
   ) {
     this.rabbitMQClient = new RabbitMQClient(
       configService.get('AMQP_URL'),
@@ -37,14 +37,14 @@ export class EmailService implements OnModuleInit, OnModuleDestroy {
   }
 
   async sendMessage() {
-    const transport = await this.getSMTPTransport();
-    const message = {
-      from: 'sender@server.com',
-      to: 'receiver@sender.com',
-      subject: 'Message title',
-      text: 'Plaintext version of the message',
-      html: '<p>HTML version of the message</p>',
-    };
+    // const transport = await this.getSMTPTransport();
+    // const message = {
+    //   from: 'sender@server.com',
+    //   to: 'receiver@sender.com',
+    //   subject: 'Message title',
+    //   text: 'Plaintext version of the message',
+    //   html: '<p>HTML version of the message</p>',
+    // };
 
     const pattern = { cmd: 'sum' };
     const data = [1, 2, 3];

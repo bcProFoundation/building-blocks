@@ -12,9 +12,10 @@ import { SessionService } from '../src/server/models/session/session.service';
 import { AuthorizationCodeService } from '../src/server/models/authorization-code/authorization-code.service';
 import { BearerTokenService } from '../src/server/models/bearer-token/bearer-token.service';
 import { RoleService } from '../src/server/models/role/role.service';
-import { getConnection } from 'typeorm';
 import { ServerSettingsService } from '../src/server/models/server-settings/server-settings.service';
 import { OIDCKeyService } from '../src/server/models/oidc-key/oidc-key.service';
+import 'jest';
+jest.setTimeout(30000);
 
 describe('OAuth2Controller (e2e)', () => {
   let app: INestApplication;
