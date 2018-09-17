@@ -3,6 +3,8 @@ import { TokenSchedulerService } from './token-schedule.service';
 import { ModelsModule } from '../models/models.module';
 import { ConfigModule } from '../config/config.module';
 import { AgendaService, MockAgendaService } from './agenda.service';
+import { KeyPairGeneratorService } from './keypair-generator.service';
+import { OIDCKeyService } from '../models/oidc-key/oidc-key.service';
 
 const AgendaProvider = {
   provide: AgendaService,
@@ -13,6 +15,11 @@ const AgendaProvider = {
 
 @Module({
   imports: [ConfigModule, ModelsModule],
-  providers: [TokenSchedulerService, AgendaProvider],
+  providers: [
+    AgendaProvider,
+    TokenSchedulerService,
+    OIDCKeyService,
+    KeyPairGeneratorService,
+  ],
 })
 export class SchedulerModule {}

@@ -22,7 +22,7 @@ export class IDTokenGrantService {
       const issuedAt = Date.parse(new Date().toString()) / 1000;
 
       const claims: IDTokenClaims = {
-        iss: this.settings.appURL,
+        iss: this.settings.issuerUrl,
         aud: client.clientId,
         iat: Math.trunc(issuedAt),
         exp: Math.trunc(issuedAt) + 3600, // seconds * milliseconds
@@ -30,22 +30,20 @@ export class IDTokenGrantService {
         nonce: req.nonce,
       };
 
-      (async () => {
-        const jwks = await this.oidcKeyService.find();
-        const foundKey = jwks[0];
-        if (!foundKey) {
-          throw JWKSNotFound;
-        }
+      const jwks = await this.oidcKeyService.find();
+      const foundKey = jwks[0];
+      if (!foundKey) {
+        throw JWKSNotFound;
+      }
 
-        const signedToken = await jose.JWS.createSign(
-          { alg: 'RS256', format: 'compact' },
-          foundKey.keyPair,
-        )
-          .update(JSON.stringify(claims))
-          .final();
+      const signedToken = await jose.JWS.createSign(
+        { alg: 'RS256', format: 'compact' },
+        foundKey.keyPair,
+      )
+        .update(JSON.stringify(claims))
+        .final();
 
-        done(null, signedToken);
-      })();
+      done(null, signedToken);
     } catch (error) {
       done(error, null);
     }

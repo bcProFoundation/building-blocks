@@ -10,7 +10,7 @@ export class ServerSettings extends BaseEntity {
   uuid: string;
 
   @Column()
-  appURL: string;
+  issuerUrl: string;
 
   constructor() {
     super();

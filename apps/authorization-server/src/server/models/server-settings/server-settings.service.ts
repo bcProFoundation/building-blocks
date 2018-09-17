@@ -15,10 +15,10 @@ export class ServerSettingsService {
     let serverSettings = new ServerSettings();
     if (params.uuid) {
       serverSettings = await this.findOne({ uuid: params.uuid });
-      serverSettings.appURL = params.appURL;
+      serverSettings.issuerUrl = params.appURL;
       serverSettings.save();
     } else {
-      serverSettings.appURL = params.appURL;
+      serverSettings.issuerUrl = params.appURL;
     }
     return await this.settingsRepository.save(serverSettings);
   }
@@ -37,5 +37,9 @@ export class ServerSettingsService {
 
   async update(query, params) {
     return await this.settingsRepository.update(query, params);
+  }
+
+  async count() {
+    return await this.settingsRepository.count();
   }
 }
