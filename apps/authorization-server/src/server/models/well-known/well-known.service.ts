@@ -13,7 +13,7 @@ export class WellKnownService {
 
   async getOpenidConfiguration() {
     const settings = await this.settingsService.find();
-    const authServerURL = settings.appURL;
+    const authServerURL = settings.issuerUrl;
     return {
       issuer: authServerURL,
       jwks_uri: `${authServerURL}/.well-known/jwks`,

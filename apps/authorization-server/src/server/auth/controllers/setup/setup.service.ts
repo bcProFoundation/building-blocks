@@ -11,6 +11,7 @@ import { CreateUserDto } from '../../../models/user/create-user.dto';
 import { UserService } from '../../../models/user/user.service';
 import { randomBytes } from 'crypto';
 import { RoleService } from '../../../models/role/role.service';
+import { ServerSettingsService } from '../../../models/server-settings/server-settings.service';
 
 @Injectable()
 export class SetupService {
@@ -20,14 +21,16 @@ export class SetupService {
     private readonly userService: UserService,
     private readonly roleService: RoleService,
     private readonly authService: AuthService,
+    private readonly settingsService: ServerSettingsService,
   ) {}
 
   async setupInfrastructureClient(
     fullName: string,
     email: string,
     phone: string,
-    serverUrl: string,
+    infrastructureConsoleCallbackUrl: string,
     adminPassword: string,
+    issuerUrl: string,
   ) {
     const existingClients = await this.clientService.find();
     const existingUsers = await this.userService.find();
@@ -35,18 +38,18 @@ export class SetupService {
     if (existingClients.length > 0 || existingUsers.length > 0) {
       throw new HttpException(SETUP_ALREADY_COMPLETE, HttpStatus.UNAUTHORIZED);
     }
-
+    await this.settingsService.save({ issuerUrl });
     await this.createUser(fullName, email, phone, adminPassword);
-    return await this.createClient(email, serverUrl);
+    return await this.createClient(email, infrastructureConsoleCallbackUrl);
   }
 
   /**
    * Creates Client as specified user's email and serverUrl
    *
    * @param email
-   * @param serverUrl
+   * @param callbackUrl
    */
-  async createClient(email: string, serverUrl: string) {
+  async createClient(email: string, callbackUrl: string) {
     const scope = await this.scopeService.save([
       { name: 'openid' },
       { name: 'roles' },
@@ -58,7 +61,7 @@ export class SetupService {
 
     const client = new Client();
     client.clientSecret = randomBytes(32).toString('hex');
-    client.redirectUris = [`${serverUrl}/auth/callback`];
+    client.redirectUris = [callbackUrl];
     client.name = INFRASTRUCTURE_CONSOLE;
     client.allowedScopes = allowedScopes;
     client.createdBy = createdBy.uuid;

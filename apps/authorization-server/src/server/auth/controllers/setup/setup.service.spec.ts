@@ -13,6 +13,8 @@ import { AuthDataService } from '../../../models/auth-data/auth-data.service';
 import { AuthData } from '../../../models/auth-data/auth-data.entity';
 import { RoleService } from '../../../models/role/role.service';
 import { Role } from '../../../models/role/role.entity';
+import { ServerSettingsService } from '../../../models/server-settings/server-settings.service';
+import { ServerSettings } from '../../../models/server-settings/server-settings.entity';
 
 describe('SetupService', () => {
   let service: SetupService;
@@ -27,6 +29,7 @@ describe('SetupService', () => {
         CryptographerService,
         AuthDataService,
         RoleService,
+        ServerSettingsService,
         {
           provide: getRepositoryToken(Client),
           useValue: {}, // provide mock values
@@ -45,6 +48,10 @@ describe('SetupService', () => {
         },
         {
           provide: getRepositoryToken(Role),
+          useValue: {}, // provide mock values
+        },
+        {
+          provide: getRepositoryToken(ServerSettings),
           useValue: {}, // provide mock values
         },
       ],

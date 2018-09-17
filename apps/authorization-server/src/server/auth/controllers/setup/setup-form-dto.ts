@@ -9,7 +9,10 @@ export class SetupFormDTO {
   email: string;
 
   @IsUrl()
-  serverUrl: string;
+  infrastructureConsoleCallbackUrl: string;
+
+  @IsUrl()
+  issuerUrl: string;
 
   @IsNotEmpty()
   adminPassword: string;
