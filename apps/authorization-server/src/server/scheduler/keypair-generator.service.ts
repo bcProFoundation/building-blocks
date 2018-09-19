@@ -24,7 +24,10 @@ export class KeyPairGeneratorService implements OnApplicationBootstrap {
          * No done() callback used
          * https://github.com/agenda/agenda#definejobname-options-fn
          */
-        await this.oidcKeyService.generateKey();
+        const countOfKeys = await this.oidcKeyService.count();
+        if (!countOfKeys) {
+          await this.oidcKeyService.generateKey();
+        }
       },
     );
   }

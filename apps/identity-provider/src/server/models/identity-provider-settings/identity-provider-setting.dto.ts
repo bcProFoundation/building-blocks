@@ -21,18 +21,6 @@ export class IdentityProviderSettingsDto {
   @IsNotEmpty()
   clientSecret: string;
 
-  @IsUrl()
-  profileURL: string;
-
-  @IsUrl()
-  tokenURL: string;
-
-  @IsUrl()
-  introspectionURL: string;
-
-  @IsUrl()
-  authorizationURL: string;
-
   @IsUrl({ allow_underscores: true }, { each: true })
   callbackURLs: string[];
 }

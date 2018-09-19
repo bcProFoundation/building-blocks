@@ -6,7 +6,7 @@ import { catchError } from 'rxjs/operators';
 
 @Injectable()
 export class AppService {
-  messageUrl = '/message'; // URL to web api
+  messageUrl = '/info'; // URL to web api
   private handleError: HandleError;
 
   constructor(private http: HttpClient, httpErrorHandler: HttpErrorHandler) {

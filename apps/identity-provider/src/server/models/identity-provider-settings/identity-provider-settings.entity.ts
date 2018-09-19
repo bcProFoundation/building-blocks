@@ -36,6 +36,9 @@ export class IdentityProviderSettings extends BaseEntity {
   @Column()
   callbackURLs: string[];
 
+  @Column()
+  revocationURL: string;
+
   constructor() {
     super();
     if (!this.uuid) this.uuid = uuidv4();

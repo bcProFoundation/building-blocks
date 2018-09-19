@@ -24,12 +24,12 @@ export class IdentityProviderSettingsService {
       }
       serverSettings.save();
     } else {
-      serverSettings.appURL = params.appURL;
+      Object.assign(serverSettings, params);
     }
     return await this.idpSettingsRepository.save(serverSettings);
   }
 
-  async find() {
+  async find(): Promise<IdentityProviderSettings> {
     const settings = await this.idpSettingsRepository.find();
     return settings.length ? settings[0] : null;
   }
