@@ -1,17 +1,39 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-
+import { LayoutModule } from '@angular/cdk/layout';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AppService } from './app.service';
 import { HttpErrorHandler } from './http-error-handler.service';
 import { MessageService } from './message.service';
+import { ProfileNavComponent } from './profile-nav/profile-nav.component';
+import { MaterialModule } from './material.module';
+import { OAuthModule } from 'angular-oauth2-oidc';
+import { AuthGuard } from './guards/auth.guard.service';
+import { HomeComponent } from './home/home.component';
+import { ProfileComponent } from './profile/profile.component';
+import { AppsComponent } from './apps/apps.component';
 
 @NgModule({
-  declarations: [AppComponent],
-  imports: [BrowserModule, AppRoutingModule, HttpClientModule],
-  providers: [AppService, HttpErrorHandler, MessageService],
+  declarations: [
+    AppComponent,
+    ProfileNavComponent,
+    HomeComponent,
+    ProfileComponent,
+    AppsComponent,
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    HttpClientModule,
+    BrowserAnimationsModule,
+    OAuthModule.forRoot(),
+    LayoutModule,
+    MaterialModule,
+  ],
+  providers: [AppService, HttpErrorHandler, MessageService, AuthGuard],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

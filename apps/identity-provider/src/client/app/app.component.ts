@@ -1,25 +1,39 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { AppService } from './app.service';
+import { isDevMode } from '@angular/core';
+import {
+  OAuthService,
+  JwksValidationHandler,
+  AuthConfig,
+} from 'angular-oauth2-oidc';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
-export class AppComponent implements OnInit {
-  title: string = 'app';
-  serverMessage: string;
-  clientMessage: string = 'Angular 6';
-
-  constructor(private appService: AppService) {}
-
-  ngOnInit() {
-    this.getServerMessage();
+export class AppComponent {
+  constructor(
+    private appService: AppService,
+    private oauthService: OAuthService,
+  ) {
+    this.setupOIDC();
   }
 
-  getServerMessage(): void {
-    this.appService
-      .getMessage()
-      .subscribe(response => (this.serverMessage = response.message));
+  setupOIDC(): void {
+    this.appService.getMessage().subscribe(response => {
+      const authConfig: AuthConfig = {
+        clientId: response.clientId,
+        redirectUri: response.callbackURLs[0],
+        loginUrl: response.authorizationURL,
+        scope: 'openid roles',
+        issuer: response.authServerURL,
+        disableAtHashCheck: true,
+      };
+      if (isDevMode()) authConfig.requireHttps = false;
+      this.oauthService.configure(authConfig);
+      this.oauthService.tokenValidationHandler = new JwksValidationHandler();
+      this.oauthService.loadDiscoveryDocumentAndTryLogin();
+    });
   }
 }

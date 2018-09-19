@@ -31,4 +31,8 @@ export class OIDCKeyService {
       keyPair: key.toJSON(true),
     });
   }
+
+  async count() {
+    return await this.oidcKeyRepository.count();
+  }
 }

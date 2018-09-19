@@ -15,10 +15,10 @@ export class ServerSettingsService {
     let serverSettings = new ServerSettings();
     if (params.uuid) {
       serverSettings = await this.findOne({ uuid: params.uuid });
-      serverSettings.issuerUrl = params.appURL;
+      serverSettings.issuerUrl = params.issuerUrl;
       serverSettings.save();
     } else {
-      serverSettings.issuerUrl = params.appURL;
+      serverSettings.issuerUrl = params.issuerUrl;
     }
     return await this.settingsRepository.save(serverSettings);
   }
