@@ -29,6 +29,8 @@ export class ConfigService {
       TOKEN_VALIDITY: Joi.string().required(),
       DB_NAME: Joi.string().required(),
       DB_HOST: Joi.string().required(),
+      BULL_QUEUE_REDIS_HOST: Joi.string().required(),
+      BULL_QUEUE_REDIS_PORT: Joi.number().required(),
     });
 
     const { error, value: validatedEnvConfig } = Joi.validate(

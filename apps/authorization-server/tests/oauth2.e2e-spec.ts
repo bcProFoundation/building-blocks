@@ -3,7 +3,7 @@ import * as session from 'supertest-session';
 import { INestApplication } from '@nestjs/common';
 import { AppModule } from '../src/server/app.module';
 import { ExpressServer } from '../src/server/express-server';
-import { getParameterByName, extractToken, OIDCKey } from './e2e-helpers';
+import { getParameterByName, OIDCKey } from './e2e-helpers';
 import { SetupService } from '../src/server/auth/controllers/setup/setup.service';
 import { ScopeService } from '../src/server/models/scope/scope.service';
 import { UserService } from '../src/server/models/user/user.service';
@@ -193,7 +193,6 @@ describe('OAuth2Controller (e2e)', () => {
       redirectUris[0]
     }&state=420`;
     return sessionRequest.get(request).then(response => {
-      const token = extractToken(response.headers.location);
       const state = getParameterByName(response.headers.location, 'state');
       expect(state).toEqual('420');
       done();

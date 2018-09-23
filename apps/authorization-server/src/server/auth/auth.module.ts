@@ -37,6 +37,7 @@ import { ServerSettingsController } from './controllers/server-settings/server-s
 import { WellKnownController } from './controllers/well-known/well-known.controller';
 import { OIDCKeyService } from '../models/oidc-key/oidc-key.service';
 import { TokenIntrospectionGuard } from './guards/token-introspection.guard';
+import { SchedulerModule } from '../scheduler/scheduler.module';
 
 @Module({
   providers: [
@@ -81,7 +82,7 @@ import { TokenIntrospectionGuard } from './guards/token-introspection.guard';
     ServerSettingsController,
     WellKnownController,
   ],
-  imports: [ModelsModule, UtilitiesModule, ConfigModule],
+  imports: [ModelsModule, UtilitiesModule, ConfigModule, SchedulerModule],
 })
 export class AuthModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
