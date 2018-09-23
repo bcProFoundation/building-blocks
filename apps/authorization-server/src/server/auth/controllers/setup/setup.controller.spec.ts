@@ -16,6 +16,7 @@ import { RoleService } from '../../../models/role/role.service';
 import { Role } from '../../../models/role/role.entity';
 import { ServerSettings } from '../../../models/server-settings/server-settings.entity';
 import { ServerSettingsService } from '../../../models/server-settings/server-settings.service';
+import { KeyPairGeneratorService } from '../../../scheduler/keypair-generator.service';
 
 describe('SetupController', () => {
   let module: TestingModule;
@@ -32,6 +33,10 @@ describe('SetupController', () => {
         AuthDataService,
         RoleService,
         ServerSettingsService,
+        {
+          provide: KeyPairGeneratorService,
+          useClass: class MockKPService {},
+        },
         {
           provide: getRepositoryToken(Client),
           useValue: {}, // provide mock values

@@ -65,6 +65,7 @@ import { OIDCKeyService } from './oidc-key/oidc-key.service';
     UserService,
     ServerSettingsService,
     WellKnownService,
+    OIDCKeyService,
   ],
 })
 export class ModelsModule {}

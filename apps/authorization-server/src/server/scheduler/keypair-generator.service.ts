@@ -1,34 +1,66 @@
-import { Injectable } from '@angular/core';
-import { OnApplicationBootstrap } from '@nestjs/common';
-import * as Agenda from 'agenda';
-import { AgendaService } from './agenda.service';
+import {
+  Injectable,
+  OnModuleInit,
+  HttpStatus,
+  HttpException,
+} from '@nestjs/common';
+import * as Bull from 'bull';
 import { OIDCKeyService } from '../models/oidc-key/oidc-key.service';
+import { SETUP_ALREADY_COMPLETE } from '../constants/messages';
+import { BullOptions } from './bull-queue.options';
+import { ConfigService } from '../config/config.service';
+
+export const KEYGEN_QUEUE = 'keygen_queue';
 
 @Injectable()
-export class KeyPairGeneratorService implements OnApplicationBootstrap {
-  constructor(
-    private readonly oidcKeyService: OIDCKeyService,
-    private readonly agendaService: AgendaService,
-  ) {}
+export class KeyPairGeneratorService implements OnModuleInit {
+  protected queue: Bull.Queue;
 
-  async onApplicationBootstrap() {
-    this.generateKeyPair();
-    await this.agendaService.every('5 seconds', 'generate_keypair');
+  constructor(
+    private readonly keyService: OIDCKeyService,
+    private readonly configService: ConfigService,
+  ) {
+    const bullOptions: BullOptions = {
+      redis: {
+        host: this.configService.get('BULL_QUEUE_REDIS_HOST'),
+        port: Number(this.configService.get('BULL_QUEUE_REDIS_PORT')),
+      },
+    };
+    configService.get('BULL_QUEUE_REDIS_PORT');
+    this.queue = new Bull(KEYGEN_QUEUE, bullOptions);
   }
 
-  generateKeyPair() {
-    this.agendaService.define(
-      'generate_keypair',
-      async (job: Agenda.Job, done: (err?: Error) => void) => {
-        /** Generate Key only once
-         * No done() callback used
-         * https://github.com/agenda/agenda#definejobname-options-fn
-         */
-        const countOfKeys = await this.oidcKeyService.count();
-        if (!countOfKeys) {
-          await this.oidcKeyService.generateKey();
-        }
-      },
-    );
+  async onModuleInit() {
+    await this.defineQueueProcess();
+  }
+
+  async defineQueueProcess() {
+    this.queue.process(KEYGEN_QUEUE, async (job, done) => {
+      await this.keyService.generateKey();
+      done(null, job.id);
+    });
+  }
+
+  async generateKeyPair() {
+    const countOfKeys = await this.keyService.count();
+    if (countOfKeys === 0) {
+      const { id, data } = await this.queue.add(KEYGEN_QUEUE, {
+        message: KEYGEN_QUEUE,
+      });
+      return { id, data };
+    } else {
+      new HttpException(SETUP_ALREADY_COMPLETE, HttpStatus.UNAUTHORIZED);
+    }
+  }
+
+  async getQueue(id: Bull.JobId) {
+    return await this.queue.getJob(id);
+  }
+
+  async addQueue() {
+    const { id, data } = await this.queue.add(KEYGEN_QUEUE, {
+      message: 'generate_keypair',
+    });
+    return { id, data };
   }
 }

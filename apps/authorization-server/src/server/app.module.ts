@@ -11,8 +11,8 @@ import { SchedulerModule } from './scheduler/scheduler.module';
   imports: [
     TypeOrmModule.forRoot(TYPEORM_CONNECTION),
     ModelsModule,
-    AuthModule,
     SchedulerModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

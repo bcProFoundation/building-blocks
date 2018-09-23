@@ -12,6 +12,7 @@ import { UserService } from '../../../models/user/user.service';
 import { randomBytes } from 'crypto';
 import { RoleService } from '../../../models/role/role.service';
 import { ServerSettingsService } from '../../../models/server-settings/server-settings.service';
+import { KeyPairGeneratorService } from '../../../scheduler/keypair-generator.service';
 
 @Injectable()
 export class SetupService {
@@ -22,6 +23,7 @@ export class SetupService {
     private readonly roleService: RoleService,
     private readonly authService: AuthService,
     private readonly settingsService: ServerSettingsService,
+    private readonly keyGenService: KeyPairGeneratorService,
   ) {}
 
   async setupInfrastructureClient(
@@ -40,6 +42,7 @@ export class SetupService {
     }
     await this.settingsService.save({ issuerUrl });
     await this.createUser(fullName, email, phone, adminPassword);
+    await this.keyGenService.generateKeyPair();
     return await this.createClient(email, infrastructureConsoleCallbackUrl);
   }
 

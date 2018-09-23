@@ -3,6 +3,7 @@ image: castlecraft/node-latest-headless-chrome:1.2
 services:
   - docker:dind
   - mongo
+  - redis
 
 stages:
   - tests
@@ -25,6 +26,8 @@ test_backend:
     SESSION_NAME: "E2E_SESSION"
     DB_HOST: "mongo"
     DB_NAME: "test-e2e-idp"
+    BULL_QUEUE_REDIS_HOST: redis
+    BULL_QUEUE_REDIS_PORT: "6379"
   script:
     # Create .env file
     - dockerize -template apps/authorization-server/docker/env.tmpl:apps/authorization-server/.env
