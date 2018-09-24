@@ -1,30 +1,53 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { BearerToken } from './bearer-token.entity';
-import { Repository } from 'typeorm';
+import { Model } from 'mongoose';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { BEARER_TOKEN } from './bearer-token.schema';
+import { BearerToken } from '../interfaces/bearer-token.interface';
+import { INVALID_TOKEN } from '../../constants/messages';
 
 @Injectable()
 export class BearerTokenService {
   constructor(
-    @InjectRepository(BearerToken)
-    private readonly bearerTokenRepository: Repository<BearerToken>,
+    @InjectModel(BEARER_TOKEN)
+    private readonly bearerTokenModel: Model<BearerToken>,
   ) {}
   async save(params) {
-    return await this.bearerTokenRepository.save(params);
+    // Check unique
+    const checkAccessToken = await this.findOne({
+      accessToken: params.accessToken,
+    });
+
+    let checkRefreshToken;
+    if (params.refreshToken) {
+      checkRefreshToken = await this.findOne({
+        refreshToken: params.refreshToken,
+      });
+    }
+
+    if (checkAccessToken || checkRefreshToken) {
+      throw new HttpException(INVALID_TOKEN, HttpStatus.NOT_FOUND);
+    }
+
+    const createdToken = new this.bearerTokenModel(params);
+    return await createdToken.save();
   }
   async findOne(params) {
-    return await this.bearerTokenRepository.findOne(params);
+    return await this.bearerTokenModel.findOne(params);
   }
 
   async find(params) {
-    return await this.bearerTokenRepository.find(params);
+    return await this.bearerTokenModel.find(params);
   }
 
   async clear() {
-    return await this.bearerTokenRepository.clear();
+    return await this.bearerTokenModel.deleteMany({});
   }
 
   async getAll() {
-    return await this.bearerTokenRepository.find();
+    return await this.bearerTokenModel.find().exec();
+  }
+
+  getModel() {
+    return this.bearerTokenModel;
   }
 }

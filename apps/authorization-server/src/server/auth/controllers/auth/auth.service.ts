@@ -1,8 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../../../models/user/user.service';
 import { CryptographerService } from '../../../utilities/cryptographer.service';
-import { AuthData } from '../../../models/auth-data/auth-data.entity';
-import { User } from '../../../models/user/user.entity';
 import {
   INVALID_PASSWORD,
   INVALID_USER,
@@ -12,10 +10,12 @@ import {
   userAlreadyExistsException,
   invalidOTPException,
 } from '../../filters/exceptions';
-import { Role } from '../../../models/role/role.entity';
 import { AuthDataService } from '../../../models/auth-data/auth-data.service';
 import { CreateUserDto } from '../../../models/user/create-user.dto';
 import * as speakeasy from 'speakeasy';
+import { Role } from '../../../models/interfaces/role.interface';
+import { User } from '../../../models/interfaces/user.interface';
+import { AuthData } from '../../../models/interfaces/auth-data.interface';
 
 @Injectable()
 export class AuthService {
@@ -31,14 +31,16 @@ export class AuthService {
    * @param roles
    */
   public async signUp(user: CreateUserDto, roles?: Role[]) {
-    const userEntity = new User();
+    const UserModel = this.userService.getModel();
+    const userEntity: User = new UserModel();
     userEntity.name = user.name;
 
     // process email field
     userEntity.email = user.email.toLowerCase().trim();
     userEntity.phone = user.phone;
 
-    const authData = new AuthData();
+    const AuthDataModel = this.authDataService.getModel();
+    const authData: AuthData = new AuthDataModel();
     authData.password = await this.cryptoService.hashPassword(user.password);
     await authData.save();
     userEntity.password = authData.uuid;
@@ -50,7 +52,7 @@ export class AuthService {
     const checkUser = await this.checkExistingUser(userEntity);
 
     if (checkUser) {
-      await authData.remove();
+      await AuthDataModel.deleteOne(authData);
       throw userAlreadyExistsException;
     } else {
       return await this.userService.save(userEntity);

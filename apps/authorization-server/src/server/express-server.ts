@@ -5,13 +5,10 @@ import * as passport from 'passport';
 import * as helmet from 'helmet';
 import * as rateLimit from 'express-rate-limit';
 import { ConfigService } from './config/config.service';
-import { getRepository } from 'typeorm';
-import { User } from './models/user/user.entity';
-import { Session } from './models/session/session.entity';
-import { TypeormStore } from './auth/passport/typeorm-session.store';
 import { join } from 'path';
 import { INestApplication } from '@nestjs/common';
-import { Client } from './models/client/client.entity';
+import * as connectMongoDBSession from 'connect-mongodb-session';
+const MongoDBStore = connectMongoDBSession(expressSession);
 
 export class ExpressServer {
   public server: express.Express;
@@ -56,14 +53,16 @@ export class ExpressServer {
     };
 
     if (process.env.NODE_ENV !== 'production') cookie.secure = false;
-
+    const mongoDBStore = new MongoDBStore({
+      uri: `mongodb://${configService.get('DB_HOST')}/${configService.get(
+        'DB_NAME',
+      )}`,
+      collection: 'session',
+    });
     const sessionConfig = {
       name: configService.get('SESSION_NAME'),
       secret: configService.get('SESSION_SECRET'),
-      store: new TypeormStore({
-        sessionService: getRepository(Session),
-        userService: getRepository(User),
-      }),
+      store: mongoDBStore,
       cookie,
       saveUninitialized: false,
       resave: false,
@@ -73,29 +72,5 @@ export class ExpressServer {
     app.use(expressSession(sessionConfig));
     app.use(passport.initialize());
     app.use(passport.session());
-  }
-
-  async setupCORS(app?: INestApplication) {
-    const clients = await getRepository(Client).find({
-      select: ['redirectUris'],
-    });
-    const redirectUris: string[] = [];
-
-    /**
-     * TODO: Loop unnecessary if select works
-     * https://github.com/typeorm/typeorm/pull/2605
-     */
-    for (const client of clients) {
-      redirectUris.push(...client.redirectUris);
-    }
-
-    const allowedOrigins = redirectUris.map(r => {
-      const url = new URL(r);
-      return url.origin;
-    });
-
-    app.enableCors({
-      origin: allowedOrigins,
-    });
   }
 }

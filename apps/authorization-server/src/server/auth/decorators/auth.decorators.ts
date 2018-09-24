@@ -1,15 +1,16 @@
 import { UnauthorizedException, createParamDecorator } from '@nestjs/common';
-import { getConnection } from 'typeorm';
-import { BearerToken } from '../../models/bearer-token/bearer-token.entity';
+import { BearerTokenModel } from '../../models/bearer-token/bearer-token.schema';
+import { BearerToken } from '../../models/interfaces/bearer-token.interface';
 
 export const Token = createParamDecorator(async (data, req) => {
   // headers are Bearer token_hash and not just token_hash
-  const tokenService = getConnection().getRepository(BearerToken);
 
   const accessToken = getAccessToken(req);
 
   try {
-    const bearerToken = await tokenService.findOne({ accessToken });
+    const bearerToken: BearerToken = await BearerTokenModel.findOne({
+      accessToken,
+    });
     if (data === 'user') return bearerToken.user;
     else return bearerToken;
   } catch (error) {

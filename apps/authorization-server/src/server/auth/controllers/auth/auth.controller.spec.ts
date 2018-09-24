@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { AuthController } from './auth.controller';
+import { getModelToken } from '@nestjs/mongoose';
 import { AuthService } from './auth.service';
 import { CryptographerService } from '../../../utilities/cryptographer.service';
 import { UserService } from '../../../models/user/user.service';
-import { User } from '../../../models/user/user.entity';
 import { AuthDataService } from '../../../models/auth-data/auth-data.service';
-import { AuthData } from '../../../models/auth-data/auth-data.entity';
+import { USER } from '../../../models/user/user.schema';
+import { AUTH_DATA } from '../../../models/auth-data/auth-data.schema';
 
 describe('Auth Controller', () => {
   let module: TestingModule;
@@ -31,11 +31,11 @@ describe('Auth Controller', () => {
           useClass: AuthDataService,
         },
         {
-          provide: getRepositoryToken(User),
+          provide: getModelToken(USER),
           useValue: {}, // provide mock values
         },
         {
-          provide: getRepositoryToken(AuthData),
+          provide: getModelToken(AUTH_DATA),
           useValue: {}, // provide mock values
         },
       ],

@@ -31,8 +31,10 @@ async function bootstrap() {
   app.setBaseViewsDir(VIEWS_DIR);
   app.setViewEngine('hbs');
 
+  // Enable CORS
+  app.enableCors();
+
   authServer.setupSession(app);
-  await authServer.setupCORS(app);
   await app.listen(3000);
 }
 

@@ -1,20 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SetupService } from './setup.service';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { ScopeService } from '../../../models/scope/scope.service';
 import { ClientService } from '../../../models/client/client.service';
-import { Client } from '../../../models/client/client.entity';
-import { Scope } from '../../../models/scope/scope.entity';
 import { UserService } from '../../../models/user/user.service';
 import { AuthService } from '../auth/auth.service';
-import { User } from '../../../models/user/user.entity';
 import { CryptographerService } from '../../../utilities/cryptographer.service';
 import { AuthDataService } from '../../../models/auth-data/auth-data.service';
-import { AuthData } from '../../../models/auth-data/auth-data.entity';
 import { RoleService } from '../../../models/role/role.service';
-import { Role } from '../../../models/role/role.entity';
 import { ServerSettingsService } from '../../../models/server-settings/server-settings.service';
-import { ServerSettings } from '../../../models/server-settings/server-settings.entity';
+import { getModelToken } from '@nestjs/mongoose';
+import { CLIENT } from '../../../models/client/client.schema';
+import { SCOPE } from '../../../models/scope/scope.schema';
+import { USER } from '../../../models/user/user.schema';
+import { AUTH_DATA } from '../../../models/auth-data/auth-data.schema';
+import { ROLE } from '../../../models/role/role.schema';
+import { SERVER_SETTINGS } from '../../../models/server-settings/server-settings.schema';
 import { KeyPairGeneratorService } from '../../../scheduler/keypair-generator.service';
 
 describe('SetupService', () => {
@@ -36,27 +36,27 @@ describe('SetupService', () => {
           useClass: class MockKPService {},
         },
         {
-          provide: getRepositoryToken(Client),
+          provide: getModelToken(CLIENT),
           useValue: {}, // provide mock values
         },
         {
-          provide: getRepositoryToken(Scope),
+          provide: getModelToken(SCOPE),
           useValue: {}, // provide mock values
         },
         {
-          provide: getRepositoryToken(User),
+          provide: getModelToken(USER),
           useValue: {}, // provide mock values
         },
         {
-          provide: getRepositoryToken(AuthData),
+          provide: getModelToken(AUTH_DATA),
           useValue: {}, // provide mock values
         },
         {
-          provide: getRepositoryToken(Role),
+          provide: getModelToken(ROLE),
           useValue: {}, // provide mock values
         },
         {
-          provide: getRepositoryToken(ServerSettings),
+          provide: getModelToken(SERVER_SETTINGS),
           useValue: {}, // provide mock values
         },
       ],

@@ -1,40 +1,44 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Session } from './session.entity';
-import { Repository } from 'typeorm';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { SESSION } from './session.schema';
+import { Session } from '../interfaces/session.interface';
+import { invalidSessionException } from '../../auth/filters/exceptions';
 
 @Injectable()
 export class SessionService {
   constructor(
-    @InjectRepository(Session)
-    private readonly sessionRepository: Repository<Session>,
+    @InjectModel(SESSION) private readonly sessionModel: Model<Session>,
   ) {}
 
   async update(query, params) {
-    return await this.sessionRepository.update(query, params);
+    return await this.sessionModel.update(query, params);
   }
 
   async save(params) {
-    return await this.sessionRepository.save(params);
+    const checkSession = await this.findOne({ sid: params.sid });
+    if (checkSession) throw invalidSessionException;
+    const createdSession = new this.sessionModel(params);
+    return await createdSession.save();
   }
 
   async find() {
-    return await this.sessionRepository.find();
+    return await this.sessionModel.find().exec();
   }
 
   async delete(params) {
-    return await this.sessionRepository.delete(params);
+    return await this.sessionModel.deleteOne(params);
   }
 
   async clear() {
-    return await this.sessionRepository.clear();
+    return await this.sessionModel.deleteMany({});
   }
 
   async count() {
-    return await this.sessionRepository.count();
+    return await this.sessionModel.estimatedDocumentCount();
   }
 
   async findOne(params) {
-    return await this.sessionRepository.findOne(params);
+    return await this.sessionModel.findOne(params);
   }
 }

@@ -2,15 +2,15 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from '../../../models/user/user.service';
 import { OAuth2TokenGeneratorService } from '../../middlewares/oauth2-token-generator.service';
 import { ClientService } from '../../../models/client/client.service';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { BearerToken } from '../../../models/bearer-token/bearer-token.entity';
-import { User } from '../../../models/user/user.entity';
-import { Client } from '../../../models/client/client.entity';
-import { AuthorizationCode } from '../../../models/authorization-code/authorization-code.entity';
 import { TokenGrantService } from './token-grant.service';
 import { CryptographerService } from '../../../utilities/cryptographer.service';
 import { BearerTokenService } from '../../../models/bearer-token/bearer-token.service';
-import { AuthData } from '../../../models/auth-data/auth-data.entity';
+import { getModelToken } from '@nestjs/mongoose';
+import { BEARER_TOKEN } from '../../../models/bearer-token/bearer-token.schema';
+import { USER } from '../../../models/user/user.schema';
+import { AUTH_DATA } from '../../../models/auth-data/auth-data.schema';
+import { CLIENT } from '../../../models/client/client.schema';
+import { AUTHORIZATION_CODE } from '../../../models/authorization-code/authorization-code.schema';
 
 describe('TokenGrantService', () => {
   let service: TokenGrantService;
@@ -24,23 +24,23 @@ describe('TokenGrantService', () => {
         CryptographerService,
         BearerTokenService,
         {
-          provide: getRepositoryToken(BearerToken),
+          provide: getModelToken(BEARER_TOKEN),
           useValue: {},
         },
         {
-          provide: getRepositoryToken(User),
+          provide: getModelToken(USER),
           useValue: {},
         },
         {
-          provide: getRepositoryToken(AuthData),
+          provide: getModelToken(AUTH_DATA),
           useValue: {},
         },
         {
-          provide: getRepositoryToken(Client),
+          provide: getModelToken(CLIENT),
           useValue: {},
         },
         {
-          provide: getRepositoryToken(AuthorizationCode),
+          provide: getModelToken(AUTHORIZATION_CODE),
           useValue: {},
         },
       ],

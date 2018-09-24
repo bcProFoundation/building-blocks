@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { WellKnownService } from './well-known.service';
 import { ServerSettingsService } from '../server-settings/server-settings.service';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { ServerSettings } from '../server-settings/server-settings.entity';
 import { OIDCKeyService } from '../oidc-key/oidc-key.service';
+import { getModelToken } from '@nestjs/mongoose';
+import { SERVER_SETTINGS } from '../server-settings/server-settings.schema';
 
 describe('WellKnownService', () => {
   let service: WellKnownService;
@@ -13,7 +13,7 @@ describe('WellKnownService', () => {
         WellKnownService,
         ServerSettingsService,
         {
-          provide: getRepositoryToken(ServerSettings),
+          provide: getModelToken(SERVER_SETTINGS),
           useValue: {}, // provide mock values
         },
         {

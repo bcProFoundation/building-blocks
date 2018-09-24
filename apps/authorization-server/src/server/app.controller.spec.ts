@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { APP_NAME } from './constants/messages';
 
 describe('AppController', () => {
   let app: TestingModule;
@@ -12,10 +13,10 @@ describe('AppController', () => {
     }).compile();
   });
 
-  describe('root', () => {
-    it('should return "IDP built using Nest.js"', () => {
+  describe('info', () => {
+    it('should return "{ message: APP_NAME }"', () => {
       const appController = app.get<AppController>(AppController);
-      expect(appController.root()).toBe('IDP built using Nest.js');
+      expect(appController.info()).toEqual({ message: APP_NAME });
     });
   });
 });

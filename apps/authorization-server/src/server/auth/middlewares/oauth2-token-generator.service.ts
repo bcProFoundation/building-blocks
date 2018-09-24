@@ -1,14 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { CryptographerService } from '../../utilities/cryptographer.service';
 import { BearerTokenService } from '../../models/bearer-token/bearer-token.service';
-import { Client } from '../../models/client/client.entity';
 import {
   invalidScopeException,
   invalidClientException,
 } from '../filters/exceptions';
-import { BearerToken } from '../../models/bearer-token/bearer-token.entity';
 import { ClientService } from '../../models/client/client.service';
 import { UserService } from '../../models/user/user.service';
+// import { BearerToken } from '../../models/interfaces/bearer-token.interface';
+import { Client } from '../../models/interfaces/client.interface';
+import { BearerToken } from '../../models/interfaces/bearer-token.interface';
 
 @Injectable()
 export class OAuth2TokenGeneratorService {
@@ -38,8 +39,8 @@ export class OAuth2TokenGeneratorService {
     if (!localClient) throw invalidClientException;
 
     const localUser = await this.userService.findOne({ uuid: user });
-
-    const bearerToken = new BearerToken();
+    const BearerTokenModel = this.bearerTokenService.getModel();
+    const bearerToken: BearerToken = new BearerTokenModel();
     bearerToken.accessToken = this.cryptographerService.getUid(64);
     bearerToken.redirectUris = localClient.redirectUris;
 

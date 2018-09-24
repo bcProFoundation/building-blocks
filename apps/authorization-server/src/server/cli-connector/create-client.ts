@@ -1,14 +1,15 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../app.module';
 import { ClientService } from '../models/client/client.service';
-import { Client } from '../models/client/client.entity';
+import { Client } from '../models/interfaces/client.interface';
 import * as yargs from 'yargs';
 
 const app = NestFactory.create(AppModule);
 const args = createIDPClientCLI();
 app.then(async r => {
   const clientService = r.get(ClientService);
-  const client = new Client();
+  const ClientModel = clientService.getModel();
+  const client: Client = new ClientModel();
   client.clientSecret = args.secret;
   client.redirectUris = [args.redirect_uri];
   client.name = args.client;

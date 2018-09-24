@@ -1,28 +1,33 @@
+import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { AuthorizationCode } from './authorization-code.entity';
+import { InjectModel } from '@nestjs/mongoose';
+import { AUTHORIZATION_CODE } from './authorization-code.schema';
+import { AuthorizationCode } from '../interfaces/authorization-code.interface';
+import { invalidAuthorizationCodeException } from '../../auth/filters/exceptions';
 
 @Injectable()
 export class AuthorizationCodeService {
   constructor(
-    @InjectRepository(AuthorizationCode)
-    private readonly authorizationCodeRepository: Repository<AuthorizationCode>,
+    @InjectModel(AUTHORIZATION_CODE)
+    private readonly authCodeModel: Model<AuthorizationCode>,
   ) {}
 
   async save(params) {
-    return await this.authorizationCodeRepository.save(params);
+    const checkCode = await this.findOne({ code: params.code });
+    if (checkCode) throw invalidAuthorizationCodeException;
+    const createdCode = new this.authCodeModel(params);
+    return await createdCode.save();
   }
 
   async findOne(params) {
-    return await this.authorizationCodeRepository.findOne(params);
+    return await this.authCodeModel.findOne(params);
   }
 
   async delete(params) {
-    return await this.authorizationCodeRepository.delete(params);
+    return await this.authCodeModel.deleteOne(params);
   }
 
   async clear() {
-    return await this.authorizationCodeRepository.clear();
+    return await this.authCodeModel.deleteMany({});
   }
 }

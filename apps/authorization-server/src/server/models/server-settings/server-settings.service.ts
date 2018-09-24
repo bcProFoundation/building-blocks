@@ -1,30 +1,29 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { ServerSettings } from './server-settings.entity';
+import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
+import { Model } from 'mongoose';
 import { settingsNotFoundException } from '../../auth/filters/exceptions';
+import { InjectModel } from '@nestjs/mongoose';
+import { SERVER_SETTINGS } from './server-settings.schema';
+import { ServerSettings } from '../interfaces/server-settings.interface';
+import { SETUP_ALREADY_COMPLETE } from '../../constants/messages';
 
 @Injectable()
 export class ServerSettingsService {
   constructor(
-    @InjectRepository(ServerSettings)
-    private readonly settingsRepository: Repository<ServerSettings>,
+    @InjectModel(SERVER_SETTINGS)
+    private readonly settingsModel: Model<ServerSettings>,
   ) {}
 
   async save(params) {
-    let serverSettings = new ServerSettings();
-    if (params.uuid) {
-      serverSettings = await this.findOne({ uuid: params.uuid });
-      serverSettings.issuerUrl = params.issuerUrl;
-      serverSettings.save();
-    } else {
-      serverSettings.issuerUrl = params.issuerUrl;
+    const checkSettings = await this.count();
+    if (checkSettings > 0) {
+      throw new HttpException(SETUP_ALREADY_COMPLETE, HttpStatus.UNAUTHORIZED);
     }
-    return await this.settingsRepository.save(serverSettings);
+    const createdSettings = new this.settingsModel(params);
+    return await createdSettings.save();
   }
 
   async find() {
-    const settings = await this.settingsRepository.find();
+    const settings = await this.settingsModel.find().exec();
     if (!settings.length) {
       throw settingsNotFoundException;
     }
@@ -32,14 +31,14 @@ export class ServerSettingsService {
   }
 
   async findOne(params) {
-    return await this.settingsRepository.findOne(params);
+    return await this.settingsModel.findOne(params);
   }
 
   async update(query, params) {
-    return await this.settingsRepository.update(query, params);
+    return await this.settingsModel.update(query, params);
   }
 
   async count() {
-    return await this.settingsRepository.count();
+    return await this.settingsModel.estimatedDocumentCount();
   }
 }

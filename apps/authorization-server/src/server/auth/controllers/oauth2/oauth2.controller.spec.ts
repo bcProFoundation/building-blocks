@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { OAuth2Controller } from './oauth2.controller';
 import { BearerTokenService } from '../../../models/bearer-token/bearer-token.service';
-import { BearerToken } from '../../../models/bearer-token/bearer-token.entity';
 import { OAuth2Service } from './oauth2.service';
-import { Client } from '../../../models/client/client.entity';
 import { ClientService } from '../../../models/client/client.service';
+import { getModelToken } from '@nestjs/mongoose';
+import { BEARER_TOKEN } from '../../../models/bearer-token/bearer-token.schema';
+import { CLIENT } from '../../../models/client/client.schema';
 
 describe('OAuth2Controller', () => {
   let module: TestingModule;
@@ -17,11 +17,11 @@ describe('OAuth2Controller', () => {
         BearerTokenService,
         ClientService,
         {
-          provide: getRepositoryToken(BearerToken),
+          provide: getModelToken(BEARER_TOKEN),
           useValue: {}, // provide mock values
         },
         {
-          provide: getRepositoryToken(Client),
+          provide: getModelToken(CLIENT),
           useValue: {}, // provide mock values
         },
       ],

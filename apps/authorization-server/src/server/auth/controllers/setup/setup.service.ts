@@ -5,13 +5,14 @@ import {
   SETUP_ALREADY_COMPLETE,
   INFRASTRUCTURE_CONSOLE,
 } from '../../../constants/messages';
-import { Client } from '../../../models/client/client.entity';
 import { AuthService } from '../auth/auth.service';
 import { CreateUserDto } from '../../../models/user/create-user.dto';
 import { UserService } from '../../../models/user/user.service';
 import { randomBytes } from 'crypto';
 import { RoleService } from '../../../models/role/role.service';
 import { ServerSettingsService } from '../../../models/server-settings/server-settings.service';
+import { Scope } from '../../../models/interfaces/scope.interface';
+import { Client } from '../../../models/interfaces/client.interface';
 import { KeyPairGeneratorService } from '../../../scheduler/keypair-generator.service';
 
 @Injectable()
@@ -53,16 +54,16 @@ export class SetupService {
    * @param callbackUrl
    */
   async createClient(email: string, callbackUrl: string) {
-    const scope = await this.scopeService.save([
+    const ScopeModel = this.scopeService.getModel();
+    const scope: Scope[] = await ScopeModel.insertMany([
       { name: 'openid' },
       { name: 'roles' },
       { name: 'email' },
     ]);
-
     const createdBy = await this.userService.findOne({ email });
     const allowedScopes: string[] = scope.map(r => r.name);
-
-    const client = new Client();
+    const ClientModel = this.clientService.getModel();
+    const client: Client = new ClientModel();
     client.clientSecret = randomBytes(32).toString('hex');
     client.redirectUris = [callbackUrl];
     client.name = INFRASTRUCTURE_CONSOLE;
@@ -73,14 +74,16 @@ export class SetupService {
 
     const response = await this.clientService.save(client);
 
-    // user object has password, removed from response
-    delete response.createdBy;
-    delete response.modifiedBy;
+    return response.toObject({
+      transform: (doc, ret, options) => {
+        // user object has password, removed from response
+        delete ret.createdBy;
+        delete ret.modifiedBy;
 
-    // delete ObjectId key
-    delete response._id;
-
-    return response;
+        // delete ObjectId key
+        delete ret._id;
+      },
+    });
   }
 
   async createUser(
