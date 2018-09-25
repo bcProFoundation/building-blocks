@@ -1,8 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BearerTokenService } from './bearer-token.service';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { BearerToken } from './bearer-token.entity';
-import { DocType } from '../base.doctype';
+import { getModelToken } from '@nestjs/mongoose';
+import { BEARER_TOKEN } from './bearer-token.schema';
 
 describe('BearerTokenService', () => {
   let service: BearerTokenService;
@@ -11,14 +10,11 @@ describe('BearerTokenService', () => {
       providers: [
         BearerTokenService,
         {
-          provide: getRepositoryToken(BearerToken),
+          provide: getModelToken(BEARER_TOKEN),
           useValue: {}, // use mock values
         },
       ],
-    })
-      .overrideProvider('DocType')
-      .useClass(DocType)
-      .compile();
+    }).compile();
     service = module.get<BearerTokenService>(BearerTokenService);
   });
   it('should be defined', () => {

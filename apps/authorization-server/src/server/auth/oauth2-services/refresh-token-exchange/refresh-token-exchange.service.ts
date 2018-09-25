@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { OAuth2TokenGeneratorService } from '../../middlewares/oauth2-token-generator.service';
 import { ClientService } from '../../../models/client/client.service';
 import { BearerTokenService } from '../../../models/bearer-token/bearer-token.service';
-import { Client } from '../../../models/client/client.entity';
+import { Client } from '../../../models/interfaces/client.interface';
 
 @Injectable()
 export class RefreshTokenExchangeService {

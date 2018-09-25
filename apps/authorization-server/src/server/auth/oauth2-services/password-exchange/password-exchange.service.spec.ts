@@ -4,13 +4,13 @@ import { OAuth2TokenGeneratorService } from '../../middlewares/oauth2-token-gene
 import { CryptographerService } from '../../../utilities/cryptographer.service';
 import { ClientService } from '../../../models/client/client.service';
 import { PasswordExchangeService } from './password-exchange.service';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { BearerTokenService } from '../../../models/bearer-token/bearer-token.service';
-import { BearerToken } from '../../../models/bearer-token/bearer-token.entity';
-import { User } from '../../../models/user/user.entity';
-import { Client } from '../../../models/client/client.entity';
 import { AuthDataService } from '../../../models/auth-data/auth-data.service';
-import { AuthData } from '../../../models/auth-data/auth-data.entity';
+import { getModelToken } from '@nestjs/mongoose';
+import { BEARER_TOKEN } from '../../../models/bearer-token/bearer-token.schema';
+import { USER } from '../../../models/user/user.schema';
+import { CLIENT } from '../../../models/client/client.schema';
+import { AUTH_DATA } from '../../../models/auth-data/auth-data.schema';
 
 describe('PasswordExchangeService', () => {
   let service: PasswordExchangeService;
@@ -26,19 +26,19 @@ describe('PasswordExchangeService', () => {
         ClientService,
         OAuth2TokenGeneratorService,
         {
-          provide: getRepositoryToken(BearerToken),
+          provide: getModelToken(BEARER_TOKEN),
           useValue: {},
         },
         {
-          provide: getRepositoryToken(User),
+          provide: getModelToken(USER),
           useValue: {},
         },
         {
-          provide: getRepositoryToken(Client),
+          provide: getModelToken(CLIENT),
           useValue: {},
         },
         {
-          provide: getRepositoryToken(AuthData),
+          provide: getModelToken(AUTH_DATA),
           useValue: {},
         },
       ],

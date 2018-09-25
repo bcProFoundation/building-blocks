@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { ClientController } from './client.controller';
 import { ClientService } from '../../../models/client/client.service';
-import { Client } from '../../../models/client/client.entity';
+import { getModelToken } from '@nestjs/mongoose';
+import { CLIENT } from '../../../models/client/client.schema';
 
 describe('ClientController', () => {
   let module: TestingModule;
@@ -15,7 +15,7 @@ describe('ClientController', () => {
           useClass: ClientService,
         },
         {
-          provide: getRepositoryToken(Client),
+          provide: getModelToken(CLIENT),
           useValue: {}, // provide mock values
         },
       ],

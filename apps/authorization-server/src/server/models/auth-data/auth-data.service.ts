@@ -1,20 +1,25 @@
+import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { AuthData } from './auth-data.entity';
+import { InjectModel } from '@nestjs/mongoose';
+import { AUTH_DATA } from './auth-data.schema';
+import { AuthData } from '../interfaces/auth-data.interface';
 
 @Injectable()
 export class AuthDataService {
   constructor(
-    @InjectRepository(AuthData)
-    private readonly authDataRepository: Repository<AuthData>,
+    @InjectModel(AUTH_DATA) private readonly authDataModel: Model<AuthData>,
   ) {}
 
   async save(authData) {
-    return await this.authDataRepository.save(authData);
+    const createdAuthData = new this.authDataModel(authData);
+    return await createdAuthData.save();
   }
 
   async findOne(params) {
-    return await this.authDataRepository.findOne(params);
+    return await this.authDataModel.findOne(params);
+  }
+
+  getModel() {
+    return this.authDataModel;
   }
 }

@@ -1,4 +1,11 @@
-import { Get, Controller, Res, UseGuards, UseFilters } from '@nestjs/common';
+import {
+  Get,
+  Controller,
+  Res,
+  UseGuards,
+  UseFilters,
+  Req,
+} from '@nestjs/common';
 import { AppService } from './app.service';
 import { EnsureLoginGuard } from 'nestjs-ensureloggedin-guard';
 import { ErrorFilter } from './auth/filters/errors.filter';
@@ -13,15 +20,15 @@ import { INDEX_HTML } from './constants/filesystem';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get()
-  root(): string {
-    return this.appService.root();
+  @Get('info')
+  info() {
+    return this.appService.info();
   }
 
   @Get('login')
   @ApiExcludeEndpoint() // Exclude from Swagger documentation
-  loginForm(@Res() res) {
-    res.sendFile(INDEX_HTML);
+  loginForm(@Req() req, @Res() res) {
+    this.appService.login(req, res);
   }
 
   @Get('signup')

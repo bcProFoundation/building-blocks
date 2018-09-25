@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Scope } from './scope.entity';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { ScopeService } from './scope.service';
+import { getModelToken } from '@nestjs/mongoose';
+import { SCOPE } from './scope.schema';
 
 describe('ScopeService', () => {
   let service: ScopeService;
@@ -10,7 +10,7 @@ describe('ScopeService', () => {
       providers: [
         ScopeService,
         {
-          provide: getRepositoryToken(Scope),
+          provide: getModelToken(SCOPE),
           useValue: {}, // provide mock values
         },
       ],

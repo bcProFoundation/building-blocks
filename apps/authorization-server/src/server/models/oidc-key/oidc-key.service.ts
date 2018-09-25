@@ -1,26 +1,27 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { OIDCKey } from './oidc-key.entity';
+import { Model } from 'mongoose';
 import * as jose from 'node-jose';
+import { InjectModel } from '@nestjs/mongoose';
+import { OIDC_KEY } from './oidc-key.schema';
+import { OIDCKey } from '../interfaces/oidc-key.interface';
 
 @Injectable()
 export class OIDCKeyService {
   constructor(
-    @InjectRepository(OIDCKey)
-    private readonly oidcKeyRepository: Repository<OIDCKey>,
+    @InjectModel(OIDC_KEY) private readonly oidcKeyModel: Model<OIDCKey>,
   ) {}
 
   async save(oidcKey) {
-    return await this.oidcKeyRepository.save(oidcKey);
+    const createdKey = new this.oidcKeyModel(oidcKey);
+    return await createdKey.save();
   }
 
   async findOne(params) {
-    return await this.oidcKeyRepository.findOne(params);
+    return await this.oidcKeyModel.findOne(params);
   }
 
   async find() {
-    return await this.oidcKeyRepository.find();
+    return await this.oidcKeyModel.find().exec();
   }
 
   async generateKey() {
@@ -33,6 +34,6 @@ export class OIDCKeyService {
   }
 
   async count() {
-    return await this.oidcKeyRepository.count();
+    return await this.oidcKeyModel.estimatedDocumentCount();
   }
 }

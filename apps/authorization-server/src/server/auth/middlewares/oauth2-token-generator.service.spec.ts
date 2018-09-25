@@ -2,13 +2,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { OAuth2TokenGeneratorService } from './oauth2-token-generator.service';
 import { CryptographerService } from '../../utilities/cryptographer.service';
 import { BearerTokenService } from '../../models/bearer-token/bearer-token.service';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { BearerToken } from '../../models/bearer-token/bearer-token.entity';
 import { ClientService } from '../../models/client/client.service';
 import { UserService } from '../../models/user/user.service';
-import { User } from '../../models/user/user.entity';
-import { Client } from '../../models/client/client.entity';
-import { AuthData } from '../../models/auth-data/auth-data.entity';
+import { getModelToken } from '@nestjs/mongoose';
+import { BEARER_TOKEN } from '../../models/bearer-token/bearer-token.schema';
+import { USER } from '../../models/user/user.schema';
+import { AUTH_DATA } from '../../models/auth-data/auth-data.schema';
+import { CLIENT } from '../../models/client/client.schema';
 
 describe('OAuth2TokenGeneratorService', () => {
   let service: OAuth2TokenGeneratorService;
@@ -21,19 +21,19 @@ describe('OAuth2TokenGeneratorService', () => {
         ClientService,
         UserService,
         {
-          provide: getRepositoryToken(BearerToken),
+          provide: getModelToken(BEARER_TOKEN),
           useValue: {},
         },
         {
-          provide: getRepositoryToken(User),
+          provide: getModelToken(USER),
           useValue: {},
         },
         {
-          provide: getRepositoryToken(AuthData),
+          provide: getModelToken(AUTH_DATA),
           useValue: {},
         },
         {
-          provide: getRepositoryToken(Client),
+          provide: getModelToken(CLIENT),
           useValue: {},
         },
       ],

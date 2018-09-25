@@ -24,3 +24,5 @@ export const TWO_FACTOR_NOT_ENABLED = 'Two factor authentication not enabled';
 export const INVALID_OTP = 'Invalid OTP';
 export const SETTING_NOT_FOUND = 'Setting does not exist';
 export const JWKS_NOT_FOUND = 'JWK Not Found';
+export const INVALID_ROLE = 'Invalid Role';
+export const INVALID_SESSION = 'Invalid Session';

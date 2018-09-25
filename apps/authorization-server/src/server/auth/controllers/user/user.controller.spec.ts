@@ -2,9 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from './user.controller';
 import { UserService } from '../../../models/user/user.service';
 import { CryptographerService } from '../../../utilities/cryptographer.service';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from '../../../models/user/user.entity';
-import { AuthData } from '../../../models/auth-data/auth-data.entity';
+import { getModelToken } from '@nestjs/mongoose';
+import { USER } from '../../../models/user/user.schema';
+import { AUTH_DATA } from '../../../models/auth-data/auth-data.schema';
 
 describe('User Controller', () => {
   let module: TestingModule;
@@ -21,11 +21,11 @@ describe('User Controller', () => {
           useClass: UserService,
         },
         {
-          provide: getRepositoryToken(User),
+          provide: getModelToken(USER),
           useValue: {}, // provide mock values
         },
         {
-          provide: getRepositoryToken(AuthData),
+          provide: getModelToken(AUTH_DATA),
           useValue: {}, // provide mock values
         },
       ],

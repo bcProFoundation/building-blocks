@@ -9,6 +9,8 @@ import {
   INVALID_OTP,
   SETTING_NOT_FOUND,
   JWKS_NOT_FOUND,
+  INVALID_ROLE,
+  INVALID_SESSION,
 } from '../../constants/messages';
 import { HttpStatus, HttpException } from '@nestjs/common';
 
@@ -59,5 +61,15 @@ export const settingsNotFoundException = new HttpException(
 
 export const JWKSNotFound = new HttpException(
   JWKS_NOT_FOUND,
+  HttpStatus.BAD_REQUEST,
+);
+
+export const invalidRoleException = new HttpException(
+  INVALID_ROLE,
+  HttpStatus.BAD_REQUEST,
+);
+
+export const invalidSessionException = new HttpException(
+  INVALID_SESSION,
   HttpStatus.BAD_REQUEST,
 );

@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { User } from './user.entity';
+import { Model } from 'mongoose';
 import { USER_DELETED } from '../../constants/messages';
 import {
   invalidUserException,
@@ -11,47 +9,50 @@ import {
 } from '../../auth/filters/exceptions';
 import * as speakeasy from 'speakeasy';
 import * as QRCode from 'qrcode';
-import { AuthData } from '../auth-data/auth-data.entity';
+import { InjectModel } from '@nestjs/mongoose';
+import { USER } from './user.schema';
+import { AUTH_DATA, AuthDataModel } from '../auth-data/auth-data.schema';
+import { User } from '../interfaces/user.interface';
+import { AuthData } from '../interfaces/auth-data.interface';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
-    @InjectRepository(AuthData)
-    private readonly authDataRepository: Repository<AuthData>,
+    @InjectModel(USER) private readonly userModel: Model<User>,
+    @InjectModel(AUTH_DATA) private readonly authDataModel: Model<AuthData>,
   ) {}
 
-  public async save(user) {
-    return await this.userRepository.save(user);
+  public async save(params) {
+    const createdUser = new this.userModel(params);
+    return await createdUser.save();
   }
 
   async findAll(): Promise<User[]> {
-    return await this.userRepository.find();
+    return await this.userModel.find().exec();
   }
 
   public async findOne(params): Promise<any> {
-    return await this.userRepository.findOne(params);
+    return await this.userModel.findOne(params);
   }
 
   public async delete(params): Promise<any> {
-    return await this.findOne(params).then(user =>
-      user.remove().then(() => Promise.resolve({ message: USER_DELETED })),
-    );
+    await this.userModel.deleteOne(params);
+    return { message: USER_DELETED };
   }
 
   public async find() {
-    return await this.userRepository.find();
+    return await this.userModel.find().exec();
   }
 
   public async deleteByEmail(email) {
-    return await this.userRepository.delete({ email });
+    return await this.userModel.deleteOne({ email });
   }
 
   async verify2fa(email: string, otp: string) {
-    const user: User = await this.findOne({ email });
+    const user = await this.findOne({ email });
     if (!otp) throw invalidOTPException;
     if (user.twoFactorTempSecret) {
-      const twoFactorTempSecret = await this.authDataRepository.findOne({
+      const twoFactorTempSecret = await this.authDataModel.findOne({
         uuid: user.twoFactorTempSecret,
       });
       const base32secret = twoFactorTempSecret.password;
@@ -60,17 +61,17 @@ export class UserService {
         encoding: 'base32',
       });
       if (verified === otp) {
-        const sharedSecret = new AuthData();
+        const sharedSecret: AuthData = new AuthDataModel();
         sharedSecret.password = twoFactorTempSecret.password;
-        sharedSecret.save();
+        await sharedSecret.save();
 
         user.sharedSecret = sharedSecret.uuid;
         user.enable2fa = true;
 
         delete user.twoFactorTempSecret;
-        twoFactorTempSecret.remove();
+        await twoFactorTempSecret.remove();
 
-        user.save();
+        await user.save();
 
         return {
           user: {
@@ -91,12 +92,12 @@ export class UserService {
       const secret = speakeasy.generateSecret({ name: user.email });
 
       // Save secret on AuthData
-      const authData = new AuthData();
+      const authData: AuthData = new AuthDataModel();
       authData.password = secret.base32;
-      authData.save();
+      await authData.save();
 
       user.twoFactorTempSecret = authData.uuid;
-      user.save();
+      await user.save();
 
       const otpAuthUrl = speakeasy.otpauthURL({
         secret: secret.ascii,
@@ -125,5 +126,9 @@ export class UserService {
     if (!user) user = await this.findOne({ phone: emailOrPhone });
     if (!user) throw invalidUserException;
     return user;
+  }
+
+  getModel() {
+    return this.userModel;
   }
 }

@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './user.service';
 import { CryptographerService } from '../../utilities/cryptographer.service';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from './user.entity';
-import { AuthData } from '../auth-data/auth-data.entity';
+import { getModelToken } from '@nestjs/mongoose';
+import { USER } from './user.schema';
+import { AUTH_DATA } from '../auth-data/auth-data.schema';
 
 describe('UserService', () => {
   let service: UserService;
@@ -16,11 +16,11 @@ describe('UserService', () => {
           useClass: CryptographerService,
         },
         {
-          provide: getRepositoryToken(User),
+          provide: getModelToken(USER),
           useValue: {}, // provide mock values
         },
         {
-          provide: getRepositoryToken(AuthData),
+          provide: getModelToken(AUTH_DATA),
           useValue: {}, // provide mock values
         },
       ],

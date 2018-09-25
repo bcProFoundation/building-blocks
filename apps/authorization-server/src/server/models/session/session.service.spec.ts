@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SessionService } from './session.service';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Session } from './session.entity';
+import { getModelToken } from '@nestjs/mongoose';
+import { SESSION } from './session.schema';
 
 describe('SessionService', () => {
   let service: SessionService;
@@ -10,7 +10,7 @@ describe('SessionService', () => {
       providers: [
         SessionService,
         {
-          provide: getRepositoryToken(Session),
+          provide: getModelToken(SESSION),
           useValue: {}, // use mock values
         },
       ],
