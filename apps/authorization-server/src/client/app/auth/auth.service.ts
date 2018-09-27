@@ -1,7 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+interface InfoResponse {
+  session?: false;
+  message?: any;
+}
 
 @Injectable()
 export class AuthService {
@@ -20,9 +27,17 @@ export class AuthService {
     });
   }
 
-  isAuthenticated(): boolean {
-    return true;
-    // TODO: Check if session exists.
+  isAuthenticated(router: Router): Observable<boolean> {
+    return this.http.get('/info').pipe(
+      map((r: InfoResponse) => {
+        if (r.session) {
+          return r.session;
+        } else {
+          router.navigate(['login']);
+          return false;
+        }
+      }),
+    );
   }
 
   logIn(username: string, password: string, code?: string) {

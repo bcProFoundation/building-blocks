@@ -4,8 +4,11 @@ import { INDEX_HTML } from './constants/filesystem';
 
 @Injectable()
 export class AppService {
-  info() {
-    return { message: APP_NAME };
+  info(req?) {
+    return {
+      message: APP_NAME,
+      session: req.isAuthenticated(),
+    };
   }
 
   login(req, res) {
