@@ -21,8 +21,8 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get('info')
-  info() {
-    return this.appService.info();
+  info(@Req() req?) {
+    return this.appService.info(req);
   }
 
   @Get('login')

@@ -7,7 +7,7 @@ import { AuthGuardService } from './auth/auth-guard.service';
 import { ServerSettingsComponent } from './server-settings/server-settings.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '', redirectTo: 'account', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   {
     path: 'account',
