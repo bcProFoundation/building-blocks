@@ -3,13 +3,17 @@ import { ProfileNavComponent } from './profile-nav.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { Observable } from 'rxjs';
 
 describe('ProfileNavComponent', () => {
   let component: ProfileNavComponent;
   let fixture: ComponentFixture<ProfileNavComponent>;
 
   beforeEach(fakeAsync(() => {
-    const oauthServiceStub: Partial<OAuthService> = {};
+    const oauthServiceStub: Partial<OAuthService> = {
+      events: new Observable(),
+      hasValidAccessToken: () => false,
+    };
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       declarations: [ProfileNavComponent],

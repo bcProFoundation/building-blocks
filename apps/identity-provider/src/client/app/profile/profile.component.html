@@ -1,3 +1,95 @@
-<p>
-  profile works!
-</p>
+<div class="profile-container">
+  <form (ngSubmit)="updatePersonal()" [formGroup]="personalForm">
+    <mat-card>
+      <mat-card-title>{{ personalDetails }}</mat-card-title>
+      <mat-card-content fxLayout="column">
+        <mat-form-field>
+          <input matInput formControlName="name" placeholder="Full Name">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput formControlName="givenName" placeholder="First Name">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput formControlName="middleName" placeholder="Middle Name">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput formControlName="familyName" placeholder="Last Name">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput formControlName="nickname" placeholder="Nickname">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-select formControlName="gender" placeholder="Gender">
+            <mat-option *ngFor="let g of genders" [value]="g">
+              {{ g }}
+            </mat-option>
+          </mat-select> 
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput formControlName="birthdate" [matDatepicker]="birthdatePicker" placeholder="Choose a date">
+            <mat-datepicker-toggle matSuffix [for]="birthdatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #birthdatePicker disabled="false"></mat-datepicker>
+        </mat-form-field>
+      </mat-card-content>
+      <mat-card-actions>
+        <button type="submit" mat-button color="primary" [disabled]="!personalForm.valid">{{ updateConstant }}</button>
+      </mat-card-actions>
+    </mat-card>
+  </form>
+</div>
+<div class="profile-container">
+  <form (ngSubmit)="updateProfile()" [formGroup]="profileForm">
+    <mat-card>
+      <div fxLayout="row" fxLayoutAlign="space-between none">
+        <mat-card-title> {{ profileDetails }} </mat-card-title>
+        <ngx-avatar value="{{ name ? name.charAt(0).toUpperCase() : 'R'}}" mat-card-avatar></ngx-avatar>
+      </div>
+      <mat-card-content fxLayout="column">
+        <mat-form-field>
+          <ngx-mat-file-input formControlName="picture" placeholder="Avatar" valuePlaceholder="{{ avatarUrl }}"></ngx-mat-file-input>
+          <mat-icon matSuffix>folder</mat-icon>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput formControlName="website" placeholder="Website">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-select formControlName="zoneinfo" placeholder="Time Zone">
+            <mat-option *ngFor="let timezone of timezones" [value]="timezone.abbr">
+              {{ timezone.text }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-select formControlName="locale" placeholder="Locale">
+            <mat-option *ngFor="let l of locales" [value]="l.code">
+              {{ l.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </mat-card-content>
+      <mat-card-actions>
+          <button type="submit" mat-button color="primary">{{ updateConstant }}</button>
+      </mat-card-actions>
+    </mat-card>
+  </form>
+</div>
+<div class="profile-container">
+  <mat-card>
+    <mat-card-title> {{ accessDetails }} </mat-card-title>
+    <mat-card-subtitle>Roles and Groups</mat-card-subtitle>
+    <mat-card-content fxLayout="column" fxAlignLayout="space-evenly none" fxLayoutGap="1em">
+      <mat-chip-list>
+        <mat-chip *ngFor="let role of roles" disabled>
+          {{ role.charAt(0).toUpperCase() + role.substr(1).toLowerCase() }}
+        </mat-chip>
+      </mat-chip-list>
+      <hr/>
+      <mat-chip-list>
+        <mat-chip *ngFor="let group of groups" disabled selected color="accent">
+          {{ group.charAt(0).toUpperCase() + group.substr(1).toLowerCase() }}
+        </mat-chip>
+      </mat-chip-list>
+    </mat-card-content>
+  </mat-card>
+</div>
+  

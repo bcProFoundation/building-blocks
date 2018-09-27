@@ -17,11 +17,11 @@ export class AuthGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot,
   ): boolean {
-    if (this.oauthService.hasValidIdToken()) {
+    if (this.oauthService.hasValidAccessToken()) {
       return true;
     }
 
-    this.router.navigate(['/home']);
+    this.router.navigate(['home']);
     return false;
   }
 }

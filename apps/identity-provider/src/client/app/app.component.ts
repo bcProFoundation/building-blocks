@@ -22,9 +22,11 @@ export class AppComponent {
 
   setupOIDC(): void {
     this.appService.getMessage().subscribe(response => {
+      if (response.message) return; // { message: PLEASE_RUN_SETUP }
       const authConfig: AuthConfig = {
         clientId: response.clientId,
         redirectUri: response.callbackURLs[0],
+        silentRefreshRedirectUri: response.callbackURLs[1],
         loginUrl: response.authorizationURL,
         scope: 'openid roles',
         issuer: response.authServerURL,
@@ -33,6 +35,7 @@ export class AppComponent {
       if (isDevMode()) authConfig.requireHttps = false;
       this.oauthService.configure(authConfig);
       this.oauthService.tokenValidationHandler = new JwksValidationHandler();
+      this.oauthService.setupAutomaticSilentRefresh();
       this.oauthService.loadDiscoveryDocumentAndTryLogin();
     });
   }

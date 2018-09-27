@@ -25,7 +25,10 @@ export class SetupService {
           params.profileURL = response.data.userinfo_endpoint;
           params.revocationURL = response.data.revocation_endpoint;
           params.introspectionURL = response.data.introspection_endpoint;
-          params.callbackURLs = [params.appURL + '/index.html'];
+          params.callbackURLs = [
+            params.appURL + '/index.html',
+            params.appURL + '/silent-refresh.html',
+          ];
           this.idpSettings = await this.idpSettingsService.save(params);
           return this.idpSettings;
         },
