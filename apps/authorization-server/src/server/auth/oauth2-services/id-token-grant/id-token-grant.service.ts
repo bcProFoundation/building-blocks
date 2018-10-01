@@ -5,6 +5,7 @@ import { OIDCKeyService } from '../../../models/oidc-key/oidc-key.service';
 import { ServerSettingsService } from '../../../models/server-settings/server-settings.service';
 import { ServerSettings } from '../../../models/interfaces/server-settings.interface';
 import { JWKSNotFound } from '../../filters/exceptions';
+import { ConfigService } from '../../../config/config.service';
 
 @Injectable()
 export class IDTokenGrantService {
@@ -13,6 +14,7 @@ export class IDTokenGrantService {
   constructor(
     private readonly oidcKeyService: OIDCKeyService,
     private readonly settingsService: ServerSettingsService,
+    private readonly configService: ConfigService,
   ) {}
 
   async grantIDToken(client, user, req, done) {
@@ -25,10 +27,14 @@ export class IDTokenGrantService {
         iss: this.settings.issuerUrl,
         aud: client.clientId,
         iat: Math.trunc(issuedAt),
-        exp: Math.trunc(issuedAt) + 3600, // seconds * milliseconds
+        exp:
+          Math.trunc(issuedAt) +
+          Number(this.configService.get('TOKEN_VALIDITY')),
         sub: user.uuid,
         nonce: req.nonce,
       };
+
+      if (req.scope.includes('roles')) claims.roles = user.roles;
 
       const jwks = await this.oidcKeyService.find();
       const foundKey = jwks[0];

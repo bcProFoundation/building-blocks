@@ -12,6 +12,7 @@ import { USER } from '../../../models/user/user.schema';
 import { AUTH_DATA } from '../../../models/auth-data/auth-data.schema';
 import { CLIENT } from '../../../models/client/client.schema';
 import { AUTHORIZATION_CODE } from '../../../models/authorization-code/authorization-code.schema';
+import { ConfigService } from '../../../config/config.service';
 
 describe('CodeExchangeService', () => {
   let service: CodeExchangeService;
@@ -26,6 +27,17 @@ describe('CodeExchangeService', () => {
         BearerTokenService,
         ClientService,
         UserService,
+        {
+          provide: ConfigService,
+          useValue: {
+            get(env) {
+              switch (env) {
+                case 'TOKEN_VALIDITY':
+                  return 3600;
+              }
+            },
+          },
+        },
         {
           provide: getModelToken(BEARER_TOKEN),
           useValue: {},

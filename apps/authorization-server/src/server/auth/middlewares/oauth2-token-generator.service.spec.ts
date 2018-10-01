@@ -9,6 +9,7 @@ import { BEARER_TOKEN } from '../../models/bearer-token/bearer-token.schema';
 import { USER } from '../../models/user/user.schema';
 import { AUTH_DATA } from '../../models/auth-data/auth-data.schema';
 import { CLIENT } from '../../models/client/client.schema';
+import { ConfigService } from '../../config/config.service';
 
 describe('OAuth2TokenGeneratorService', () => {
   let service: OAuth2TokenGeneratorService;
@@ -20,6 +21,17 @@ describe('OAuth2TokenGeneratorService', () => {
         BearerTokenService,
         ClientService,
         UserService,
+        {
+          provide: ConfigService,
+          useValue: {
+            get(env) {
+              switch (env) {
+                case 'TOKEN_VALIDITY':
+                  return 3600;
+              }
+            },
+          },
+        },
         {
           provide: getModelToken(BEARER_TOKEN),
           useValue: {},

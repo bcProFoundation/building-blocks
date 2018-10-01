@@ -20,7 +20,8 @@
             "tsConfig": "src/client/tsconfig.app.json",
             "assets": [
               "src/client/favicon.ico",
-              "src/client/assets"
+              "src/client/assets",
+              "src/client/silent-refresh.html"
             ],
             "styles": [
               {
@@ -61,7 +62,7 @@
             },
             "ci": {
               "progress": false,
-              "aot": true,
+              "aot": true
             }
           }
         },
@@ -87,7 +88,8 @@
             "scripts": [],
             "assets": [
               "src/client/favicon.ico",
-              "src/client/assets"
+              "src/client/assets",
+              "src/client/silent-refresh.html"
             ]
           }
         },

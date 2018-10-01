@@ -31,7 +31,7 @@ export class SetupService {
     fullName: string,
     email: string,
     phone: string,
-    infrastructureConsoleCallbackUrl: string,
+    infrastructureConsoleCallbackUrl: string[],
     adminPassword: string,
     issuerUrl: string,
   ) {
@@ -53,7 +53,7 @@ export class SetupService {
    * @param email
    * @param callbackUrl
    */
-  async createClient(email: string, callbackUrl: string) {
+  async createClient(email: string, callbackUrls: string[]) {
     const ScopeModel = this.scopeService.getModel();
     const scope: Scope[] = await ScopeModel.insertMany([
       { name: 'openid' },
@@ -65,7 +65,7 @@ export class SetupService {
     const ClientModel = this.clientService.getModel();
     const client: Client = new ClientModel();
     client.clientSecret = randomBytes(32).toString('hex');
-    client.redirectUris = [callbackUrl];
+    client.redirectUris = callbackUrls;
     client.name = INFRASTRUCTURE_CONSOLE;
     client.allowedScopes = allowedScopes;
     client.createdBy = createdBy.uuid;

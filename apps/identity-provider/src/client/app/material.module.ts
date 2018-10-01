@@ -5,7 +5,17 @@ import {
   MatSidenavModule,
   MatIconModule,
   MatListModule,
+  MatCardModule,
+  MatFormFieldModule,
+  MatGridListModule,
+  MatInputModule,
+  MatSelectModule,
+  MatDatepickerModule,
+  MatNativeDateModule,
+  MatChipsModule,
 } from '@angular/material';
+import { MaterialFileInputModule } from 'ngx-material-file-input';
+import { AvatarModule } from 'ngx-avatar';
 
 @NgModule({
   imports: [
@@ -14,6 +24,16 @@ import {
     MatSidenavModule,
     MatIconModule,
     MatListModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatGridListModule,
+    MatInputModule,
+    MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MaterialFileInputModule,
+    AvatarModule,
+    MatChipsModule,
   ],
   exports: [
     MatToolbarModule,
@@ -21,6 +41,16 @@ import {
     MatSidenavModule,
     MatIconModule,
     MatListModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatGridListModule,
+    MatInputModule,
+    MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MaterialFileInputModule,
+    AvatarModule,
+    MatChipsModule,
   ],
 })
 export class MaterialModule {}
