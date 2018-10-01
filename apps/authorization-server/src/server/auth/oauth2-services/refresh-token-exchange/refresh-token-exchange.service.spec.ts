@@ -11,6 +11,7 @@ import { BEARER_TOKEN } from '../../../models/bearer-token/bearer-token.schema';
 import { USER } from '../../../models/user/user.schema';
 import { CLIENT } from '../../../models/client/client.schema';
 import { AUTH_DATA } from '../../../models/auth-data/auth-data.schema';
+import { ConfigService } from '../../../config/config.service';
 
 describe('RefreshTokenExchangeService', () => {
   let service: RefreshTokenExchangeService;
@@ -25,6 +26,17 @@ describe('RefreshTokenExchangeService', () => {
         UserService,
         ClientService,
         OAuth2TokenGeneratorService,
+        {
+          provide: ConfigService,
+          useValue: {
+            get(env) {
+              switch (env) {
+                case 'TOKEN_VALIDITY':
+                  return 3600;
+              }
+            },
+          },
+        },
         {
           provide: getModelToken(BEARER_TOKEN),
           useValue: {},

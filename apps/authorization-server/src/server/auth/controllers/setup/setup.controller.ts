@@ -19,7 +19,7 @@ export class SetupController {
       setupForm.fullName,
       setupForm.email,
       setupForm.phone,
-      setupForm.infrastructureConsoleCallbackUrl,
+      setupForm.infrastructureConsoleCallbackUrls,
       setupForm.adminPassword,
       setupForm.issuerUrl,
     );

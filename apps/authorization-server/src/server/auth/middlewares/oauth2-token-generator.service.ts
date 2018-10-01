@@ -10,6 +10,7 @@ import { UserService } from '../../models/user/user.service';
 // import { BearerToken } from '../../models/interfaces/bearer-token.interface';
 import { Client } from '../../models/interfaces/client.interface';
 import { BearerToken } from '../../models/interfaces/bearer-token.interface';
+import { ConfigService } from '../../config/config.service';
 
 @Injectable()
 export class OAuth2TokenGeneratorService {
@@ -18,6 +19,7 @@ export class OAuth2TokenGeneratorService {
     private readonly bearerTokenService: BearerTokenService,
     private readonly clientService: ClientService,
     private readonly userService: UserService,
+    private readonly configService: ConfigService,
   ) {}
 
   /**
@@ -57,7 +59,7 @@ export class OAuth2TokenGeneratorService {
     const extraParams: any = {
       // list of scopes to space separated string
       scope: scope.join(' '),
-      expires_in: 3600,
+      expires_in: Number(this.configService.get('TOKEN_VALIDITY')),
     };
 
     bearerToken.scope = scope;
