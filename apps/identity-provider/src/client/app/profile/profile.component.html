@@ -92,3 +92,25 @@
     </mat-card-content>
   </mat-card>
 </div>
+<div class="profile-container">
+  <mat-card>
+    <mat-card-title> {{ securityDetails }} </mat-card-title>
+    <mat-card-subtitle>Multi Factor Authentication</mat-card-subtitle>
+    <mat-card-content fxLayout="column" fxAlignLayout="space-evenly none" fxLayoutGap="1em">
+      <mat-slide-toggle
+        [checked]="checked2fa"
+        (click)="updatePersonal()"
+        disabled>
+        {{ checked2fa ? 'Enabled' : 'Disabled' }}
+      </mat-slide-toggle>
+    </mat-card-content>
+    <mat-card-actions>
+      <button
+        mat-button
+        color="primary"
+        (click)="enableDisable2fa()">
+        {{ checked2fa ? 'Disable' : 'Enable' }}
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

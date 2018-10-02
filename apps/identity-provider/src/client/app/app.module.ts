@@ -10,7 +10,7 @@ import { HttpErrorHandler } from './http-error-handler.service';
 import { MessageService } from './message.service';
 import { ProfileNavComponent } from './profile-nav/profile-nav.component';
 import { MaterialModule } from './material.module';
-import { OAuthModule } from 'angular-oauth2-oidc';
+import { OAuthModule, OAuthStorage } from 'angular-oauth2-oidc';
 import { AuthGuard } from './guards/auth.guard.service';
 import { HomeComponent } from './home/home.component';
 import { ProfileComponent } from './profile/profile.component';
@@ -37,7 +37,14 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     ReactiveFormsModule,
     FlexLayoutModule,
   ],
-  providers: [AppService, HttpErrorHandler, MessageService, AuthGuard, Title],
+  providers: [
+    AppService,
+    HttpErrorHandler,
+    MessageService,
+    AuthGuard,
+    Title,
+    { provide: OAuthStorage, useValue: localStorage },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
