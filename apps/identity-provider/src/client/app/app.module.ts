@@ -17,6 +17,8 @@ import { ProfileComponent } from './profile/profile.component';
 import { AppsComponent } from './apps/apps.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { ProfileNavService } from './profile-nav/profile-nav.service';
+import { ProfileService } from './profile/profile.service';
 
 @NgModule({
   declarations: [
@@ -44,6 +46,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     AuthGuard,
     Title,
     { provide: OAuthStorage, useValue: localStorage },
+    ProfileService,
+    ProfileNavService,
   ],
   bootstrap: [AppComponent],
 })

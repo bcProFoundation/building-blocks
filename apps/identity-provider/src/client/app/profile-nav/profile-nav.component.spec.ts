@@ -4,6 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { Observable } from 'rxjs';
+import { ProfileNavService } from './profile-nav.service';
 
 describe('ProfileNavComponent', () => {
   let component: ProfileNavComponent;
@@ -22,6 +23,12 @@ describe('ProfileNavComponent', () => {
         {
           provide: OAuthService,
           useValue: oauthServiceStub,
+        },
+        {
+          provide: ProfileNavService,
+          useValue: {
+            clearInfoLocalStorage() {}, // mock function
+          },
         },
       ],
     }).compileComponents();

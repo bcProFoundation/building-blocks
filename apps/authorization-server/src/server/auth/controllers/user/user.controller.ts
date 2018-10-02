@@ -6,12 +6,16 @@ import {
   Post,
   Req,
   Query,
+  Get,
+  Res,
 } from '@nestjs/common';
 import { EnsureLoginGuard } from 'nestjs-ensureloggedin-guard';
 import { CryptographerService } from '../../../utilities/cryptographer.service';
 import { UserService } from '../../../models/user/user.service';
+import { AuthGuard } from '../../guards/auth.guard';
+import { callback } from '../../passport/local.strategy';
 
-@Controller('v1/user')
+@Controller('user/v1')
 export class UserController {
   constructor(
     private readonly userService: UserService,
@@ -37,6 +41,14 @@ export class UserController {
     return { updated: user.email };
   }
 
+  @Post('update_full_name')
+  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  async updateFullName(@Req() req, @Body('name') name, @Res() res) {
+    const user = await this.userService.findOne({ uuid: req.user.user });
+    user.name = name;
+    await user.save();
+    res.json(user);
+  }
   // add role to a user (only admins)
   @Post('add/role')
   addRole() {}
@@ -58,5 +70,12 @@ export class UserController {
   @UseGuards(EnsureLoginGuard)
   async verify2fa(@Req() req, @Body('otp') otp) {
     return await this.userService.verify2fa(req.user.email, otp);
+  }
+
+  @Get('get_user')
+  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  async getUser(@Req() req, @Res() res) {
+    const user = await this.userService.findOne({ uuid: req.user.user });
+    res.json(user);
   }
 }

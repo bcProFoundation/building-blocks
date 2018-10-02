@@ -10,3 +10,5 @@ export const FEMALE_CONST = 'Female';
 export const OTHER_CONST = 'Other';
 export const NO_AVATAR_SET = 'No avatar set';
 export const SECURITY_DETAILS = 'Security Details';
+export const UPDATE_SUCCESSFUL = 'Update Successful';
+export const CLOSE = 'close';

@@ -8,7 +8,7 @@ export class Profile extends DocType implements IDTokenClaims {
   iss: string;
 
   @Column()
-  sub: string;
+  uuid: string;
 
   @Column()
   aud: string;
@@ -29,19 +29,19 @@ export class Profile extends DocType implements IDTokenClaims {
   name: string;
 
   @Column()
-  family_name: string;
+  familyName: string;
 
   @Column()
-  given_name: string;
+  givenName: string;
 
   @Column()
-  middle_name: string;
+  middleName: string;
 
   @Column()
   nickname: string;
 
   @Column()
-  preferred_username: string;
+  preferredUsername: string;
 
   @Column()
   profile: string;
@@ -65,7 +65,7 @@ export class Profile extends DocType implements IDTokenClaims {
   locale: string;
 
   @Column()
-  updated_at: Date;
+  updatedAt: Date;
 
   @Column()
   roles: string[];

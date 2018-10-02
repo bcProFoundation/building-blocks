@@ -36,8 +36,7 @@ export class OAuth2Service {
       exp: exp.valueOf(),
     };
 
-    // if (bearerToken.user && bearerToken.user.uuid)
-    //   tokenData.username = bearerToken.user.email;
+    if (bearerToken.user) tokenData.sub = bearerToken.user;
     if (bearerToken.scope) tokenData.scope = bearerToken.scope;
 
     return tokenData;
