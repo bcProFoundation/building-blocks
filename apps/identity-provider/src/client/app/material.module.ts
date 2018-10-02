@@ -13,6 +13,7 @@ import {
   MatDatepickerModule,
   MatNativeDateModule,
   MatChipsModule,
+  MatSlideToggleModule,
 } from '@angular/material';
 import { MaterialFileInputModule } from 'ngx-material-file-input';
 import { AvatarModule } from 'ngx-avatar';
@@ -34,6 +35,7 @@ import { AvatarModule } from 'ngx-avatar';
     MaterialFileInputModule,
     AvatarModule,
     MatChipsModule,
+    MatSlideToggleModule,
   ],
   exports: [
     MatToolbarModule,
@@ -51,6 +53,7 @@ import { AvatarModule } from 'ngx-avatar';
     MaterialFileInputModule,
     AvatarModule,
     MatChipsModule,
+    MatSlideToggleModule,
   ],
 })
 export class MaterialModule {}

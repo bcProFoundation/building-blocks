@@ -29,8 +29,6 @@ export class ProfileNavComponent implements OnInit {
           this.tokenIsValid = true;
           this.router.navigate(['profile']);
           break;
-        default:
-          if (this.tokenIsValid) this.router.navigate(['profile']);
       }
     });
     this.tokenIsValid = this.oauthService.hasValidAccessToken();

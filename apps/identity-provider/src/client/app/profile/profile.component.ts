@@ -10,6 +10,7 @@ import {
   MALE_CONST,
   FEMALE_CONST,
   OTHER_CONST,
+  SECURITY_DETAILS,
 } from '../../constants/messages';
 import { FormControl, FormGroup } from '@angular/forms';
 import { TIME_ZONES } from '../../constants/timezones';
@@ -26,10 +27,11 @@ export class ProfileComponent implements OnInit {
   genders: string[] = [MALE_CONST, FEMALE_CONST, OTHER_CONST];
   timezones = TIME_ZONES;
   locales = LOCALES;
+  updateConstant = UPDATE_CONSTANT;
   personalDetails = PERSONAL_DETAILS;
   profileDetails = PROFILE_DETAILS;
   accessDetails = ACCESS_DETAILS;
-  updateConstant = UPDATE_CONSTANT;
+  securityDetails = SECURITY_DETAILS;
 
   name: string;
   givenName: string;
@@ -45,6 +47,7 @@ export class ProfileComponent implements OnInit {
   roles: string[] = [];
   groups: string[] = [];
   avatarUrl: string = NO_AVATAR_SET;
+  checked2fa: boolean = true;
 
   personalForm = new FormGroup({
     name: new FormControl(this.name),
@@ -76,4 +79,5 @@ export class ProfileComponent implements OnInit {
 
   updatePersonal() {}
   updateProfile() {}
+  enableDisable2fa() {}
 }
