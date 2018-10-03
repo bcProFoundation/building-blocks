@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { OAuthService, OAuthEvent } from 'angular-oauth2-oidc';
 import { Router } from '@angular/router';
+import { ProfileNavService } from './profile-nav.service';
 
 @Component({
   selector: 'app-profile-nav',
@@ -20,6 +21,7 @@ export class ProfileNavComponent implements OnInit {
     private breakpointObserver: BreakpointObserver,
     private oauthService: OAuthService,
     private router: Router,
+    private profileNavService: ProfileNavService,
   ) {}
 
   ngOnInit(): void {
@@ -39,6 +41,7 @@ export class ProfileNavComponent implements OnInit {
   }
 
   logout() {
+    this.profileNavService.clearInfoLocalStorage();
     this.oauthService.logOut();
     this.tokenIsValid = false;
     this.router.navigate(['home']);

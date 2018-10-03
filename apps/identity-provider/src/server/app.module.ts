@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TYPEORM_CONNECTION } from './models/typeorm.connection';
 import { SetupService } from './controllers/setup/setup.service';
 import { SetupController } from './controllers/setup/setup.controller';
+import { ProfileController } from './controllers/profile/profile.controller';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { SetupController } from './controllers/setup/setup.controller';
     ModelsModule,
     HttpModule,
   ],
-  controllers: [AppController, SetupController],
+  controllers: [AppController, SetupController, ProfileController],
   providers: [AppService, SetupService],
 })
 export class AppModule {}
