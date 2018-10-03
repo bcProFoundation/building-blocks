@@ -1,12 +1,4 @@
-import {
-  Get,
-  Controller,
-  Render,
-  Req,
-  Res,
-  UseGuards,
-  UseFilters,
-} from '@nestjs/common';
+import { Get, Controller } from '@nestjs/common';
 
 @Controller()
 export class SSRController {

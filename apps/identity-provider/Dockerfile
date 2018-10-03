@@ -19,10 +19,10 @@ WORKDIR /home/craft
 RUN adduser -h /home/craft -D craft
 
 # Copy app
-COPY . /home/craft/authorization-server
+COPY . /home/craft/identity-provider
 
-RUN rm -fr authorization-server/config authorization-server/docker-entrypoint.sh \
-    && cd authorization-server \
+RUN rm -fr identity-provider/docker-entrypoint.sh \
+    && cd identity-provider \
     && yarn \
     && yarn prestart:prod \
     && rm -fr node_modules yarn.lock \
@@ -32,9 +32,9 @@ RUN rm -fr authorization-server/config authorization-server/docker-entrypoint.sh
 # set project directory
 RUN chown -R craft:craft /home/craft
 USER craft
-WORKDIR /home/craft/authorization-server
+WORKDIR /home/craft/identity-provider
 
-EXPOSE 3000
+EXPOSE 3200
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["start"]

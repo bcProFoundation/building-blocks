@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  identity-provider-service:
+    image: identity-provider:latest
+    ports:
+      - "3200:3200"
+    environment:
+      - DB_HOST=${IDP_DB_HOST}
+      - DB_NAME=${IDP_DB_NAME}
+    container_name: identity-provider

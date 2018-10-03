@@ -7,8 +7,14 @@ services:
       - "27017:27017"
     container_name: mongo
 
-  as:
-    image: auth-server:latest
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    container_name: redisbull
+
+  authorization-service:
+    image: authorization-server:latest
     ports:
       - "3000:3000"
     depends_on:
@@ -21,6 +27,8 @@ services:
       - COOKIE_MAX_AGE=${COOKIE_MAX_AGE}
       - SESSION_NAME=${SESSION_NAME}
       - TOKEN_VALIDITY=${TOKEN_VALIDITY}
-      - DB_HOST=${DB_HOST}
-      - DB_NAME=${DB_NAME}
+      - DB_HOST=${AS_DB_HOST}
+      - DB_NAME=${AS_DB_NAME}
+      - BULL_QUEUE_REDIS_HOST=${AS_BULL_QUEUE_REDIS_HOST}
+      - BULL_QUEUE_REDIS_PORT=${AS_BULL_QUEUE_REDIS_PORT}
     container_name: authorization-server

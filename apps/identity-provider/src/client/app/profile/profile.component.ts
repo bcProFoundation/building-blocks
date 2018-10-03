@@ -115,13 +115,15 @@ export class ProfileComponent implements OnInit {
     const uuid = localStorage.getItem(USER_UUID);
     this.profileService.getPersonalDetails(uuid).subscribe({
       next: (response: ProfileResponse) => {
-        this.personalForm.controls.familyName.setValue(response.familyName);
-        this.personalForm.controls.birthdate.setValue(response.birthdate);
-        this.personalForm.controls.gender.setValue(response.gender);
-        this.personalForm.controls.givenName.setValue(response.givenName);
-        this.personalForm.controls.middleName.setValue(response.middleName);
-        this.personalForm.controls.familyName.setValue(response.familyName);
-        this.personalForm.controls.nickname.setValue(response.nickname);
+        if (response) {
+          this.personalForm.controls.familyName.setValue(response.familyName);
+          this.personalForm.controls.birthdate.setValue(response.birthdate);
+          this.personalForm.controls.gender.setValue(response.gender);
+          this.personalForm.controls.givenName.setValue(response.givenName);
+          this.personalForm.controls.middleName.setValue(response.middleName);
+          this.personalForm.controls.familyName.setValue(response.familyName);
+          this.personalForm.controls.nickname.setValue(response.nickname);
+        }
       },
     });
   }

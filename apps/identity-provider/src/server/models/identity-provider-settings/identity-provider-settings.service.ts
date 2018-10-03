@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { IdentityProviderSettings } from './identity-provider-settings.entity';
-import { settingsAlreadyExists } from 'exceptions';
+import { settingsAlreadyExists } from '../../exceptions';
 
 @Injectable()
 export class IdentityProviderSettingsService {

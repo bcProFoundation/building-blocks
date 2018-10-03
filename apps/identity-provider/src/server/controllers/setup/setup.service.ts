@@ -1,6 +1,6 @@
 import { Injectable, HttpService } from '@nestjs/common';
 import { IdentityProviderSettingsService } from '../../models/identity-provider-settings/identity-provider-settings.service';
-import { settingsAlreadyExists, somethingWentWrong } from 'exceptions';
+import { settingsAlreadyExists, somethingWentWrong } from '../../exceptions';
 import { IdentityProviderSettings } from '../../models/identity-provider-settings/identity-provider-settings.entity';
 
 @Injectable()

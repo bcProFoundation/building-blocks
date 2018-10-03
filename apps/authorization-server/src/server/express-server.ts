@@ -66,6 +66,7 @@ export class ExpressServer {
       cookie,
       saveUninitialized: false,
       resave: false,
+      proxy: true,
       // unset: 'destroy'
     };
 
