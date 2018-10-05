@@ -30,6 +30,8 @@ export class ProfileController {
         updatedProfile = await this.profileService.findOne({
           uuid: profile.uuid,
         });
+
+        if (!updatedProfile) updatedProfile = new Profile();
         Object.assign(updatedProfile, profile);
         updatedProfile.birthdate = new Date(profile.birthdate);
         await updatedProfile.save();

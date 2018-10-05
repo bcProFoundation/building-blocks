@@ -10,12 +10,6 @@ stages:
   - pack
   - docs
 
-before_script:
-  - npm install -g lerna
-  - yarn
-  - lerna clean -y
-  - lerna bootstrap
-
 test_backend:
   stage: tests
   variables:
@@ -28,6 +22,11 @@ test_backend:
     DB_NAME: "test-e2e-idp"
     BULL_QUEUE_REDIS_HOST: redis
     BULL_QUEUE_REDIS_PORT: "6379"
+  before_script:
+    - npm install -g lerna
+    - yarn
+    - lerna clean -y
+    - lerna bootstrap
   script:
     # Create .env file
     - dockerize -template apps/authorization-server/docker/env.tmpl:apps/authorization-server/.env
@@ -40,6 +39,11 @@ test_backend:
 
 test_frontend:
   stage: tests
+  before_script:
+    - npm install -g lerna
+    - yarn
+    - lerna clean -y
+    - lerna bootstrap
   script:
     # Launch Xvfb
     - Xvfb :0 -ac -screen 0 1024x768x24 &
@@ -59,12 +63,17 @@ pack_staging:
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
-    # Authorization Server
     # get latest tag for app in staging branchs
+    # Authorization Server
     - export IDPVERSION=$(echo $CI_COMMIT_SHA | cut -c1-7)
     - docker build -t authorization-server apps/authorization-server
-    - docker tag authorization-server $CI_REGISTRY/castlecraft/building-blocks/authorization-server:$IDPVERSION
-    - docker push $CI_REGISTRY/castlecraft/building-blocks/authorization-server:$IDPVERSION
+    - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:$IDPVERSION
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:$IDPVERSION
+    # Identity Provider
+    - export IDPVERSION=$(echo $CI_COMMIT_SHA | cut -c1-7)
+    - docker build -t identity-provider apps/identity-provider
+    - docker tag identity-provider $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:$IDPVERSION
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:$IDPVERSION
 
 pack_production:
   image: docker
@@ -76,16 +85,25 @@ pack_production:
     - apk add git
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
-    # Authorization Server
     # get latest tag for app in master branchs
+    # Authorization Server
     - export IDPVERSION=$(git tag --list "authorization-server@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
     - docker build -t authorization-server apps/authorization-server
-    - docker tag authorization-server $CI_REGISTRY/castlecraft/building-blocks/authorization-server:$IDPVERSION
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
-    - docker push $CI_REGISTRY/castlecraft/building-blocks/authorization-server:$IDPVERSION
+    - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:$IDPVERSION
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:$IDPVERSION
+    # Idenitiy Provider
+    - export IDPVERSION=$(git tag --list "authorization-server@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
+    - docker build -t authorization-server apps/authorization-server
+    - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:$IDPVERSION
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:$IDPVERSION
 
 pages:
   stage: docs
+  before_script:
+    - npm install -g lerna
+    - yarn
+    - lerna clean -y
+    - lerna bootstrap
   script:
     - npm install gitbook-cli -g
     - npm install typedoc -g

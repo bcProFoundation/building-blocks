@@ -1,23 +1,20 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "module": "commonjs",
+    "baseUrl": "src",
+    "outDir": "dist/out-tsc",
+    "sourceMap": true,
     "declaration": false,
-    "noImplicitAny": false,
-    "removeComments": true,
-    "noLib": false,
-    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es6",
-    "sourceMap": true,
-    "allowJs": true,
-    "baseUrl": "./src/server",
-    "outDir": "./dist/out-tsc",
-    "moduleResolution": "node",
-    "noUnusedLocals": true,
+    "target": "es5",
     "typeRoots": [
       "node_modules/@types"
+    ],
+    "noUnusedLocals":true,
+    "types": [
+      "node"
     ],
     "lib": [
       "es2017",

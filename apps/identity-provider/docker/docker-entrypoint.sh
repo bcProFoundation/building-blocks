@@ -1,26 +1,6 @@
 #!/bin/sh
 
 function checkEnv() {
-  if [[ -z "$SESSION_SECRET" ]]; then
-    echo "SESSION_SECRET is not set"
-    exit 1
-  fi
-  if [[ -z "$EXPIRY_DAYS" ]]; then
-    echo "EXPIRY_DAYS is not set"
-    exit 1
-  fi
-  if [[ -z "$COOKIE_MAX_AGE" ]]; then
-    echo "COOKIE_MAX_AGE is not set"
-    exit 1
-  fi
-  if [[ -z "$SESSION_NAME" ]]; then
-    echo "SESSION_NAME is not set"
-    exit 1
-  fi
-  if [[ -z "$TOKEN_VALIDITY" ]]; then
-    echo "TOKEN_VALIDITY is not set"
-    exit 1
-  fi
   if [[ -z "$DB_HOST" ]]; then
     echo "DB_HOST is not set"
     exit 1
@@ -29,22 +9,11 @@ function checkEnv() {
     echo "DB_NAME is not set"
     exit 1
   fi
-  if [[ -z "$BULL_QUEUE_REDIS_HOST" ]]; then
-    echo "BULL_QUEUE_REDIS_HOST is not set"
-    exit 1
-  fi
-    if [[ -z "$BULL_QUEUE_REDIS_PORT" ]]; then
-    echo "BULL_QUEUE_REDIS_HOST is not set"
-    exit 1
-  fi
 }
 
 function checkConnection() {
   # Wait for mongodb
   dockerize -wait tcp://$DB_HOST:27017 -timeout 30s
-
-  # Wait for redis for bull queue
-  dockerize -wait tcp://$BULL_QUEUE_REDIS_HOST:$BULL_QUEUE_REDIS_PORT -timeout 30s
 }
 
 function configureServer() {
