@@ -1,0 +1,37 @@
+<div class="dashboard-container">
+    <form [formGroup]="clientForm">
+      <mat-card>
+        <mat-card-title>{{ clientName || "New Client" }}</mat-card-title>
+        <mat-card-content fxLayout="column">
+            <mat-form-field>
+                <input matInput placeholder="Client Name" formControlName="clientName" required>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-select placeholder="Scopes" formControlName="clientScopes" multiple>
+                <mat-option *ngFor="let scope of scopes" [value]="scope">{{scope}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-checkbox formControlName="isTrusted">Is Trusted</mat-checkbox>
+            <div>
+              <div formArrayName="callbackURLForms" *ngFor="let url of clientForm.get('callbackURLForms')['controls']; let i = index;">
+                <div [formGroupName]="i">
+                  <mat-form-field>
+                    <input matInput formControlName="callbackURL" placeholder="Callback URL" class="full-width">
+                    <button mat-icon-button color="accent" matSuffix>
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  </mat-form-field>
+                </div>
+              </div>
+              <button mat-icon-button color="accent" (click)="addCallbackURL()">
+                Add Callback URL <mat-icon>add</mat-icon>
+              </button>
+            </div>
+        </mat-card-content>
+        <mat-card-actions>
+          <button (click)="createClient()" mat-flat-button color="primary" [disabled]="!clientForm.valid" *ngIf="!clientId">Create</button>
+          <button (click)="updateClient()" mat-flat-button color="primary" [disabled]="!clientForm.valid" *ngIf="clientId">Update</button>
+        </mat-card-actions>
+      </mat-card>
+    </form>
+  </div>

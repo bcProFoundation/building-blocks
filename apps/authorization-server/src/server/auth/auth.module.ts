@@ -37,6 +37,7 @@ import { ServerSettingsController } from './controllers/server-settings/server-s
 import { WellKnownController } from './controllers/well-known/well-known.controller';
 import { OIDCKeyService } from '../models/oidc-key/oidc-key.service';
 import { TokenIntrospectionGuard } from './guards/token-introspection.guard';
+import { ScopeController } from './controllers/scope/scope.controller';
 import { SchedulerModule } from '../scheduler/scheduler.module';
 
 @Module({
@@ -81,6 +82,7 @@ import { SchedulerModule } from '../scheduler/scheduler.module';
     SetupController,
     ServerSettingsController,
     WellKnownController,
+    ScopeController,
   ],
   imports: [ModelsModule, UtilitiesModule, ConfigModule, SchedulerModule],
 })

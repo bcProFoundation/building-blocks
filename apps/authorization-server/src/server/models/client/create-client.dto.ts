@@ -34,5 +34,5 @@ export class CreateClientDto {
     type: 'string',
     required: true,
   })
-  redirectUri: string;
+  redirectUris: string[];
 }

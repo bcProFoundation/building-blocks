@@ -8,7 +8,6 @@ import {
 import { AuthService } from '../auth/auth.service';
 import { CreateUserDto } from '../../../models/user/create-user.dto';
 import { UserService } from '../../../models/user/user.service';
-import { randomBytes } from 'crypto';
 import { RoleService } from '../../../models/role/role.service';
 import { ServerSettingsService } from '../../../models/server-settings/server-settings.service';
 import { Scope } from '../../../models/interfaces/scope.interface';
@@ -35,7 +34,7 @@ export class SetupService {
     adminPassword: string,
     issuerUrl: string,
   ) {
-    const existingClients = await this.clientService.find();
+    const existingClients = await this.clientService.find({});
     const existingUsers = await this.userService.find();
 
     if (existingClients.length > 0 || existingUsers.length > 0) {
@@ -64,7 +63,6 @@ export class SetupService {
     const allowedScopes: string[] = scope.map(r => r.name);
     const ClientModel = this.clientService.getModel();
     const client: Client = new ClientModel();
-    client.clientSecret = randomBytes(32).toString('hex');
     client.redirectUris = callbackUrls;
     client.name = INFRASTRUCTURE_CONSOLE;
     client.allowedScopes = allowedScopes;

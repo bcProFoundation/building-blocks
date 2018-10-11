@@ -28,4 +28,8 @@ export class ScopeService {
   getModel() {
     return this.scopeModel;
   }
+
+  public async find(params) {
+    return await this.scopeModel.find(params);
+  }
 }

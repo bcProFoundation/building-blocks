@@ -65,15 +65,23 @@ pack_staging:
   script:
     # get latest tag for app in staging branchs
     # Authorization Server
-    - export IDPVERSION=$(echo $CI_COMMIT_SHA | cut -c1-7)
+    - export ASVERSION=$(echo $CI_COMMIT_SHA | cut -c1-7)
     - docker build -t authorization-server apps/authorization-server
-    - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:$IDPVERSION
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:$IDPVERSION
+    - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:$ASVERSION
+    - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:latest
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server
     # Identity Provider
     - export IDPVERSION=$(echo $CI_COMMIT_SHA | cut -c1-7)
     - docker build -t identity-provider apps/identity-provider
     - docker tag identity-provider $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:$IDPVERSION
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:$IDPVERSION
+    - docker tag identity-provider $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:latest
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider
+    # Infrastructure Console
+    - export ICVERSION=$(echo $CI_COMMIT_SHA | cut -c1-7)
+    - docker build -t infrastructure-console apps/infrastructure-console
+    - docker tag infrastructure-console $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:$ICVERSION
+    - docker tag infrastructure-console $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:latest
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console
 
 pack_production:
   image: docker
@@ -87,15 +95,23 @@ pack_production:
   script:
     # get latest tag for app in master branchs
     # Authorization Server
-    - export IDPVERSION=$(git tag --list "authorization-server@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
+    - export ASVERSION=$(git tag --list "authorization-server@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
     - docker build -t authorization-server apps/authorization-server
-    - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:$IDPVERSION
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:$IDPVERSION
+    - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:$ASVERSION
+    - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:latest
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server
     # Idenitiy Provider
-    - export IDPVERSION=$(git tag --list "authorization-server@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
-    - docker build -t authorization-server apps/authorization-server
-    - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:$IDPVERSION
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:$IDPVERSION
+    - export IDPVERSION=$(git tag --list "identity-provider@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
+    - docker build -t identity-provider apps/identity-provider
+    - docker tag identity-provider $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:$IDPVERSION
+    - docker tag identity-provider $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:latest
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider
+    # Infrastructure Console
+    - export ICVERSION=$(git tag --list "infrastructure-console@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
+    - docker build -t infrastructure-console apps/infrastructure-console
+    - docker tag infrastructure-console $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:$ICVERSION
+    - docker tag infrastructure-console $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:latest
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console
 
 pages:
   stage: docs
@@ -107,7 +123,7 @@ pages:
   script:
     - npm install gitbook-cli -g
     - npm install typedoc -g
-    - gitbook fetch latest # fetch latest stable version
+    # - gitbook fetch latest # fetch latest stable version
     # - gitbook install # add any requested plugins in book.json
     - gitbook build docs public # build to public path
     - yarn docs
