@@ -5,6 +5,7 @@ import {
   SILENT_REFRESH_REDIRECT_URI,
   LOGIN_URL,
   ISSUER_URL,
+  USER_UUID,
 } from '../../constants/storage';
 
 @Injectable()
@@ -15,5 +16,6 @@ export class ProfileNavService {
     localStorage.removeItem(SILENT_REFRESH_REDIRECT_URI);
     localStorage.removeItem(LOGIN_URL);
     localStorage.removeItem(ISSUER_URL);
+    localStorage.removeItem(USER_UUID);
   }
 }

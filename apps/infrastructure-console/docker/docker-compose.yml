@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  infrastructure-console-service:
+    image: infrastructure-console:latest
+    ports:
+      - "5000:5000"
+    environment:
+      - DB_HOST=${IC_DB_HOST}
+      - DB_NAME=${IC_DB_NAME}
+    container_name: infrastructure-console
