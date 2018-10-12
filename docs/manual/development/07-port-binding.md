@@ -1,4 +1,6 @@
 # Port binding
 
-- Authorization server exposes port `3000`
-- Infrastructure console exposes port `4000`
+- Authorization Server exposes port `3000`
+- Communication Server exposes port `4100`
+- Infrastructure Console exposes port `5000`
+- Identity Provider exposes port `3200`

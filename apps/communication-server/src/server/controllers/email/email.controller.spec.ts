@@ -1,6 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ClientService } from '../../models/client/client.service';
-import { Client } from '../../models/client/client.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { EmailController } from './email.controller';
 import { EmailService } from './email.service';
@@ -15,21 +13,24 @@ describe('EmailController', () => {
       controllers: [EmailController],
       providers: [
         EmailService,
-        ClientService,
         EmailAccountService,
-        {
-          provide: ConfigService,
-          useValue: {
-            get(key) {},
-          },
-        },
         {
           provide: getRepositoryToken(EmailAccount),
           useValue: {},
         },
         {
-          provide: getRepositoryToken(Client),
-          useValue: {}, // provide mock values
+          provide: ConfigService,
+          useValue: {
+            get(env) {
+              switch (env) {
+                case 'AMQP_HOST':
+                  return 'localhost';
+              }
+            },
+            getRabbitMQConfig() {
+              return '';
+            },
+          },
         },
       ],
     }).compile();

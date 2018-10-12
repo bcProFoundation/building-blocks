@@ -6,7 +6,7 @@
     "format": "prettier --write \"**/*.ts\"",
     "format:check": "prettier-check \"**/*.ts\"",
     "ng:start": "ng serve",
-    "e2e": "echo ng e2e --port 49151 --configuration=ci",
+    "e2e": "ng e2e --port 49151 --configuration=ci",
     "build": "ng build",
     "lint": "./node_modules/.bin/tslint -c tslint.json 'src/**/*.ts'",
     "start:server": "nodemon",
@@ -18,23 +18,27 @@
     "test:server": "jest",
     "test:cov": "jest --coverage",
     "test:e2e": "export NODE_ENV=test-e2e && jest --config ./tests/jest-e2e.json --detectOpenHandles",
-    "test:client": "echo ng test --watch=false --no-progress",
+    "test:client": "ng test --watch=false --no-progress",
     "webpack": "webpack --config webpack.config.js"
   },
   "private": true,
   "dependencies": {
     "@angular/animations": "^6.0.3",
+    "@angular/cdk": "^6.4.7",
     "@angular/common": "^6.0.3",
     "@angular/compiler": "^6.0.3",
     "@angular/core": "^6.0.3",
+    "@angular/flex-layout": "^6.0.0-beta.18",
     "@angular/forms": "^6.0.3",
     "@angular/http": "^6.0.3",
+    "@angular/material": "^6.4.7",
     "@angular/platform-browser": "^6.0.3",
     "@angular/platform-browser-dynamic": "^6.0.3",
     "@angular/router": "^6.0.3",
     "@nestjs/common": "^5.3.5",
     "@nestjs/core": "^5.3.4",
     "@nestjs/microservices": "^5.3.5",
+    "@nestjs/swagger": "^2.5.1",
     "@nestjs/typeorm": "^5.1.0",
     "amqplib": "^0.5.2",
     "angular-oauth2-oidc": "^4.0.2",
@@ -85,7 +89,7 @@
     "ts-node": "^7.0.1",
     "tsconfig-paths": "^3.1.1",
     "tslint": "~5.11.0",
-    "typescript": "~2.7.2",
+    "typescript": "~2.9.2",
     "webpack": "^4.17.2",
     "webpack-cli": "^3.1.0",
     "webpack-node-externals": "^1.6.0"
@@ -118,5 +122,5 @@
   "description": "Email, SMS and Webhooks API",
   "author": "CEPL",
   "repository": "https://gitlab.com/castlecraft/building-blocks.git",
-  "license": "MIT"
+  "license": "AGPLv3"
 }
