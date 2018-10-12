@@ -1,32 +1,54 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
+import { HttpClientModule } from '@angular/common/http';
+import { LayoutModule } from '@angular/cdk/layout';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HttpClientModule } from '@angular/common/http';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { AuthServerMaterialModule } from './auth-server-material/auth-server-material.module';
-import { FormsModule } from '@angular/forms';
-import { LoginComponent } from './login/login.component';
-import { SignupComponent } from './signup/signup.component';
-import { AccountComponent } from './account/account.component';
+import { AppService } from './app.service';
+import { HttpErrorHandler } from './http-error-handler.service';
+import { MessageService } from './message.service';
+import { ProfileNavComponent } from './profile-nav/profile-nav.component';
+import { MaterialModule } from './material.module';
+import { OAuthModule, OAuthStorage } from 'angular-oauth2-oidc';
+import { AuthGuard } from './guards/auth.guard.service';
+import { HomeComponent } from './home/home.component';
+import { ProfileComponent } from './profile/profile.component';
+import { AppsComponent } from './apps/apps.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { ProfileNavService } from './profile-nav/profile-nav.service';
+import { ProfileService } from './profile/profile.service';
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent,
-    SignupComponent,
-    AccountComponent,
+    ProfileNavComponent,
+    HomeComponent,
+    ProfileComponent,
+    AppsComponent,
   ],
   imports: [
-    BrowserModule.withServerTransition({ appId: 'identity-provider' }),
+    BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    AuthServerMaterialModule,
-    FormsModule,
+    OAuthModule.forRoot(),
+    LayoutModule,
+    MaterialModule,
+    ReactiveFormsModule,
+    FlexLayoutModule,
   ],
-  providers: [],
+  providers: [
+    AppService,
+    HttpErrorHandler,
+    MessageService,
+    AuthGuard,
+    Title,
+    { provide: OAuthStorage, useValue: localStorage },
+    ProfileService,
+    ProfileNavService,
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

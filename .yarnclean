@@ -9,7 +9,9 @@ docs
 doc
 website
 images
-assets
+
+# DO NOT REMOVE assets, Required to generate typedoc site
+!assets
 
 # examples
 example

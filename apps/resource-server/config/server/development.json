@@ -1,8 +1,0 @@
-{
-    "secretKey": "secret",
-    "secretSession": "secret",
-    "cookieSecret": "secret",
-    "expiryDays": 1,
-    "cookieMaxAge": 43200,
-    "sessionName": "rs_session"
-}

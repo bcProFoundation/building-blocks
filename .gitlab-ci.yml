@@ -1,27 +1,56 @@
-image: castlecraft/node-latest-headless-chrome:1.0
+image: castlecraft/node-latest-headless-chrome:1.2
 
 services:
   - docker:dind
+  - mongo
+  - redis
 
 stages:
   - tests
   - pack
+  - docs
 
-test_async:
+test_backend:
+  stage: tests
+  variables:
+    SESSION_SECRET: "secret"
+    EXPIRY_DAYS: "1"
+    COOKIE_MAX_AGE: "43200"
+    TOKEN_VALIDITY: "3600"
+    SESSION_NAME: "E2E_SESSION"
+    DB_HOST: "mongo"
+    DB_NAME: "test-e2e-idp"
+    BULL_QUEUE_REDIS_HOST: redis
+    BULL_QUEUE_REDIS_PORT: "6379"
+  before_script:
+    - npm install -g lerna
+    - yarn
+    - lerna clean -y
+    - lerna bootstrap
+  script:
+    # Create .env file
+    - dockerize -template apps/authorization-server/docker/env.tmpl:apps/authorization-server/.env
+    - lerna run lint
+    - lerna run format:check
+    - yarn test
+    - lerna run test:e2e --stream
+  tags:
+    - docker
+
+test_frontend:
   stage: tests
   before_script:
-   # Launch Xvfb
-   - Xvfb :0 -ac -screen 0 1024x768x24 &
-   # Export display for Chrome
-   - export DISPLAY=:99
+    - npm install -g lerna
+    - yarn
+    - lerna clean -y
+    - lerna bootstrap
   script:
-   - npm install -g lerna
-   - yarn clean
-   - lerna bootstrap
-   - export NODE_ENV=test
-   - yarn lint
-   - yarn test
-   - yarn test:e2e
+    # Launch Xvfb
+    - Xvfb :0 -ac -screen 0 1024x768x24 &
+    # Export display for Chrome
+    - export DISPLAY=:99
+    - export NODE_ENV=test && lerna run e2e --stream --concurrency 1
+    - export NODE_ENV=test && lerna run test:client --stream --concurrency 1
   tags:
     - docker
 
@@ -34,12 +63,25 @@ pack_staging:
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
-    # Identity Provider
     # get latest tag for app in staging branchs
+    # Authorization Server
+    - export ASVERSION=$(echo $CI_COMMIT_SHA | cut -c1-7)
+    - docker build -t authorization-server apps/authorization-server
+    - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:$ASVERSION
+    - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:latest
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server
+    # Identity Provider
     - export IDPVERSION=$(echo $CI_COMMIT_SHA | cut -c1-7)
     - docker build -t identity-provider apps/identity-provider
-    - docker tag identity-provider $CI_REGISTRY/castlecraft/building-blocks/identity-provider:$IDPVERSION
-    - docker push $CI_REGISTRY/castlecraft/building-blocks/identity-provider:$IDPVERSION
+    - docker tag identity-provider $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:$IDPVERSION
+    - docker tag identity-provider $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:latest
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider
+    # Infrastructure Console
+    - export ICVERSION=$(echo $CI_COMMIT_SHA | cut -c1-7)
+    - docker build -t infrastructure-console apps/infrastructure-console
+    - docker tag infrastructure-console $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:$ICVERSION
+    - docker tag infrastructure-console $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:latest
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console
 
 pack_production:
   image: docker
@@ -51,10 +93,41 @@ pack_production:
     - apk add git
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
-    # Identity Provider
     # get latest tag for app in master branchs
+    # Authorization Server
+    - export ASVERSION=$(git tag --list "authorization-server@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
+    - docker build -t authorization-server apps/authorization-server
+    - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:$ASVERSION
+    - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:latest
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server
+    # Idenitiy Provider
     - export IDPVERSION=$(git tag --list "identity-provider@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
     - docker build -t identity-provider apps/identity-provider
-    - docker tag identity-provider $CI_REGISTRY/castlecraft/building-blocks/identity-provider:$IDPVERSION
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
-    - docker push $CI_REGISTRY/castlecraft/building-blocks/identity-provider:$IDPVERSION
+    - docker tag identity-provider $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:$IDPVERSION
+    - docker tag identity-provider $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:latest
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider
+    # Infrastructure Console
+    - export ICVERSION=$(git tag --list "infrastructure-console@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
+    - docker build -t infrastructure-console apps/infrastructure-console
+    - docker tag infrastructure-console $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:$ICVERSION
+    - docker tag infrastructure-console $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:latest
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console
+
+pages:
+  stage: docs
+  before_script:
+    - npm install -g lerna
+    - yarn
+    - lerna clean -y
+    - lerna bootstrap
+  script:
+    - npm install gitbook-cli -g
+    - npm install typedoc -g
+    # - gitbook fetch latest # fetch latest stable version
+    # - gitbook install # add any requested plugins in book.json
+    - gitbook build docs public # build to public path
+    - yarn docs
+  artifacts:
+    paths:
+      - public
+    expire_in: 4 weeks

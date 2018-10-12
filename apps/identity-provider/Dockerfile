@@ -2,19 +2,14 @@
 FROM node:10-alpine
 MAINTAINER Castlecraft
 
-# Install mysql client
-RUN apk update \
-    && apk add --no-cache \
-    mysql-client \
-    git \
-    tar
+# Install mysql Dockerize
+RUN apk add --no-cache openssl
+ENV DOCKERIZE_VERSION v0.6.1
+RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
-# Install typescript and craft cli
-RUN yarn --production=true global add typescript "https://gitlab.com/castlecraft/craft-cli" \
-    && yarn cache clean \
-    && mkdir -p /home/craft/identity-provider
-
-COPY docker-entrypoint.sh usr/local/bin/docker-entrypoint.sh
+COPY docker/docker-entrypoint.sh usr/local/bin/docker-entrypoint.sh
 RUN ln -s usr/local/bin/docker-entrypoint.sh / # backwards compat
 
 # Create home directory for craft
@@ -22,26 +17,24 @@ WORKDIR /home/craft
 
 # Add non root user
 RUN adduser -h /home/craft -D craft
-RUN chown -R craft:craft /home/craft
-USER craft
 
-# Image
+# Copy app
 COPY . /home/craft/identity-provider
 
-RUN rm -fr identity-provider/config identity-provider/docker-entrypoint.sh identity-provider/package-lock.json \
+RUN rm -fr identity-provider/docker-entrypoint.sh \
     && cd identity-provider \
     && yarn \
     && yarn prestart:prod \
     && rm -fr node_modules yarn.lock \
     && yarn --production=true \
-    && yarn cache clean \
-    && mkdir -p /home/craft/identity-provider/config
+    && yarn cache clean
 
 # set project directory
+RUN chown -R craft:craft /home/craft
+USER craft
 WORKDIR /home/craft/identity-provider
-VOLUME /home/craft/identity-provider/config
 
-EXPOSE 3000
+EXPOSE 3200
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["start"]
