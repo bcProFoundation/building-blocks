@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { OAuthService } from 'angular-oauth2-oidc';
+import { Title } from '@angular/platform-browser';
+import { HOME_TITLE } from '../../constants/messages';
 
 @Component({
   selector: 'app-home',
@@ -7,21 +8,9 @@ import { OAuthService } from 'angular-oauth2-oidc';
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
-  constructor(private readonly oauthService: OAuthService) {}
+  constructor(private title: Title) {}
 
-  public login() {
-    this.oauthService.initImplicitFlow();
+  ngOnInit() {
+    this.title.setTitle(HOME_TITLE);
   }
-
-  public logoff() {
-    this.oauthService.logOut();
-  }
-
-  public get name() {
-    const claims = this.oauthService.getIdentityClaims();
-    if (!claims) return null;
-    return claims;
-  }
-
-  ngOnInit() {}
 }

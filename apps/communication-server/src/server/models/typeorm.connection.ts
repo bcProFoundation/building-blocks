@@ -1,8 +1,7 @@
-import { Client } from './client/client.entity';
-import { User } from './user/user.entity';
 import { ConfigService } from '../config/config.service';
 import { EmailAccount } from './email-account/email-account.entity';
 import { MongoConnectionOptions } from 'typeorm/driver/mongodb/MongoConnectionOptions';
+import { ServerSettings } from './server-settings/server-settings.entity';
 
 const config = new ConfigService();
 
@@ -13,5 +12,5 @@ export const TYPEORM_CONNECTION: MongoConnectionOptions = {
   database: config.get('DB_NAME'),
   logging: false,
   synchronize: true,
-  entities: [Client, User, EmailAccount],
+  entities: [EmailAccount, ServerSettings],
 };

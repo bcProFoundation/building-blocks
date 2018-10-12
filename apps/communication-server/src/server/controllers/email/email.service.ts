@@ -12,19 +12,19 @@ import {
 // } from '../../constants/messages';
 import * as nodemailer from 'nodemailer';
 // import { EmailAccountService } from '../../models/email-account/email-account.service';
-import { RabbitMQClient } from 'rabbitmq/rabbitmq-client';
-import { ConfigService } from 'config/config.service';
+import { RabbitMQClient } from '../../rabbitmq/rabbitmq-client';
+import { ConfigService } from '../../config/config.service';
+import { CHANNEL } from '../../rabbitmq/rabbitmq-connection';
 
 @Injectable()
 export class EmailService implements OnModuleInit, OnModuleDestroy {
   rabbitMQClient: RabbitMQClient;
   constructor(
-    configService: ConfigService,
-    // private readonly emailAccountService: EmailAccountService,
+    private readonly configService: ConfigService, // private readonly emailAccountService: EmailAccountService,
   ) {
     this.rabbitMQClient = new RabbitMQClient(
-      configService.get('AMQP_URL'),
-      'channel',
+      this.configService.getRabbitMQConfig(),
+      CHANNEL,
     );
   }
 

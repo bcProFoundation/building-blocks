@@ -1,9 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SetupController } from './setup.controller';
 import { SetupService } from './setup.service';
-import { ClientService } from '../../models/client/client.service';
-import { Client } from '../../models/client/client.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { ServerSettingsService } from '../../models/server-settings/server-settings.service';
+import { ServerSettings } from '../../models/server-settings/server-settings.entity';
+import { HttpService } from '@nestjs/common';
+import { from } from 'rxjs';
 
 describe('SetupController', () => {
   let module: TestingModule;
@@ -12,10 +14,18 @@ describe('SetupController', () => {
       controllers: [SetupController],
       providers: [
         SetupService,
-        ClientService,
+        ServerSettingsService,
         {
-          provide: getRepositoryToken(Client),
+          provide: getRepositoryToken(ServerSettings),
           useValue: {}, // provide mock values
+        },
+        {
+          provide: HttpService,
+          useValue: {
+            get() {
+              return from([]);
+            },
+          },
         },
       ],
     }).compile();

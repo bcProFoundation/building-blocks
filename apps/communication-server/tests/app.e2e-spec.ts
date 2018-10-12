@@ -1,11 +1,13 @@
 import * as request from 'supertest';
 import { Test } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, HttpService } from '@nestjs/common';
+import { from } from 'rxjs';
 import { AppService } from 'app.service';
 import { AppController } from 'app.controller';
-import { ClientService } from 'models/client/client.service';
+import { SetupService } from 'controllers/setup/setup.service';
+import { ServerSettingsService } from 'models/server-settings/server-settings.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Client } from 'models/client/client.entity';
+import { ServerSettings } from 'models/server-settings/server-settings.entity';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -15,10 +17,21 @@ describe('AppController (e2e)', () => {
       controllers: [AppController],
       providers: [
         AppService,
-        ClientService,
+        SetupService,
+        ServerSettingsService,
         {
-          provide: getRepositoryToken(Client),
-          useValue: {}, // mock
+          provide: getRepositoryToken(ServerSettings),
+          useValue: {
+            find: (...args) => [],
+          }, // provide mock values
+        },
+        {
+          provide: HttpService,
+          useValue: {
+            get() {
+              return from([]);
+            },
+          },
         },
       ],
     }).compile();
@@ -27,11 +40,10 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/GET /message', done => {
+  it('/GET /info', done => {
     return request(app.getHttpServer())
-      .get('/message')
+      .get('/info')
       .expect(200)
-      .expect({ message: 'NestJS' })
       .end(done);
   });
 });

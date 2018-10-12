@@ -103,6 +103,12 @@
   dependencies:
     tslib "^1.9.0"
 
+"@angular/cdk@^6.4.7":
+  version "6.4.7"
+  resolved "https://registry.yarnpkg.com/@angular/cdk/-/cdk-6.4.7.tgz#1549b304dd412e82bd854cc55a7d5c6772ee0411"
+  dependencies:
+    tslib "^1.7.1"
+
 "@angular/cli@~6.1.4":
   version "6.1.5"
   resolved "https://registry.yarnpkg.com/@angular/cli/-/cli-6.1.5.tgz#312c062631285ff06fd07ecde8afe22cdef5a0e1"
@@ -145,6 +151,12 @@
   dependencies:
     tslib "^1.9.0"
 
+"@angular/flex-layout@^6.0.0-beta.18":
+  version "6.0.0-beta.18"
+  resolved "https://registry.yarnpkg.com/@angular/flex-layout/-/flex-layout-6.0.0-beta.18.tgz#fdf9d17a45989d0bf0dd1ad466eea503da618276"
+  dependencies:
+    tslib "^1.7.1"
+
 "@angular/forms@^6.0.3":
   version "6.1.6"
   resolved "https://registry.yarnpkg.com/@angular/forms/-/forms-6.1.6.tgz#1c4936993f2dbcee516cb547a534da3c70f84b76"
@@ -160,6 +172,14 @@
 "@angular/language-service@^6.0.3":
   version "6.1.6"
   resolved "https://registry.yarnpkg.com/@angular/language-service/-/language-service-6.1.6.tgz#c9d549abd3f6ffcaad929fb0406b53314dd64ebc"
+
+"@angular/material@^6.4.7":
+  version "6.4.7"
+  resolved "https://registry.yarnpkg.com/@angular/material/-/material-6.4.7.tgz#3c8f2d6a6a7904d97be29e06a84ffb62a8da6c16"
+  dependencies:
+    tslib "^1.7.1"
+  optionalDependencies:
+    parse5 "^5.0.0"
 
 "@angular/platform-browser-dynamic@^6.0.3":
   version "6.1.6"
@@ -273,6 +293,16 @@
     lodash "^4.17.5"
     to-fast-properties "^2.0.0"
 
+"@nestjs/common@^5.0.0":
+  version "5.3.11"
+  resolved "https://registry.yarnpkg.com/@nestjs/common/-/common-5.3.11.tgz#ab495bc30b1635d71754e8b577f1e40443e864f8"
+  dependencies:
+    axios "0.17.1"
+    cli-color "1.2.0"
+    deprecate "1.0.0"
+    multer "1.3.0"
+    uuid "3.3.2"
+
 "@nestjs/common@^5.1.0", "@nestjs/common@^5.3.5":
   version "5.3.5"
   resolved "https://registry.yarnpkg.com/@nestjs/common/-/common-5.3.5.tgz#222b0b188138af1b423c610cde83c033bd3c1153"
@@ -281,6 +311,21 @@
     cli-color "1.2.0"
     deprecate "1.0.0"
     multer "1.3.0"
+    uuid "3.3.2"
+
+"@nestjs/core@^5.0.0":
+  version "5.3.11"
+  resolved "https://registry.yarnpkg.com/@nestjs/core/-/core-5.3.11.tgz#ac57fd0aa270e2d2dc84134905a5c0b434284620"
+  dependencies:
+    "@nuxtjs/opencollective" "0.1.0"
+    body-parser "1.18.3"
+    cors "2.8.4"
+    express "4.16.3"
+    fast-safe-stringify "1.2.0"
+    iterare "0.0.8"
+    object-hash "1.3.0"
+    optional "0.1.4"
+    path-to-regexp "2.2.1"
     uuid "3.3.2"
 
 "@nestjs/core@^5.3.4":
@@ -304,6 +349,17 @@
     iterare "0.0.8"
     json-socket "^0.2.1"
     optional "0.1.4"
+
+"@nestjs/swagger@^2.5.1":
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/@nestjs/swagger/-/swagger-2.5.1.tgz#f05e96ee82fa2b6b9c5a508b55bb0162fa025068"
+  dependencies:
+    lodash "^4.17.4"
+    path-to-regexp "^2.2.1"
+    swagger-ui-express "^3.0.8"
+  optionalDependencies:
+    "@nestjs/common" "^5.0.0"
+    "@nestjs/core" "^5.0.0"
 
 "@nestjs/testing@^5.3.1":
   version "5.3.1"
@@ -3040,6 +3096,10 @@ fast-json-stable-stringify@^2.0.0:
 fast-levenshtein@~2.0.4:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
+
+fast-safe-stringify@1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/fast-safe-stringify/-/fast-safe-stringify-1.2.0.tgz#ebd42666fd18fe4f2ba4f0d295065f3f85cade96"
 
 fastify-formbody@^2.0.0:
   version "2.0.1"
@@ -6023,6 +6083,10 @@ parse5@^3.0.3:
   dependencies:
     "@types/node" "*"
 
+parse5@^5.0.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/parse5/-/parse5-5.1.0.tgz#c59341c9723f414c452975564c7c00a68d58acd2"
+
 parseqs@0.0.5:
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/parseqs/-/parseqs-0.0.5.tgz#d5208a3738e46766e291ba2ea173684921a8b89d"
@@ -6084,6 +6148,10 @@ path-to-regexp@0.1.7:
 path-to-regexp@2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-2.2.1.tgz#90b617025a16381a879bc82a38d4e8bdeb2bcf45"
+
+path-to-regexp@^2.2.1:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-2.4.0.tgz#35ce7f333d5616f1c1e1bfe266c3aba2e5b2e704"
 
 path-type@^1.0.0:
   version "1.1.0"
@@ -7567,6 +7635,10 @@ supports-color@^5.1.0, supports-color@^5.2.0, supports-color@^5.3.0, supports-co
   dependencies:
     has-flag "^3.0.0"
 
+swagger-ui-express@^3.0.8:
+  version "3.0.10"
+  resolved "https://registry.yarnpkg.com/swagger-ui-express/-/swagger-ui-express-3.0.10.tgz#c72b32107a57a47913f3b46003e8fd62a7378ea2"
+
 symbol-observable@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-1.2.0.tgz#c22688aed4eab3cdc2dfeacbb561660560a00804"
@@ -7821,7 +7893,7 @@ tsickle@^0.32.1:
     source-map "^0.6.0"
     source-map-support "^0.5.0"
 
-tslib@^1.8.0, tslib@^1.8.1, tslib@^1.9.0:
+tslib@^1.7.1, tslib@^1.8.0, tslib@^1.8.1, tslib@^1.9.0:
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.3.tgz#d7e4dd79245d85428c4d7e4822a79917954ca286"
 
@@ -7897,13 +7969,9 @@ typeorm@^0.2.7:
     yargonaut "^1.1.2"
     yargs "^11.1.0"
 
-"typescript@>=2.6.2 <2.10", typescript@~2.9.1:
+"typescript@>=2.6.2 <2.10", typescript@~2.9.1, typescript@~2.9.2:
   version "2.9.2"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.9.2.tgz#1cbf61d05d6b96269244eb6a3bce4bd914e0f00c"
-
-typescript@~2.7.2:
-  version "2.7.2"
-  resolved "http://registry.npmjs.org/typescript/-/typescript-2.7.2.tgz#2d615a1ef4aee4f574425cdff7026edf81919836"
 
 uglify-es@^3.3.4:
   version "3.3.9"
