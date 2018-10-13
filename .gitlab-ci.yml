@@ -54,7 +54,7 @@ test_frontend:
   tags:
     - docker
 
-pack_staging:
+pack_staging_authorization_server:
   image: docker
   stage: pack
   environment: staging
@@ -70,12 +70,34 @@ pack_staging:
     - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:$ASVERSION
     - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server
+
+pack_staging_identity_provider:
+  image: docker
+  stage: pack
+  environment: staging
+  only:
+    - staging
+  before_script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+  script:
+    # get latest tag for app in staging branchs
     # Identity Provider
     - export IDPVERSION=$(echo $CI_COMMIT_SHA | cut -c1-7)
     - docker build -t identity-provider apps/identity-provider
     - docker tag identity-provider $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:$IDPVERSION
     - docker tag identity-provider $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider
+
+pack_staging_infrastructure_console:
+  image: docker
+  stage: pack
+  environment: staging
+  only:
+    - staging
+  before_script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+  script:
+    # get latest tag for app in staging branchs
     # Infrastructure Console
     - export ICVERSION=$(echo $CI_COMMIT_SHA | cut -c1-7)
     - docker build -t infrastructure-console apps/infrastructure-console
@@ -83,7 +105,7 @@ pack_staging:
     - docker tag infrastructure-console $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console
 
-pack_production:
+pack_production_authorization_server:
   image: docker
   stage: pack
   environment: production
@@ -100,12 +122,36 @@ pack_production:
     - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:$ASVERSION
     - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server
+
+pack_production_identity_provider:
+  image: docker
+  stage: pack
+  environment: production
+  only:
+    - master
+  before_script:
+    - apk add git
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+  script:
+    # get latest tag for app in master branchs
     # Idenitiy Provider
     - export IDPVERSION=$(git tag --list "identity-provider@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
     - docker build -t identity-provider apps/identity-provider
     - docker tag identity-provider $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:$IDPVERSION
     - docker tag identity-provider $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider
+
+pack_production_infrastructure_console:
+  image: docker
+  stage: pack
+  environment: production
+  only:
+    - master
+  before_script:
+    - apk add git
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+  script:
+    # get latest tag for app in master branchs
     # Infrastructure Console
     - export ICVERSION=$(git tag --list "infrastructure-console@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
     - docker build -t infrastructure-console apps/infrastructure-console
