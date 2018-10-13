@@ -11,13 +11,8 @@ export class AppController {
     res.sendFile(INDEX_HTML);
   }
 
-  @Get('client')
-  async client() {
-    return await this.appService.getClientId();
-  }
-
-  @Get('message')
-  message() {
-    return { message: 'NestJS' };
+  @Get('info')
+  async info() {
+    return await this.appService.info();
   }
 }

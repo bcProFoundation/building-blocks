@@ -4,7 +4,7 @@ import { Entity, BaseEntity, Index, ObjectIdColumn, Column } from 'typeorm';
 @Index(['user'], { unique: true })
 export class EmailAccount extends BaseEntity {
   @ObjectIdColumn()
-  id: string;
+  _id: string;
   @Column()
   host: string;
   @Column()
@@ -19,4 +19,12 @@ export class EmailAccount extends BaseEntity {
   pool: boolean;
   @Column()
   tlsRejectUnauthorized: boolean;
+  @Column()
+  type: string; // set to 'OAuth2' for OAuth2 Accounts
+  @Column()
+  clientId: string;
+  @Column()
+  clientSecret: string;
+  @Column()
+  accessUrl: string;
 }

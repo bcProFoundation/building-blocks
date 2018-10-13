@@ -1,34 +1,49 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { SETUP_ALREADY_COMPLETE } from '../../constants/messages';
-import { ClientService } from '../../models/client/client.service';
-import { Client } from '../../models/client/client.entity';
-import { SetupFormDTO } from './setup-form-dto';
+import { Injectable, HttpService } from '@nestjs/common';
+import { settingsAlreadyExists, somethingWentWrong } from '../../exceptions';
+import { ServerSettings } from '../../models/server-settings/server-settings.entity';
+import { ServerSettingsService } from '../../models/server-settings/server-settings.service';
 
 @Injectable()
 export class SetupService {
-  constructor(private readonly clientService: ClientService) {}
+  protected idpSettings: ServerSettings;
 
-  async setupCommunicationClient(setupForm: SetupFormDTO) {
-    const existingClients = await this.clientService.find();
+  constructor(
+    protected readonly idpSettingsService: ServerSettingsService,
+    protected readonly http: HttpService,
+  ) {}
 
-    if (existingClients.length > 0) {
-      throw new HttpException(SETUP_ALREADY_COMPLETE, HttpStatus.UNAUTHORIZED);
+  async setup(params) {
+    if (await this.idpSettingsService.count()) {
+      throw settingsAlreadyExists;
     }
-
-    return await this.createClient(setupForm);
+    this.http
+      .get(params.authServerURL + '/.well-known/openid-configuration')
+      .subscribe({
+        next: async response => {
+          params.authorizationURL = response.data.authorization_endpoint;
+          params.tokenURL = response.data.token_endpoint;
+          params.profileURL = response.data.userinfo_endpoint;
+          params.revocationURL = response.data.revocation_endpoint;
+          params.introspectionURL = response.data.introspection_endpoint;
+          params.callbackURLs = [
+            params.appURL + '/index.html',
+            params.appURL + '/silent-refresh.html',
+          ];
+          this.idpSettings = await this.idpSettingsService.save(params);
+          return this.idpSettings;
+        },
+        error: error => {
+          // TODO : meaningful errors
+          throw somethingWentWrong;
+        },
+      });
   }
 
-  async createClient(setupForm: SetupFormDTO) {
-    const client = new Client();
-    client.clientId = setupForm.clientId;
-    client.clientSecret = setupForm.clientSecret;
-    client.authorizationURL =
-      setupForm.authorizationServer + '/oauth2/confirmation';
-    client.tokenURL = setupForm.authorizationServer + '/oauth2/token';
-    client.callbackURL = setupForm.clientUrl + '/auth/callback';
-    client.introspectionURL =
-      setupForm.authorizationServer + '/oauth2/introspection';
-    client.profileURL = setupForm.authorizationServer + '/oauth2/introspection';
-    return await this.clientService.save(client);
+  async getInfo() {
+    const info = await this.idpSettingsService.find();
+    if (info) {
+      delete info.clientSecret, info._id;
+    }
+    return info;
   }
 }

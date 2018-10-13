@@ -6,15 +6,15 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { SetupService } from './setup.service';
-import { SetupFormDTO } from './setup-form-dto';
+import { ServerSettingsDto } from '../../models/server-settings/server-setting.dto';
 
 @Controller('setup')
 export class SetupController {
   constructor(private readonly setupService: SetupService) {}
 
-  @Post('communication')
-  @UsePipes(new ValidationPipe())
-  async setupInfrastructure(@Body() setupForm: SetupFormDTO) {
-    return await this.setupService.setupCommunicationClient(setupForm);
+  @Post()
+  @UsePipes(ValidationPipe)
+  async setup(@Body() setupForm: ServerSettingsDto) {
+    return await this.setupService.setup(setupForm);
   }
 }

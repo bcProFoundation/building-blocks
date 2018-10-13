@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { PLEASE_SETUP_CLIENT } from './messages';
+import { PLEASE_RUN_SETUP } from './messages';
 
 export const clientNotSetupException = new HttpException(
-  PLEASE_SETUP_CLIENT,
+  PLEASE_RUN_SETUP,
   HttpStatus.FORBIDDEN,
 );

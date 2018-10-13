@@ -1,24 +1,14 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { ClientService } from './models/client/client.service';
-import { PLEASE_SETUP_CLIENT } from './constants/messages';
+import { Injectable } from '@nestjs/common';
+import { PLEASE_RUN_SETUP } from './constants/messages';
+import { SetupService } from './controllers/setup/setup.service';
 
 @Injectable()
 export class AppService {
-  constructor(private readonly clientService: ClientService) {}
-
-  async getClientId() {
-    const client = await this.clientService.findOne({});
-    if (!client)
-      throw new HttpException(PLEASE_SETUP_CLIENT, HttpStatus.BAD_REQUEST);
-    return {
-      message: {
-        clientId: client.clientId,
-        authorizationServer: client.authorizationURL,
-      },
+  constructor(private readonly idpSetupService: SetupService) {}
+  async info() {
+    const info = (await this.idpSetupService.getInfo()) || {
+      message: PLEASE_RUN_SETUP,
     };
-  }
-
-  root() {
-    return 'Hello World!';
+    return info;
   }
 }

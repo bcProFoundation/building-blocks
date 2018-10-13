@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, HttpModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -9,14 +9,16 @@ import { SetupService } from './controllers/setup/setup.service';
 import { EmailService } from './controllers/email/email.service';
 import { EmailController } from './controllers/email/email.controller';
 import { ConfigModule } from './config/config.module';
+import { ServerSettingsService } from './models/server-settings/server-settings.service';
 
 @Module({
   imports: [
     ConfigModule,
     TypeOrmModule.forRoot(TYPEORM_CONNECTION),
     ModelsModule,
+    HttpModule,
   ],
   controllers: [AppController, SetupController, EmailController],
-  providers: [AppService, SetupService, EmailService],
+  providers: [AppService, SetupService, EmailService, ServerSettingsService],
 })
 export class AppModule {}
