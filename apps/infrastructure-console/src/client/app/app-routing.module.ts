@@ -4,9 +4,11 @@ import { HomeComponent } from './home/home.component';
 import { AuthGuard } from './guards/auth.guard.service';
 import { ClientsComponent } from './clients/clients.component';
 import { ClientComponent } from './client/client.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
+  { path: 'dashboard', component: DashboardComponent },
   {
     path: 'client/list',
     component: ClientsComponent,
