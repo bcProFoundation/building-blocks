@@ -19,11 +19,13 @@ import { ClientService } from './client/client.service';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
+    DashboardComponent,
     DashboardNavComponent,
     ClientsComponent,
     ClientComponent,
