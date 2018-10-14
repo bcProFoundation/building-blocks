@@ -43,5 +43,7 @@ export class DashboardNavComponent {
 
   logout() {
     this.oauthService.logOut();
+    this.tokenIsValid = false;
+    this.router.navigate(['home']);
   }
 }

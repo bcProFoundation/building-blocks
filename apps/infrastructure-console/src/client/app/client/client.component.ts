@@ -19,10 +19,13 @@ export class ClientComponent implements OnInit {
   uuid: string;
   clientId: string;
   clientName: string;
+  clientSecret: string;
   clientURL: string;
   isTrusted: boolean;
   clientScopes: any[];
   callbackURLs: string[];
+
+  hide: boolean = true;
 
   scopes: any[] = [];
 
@@ -45,6 +48,8 @@ export class ClientComponent implements OnInit {
       clientScopes: '',
       callbackURLForms: this.formBuilder.array([]),
       isTrusted: '',
+      clientId: '',
+      clientSecret: '',
     });
 
     if (this.uuid && this.uuid !== NEW_ID) {
@@ -70,17 +75,7 @@ export class ClientComponent implements OnInit {
     this.clientService.getClient(clientId).subscribe({
       next: response => {
         if (response) {
-          this.clientId = response.clientId;
-          this.clientName = response.name;
-          this.callbackURLs = response.redirectUris;
-          this.callbackURLs.forEach(element => {
-            this.addCallbackURL(element);
-          });
-          this.clientForm.controls.clientName.setValue(response.name);
-          this.clientForm.controls.isTrusted.setValue(response.isTrusted);
-          this.clientForm.controls.clientScopes.setValue(
-            response.allowedScopes,
-          );
+          this.populateClientForm(response);
         }
       },
     });
@@ -96,6 +91,7 @@ export class ClientComponent implements OnInit {
       )
       .subscribe({
         next: response => {
+          this.populateClientForm(response);
           this.snackbar.open(CLIENT_CREATED, 'Close', { duration: 2500 });
         },
         error: error => {
@@ -141,5 +137,20 @@ export class ClientComponent implements OnInit {
         }
       },
     });
+  }
+
+  populateClientForm(client) {
+    this.clientId = client.clientId;
+    this.clientSecret = client.clientSecret;
+    this.clientName = client.name;
+    this.callbackURLs = client.redirectUris;
+    this.callbackURLs.forEach(element => {
+      this.addCallbackURL(element);
+    });
+    this.clientForm.controls.clientId.setValue(client.clientId);
+    this.clientForm.controls.clientSecret.setValue(client.clientSecret);
+    this.clientForm.controls.clientName.setValue(client.name);
+    this.clientForm.controls.isTrusted.setValue(client.isTrusted);
+    this.clientForm.controls.clientScopes.setValue(client.allowedScopes);
   }
 }
