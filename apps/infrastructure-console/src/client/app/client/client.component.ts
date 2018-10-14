@@ -3,7 +3,11 @@ import { ClientService } from '../client/client.service';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
-import { CLIENT_UPDATED } from '../constants/messages';
+import {
+  CLIENT_UPDATED,
+  CLIENT_CREATED,
+  CLIENT_ERROR,
+} from '../constants/messages';
 import { NEW_ID } from '../constants/common';
 
 @Component({
@@ -83,12 +87,21 @@ export class ClientComponent implements OnInit {
   }
 
   createClient() {
-    this.clientService.createClient(
-      this.clientForm.controls.clientName.value,
-      this.getCallbackURLs(),
-      this.clientForm.controls.clientScopes.value,
-      this.clientForm.controls.isTrusted.value,
-    );
+    this.clientService
+      .createClient(
+        this.clientForm.controls.clientName.value,
+        this.getCallbackURLs(),
+        this.clientForm.controls.clientScopes.value,
+        this.clientForm.controls.isTrusted.value,
+      )
+      .subscribe({
+        next: response => {
+          this.snackbar.open(CLIENT_CREATED, 'Close', { duration: 2500 });
+        },
+        error: error => {
+          this.snackbar.open(CLIENT_ERROR, 'Close', { duration: 2500 });
+        },
+      });
   }
 
   getCallbackURLs(): string[] {
