@@ -303,7 +303,7 @@
     multer "1.3.0"
     uuid "3.3.2"
 
-"@nestjs/common@^5.1.0", "@nestjs/common@^5.3.11":
+"@nestjs/common@^5.3.11":
   version "5.3.11"
   resolved "https://registry.yarnpkg.com/@nestjs/common/-/common-5.3.11.tgz#ab495bc30b1635d71754e8b577f1e40443e864f8"
   dependencies:
@@ -327,7 +327,7 @@
     path-to-regexp "2.2.1"
     uuid "3.3.2"
 
-"@nestjs/core@^5.1.0", "@nestjs/core@^5.3.11":
+"@nestjs/core@^5.3.11":
   version "5.3.11"
   resolved "https://registry.yarnpkg.com/@nestjs/core/-/core-5.3.11.tgz#ac57fd0aa270e2d2dc84134905a5c0b434284620"
   dependencies:
@@ -353,10 +353,6 @@
 "@nestjs/mongoose@^5.2.2":
   version "5.2.2"
   resolved "https://registry.yarnpkg.com/@nestjs/mongoose/-/mongoose-5.2.2.tgz#62de0bd1c2eda0865a2bb034270f1bda51a61915"
-
-"@nestjs/passport@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@nestjs/passport/-/passport-1.1.0.tgz#9edb581a7545a047721cd7430cdb4ea4b0388c83"
 
 "@nestjs/swagger@^2.5.1":
   version "2.5.1"
@@ -5949,17 +5945,6 @@ neo-async@^2.5.0:
   version "2.5.2"
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.5.2.tgz#489105ce7bc54e709d736b195f82135048c50fcc"
 
-nestjs-ensureloggedin-guard@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/nestjs-ensureloggedin-guard/-/nestjs-ensureloggedin-guard-1.0.2.tgz#d57f3c4dad2084a44fc90bf60da1abc28b528cf8"
-  dependencies:
-    "@nestjs/common" "^5.1.0"
-    "@nestjs/core" "^5.1.0"
-    "@nestjs/passport" "^1.1.0"
-    passport "^0.4.0"
-    reflect-metadata "^0.1.12"
-    rxjs "^6.2.1"
-
 next-tick@1:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.0.0.tgz#ca86d1fe8828169b0120208e3dc8424b9db8342c"
@@ -7442,7 +7427,7 @@ rxjs@6.2.2, rxjs@~6.2.0:
   dependencies:
     tslib "^1.9.0"
 
-rxjs@^6.2.1, rxjs@^6.3.3:
+rxjs@^6.3.3:
   version "6.3.3"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.3.3.tgz#3c6a7fa420e844a81390fb1158a9ec614f4bad55"
   dependencies:
