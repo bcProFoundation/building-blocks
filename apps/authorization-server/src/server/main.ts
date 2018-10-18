@@ -36,7 +36,7 @@ async function bootstrap() {
 
   // Enable Trust Proxy for session to work
   // https://github.com/expressjs/session/issues/281
-  app.set('trust proxy', 1);
+  // app.set('trust proxy', 1);
 
   authServer.setupSession(app);
   await app.listen(3000);

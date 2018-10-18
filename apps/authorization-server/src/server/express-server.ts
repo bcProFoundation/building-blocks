@@ -48,11 +48,11 @@ export class ExpressServer {
     const cookie = {
       maxAge: Number(configService.get('COOKIE_MAX_AGE')),
       httpOnly: false,
-      secure: true,
+      secure: false, // allow cookie for non https
       expires,
     };
 
-    if (process.env.NODE_ENV !== 'production') cookie.secure = false;
+    // if (process.env.NODE_ENV !== 'production') cookie.secure = false;
     const mongoDBStore = new MongoDBStore({
       uri: `mongodb://${configService.get('DB_HOST')}/${configService.get(
         'DB_NAME',
@@ -66,7 +66,7 @@ export class ExpressServer {
       cookie,
       saveUninitialized: false,
       resave: false,
-      proxy: true,
+      // proxy: true, // https://github.com/expressjs/session/issues/281
       // unset: 'destroy'
     };
 
