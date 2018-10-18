@@ -33,7 +33,7 @@ export class ClientController {
       clientId: payload.clientId,
     });
     client.name = payload.name;
-    client.clientSecret = payload.clientSecret;
+    client.allowedScopes = payload.allowedScopes;
     client.isTrusted = payload.isTrusted;
     client.redirectUris = payload.redirectUris;
     client.save();
