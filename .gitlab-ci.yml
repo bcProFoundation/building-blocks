@@ -1,4 +1,4 @@
-image: castlecraft/node-latest-headless-chrome:1.2
+image: castlecraft/node-latest-headless-chrome:1.3
 
 services:
   - docker:dind
