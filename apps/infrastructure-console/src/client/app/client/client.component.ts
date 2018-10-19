@@ -9,6 +9,7 @@ import {
   CLIENT_ERROR,
 } from '../constants/messages';
 import { NEW_ID } from '../constants/common';
+import { CreateClientResponse } from '../interfaces/client-response.interface';
 
 @Component({
   selector: 'app-client',
@@ -71,6 +72,10 @@ export class ClientComponent implements OnInit {
     this.callbackURLForms.push(this.createCallbackURLFormGroup(callbackURL));
   }
 
+  removeCallbackURL(formGroupID: number) {
+    this.callbackURLForms.removeAt(formGroupID);
+  }
+
   subscribeGetClient(clientId: string) {
     this.clientService.getClient(clientId).subscribe({
       next: response => {
@@ -90,8 +95,13 @@ export class ClientComponent implements OnInit {
         this.clientForm.controls.isTrusted.value,
       )
       .subscribe({
-        next: response => {
-          this.populateClientForm(response);
+        next: (response: CreateClientResponse) => {
+          this.clientName = response.name;
+          this.clientId = response.clientId;
+          this.clientSecret = response.clientSecret;
+          this.uuid = response.uuid;
+          this.clientForm.controls.clientId.setValue(response.clientId);
+          this.clientForm.controls.clientSecret.setValue(response.clientSecret);
           this.snackbar.open(CLIENT_CREATED, 'Close', { duration: 2500 });
         },
         error: error => {
@@ -121,7 +131,7 @@ export class ClientComponent implements OnInit {
         this.clientForm.controls.isTrusted.value,
       )
       .subscribe({
-        next: (response: any) => {
+        next: () => {
           this.snackbar.open(CLIENT_UPDATED, 'Close', { duration: 2500 });
         },
       });
