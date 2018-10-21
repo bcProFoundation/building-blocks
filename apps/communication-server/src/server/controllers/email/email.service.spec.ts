@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { EmailService } from './email.service';
-import { EmailAccountService } from 'models/email-account/email-account.service';
+import { EmailAccountService } from '../../models/email-account/email-account.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { EmailAccount } from '../../models/email-account/email-account.entity';
 import { ConfigService } from '../../config/config.service';
