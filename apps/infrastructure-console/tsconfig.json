@@ -14,7 +14,8 @@
     ],
     "noUnusedLocals":true,
     "types": [
-      "node"
+      "node",
+      "jest"
     ],
     "lib": [
       "es2017",

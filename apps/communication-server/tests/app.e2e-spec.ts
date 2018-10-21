@@ -2,12 +2,12 @@ import * as request from 'supertest';
 import { Test } from '@nestjs/testing';
 import { INestApplication, HttpService } from '@nestjs/common';
 import { from } from 'rxjs';
-import { AppService } from 'app.service';
-import { AppController } from 'app.controller';
-import { SetupService } from 'controllers/setup/setup.service';
-import { ServerSettingsService } from 'models/server-settings/server-settings.service';
+import { AppService } from '../src/server/app.service';
+import { AppController } from '../src/server/app.controller';
+import { SetupService } from '../src/server/controllers/setup/setup.service';
+import { ServerSettingsService } from '../src/server/models/server-settings/server-settings.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { ServerSettings } from 'models/server-settings/server-settings.entity';
+import { ServerSettings } from '../src/server/models/server-settings/server-settings.entity';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
