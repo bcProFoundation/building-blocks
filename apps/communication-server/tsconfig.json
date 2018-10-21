@@ -9,12 +9,14 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "target": "es6",
+    "esModuleInterop": true,
     "typeRoots": [
       "node_modules/@types"
     ],
     "noUnusedLocals":true,
     "types": [
-      "node"
+      "node",
+      "jest"
     ],
     "lib": [
       "es2017",

@@ -1,4 +1,4 @@
-<mat-grid-list cols="1" rowHeight="3:1">
+<mat-grid-list cols="1" rowHeight="30em">
   <mat-grid-tile>
     <form>
       <mat-card>
@@ -10,12 +10,8 @@
               class="form-control" required>
             </mat-form-field>
             <div>
-                <div>
-                  <div>
-                    <button (click)="verifyUser()" mat-flat-button>Next</button>
-                    <a routerLink="/signup" class="left-margin-30">Signup</a>
-                  </div>
-                </div>
+              <button (click)="verifyUser()" mat-raised-button color="primary">Next</button>
+              <a routerLink="/signup" class="left-margin-30">Signup</a>
             </div>
           </div> 
           <div class="password" *ngIf="showPassword">
@@ -24,10 +20,8 @@
               <mat-error *ngIf="invalidPasswordError">{{ invalidPasswordError }}</mat-error>
             </mat-form-field>
             <div>
-                <div>
-                  <button (click)="onSubmit()" mat-flat-button>Login</button>
-                  <a (click)="forgotPassword()" class="left-margin-30">Forgot?</a>
-                </div>
+                <button (click)="onSubmit()" mat-raised-button color="primary">Login</button>
+                <a (click)="forgotPassword()" class="left-margin-30">Forgot?</a>
             </div>
           </div> 
           <div class="otp" *ngIf="showCode">
@@ -35,10 +29,8 @@
                 <input [(ngModel)]="code" matInput placeholder="OTP" name="code">
             </mat-form-field>
             <div>
-                <div>
-                  <button (click)="onSubmit()" mat-flat-button>Login</button>
-                  <a (click)="resendOTP()" class="left-margin-30">Resend OTP?</a>
-                </div>
+              <button (click)="onSubmit()" mat-raised-button color="primary">Login</button>
+              <a (click)="resendOTP()" class="left-margin-30">Resend OTP?</a>
             </div>
           </div>
           <mat-error *ngIf="formError">{{formError}}</mat-error>

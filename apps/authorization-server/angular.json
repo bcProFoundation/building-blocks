@@ -5,7 +5,7 @@
   "projects": {
     "authorization-server": {
       "root": "",
-      "sourceRoot": "src",
+      "sourceRoot": "src/client",
       "projectType": "application",
       "prefix": "app",
       "schematics": {},
