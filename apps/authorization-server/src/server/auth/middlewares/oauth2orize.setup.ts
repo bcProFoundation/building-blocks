@@ -41,9 +41,9 @@ export class OAuth2orizeSetup implements OnModuleInit, OnApplicationBootstrap {
     this.server.serializeClient((client, done) => done(null, client.clientId));
 
     // Deserialize Client
-    this.server.deserializeClient((id, done) => {
+    this.server.deserializeClient(async (id, done) => {
       try {
-        const client = this.clientService.findOne(id);
+        const client = await this.clientService.findOne({ clientId: id });
         done(null, client);
       } catch (error) {
         done(error, null);
