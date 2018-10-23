@@ -1,19 +1,20 @@
 import {
   Controller,
   UseGuards,
-  Session,
   Body,
   Post,
   Req,
   Query,
   Get,
   Res,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { EnsureLoginGuard } from 'nestjs-ensureloggedin-guard';
 import { CryptographerService } from '../../../utilities/cryptographer.service';
 import { UserService } from '../../../models/user/user.service';
 import { AuthGuard } from '../../guards/auth.guard';
 import { callback } from '../../passport/local.strategy';
+import { INVALID_PASSWORD } from '../../../constants/messages';
 
 @Controller('user/v1')
 export class UserController {
@@ -22,23 +23,21 @@ export class UserController {
     private readonly cryptoService: CryptographerService,
   ) {}
 
-  @Post('update')
-  @UseGuards(EnsureLoginGuard)
-  async update(@Body() payload, @Session() session) {
-    const sessionUser = session.passport.user;
-    const user = await this.userService.findOne({ email: sessionUser.email });
-    if (payload.password) {
-      const authData = await user.password;
-      authData.password = await this.cryptoService.hashPassword(
-        payload.password,
-      );
-      authData.save();
-    }
-    if (payload.name) {
-      user.name = payload.name;
-    }
-    user.save();
-    return { updated: user.email };
+  @Post('change_password')
+  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  async updatePassword(@Req() req, @Body() body, @Res() res) {
+    const authData = await this.userService.getUserSaltedHashPassword(
+      req.user.user,
+    );
+    const validPassword = this.cryptoService.checkPassword(
+      authData.password,
+      body.currentPassword,
+    );
+    if (validPassword) {
+      authData.password = this.cryptoService.hashPassword(body.newPassword);
+      await authData.save();
+      res.json({ message: 'updated' });
+    } else throw new UnauthorizedException(INVALID_PASSWORD);
   }
 
   @Post('update_full_name')

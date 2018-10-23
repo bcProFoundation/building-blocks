@@ -13,6 +13,7 @@ import {
   SECURITY_DETAILS,
   UPDATE_SUCCESSFUL,
   CLOSE,
+  CHANGE_PASSWORD,
 } from '../../constants/messages';
 import { FormControl, FormGroup } from '@angular/forms';
 import { TIME_ZONES } from '../../constants/timezones';
@@ -22,9 +23,10 @@ import { IDTokenClaims } from '../../../server/models/id-token-claims.interfaces
 import { ProfileService } from './profile.service';
 import { UserResponse } from '../interfaces/user-response.interface';
 import { MatDatepickerInputEvent, MatSnackBar } from '@angular/material';
-import { USER_UUID } from '../../constants/storage';
+import { USER_UUID, ISSUER_URL, APP_URL } from '../../constants/storage';
 import { map } from 'rxjs/operators';
 import { ProfileResponse } from '../interfaces/profile-response.interface';
+import { LOGOUT_URL } from 'client/constants/url-paths';
 
 @Component({
   selector: 'app-profile',
@@ -40,6 +42,7 @@ export class ProfileComponent implements OnInit {
   profileDetails = PROFILE_DETAILS;
   accessDetails = ACCESS_DETAILS;
   securityDetails = SECURITY_DETAILS;
+  changePassword = CHANGE_PASSWORD;
 
   uuid: string;
   fullName: string;
@@ -57,6 +60,10 @@ export class ProfileComponent implements OnInit {
   groups: string[] = [];
   avatarUrl: string = NO_AVATAR_SET;
   checked2fa: boolean = true;
+  showPasswordSection: boolean = false;
+  currentPassword: string;
+  newPassword: string;
+  repeatPassword: string;
 
   personalForm = new FormGroup({
     fullName: new FormControl(this.fullName),
@@ -76,6 +83,12 @@ export class ProfileComponent implements OnInit {
     website: new FormControl(this.website),
     zoneinfo: new FormControl(this.zoneinfo),
     locale: new FormControl(this.locale),
+  });
+
+  changePasswordForm = new FormGroup({
+    currentPassword: new FormControl(this.currentPassword),
+    newPassword: new FormControl(this.newPassword),
+    repeatPassword: new FormControl(this.repeatPassword),
   });
 
   constructor(
@@ -153,5 +166,33 @@ export class ProfileComponent implements OnInit {
   enableDisable2fa() {}
   updateBirthdate(type: string, event: MatDatepickerInputEvent<Date>) {
     this.birthdate = event.value;
+  }
+
+  showChangePassword() {
+    this.showPasswordSection = true;
+  }
+
+  changePasswordRequest() {
+    this.profileService
+      .changePassword(
+        this.changePasswordForm.controls.currentPassword.value,
+        this.changePasswordForm.controls.newPassword.value,
+        this.changePasswordForm.controls.repeatPassword.value,
+      )
+      .subscribe({
+        next: data => {
+          const logoutUrl =
+            localStorage.getItem(ISSUER_URL) +
+            LOGOUT_URL +
+            '?redirect=' +
+            localStorage.getItem(APP_URL);
+          this.profileService.logout();
+          this.oauthService.logOut();
+          window.location.href = logoutUrl;
+        },
+        error: err => {
+          this.snackbar.open(err.error.message, CLOSE, { duration: 2000 });
+        },
+      });
   }
 }

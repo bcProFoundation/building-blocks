@@ -35,6 +35,12 @@ export class UserService {
     return await this.userModel.findOne(params);
   }
 
+  async getUserSaltedHashPassword(uuid: string) {
+    const user = await this.findOne({ uuid });
+    const authData = await this.authDataModel.findOne({ uuid: user.password });
+    return authData;
+  }
+
   public async delete(params): Promise<any> {
     await this.userModel.deleteOne(params);
     return { message: USER_DELETED };
