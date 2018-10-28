@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
+import { MatSnackBar } from '@angular/material';
+import { SOMETHING_WENT_WRONG } from '../../../client/constants/messages';
 
 @Component({
   selector: 'app-signup',
@@ -7,7 +9,10 @@ import { AuthService } from '../auth/auth.service';
   styleUrls: ['./signup.component.css'],
 })
 export class SignupComponent implements OnInit {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private snackBar: MatSnackBar,
+  ) {}
 
   public name: string;
   public email: string;
@@ -21,7 +26,13 @@ export class SignupComponent implements OnInit {
       .signUp(this.name, this.email, this.phone, this.password)
       .subscribe({
         next: (response: any) => {},
-        error: error => {},
+        error: err => {
+          if (typeof err.error.message === 'string') {
+            this.snackBar.open(err.error.message);
+          } else {
+            this.snackBar.open(SOMETHING_WENT_WRONG);
+          }
+        },
       });
   }
 }
