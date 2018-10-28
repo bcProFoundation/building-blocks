@@ -44,6 +44,13 @@ export class ConfigService {
   }
 
   get(key: string): string {
-    return this.envConfig[key];
+    switch (key) {
+      case 'DB_NAME':
+        return process.env.NODE_ENV === 'test-e2e'
+          ? `test_${this.envConfig[key]}`
+          : this.envConfig[key];
+      default:
+        return this.envConfig[key];
+    }
   }
 }

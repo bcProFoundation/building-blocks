@@ -12,3 +12,5 @@ export const NO_AVATAR_SET = 'No avatar set';
 export const SECURITY_DETAILS = 'Security Details';
 export const UPDATE_SUCCESSFUL = 'Update Successful';
 export const CLOSE = 'close';
+export const CHANGE_PASSWORD = 'Change Password';
+export const CURRENT_PASSWORD_MISMATCH = 'Current Password Mismatch';

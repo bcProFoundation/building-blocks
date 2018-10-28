@@ -62,8 +62,7 @@ describe('AuthController (e2e)', () => {
   it('/POST /auth/logout', () => {
     return request(app.getHttpServer())
       .get('/auth/logout')
-      .expect(200)
-      .expect({ message: 'logout' });
+      .expect(302);
   });
 
   afterAll(async () => {

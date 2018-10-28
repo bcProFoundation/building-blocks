@@ -86,7 +86,9 @@ export class AuthController {
     if (req.session && req.session.secondFactor)
       delete res.session.secondFactor;
     req.logout();
-    res.json({ message: 'logout' });
+    if (req.query && req.query.redirect) {
+      res.redirect(req.query.redirect);
+    } else res.redirect('/');
   }
 
   @Post('verify_user')

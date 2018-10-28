@@ -1,6 +1,5 @@
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { PassportAuthenticateMiddleware } from '@nest-middlewares/passport';
-import * as csurf from 'csurf';
 import { AuthController } from './controllers/auth/auth.controller';
 import { AuthService } from './controllers/auth/auth.service';
 import { CookieSerializer } from './passport/passport-cookie.serializer';
@@ -99,8 +98,6 @@ export class AuthModule implements NestModule {
         OAuth2ErrorHandlerMiddleware,
       )
       .with(['oauth2-code', 'oauth2-client-password'], { session: false })
-      .forRoutes('/oauth2/token')
-      .apply(csurf({ cookie: true, ignoreMethods: ['POST'] }))
-      .forRoutes('/auth/login', '/auth/signup');
+      .forRoutes('/oauth2/token');
   }
 }
