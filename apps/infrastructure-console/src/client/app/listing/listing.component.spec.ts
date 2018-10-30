@@ -1,18 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ClientsComponent } from './clients.component';
+import { ListingComponent } from './listing.component';
 import { MaterialModule } from '../material.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSnackBar, MatTableDataSource } from '@angular/material';
 import { ClientService } from '../client/client.service';
-import { from, Observable } from 'rxjs';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
+import { HttpErrorHandler } from '../http-error-handler.service';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-describe('ClientsComponent', () => {
-  let component: ClientsComponent;
-  let fixture: ComponentFixture<ClientsComponent>;
+describe('ListingComponent', () => {
+  let component: ListingComponent;
+  let fixture: ComponentFixture<ListingComponent>;
 
   @Component({ selector: 'app-home', template: '' })
   class HomeComponent {}
@@ -23,14 +24,7 @@ describe('ClientsComponent', () => {
     },
   };
 
-  const clientServiceStub: Partial<ClientService> = {
-    getClients(size?: number, index?: number, value?: string): Observable<any> {
-      return from([
-        { name: 'Identity Provider' },
-        { name: 'Developer Console' },
-      ]);
-    },
-  };
+  const clientServiceStub: Partial<ClientService> = {};
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -41,8 +35,9 @@ describe('ClientsComponent', () => {
         MaterialModule,
         BrowserAnimationsModule,
         MaterialModule,
+        HttpClientTestingModule,
       ],
-      declarations: [ClientsComponent, HomeComponent],
+      declarations: [ListingComponent, HomeComponent],
       providers: [
         {
           provide: OAuthService,
@@ -52,6 +47,13 @@ describe('ClientsComponent', () => {
           provide: ClientService,
           useValue: clientServiceStub,
         },
+        {
+          provide: HttpErrorHandler,
+          useValue: {
+            handleError<T>(...args) {},
+            createHandleError(...args) {},
+          },
+        },
         MatSnackBar,
       ],
       schemas: [NO_ERRORS_SCHEMA],
@@ -59,7 +61,7 @@ describe('ClientsComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ClientsComponent);
+    fixture = TestBed.createComponent(ListingComponent);
     component = fixture.componentInstance;
     component.dataSource = new MatTableDataSource();
     component.dataSource.data = [];

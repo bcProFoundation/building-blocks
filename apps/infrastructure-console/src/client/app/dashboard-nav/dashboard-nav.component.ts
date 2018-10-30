@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { OAuthService, OAuthEvent } from 'angular-oauth2-oidc';
 import { Router } from '@angular/router';
+import { StorageService } from '../common/storage.service';
 
 @Component({
   selector: 'app-dashboard-nav',
@@ -20,6 +21,7 @@ export class DashboardNavComponent {
     private breakpointObserver: BreakpointObserver,
     private oauthService: OAuthService,
     private router: Router,
+    private storageService: StorageService,
   ) {}
 
   ngOnInit(): void {
@@ -42,6 +44,7 @@ export class DashboardNavComponent {
   }
 
   logout() {
+    this.storageService.clearInfoLocalStorage();
     this.oauthService.logOut();
     this.tokenIsValid = false;
     this.router.navigate(['home']);

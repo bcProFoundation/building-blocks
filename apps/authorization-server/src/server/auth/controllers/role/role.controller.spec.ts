@@ -1,9 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { RoleController } from './role.controller';
-import { UserService } from '../../../models/user/user.service';
-import { USER } from '../../../models/user/user.schema';
 import { getModelToken } from '@nestjs/mongoose';
-import { AUTH_DATA } from '../../../models/auth-data/auth-data.schema';
+import { RoleService } from '../../../../server/models/role/role.service';
+import { ROLE } from '../../../../server/models/role/role.schema';
 
 describe('RoleController', () => {
   let module: TestingModule;
@@ -11,13 +10,9 @@ describe('RoleController', () => {
     module = await Test.createTestingModule({
       controllers: [RoleController],
       providers: [
-        UserService,
+        RoleService,
         {
-          provide: getModelToken(USER),
-          useValue: {},
-        },
-        {
-          provide: getModelToken(AUTH_DATA),
+          provide: getModelToken(ROLE),
           useValue: {},
         },
       ],

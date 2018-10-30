@@ -3,7 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { HandleError, HttpErrorHandler } from '../http-error-handler.service';
 import { catchError } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { APP_INFO } from '../constants';
+import { StorageService } from '../common/storage.service';
+import { ISSUER_URL } from '../constants/storage';
+import { CANNOT_FETCH_CLIENT } from '../constants/messages';
 
 @Injectable()
 export class ClientService {
@@ -12,34 +14,18 @@ export class ClientService {
   constructor(
     private readonly http: HttpClient,
     httpErrorHandler: HttpErrorHandler,
+    private storageService: StorageService,
   ) {
     this.handleError = httpErrorHandler.createHandleError('ClientService');
   }
 
-  getServerInfo(key?: string) {
-    return JSON.parse(localStorage.getItem(APP_INFO))[key];
-  }
-
-  getClients(offset: number, limit: number, search: string): Observable<any> {
-    const url = `${this.getServerInfo(
-      'issuer',
-    )}/client/list?limit=${offset}&offset=${limit}&search=${search}`;
-    return this.http
-      .get<string>(url)
-      .pipe(
-        catchError(
-          this.handleError('getMessage', { message: 'Cannot fetch clients.' }),
-        ),
-      );
-  }
-
   getClient(clientID: string): Observable<any> {
-    const url = `${this.getServerInfo('issuer')}/client/${clientID}`;
+    const url = `${this.storageService.getInfo(ISSUER_URL)}/client/${clientID}`;
     return this.http
       .get<string>(url)
       .pipe(
         catchError(
-          this.handleError('getMessage', { message: 'Cannot fetch client.' }),
+          this.handleError('getClient', { message: CANNOT_FETCH_CLIENT }),
         ),
       );
   }
@@ -55,7 +41,7 @@ export class ClientService {
     scopes: string[],
     isTrusted: boolean,
   ) {
-    const url = `${this.getServerInfo('issuer')}/client/create`;
+    const url = `${this.storageService.getInfo(ISSUER_URL)}/client/create`;
     const clientData = {
       name: clientName,
       redirectUris: callbackURLs,
@@ -72,7 +58,7 @@ export class ClientService {
     scopes: string[],
     isTrusted: boolean,
   ) {
-    const url = `${this.getServerInfo('issuer')}/client/update`;
+    const url = `${this.storageService.getInfo(ISSUER_URL)}/client/update`;
     const clientData = {
       clientId,
       name: clientName,
@@ -86,7 +72,7 @@ export class ClientService {
   invokeSetup(clientURL: string, savedClient: any) {
     const payload = {
       appURL: clientURL,
-      authServerURL: this.getServerInfo('issuer'),
+      authServerURL: this.storageService.getInfo(ISSUER_URL),
       clientId: savedClient.clientId,
       clientSecret: savedClient.clientSecret,
       callbackURLs: savedClient.redirectUris,
@@ -96,7 +82,7 @@ export class ClientService {
   }
 
   getScopes() {
-    const url = `${this.getServerInfo('issuer')}/scope/list`;
+    const url = `${this.storageService.getInfo(ISSUER_URL)}/scope/list`;
     return this.http.get<string>(url);
   }
 }

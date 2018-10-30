@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { AuthGuard } from './guards/auth.guard.service';
-import { ClientsComponent } from './clients/clients.component';
+import { ListingComponent } from './listing/listing.component';
 import { ClientComponent } from './client/client.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 
@@ -11,7 +11,12 @@ const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
   {
     path: 'client/list',
-    component: ClientsComponent,
+    component: ListingComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'role/list',
+    component: ListingComponent,
     canActivate: [AuthGuard],
   },
   {
