@@ -10,7 +10,7 @@
     <mat-nav-list>
       <a mat-list-item (click)="login()" *ngIf="!tokenIsValid">Login</a>
       <a mat-list-item routerLink="/client/list" *ngIf="tokenIsValid">Clients</a>
-      <a mat-list-item *ngIf="tokenIsValid" >Roles</a>
+      <a mat-list-item routerLink="/role/list" *ngIf="tokenIsValid" >Roles</a>
       <a mat-list-item (click)="logout()" *ngIf="tokenIsValid">Logout</a>
     </mat-nav-list>
   </mat-sidenav>

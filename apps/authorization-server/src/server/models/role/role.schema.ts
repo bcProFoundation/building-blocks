@@ -1,9 +1,14 @@
 import * as mongoose from 'mongoose';
+import * as mongoosePaginate from 'mongoose-paginate';
 
-export const Role = new mongoose.Schema(
+const schema = new mongoose.Schema(
   { name: String },
   { collection: 'role', versionKey: false },
 );
+
+schema.plugin(mongoosePaginate);
+
+export const Role = schema;
 
 export const ROLE = 'Role';
 

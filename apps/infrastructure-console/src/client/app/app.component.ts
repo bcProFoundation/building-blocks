@@ -5,7 +5,7 @@ import {
   JwksValidationHandler,
   AuthConfig,
 } from 'angular-oauth2-oidc';
-import { APP_INFO } from './constants';
+import { StorageService } from './common/storage.service';
 
 @Component({
   selector: 'app-root',
@@ -16,12 +16,14 @@ export class AppComponent {
   constructor(
     private appService: AppService,
     private oauthService: OAuthService,
+    private storageService: StorageService,
   ) {
     this.setupOIDC();
   }
 
   setupOIDC(): void {
     this.appService.getMessage().subscribe(response => {
+      this.storageService.setInfoLocalStorage(response);
       const authConfig: AuthConfig = {
         clientId: response.clientId,
         redirectUri: response.callbackURLs[0],
@@ -31,7 +33,6 @@ export class AppComponent {
         issuer: response.authServerURL,
         disableAtHashCheck: true,
       };
-      localStorage.setItem(APP_INFO, JSON.stringify(authConfig));
       if (isDevMode()) authConfig.requireHttps = false;
       this.oauthService.configure(authConfig);
       this.oauthService.tokenValidationHandler = new JwksValidationHandler();

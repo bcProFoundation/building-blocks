@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
+import { PaginateModel } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { ROLE } from './role.schema';
 import { Role } from '../interfaces/role.interface';
@@ -7,7 +7,9 @@ import { invalidRoleException } from '../../auth/filters/exceptions';
 
 @Injectable()
 export class RoleService {
-  constructor(@InjectModel(ROLE) private readonly roleModel: Model<Role>) {}
+  constructor(
+    @InjectModel(ROLE) private readonly roleModel: PaginateModel<Role>,
+  ) {}
 
   async save(params) {
     params.name = params.name.toLowerCase().trim();
@@ -23,5 +25,9 @@ export class RoleService {
 
   async clear() {
     return await this.roleModel.deleteMany({});
+  }
+
+  async paginate(query, options) {
+    return await this.roleModel.paginate(query, options);
   }
 }
