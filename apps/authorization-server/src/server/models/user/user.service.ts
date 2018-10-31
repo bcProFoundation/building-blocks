@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
+import { Model, PaginateModel } from 'mongoose';
 import { USER_DELETED } from '../../constants/messages';
 import {
   invalidUserException,
@@ -18,7 +18,7 @@ import { AuthData } from '../interfaces/auth-data.interface';
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel(USER) private readonly userModel: Model<User>,
+    @InjectModel(USER) private readonly userModel: PaginateModel<User>,
     @InjectModel(AUTH_DATA) private readonly authDataModel: Model<AuthData>,
   ) {}
 
@@ -132,6 +132,10 @@ export class UserService {
     if (!user) user = await this.findOne({ phone: emailOrPhone });
     if (!user) throw invalidUserException;
     return user;
+  }
+
+  async paginate(query, options) {
+    return await this.userModel.paginate(query, options);
   }
 
   getModel() {

@@ -20,6 +20,16 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'user/list',
+    component: ListingComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'scope/list',
+    component: ListingComponent,
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'client/:id',
     component: ClientComponent,
     canActivateChild: [AuthGuard],
