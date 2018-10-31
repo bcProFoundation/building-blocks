@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Get } from '@nestjs/common';
+import { Controller, UseGuards, Get, Query } from '@nestjs/common';
 import { ScopeService } from '../../../models/scope/scope.service';
 import { callback } from '../../passport/local.strategy';
 import { AuthGuard } from '../../guards/auth.guard';
@@ -9,7 +9,19 @@ export class ScopeController {
 
   @Get('list')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
-  async list() {
-    return await this.scopeService.find({});
+  async list(
+    @Query('offset') offset: number,
+    @Query('limit') limit: number,
+    @Query('search') search?: string,
+  ) {
+    return await this.scopeService.paginate(search, {
+      offset: Number(offset),
+      limit: Number(limit),
+    });
+  }
+
+  @Get('find')
+  async find() {
+    return this.scopeService.find({});
   }
 }

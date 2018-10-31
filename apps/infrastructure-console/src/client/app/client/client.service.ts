@@ -82,7 +82,7 @@ export class ClientService {
   }
 
   getScopes() {
-    const url = `${this.storageService.getInfo(ISSUER_URL)}/scope/list`;
+    const url = `${this.storageService.getInfo(ISSUER_URL)}/scope/find`;
     return this.http.get<string>(url);
   }
 }

@@ -87,7 +87,12 @@ export class ListingComponent implements OnInit, AfterViewInit {
           return of([]);
         }),
       )
-      .subscribe(data => (this.dataSource.data = data));
+      .subscribe(data => {
+        this.dataSource.data = data.map(doc => {
+          if (!doc.uuid && doc.name) doc.uuid = doc.name;
+          return doc;
+        });
+      });
   }
 
   get isLoadingResults() {
