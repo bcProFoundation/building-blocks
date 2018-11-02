@@ -10,6 +10,7 @@ import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpErrorHandler } from '../http-error-handler.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { oauthServiceStub } from '../common/testing-helpers';
 
 describe('ListingComponent', () => {
   let component: ListingComponent;
@@ -17,12 +18,6 @@ describe('ListingComponent', () => {
 
   @Component({ selector: 'app-home', template: '' })
   class HomeComponent {}
-
-  const oauthServiceStub: Partial<OAuthService> = {
-    getIdentityClaims() {
-      return { roles: ['administrator'] };
-    },
-  };
 
   const clientServiceStub: Partial<ClientService> = {};
 

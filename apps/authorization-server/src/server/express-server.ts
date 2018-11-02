@@ -7,13 +7,13 @@ import * as rateLimit from 'express-rate-limit';
 import { ConfigService } from './config/config.service';
 import { join } from 'path';
 import { INestApplication } from '@nestjs/common';
-import * as connectMongoDBSession from 'connect-mongodb-session';
-const MongoDBStore = connectMongoDBSession(expressSession);
+import * as connectMongoDBSession from 'connect-mongo';
+const MongoStore = connectMongoDBSession(expressSession);
 
 export class ExpressServer {
   public server: express.Express;
 
-  constructor() {
+  constructor(private configService: ConfigService) {
     this.server = express();
   }
 
@@ -37,36 +37,36 @@ export class ExpressServer {
   }
 
   setupSession(app: INestApplication) {
-    const configService = new ConfigService();
-    app.use(cookieParser(configService.get('SESSION_SECRET')));
+    app.use(cookieParser(this.configService.get('SESSION_SECRET')));
 
     const expires = new Date(
       new Date().getTime() +
-        Number(configService.get('EXPIRY_DAYS')) * 24 * 60 * 60 * 1000, // 24 hrs * 60 min * 60 sec * 1000 ms
+        Number(this.configService.get('EXPIRY_DAYS')) * 24 * 60 * 60 * 1000, // 24 hrs * 60 min * 60 sec * 1000 ms
     );
 
     const cookie = {
-      maxAge: Number(configService.get('COOKIE_MAX_AGE')),
+      maxAge: Number(this.configService.get('COOKIE_MAX_AGE')),
       httpOnly: false,
-      secure: false, // allow cookie for non https
+      secure: true,
       expires,
     };
 
-    // if (process.env.NODE_ENV !== 'production') cookie.secure = false;
-    const mongoDBStore = new MongoDBStore({
-      uri: `mongodb://${configService.get('DB_HOST')}/${configService.get(
-        'DB_NAME',
-      )}`,
+    if (process.env.NODE_ENV !== 'production') cookie.secure = false;
+    const store = new MongoStore({
+      url: `mongodb://${this.configService.get(
+        'DB_HOST',
+      )}/${this.configService.get('DB_NAME')}`,
+      touchAfter: 24 * 3600, // 24 hours * 3600 secs
       collection: 'session',
     });
     const sessionConfig = {
-      name: configService.get('SESSION_NAME'),
-      secret: configService.get('SESSION_SECRET'),
-      store: mongoDBStore,
+      name: this.configService.get('SESSION_NAME'),
+      secret: this.configService.get('SESSION_SECRET'),
+      store,
       cookie,
       saveUninitialized: false,
       resave: false,
-      // proxy: true, // https://github.com/expressjs/session/issues/281
+      proxy: true, // https://github.com/expressjs/session/issues/281
       // unset: 'destroy'
     };
 
