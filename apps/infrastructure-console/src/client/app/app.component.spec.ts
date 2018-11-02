@@ -7,6 +7,7 @@ import { of } from 'rxjs';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Component } from '@angular/core';
+import { oauthServiceStub } from './common/testing-helpers';
 
 const reqResp = {
   uuid: '19421784-bb3d-4b4a-8994-dfe8f3eddf5a',
@@ -25,14 +26,6 @@ const reqResp = {
 const appServiceStub: Partial<AppService> = {
   getMessage: () => {
     return of(reqResp);
-  },
-};
-
-const oauthServiceStub: Partial<OAuthService> = {
-  configure(...args) {},
-  setupAutomaticSilentRefresh(...args) {},
-  loadDiscoveryDocumentAndTryLogin(optins?: any): Promise<void> {
-    return Promise.resolve();
   },
 };
 

@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { OAuthService } from 'angular-oauth2-oidc';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -6,7 +8,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
-  constructor() {}
+  constructor(private oauthService: OAuthService, private router: Router) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    if (this.oauthService.hasValidAccessToken()) {
+      this.router.navigate(['dashboard']);
+    }
+  }
 }

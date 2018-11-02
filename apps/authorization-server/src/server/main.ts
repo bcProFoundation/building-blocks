@@ -7,9 +7,10 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { VIEWS_DIR } from './constants/locations';
 import { ExpressServer } from './express-server';
 import { APP_NAME, APP_DESCRIPTION } from './constants/messages';
+import { ConfigService } from './config/config.service';
 
 async function bootstrap() {
-  const authServer = new ExpressServer();
+  const authServer = new ExpressServer(new ConfigService());
   authServer.setupSecurity();
   authServer.setupAssetDir();
   const app = await NestFactory.create(AppModule, authServer.server);
@@ -36,7 +37,7 @@ async function bootstrap() {
 
   // Enable Trust Proxy for session to work
   // https://github.com/expressjs/session/issues/281
-  // app.set('trust proxy', 1);
+  app.set('trust proxy', 1);
 
   authServer.setupSession(app);
   await app.listen(3000);
