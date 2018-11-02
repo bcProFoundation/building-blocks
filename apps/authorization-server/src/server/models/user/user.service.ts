@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { Model, PaginateModel } from 'mongoose';
-import { USER_DELETED } from '../../constants/messages';
+import { USER_DELETED, USER_NOT_ADMINISTRATOR } from '../../constants/messages';
 import {
   invalidUserException,
   twoFactorEnabledException,
@@ -14,6 +14,7 @@ import { USER } from './user.schema';
 import { AUTH_DATA, AuthDataModel } from '../auth-data/auth-data.schema';
 import { User } from '../interfaces/user.interface';
 import { AuthData } from '../interfaces/auth-data.interface';
+import { ADMINISTRATOR } from '../../constants/roles';
 
 @Injectable()
 export class UserService {
@@ -136,6 +137,13 @@ export class UserService {
 
   async paginate(query, options) {
     return await this.userModel.paginate(query, options);
+  }
+
+  async checkAdministrator(uuid) {
+    const user: User = await this.findOne({ uuid });
+    if (!user.roles.includes(ADMINISTRATOR)) {
+      throw new UnauthorizedException(USER_NOT_ADMINISTRATOR);
+    }
   }
 
   getModel() {

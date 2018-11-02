@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { OAuthService, OAuthEvent } from 'angular-oauth2-oidc';
 import { Router } from '@angular/router';
 import { StorageService } from '../common/storage.service';
+import { ISSUER_URL, APP_URL } from '../constants/storage';
 
 @Component({
   selector: 'app-dashboard-nav',
@@ -44,9 +45,13 @@ export class DashboardNavComponent {
   }
 
   logout() {
+    const logOutUrl =
+      this.storageService.getInfo(ISSUER_URL) +
+      '/auth/logout?redirect=' +
+      this.storageService.getInfo(APP_URL);
     this.storageService.clearInfoLocalStorage();
     this.oauthService.logOut();
     this.tokenIsValid = false;
-    this.router.navigate(['home']);
+    window.location.href = logOutUrl;
   }
 }
