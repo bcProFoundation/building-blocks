@@ -26,7 +26,7 @@ import { MatDatepickerInputEvent, MatSnackBar } from '@angular/material';
 import { USER_UUID, ISSUER_URL, APP_URL } from '../../constants/storage';
 import { map } from 'rxjs/operators';
 import { ProfileResponse } from '../interfaces/profile-response.interface';
-import { LOGOUT_URL } from 'client/constants/url-paths';
+import { LOGOUT_URL } from '../../constants/url-paths';
 
 @Component({
   selector: 'app-profile',

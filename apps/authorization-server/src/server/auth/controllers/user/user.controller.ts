@@ -71,13 +71,15 @@ export class UserController {
     res.json(user);
   }
 
-  @Get('list')
+  @Get('v1/list')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
   async list(
+    @Req() req,
     @Query('offset') offset: number,
     @Query('limit') limit: number,
     @Query('search') search?: string,
   ) {
+    await this.userService.checkAdministrator(req.user.user);
     return await this.userService.paginate(search, {
       offset: Number(offset),
       limit: Number(limit),

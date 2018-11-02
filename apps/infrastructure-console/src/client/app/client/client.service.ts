@@ -20,7 +20,9 @@ export class ClientService {
   }
 
   getClient(clientID: string): Observable<any> {
-    const url = `${this.storageService.getInfo(ISSUER_URL)}/client/${clientID}`;
+    const url = `${this.storageService.getInfo(
+      ISSUER_URL,
+    )}/client/v1/${clientID}`;
     return this.http
       .get<string>(url)
       .pipe(
@@ -41,7 +43,7 @@ export class ClientService {
     scopes: string[],
     isTrusted: boolean,
   ) {
-    const url = `${this.storageService.getInfo(ISSUER_URL)}/client/create`;
+    const url = `${this.storageService.getInfo(ISSUER_URL)}/client/v1/create`;
     const clientData = {
       name: clientName,
       redirectUris: callbackURLs,
@@ -58,7 +60,7 @@ export class ClientService {
     scopes: string[],
     isTrusted: boolean,
   ) {
-    const url = `${this.storageService.getInfo(ISSUER_URL)}/client/update`;
+    const url = `${this.storageService.getInfo(ISSUER_URL)}/client/v1/update`;
     const clientData = {
       clientId,
       name: clientName,
@@ -82,7 +84,7 @@ export class ClientService {
   }
 
   getScopes() {
-    const url = `${this.storageService.getInfo(ISSUER_URL)}/scope/find`;
+    const url = `${this.storageService.getInfo(ISSUER_URL)}/scope/v1/find`;
     return this.http.get<string>(url);
   }
 }
