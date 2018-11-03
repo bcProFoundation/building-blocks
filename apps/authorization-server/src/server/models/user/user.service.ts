@@ -1,6 +1,10 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { Model, PaginateModel } from 'mongoose';
-import { USER_DELETED, USER_NOT_ADMINISTRATOR } from '../../constants/messages';
+import {
+  USER_DELETED,
+  USER_NOT_ADMINISTRATOR,
+  TWO_FACTOR_DISABLED,
+} from '../../constants/messages';
 import {
   invalidUserException,
   twoFactorEnabledException,
@@ -11,7 +15,7 @@ import * as speakeasy from 'speakeasy';
 import * as QRCode from 'qrcode';
 import { InjectModel } from '@nestjs/mongoose';
 import { USER } from './user.schema';
-import { AUTH_DATA, AuthDataModel } from '../auth-data/auth-data.schema';
+import { AUTH_DATA } from '../auth-data/auth-data.schema';
 import { User } from '../interfaces/user.interface';
 import { AuthData } from '../interfaces/auth-data.interface';
 import { ADMINISTRATOR } from '../../constants/roles';
@@ -55,8 +59,8 @@ export class UserService {
     return await this.userModel.deleteOne({ email });
   }
 
-  async verify2fa(email: string, otp: string) {
-    const user = await this.findOne({ email });
+  async verify2fa(uuid: string, otp: number) {
+    const user = await this.findOne({ uuid });
     if (!otp) throw invalidOTPException;
     if (user.twoFactorTempSecret) {
       const twoFactorTempSecret = await this.authDataModel.findOne({
@@ -67,15 +71,15 @@ export class UserService {
         secret: base32secret,
         encoding: 'base32',
       });
-      if (verified === otp) {
-        const sharedSecret: AuthData = new AuthDataModel();
+      if (verified === otp.toString()) {
+        const sharedSecret: AuthData = new this.authDataModel();
         sharedSecret.password = twoFactorTempSecret.password;
         await sharedSecret.save();
 
         user.sharedSecret = sharedSecret.uuid;
         user.enable2fa = true;
 
-        delete user.twoFactorTempSecret;
+        user.twoFactorTempSecret = null;
         await twoFactorTempSecret.remove();
 
         await user.save();
@@ -87,22 +91,28 @@ export class UserService {
             phone: user.phone,
           },
         };
-      }
+      } else throw twoFactorNotEnabledException;
     }
-    throw twoFactorNotEnabledException;
   }
 
-  async initializeMfa(email: string, restart: boolean = false) {
-    const user: User = await this.findOne({ email });
+  async initializeMfa(uuid: string, restart: boolean = false) {
+    const user: User = await this.findOne({ uuid });
     if (restart || !user.enable2fa) {
       // TODO: setup issuer from server url
       const secret = speakeasy.generateSecret({ name: user.email });
-
       // Save secret on AuthData
-      const authData: AuthData = new AuthDataModel();
+
+      if (user.twoFactorTempSecret) {
+        const twoFactorTempSecret = await this.authDataModel.findOne({
+          uuid: user.twoFactorTempSecret,
+        });
+        if (twoFactorTempSecret) await twoFactorTempSecret.remove();
+        user.twoFactorTempSecret = null;
+      }
+
+      const authData: AuthData = new this.authDataModel();
       authData.password = secret.base32;
       await authData.save();
-
       user.twoFactorTempSecret = authData.uuid;
       await user.save();
 
@@ -111,13 +121,10 @@ export class UserService {
         label: user.email,
         period: 30,
       });
+
       const qrImage = await QRCode.toDataURL(otpAuthUrl);
+
       return {
-        user: {
-          uuid: user.uuid,
-          email: user.email,
-          phone: user.phone,
-        },
         qrImage,
         // shared key from AuthData
         key: authData.password,
@@ -144,6 +151,28 @@ export class UserService {
     if (!user.roles.includes(ADMINISTRATOR)) {
       throw new UnauthorizedException(USER_NOT_ADMINISTRATOR);
     }
+  }
+
+  async disable2fa(uuid: string) {
+    const user = await this.findOne({ uuid });
+    if (!user.enable2fa) throw twoFactorNotEnabledException;
+
+    user.enable2fa = false;
+
+    const twoFactorTempSecret = await this.authDataModel.findOne({
+      uuid: user.twoFactorTempSecret,
+    });
+    if (twoFactorTempSecret) await twoFactorTempSecret.remove();
+
+    const sharedSecret = await this.authDataModel.findOne({
+      uuid: user.sharedSecret,
+    });
+    if (sharedSecret) await sharedSecret.remove();
+
+    user.twoFactorTempSecret = null;
+    user.sharedSecret = null;
+    await user.save();
+    return { message: TWO_FACTOR_DISABLED };
   }
 
   getModel() {

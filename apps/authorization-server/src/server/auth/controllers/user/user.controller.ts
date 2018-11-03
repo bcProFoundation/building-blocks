@@ -9,7 +9,6 @@ import {
   Res,
   UnauthorizedException,
 } from '@nestjs/common';
-import { EnsureLoginGuard } from 'nestjs-ensureloggedin-guard';
 import { CryptographerService } from '../../../utilities/cryptographer.service';
 import { UserService } from '../../../models/user/user.service';
 import { AuthGuard } from '../../guards/auth.guard';
@@ -49,19 +48,25 @@ export class UserController {
     res.json(user);
   }
 
-  @Post('v1/initialize-2fa')
-  @UseGuards(EnsureLoginGuard)
+  @Post('v1/initialize_2fa')
+  @UseGuards(AuthGuard('bearer', { session: false, callback }))
   async initialize2fa(@Req() req, @Query('restart') restart) {
     return await this.userService.initializeMfa(
-      req.user.email,
+      req.user.user,
       restart || false,
     );
   }
 
-  @Post('v1/verify-2fa')
-  @UseGuards(EnsureLoginGuard)
-  async verify2fa(@Req() req, @Body('otp') otp) {
-    return await this.userService.verify2fa(req.user.email, otp);
+  @Post('v1/verify_2fa')
+  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  async verify2fa(@Req() req, @Body('otp') otp: number) {
+    return await this.userService.verify2fa(req.user.user, otp);
+  }
+
+  @Post('v1/disable_2fa')
+  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  async disable2fa(@Req() req) {
+    return await this.userService.disable2fa(req.user.user);
   }
 
   @Get('v1/get_user')

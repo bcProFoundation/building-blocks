@@ -27,3 +27,4 @@ export const JWKS_NOT_FOUND = 'JWK Not Found';
 export const INVALID_ROLE = 'Invalid Role';
 export const INVALID_SESSION = 'Invalid Session';
 export const USER_NOT_ADMINISTRATOR = 'Logged in user is not an administrator';
+export const TWO_FACTOR_DISABLED = 'Two factor authentication disabled';

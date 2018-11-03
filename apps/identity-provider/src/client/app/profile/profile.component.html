@@ -104,7 +104,8 @@
     <mat-card-subtitle>Multi Factor Authentication</mat-card-subtitle>
     <mat-card-content fxLayout="column" fxAlignLayout="space-evenly none" fxLayoutGap="1em">
       <mat-slide-toggle
-        [checked]="checked2fa">
+        [checked]="checked2fa"
+        (click)="enableDisable2fa()">
         {{ checked2fa ? 'Enabled' : 'Disabled' }}
       </mat-slide-toggle>
     </mat-card-content>
