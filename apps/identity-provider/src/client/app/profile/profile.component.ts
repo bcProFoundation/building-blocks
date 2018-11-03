@@ -26,7 +26,8 @@ import { MatDatepickerInputEvent, MatSnackBar } from '@angular/material';
 import { USER_UUID, ISSUER_URL, APP_URL } from '../../constants/storage';
 import { map } from 'rxjs/operators';
 import { ProfileResponse } from '../interfaces/profile-response.interface';
-import { LOGOUT_URL } from 'client/constants/url-paths';
+import { LOGOUT_URL } from '../../constants/url-paths';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -96,6 +97,7 @@ export class ProfileComponent implements OnInit {
     private oauthService: OAuthService,
     private profileService: ProfileService,
     private snackbar: MatSnackBar,
+    private router: Router,
   ) {}
 
   ngOnInit() {
@@ -162,8 +164,13 @@ export class ProfileComponent implements OnInit {
       .setAuthServerUser({ name: this.personalForm.controls.fullName.value })
       .subscribe();
   }
+
   updateProfile() {}
-  enableDisable2fa() {}
+
+  enableDisable2fa() {
+    this.router.navigate(['mfa']);
+  }
+
   updateBirthdate(type: string, event: MatDatepickerInputEvent<Date>) {
     this.birthdate = event.value;
   }

@@ -11,7 +11,7 @@ import { MaterialModule } from './material.module';
 import { OAuthModule, OAuthStorage } from 'angular-oauth2-oidc';
 import { DashboardNavComponent } from './dashboard-nav/dashboard-nav.component';
 import { HomeComponent } from './home/home.component';
-import { ClientsComponent } from './clients/clients.component';
+import { ListingComponent } from './listing/listing.component';
 import { ClientComponent } from './client/client.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AccessTokenInjector } from './interceptors/access-token-injector/access-token-injector.interceptor';
@@ -27,7 +27,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     HomeComponent,
     DashboardComponent,
     DashboardNavComponent,
-    ClientsComponent,
+    ListingComponent,
     ClientComponent,
   ],
   imports: [

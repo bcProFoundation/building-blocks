@@ -5,12 +5,13 @@ import { AppModule } from '../src/server/app.module';
 import { ExpressServer } from '../src/server/express-server';
 import { UserService } from '../src/server/models/user/user.service';
 import 'jest';
+import { ConfigService } from '../src/server/config/config.service';
 jest.setTimeout(30000);
 
 describe('AuthController (e2e)', () => {
   let app: INestApplication;
   let userService: UserService;
-  const authServer = new ExpressServer();
+  const authServer = new ExpressServer(new ConfigService());
 
   beforeAll(async () => {
     const moduleFixture = await Test.createTestingModule({

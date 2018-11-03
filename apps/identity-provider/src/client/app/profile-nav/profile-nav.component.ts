@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { OAuthService, OAuthEvent } from 'angular-oauth2-oidc';
 import { Router } from '@angular/router';
 import { ProfileNavService } from './profile-nav.service';
+import { ISSUER_URL, APP_URL } from '../../constants/storage';
 
 @Component({
   selector: 'app-profile-nav',
@@ -41,9 +42,13 @@ export class ProfileNavComponent implements OnInit {
   }
 
   logout() {
+    const logoutUrl =
+      localStorage.getItem(ISSUER_URL) +
+      '/auth/logout?redirect=' +
+      localStorage.getItem(APP_URL);
     this.profileNavService.clearInfoLocalStorage();
     this.oauthService.logOut();
     this.tokenIsValid = false;
-    this.router.navigate(['home']);
+    window.location.href = logoutUrl;
   }
 }

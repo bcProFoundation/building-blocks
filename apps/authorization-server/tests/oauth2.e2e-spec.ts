@@ -15,6 +15,7 @@ import { RoleService } from '../src/server/models/role/role.service';
 import { ServerSettingsService } from '../src/server/models/server-settings/server-settings.service';
 import { OIDCKeyService } from '../src/server/models/oidc-key/oidc-key.service';
 import 'jest';
+import { ConfigService } from '../src/server/config/config.service';
 jest.setTimeout(30000);
 
 describe('OAuth2Controller (e2e)', () => {
@@ -30,7 +31,7 @@ describe('OAuth2Controller (e2e)', () => {
   let refreshToken: string;
   let bearerTokenService;
   let userService;
-  const authServer = new ExpressServer();
+  const authServer = new ExpressServer(new ConfigService());
 
   beforeAll(async () => {
     moduleFixture = await Test.createTestingModule({

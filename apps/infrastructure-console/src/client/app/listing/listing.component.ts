@@ -8,15 +8,17 @@ import {
   map,
   startWith,
   switchMap,
+  filter,
 } from 'rxjs/operators';
-import { ClientService } from '../client/client.service';
+import { ListingService } from '../common/listing.service';
+import { Router, NavigationEnd } from '@angular/router';
 
 @Component({
-  selector: 'app-clients',
-  templateUrl: './clients.component.html',
-  styleUrls: ['./clients.component.css'],
+  selector: 'app-listing',
+  templateUrl: './listing.component.html',
+  styleUrls: ['./listing.component.css'],
 })
-export class ClientsComponent implements OnInit, AfterViewInit {
+export class ListingComponent implements OnInit, AfterViewInit {
   displayedColumns = ['name'];
 
   dataSource = new MatTableDataSource();
@@ -32,8 +34,17 @@ export class ClientsComponent implements OnInit, AfterViewInit {
   paginator: MatPaginator;
   @ViewChild(MatSort)
   sort: MatSort;
-
-  constructor(private readonly clientService: ClientService) {}
+  model: string;
+  constructor(
+    private readonly listingService: ListingService,
+    private router: Router,
+  ) {
+    this.router.events
+      .pipe(filter(route => route instanceof NavigationEnd))
+      .subscribe((route: NavigationEnd) => {
+        this.model = route.url.split('/')[1];
+      });
+  }
 
   ngOnInit(): void {}
 
@@ -56,10 +67,11 @@ export class ClientsComponent implements OnInit, AfterViewInit {
         startWith({}),
         switchMap(() => {
           this._isLoadingResults = true;
-          return this.clientService.getClients(
-            this.paginator.pageSize,
+          return this.listingService.getModels(
             this.paginator.pageIndex,
+            this.paginator.pageSize,
             this.search.value,
+            this.model,
           );
         }),
         map((data: any) => {
@@ -75,7 +87,12 @@ export class ClientsComponent implements OnInit, AfterViewInit {
           return of([]);
         }),
       )
-      .subscribe(data => (this.dataSource.data = data));
+      .subscribe(data => {
+        this.dataSource.data = data.map(doc => {
+          if (!doc.uuid && doc.name) doc.uuid = doc.name;
+          return doc;
+        });
+      });
   }
 
   get isLoadingResults() {
