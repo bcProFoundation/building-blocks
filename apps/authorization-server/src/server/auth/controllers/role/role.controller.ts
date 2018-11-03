@@ -1,45 +1,28 @@
-import {
-  Controller,
-  UseGuards,
-  Body,
-  Post,
-  Get,
-  Delete,
-  Patch,
-  Res,
-} from '@nestjs/common';
+import { Controller, UseGuards, Get, Query, Req } from '@nestjs/common';
 import { callback } from '../../passport/http-bearer.strategy';
-import { Roles } from '../../decorators/roles.decorator';
 import { AuthGuard } from '../../guards/auth.guard';
-import { RolesGuard } from '../../guards/roles.guard';
-import { EnsureLoginGuard } from 'nestjs-ensureloggedin-guard';
+import { RoleService } from '../../../models/role/role.service';
+import { UserService } from '../../../models/user/user.service';
 
 @Controller('role')
 export class RoleController {
-  @Post('create')
-  create(@Body() body) {}
+  constructor(
+    private readonly roleService: RoleService,
+    private readonly userService: UserService,
+  ) {}
 
-  @Get('read-bearer')
-  @Roles('admin')
-  @UseGuards(AuthGuard('bearer', { session: false, callback }), RolesGuard)
-  readBearer(@Body() payload, @Res() res) {
-    res.json({ bearer: 'Yas!' });
+  @Get('v1/list')
+  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  async list(
+    @Req() req,
+    @Query('offset') offset: number,
+    @Query('limit') limit: number,
+    @Query('search') search?: string,
+  ) {
+    await this.userService.checkAdministrator(req.user);
+    return await this.roleService.paginate(search, {
+      offset: Number(offset),
+      limit: Number(limit),
+    });
   }
-
-  @Get('read-session')
-  @Roles('admin')
-  @UseGuards(EnsureLoginGuard, RolesGuard)
-  readSession(@Body() payload, @Res() res) {
-    res.json({ session: 'Yas!' });
-  }
-
-  @Patch('update')
-  update(@Body() payload) {}
-
-  @Delete('delete')
-  delete(@Body() payload) {}
-
-  // add role to a user (only admins)
-  @Post('add/user')
-  addUser() {}
 }

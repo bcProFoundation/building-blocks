@@ -8,6 +8,7 @@ import { OAuthService } from 'angular-oauth2-oidc';
 import { ProfileService } from './profile.service';
 import { from } from 'rxjs';
 import { MatSnackBar } from '@angular/material';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('ProfileComponent', () => {
   let component: ProfileComponent;
@@ -26,6 +27,7 @@ describe('ProfileComponent', () => {
         ReactiveFormsModule,
         FormsModule,
         BrowserAnimationsModule,
+        RouterTestingModule,
       ],
       providers: [
         {

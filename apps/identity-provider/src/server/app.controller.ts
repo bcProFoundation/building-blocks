@@ -26,6 +26,11 @@ export class AppController {
     return res.sendFile(INDEX_HTML);
   }
 
+  @Get('mfa')
+  mfa(@Res() res) {
+    return res.sendFile(INDEX_HTML);
+  }
+
   @Get('info')
   info() {
     return this.appService.info();

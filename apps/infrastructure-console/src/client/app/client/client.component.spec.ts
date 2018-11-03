@@ -9,16 +9,11 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { oauthServiceStub } from '../common/testing-helpers';
 
 describe('ClientComponent', () => {
   let component: ClientComponent;
   let fixture: ComponentFixture<ClientComponent>;
-
-  const oauthServiceStub: Partial<OAuthService> = {
-    getIdentityClaims() {
-      return { roles: ['administrator'] };
-    },
-  };
 
   const clientServiceStub: Partial<ClientService> = {
     getClient(id: string): Observable<any> {

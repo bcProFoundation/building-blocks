@@ -7,3 +7,6 @@ export const SET_AUTH_SERVER_USER = '/user/v1/update_full_name';
 export const GET_AUTH_SERVER_USER = '/user/v1/get_user';
 export const CHANGE_PASSWORD_ENDPOINT = '/user/v1/change_password';
 export const LOGOUT_URL = '/auth/logout';
+export const INITIALIZE_2FA = '/user/v1/initialize_2fa';
+export const VERIFY_2FA = '/user/v1/verify_2fa';
+export const DISABLE_2FA = '/user/v1/disable_2fa';
