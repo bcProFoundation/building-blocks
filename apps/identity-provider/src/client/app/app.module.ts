@@ -15,10 +15,11 @@ import { AuthGuard } from './guards/auth.guard.service';
 import { HomeComponent } from './home/home.component';
 import { ProfileComponent } from './profile/profile.component';
 import { AppsComponent } from './apps/apps.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ProfileNavService } from './profile-nav/profile-nav.service';
 import { ProfileService } from './profile/profile.service';
+import { MultifactorComponent } from './multifactor/multifactor.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { ProfileService } from './profile/profile.service';
     HomeComponent,
     ProfileComponent,
     AppsComponent,
+    MultifactorComponent,
   ],
   imports: [
     BrowserModule,
@@ -38,6 +40,7 @@ import { ProfileService } from './profile/profile.service';
     MaterialModule,
     ReactiveFormsModule,
     FlexLayoutModule,
+    FormsModule,
   ],
   providers: [
     AppService,
