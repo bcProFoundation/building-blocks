@@ -44,6 +44,15 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true
+            },
+            "mr": {
+              "aot": true,
+              "baseHref": "/language/mr/",
+              "outputPath": "dist/authorization-server-mr/",
+              "i18nFile": "src/client/i18n/messages.mr.xlf",
+              "i18nFormat": "xlf",
+              "i18nLocale": "mr",
+              "i18nMissingTranslation": "error"
             }
           }
         },
@@ -77,6 +86,9 @@
             },
             "ci": {
               "progress": false
+            },
+            "mr": {
+              "browserTarget": "authorization-server:build:mr"
             }
           }
         },

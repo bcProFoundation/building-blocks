@@ -34,21 +34,23 @@ export class ExpressServer {
     this.server.use(
       express.static(join(process.cwd(), 'dist/authorization-server')),
     );
+
+    // TODO: loop through available languages and serve static
+    // Example language set
+
+    this.server.use(
+      '/language/mr',
+      express.static(join(process.cwd(), 'dist/authorization-server-mr')),
+    );
   }
 
   setupSession(app: INestApplication) {
     app.use(cookieParser(this.configService.get('SESSION_SECRET')));
 
-    const expires = new Date(
-      new Date().getTime() +
-        Number(this.configService.get('EXPIRY_DAYS')) * 24 * 60 * 60 * 1000, // 24 hrs * 60 min * 60 sec * 1000 ms
-    );
-
     const cookie = {
       maxAge: Number(this.configService.get('COOKIE_MAX_AGE')),
       httpOnly: false,
       secure: true,
-      expires,
     };
 
     if (process.env.NODE_ENV !== 'production') cookie.secure = false;

@@ -5,6 +5,7 @@ import {
   UseGuards,
   UseFilters,
   Req,
+  Param,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { EnsureLoginGuard } from 'nestjs-ensureloggedin-guard';
@@ -14,7 +15,7 @@ import {
   APP_ACCOUNT_TITLE,
   APP_ACCOUNT_DESCRIPTION,
 } from './constants/swagger';
-import { INDEX_HTML } from './constants/filesystem';
+import { INDEX_HTML, FOLDER_DIST_BROWSER } from './constants/filesystem';
 
 @Controller()
 export class AppController {
@@ -46,5 +47,10 @@ export class AppController {
   })
   account(@Res() res) {
     res.sendFile(INDEX_HTML);
+  }
+
+  @Get('language/:lang*')
+  localeRoot(@Res() res, @Param('lang') lang) {
+    res.sendFile(FOLDER_DIST_BROWSER + `-${lang}/index.html`);
   }
 }
