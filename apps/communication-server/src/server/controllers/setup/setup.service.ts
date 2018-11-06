@@ -8,12 +8,12 @@ export class SetupService {
   protected idpSettings: ServerSettings;
 
   constructor(
-    protected readonly idpSettingsService: ServerSettingsService,
+    protected readonly serverSettingsService: ServerSettingsService,
     protected readonly http: HttpService,
   ) {}
 
   async setup(params) {
-    if (await this.idpSettingsService.count()) {
+    if (await this.serverSettingsService.count()) {
       throw settingsAlreadyExists;
     }
     this.http
@@ -29,7 +29,7 @@ export class SetupService {
             params.appURL + '/index.html',
             params.appURL + '/silent-refresh.html',
           ];
-          this.idpSettings = await this.idpSettingsService.save(params);
+          this.idpSettings = await this.serverSettingsService.save(params);
           return this.idpSettings;
         },
         error: error => {
@@ -40,7 +40,7 @@ export class SetupService {
   }
 
   async getInfo() {
-    const info = await this.idpSettingsService.find();
+    const info = await this.serverSettingsService.find();
     if (info) {
       delete info.clientSecret, info._id;
     }

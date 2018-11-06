@@ -18,14 +18,15 @@ import { CHANNEL } from '../../rabbitmq/rabbitmq-connection';
 
 @Injectable()
 export class EmailService implements OnModuleInit, OnModuleDestroy {
-  rabbitMQClient: RabbitMQClient;
+  rabbitMQClient: RabbitMQClient | any;
   constructor(
     private readonly configService: ConfigService, // private readonly emailAccountService: EmailAccountService,
   ) {
-    this.rabbitMQClient = new RabbitMQClient(
-      this.configService.getRabbitMQConfig(),
-      CHANNEL,
-    );
+    this.rabbitMQClient = ['production', 'development'].includes(
+      process.env.NODE_ENV,
+    )
+      ? new RabbitMQClient(this.configService.getRabbitMQConfig(), CHANNEL)
+      : {};
   }
 
   async onModuleInit() {
