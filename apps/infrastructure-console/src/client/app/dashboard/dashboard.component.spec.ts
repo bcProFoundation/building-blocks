@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DashboardComponent } from './dashboard.component';
+import { OAuthService } from 'angular-oauth2-oidc';
+import { RouterTestingModule } from '@angular/router/testing';
+import { oauthServiceStub } from '../common/testing-helpers';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -8,7 +11,14 @@ describe('DashboardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
       declarations: [DashboardComponent],
+      providers: [
+        {
+          provide: OAuthService,
+          useValue: oauthServiceStub,
+        },
+      ],
     }).compileComponents();
   }));
 

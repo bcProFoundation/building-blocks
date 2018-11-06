@@ -1,0 +1,33 @@
+<div class="mfa-container">
+  <mat-card>
+    <mat-card-title>Multifactor Authentication</mat-card-title>
+    <mat-card-content fxLayout="column">
+      <div [hidden]="hideWarningMessage">
+        Are you sure to you wish to {{ enableDisable ? 'disable' : 'enable' }} 2fa?
+      </div>
+      <div [hidden]="hideQRSecret">
+        <img src="{{ qrCode }}" alt="{{ sharedSecret }}">
+        <p>{{ sharedSecret }}</p>
+        <mat-form-field>
+          <input
+            matInput
+            placeholder="OTP"
+            type="number"
+            [(ngModel)]="otp">
+        </mat-form-field>
+      </div>
+    </mat-card-content>
+    <mat-card-actions>
+      <div [hidden]="hideWarningMessage">
+        <button (click)="enableDisable2fa()" mat-button color="primary">Yes</button>
+        <button routerLink="/profile" type="submit" mat-button>No</button>
+      </div>
+      <div [hidden]="hideQRSecret">
+        <button (click)="verifyOtp()" mat-button color="primary">Verify</button>
+      </div>
+      <div [hidden]="hideDisable2fa">
+        <button (click)="disable2faVerify()" mat-button color="primary">Verify</button>
+      </div>
+    </mat-card-actions>
+  </mat-card>
+</div>

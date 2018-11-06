@@ -12,7 +12,7 @@ import {
 import { ISSUER_URL } from '../../constants/storage';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { MatSnackBar } from '@angular/material';
-import { CLOSE, CURRENT_PASSWORD_MISMATCH } from 'client/constants/messages';
+import { CLOSE, CURRENT_PASSWORD_MISMATCH } from '../../constants/messages';
 import { of } from 'rxjs';
 import { ProfileNavService } from '../profile-nav/profile-nav.service';
 

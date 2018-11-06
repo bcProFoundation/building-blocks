@@ -16,23 +16,28 @@ export class AppController {
     return res.sendFile(INDEX_HTML);
   }
 
-  @Get('profile')
-  profile(@Res() res) {
+  @Get('dashboard')
+  dashboard(@Res() res) {
     return res.sendFile(INDEX_HTML);
   }
 
-  @Get('client')
+  @Get('client*')
   apps(@Res() res) {
     return res.sendFile(INDEX_HTML);
   }
 
-  @Get('client/:id')
-  appsWithID(@Res() res) {
+  @Get('scopes*')
+  scopes(@Res() res) {
     return res.sendFile(INDEX_HTML);
   }
 
-  @Get('scopes')
-  scopes(@Res() res) {
+  @Get('role*')
+  roles(@Res() res) {
+    return res.sendFile(INDEX_HTML);
+  }
+
+  @Get('user*')
+  users(@Res() res) {
     return res.sendFile(INDEX_HTML);
   }
 

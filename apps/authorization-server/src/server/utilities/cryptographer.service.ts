@@ -1,3 +1,5 @@
+// Thanks to https://github.com/cdiaz/nest-passport
+
 import { pbkdf2Sync, randomBytes } from 'crypto';
 import { Injectable } from '@nestjs/common';
 

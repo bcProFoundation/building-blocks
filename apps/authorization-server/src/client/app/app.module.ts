@@ -3,11 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import {
-  HttpClientModule,
-  HttpClientXsrfModule,
-  HTTP_INTERCEPTORS,
-} from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthServerMaterialModule } from './auth-server-material/auth-server-material.module';
 import { FormsModule } from '@angular/forms';
@@ -15,9 +11,7 @@ import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
 import { AccountComponent } from './account/account.component';
 import { AuthService } from './auth/auth.service';
-import { ServerSettingsComponent } from './server-settings/server-settings.component';
-import { ServerSettingsService } from './server-settings/server-settings.service';
-import { XsrfInterceptor } from './interceptors/xsrf.interceptor';
+import { APP_ID } from '../constants/app-strings';
 
 @NgModule({
   declarations: [
@@ -25,25 +19,16 @@ import { XsrfInterceptor } from './interceptors/xsrf.interceptor';
     LoginComponent,
     SignupComponent,
     AccountComponent,
-    ServerSettingsComponent,
   ],
   imports: [
-    BrowserModule.withServerTransition({ appId: 'authorization-server' }),
+    BrowserModule.withServerTransition({ appId: APP_ID }),
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
     AuthServerMaterialModule,
     FormsModule,
-    HttpClientXsrfModule.withOptions({
-      cookieName: '_csrf',
-      headerName: 'xsrf-token',
-    }),
   ],
-  providers: [
-    AuthService,
-    ServerSettingsService,
-    { provide: HTTP_INTERCEPTORS, useClass: XsrfInterceptor, multi: true },
-  ],
+  providers: [AuthService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

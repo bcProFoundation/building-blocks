@@ -13,6 +13,7 @@ import { ServerSettingsService } from '../../../models/server-settings/server-se
 import { Scope } from '../../../models/interfaces/scope.interface';
 import { Client } from '../../../models/interfaces/client.interface';
 import { KeyPairGeneratorService } from '../../../scheduler/keypair-generator.service';
+import { ADMINISTRATOR } from '../../../constants/roles';
 
 @Injectable()
 export class SetupService {
@@ -90,7 +91,7 @@ export class SetupService {
     phone: string,
     adminPassword: string,
   ) {
-    const adminRole = await this.roleService.save({ name: 'administrator' });
+    const adminRole = await this.roleService.save({ name: ADMINISTRATOR });
     const user: CreateUserDto = {
       name: fullName,
       email,
