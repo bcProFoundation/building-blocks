@@ -1,10 +1,17 @@
-import { Entity, BaseEntity, Index, ObjectIdColumn, Column } from 'typeorm';
+import {
+  Entity,
+  BaseEntity,
+  Index,
+  ObjectIdColumn,
+  Column,
+  ObjectID,
+} from 'typeorm';
 
 @Entity()
 @Index(['user'], { unique: true })
 export class EmailAccount extends BaseEntity {
   @ObjectIdColumn()
-  _id: string;
+  _id: ObjectID;
   @Column()
   host: string;
   @Column()
@@ -21,10 +28,4 @@ export class EmailAccount extends BaseEntity {
   tlsRejectUnauthorized: boolean;
   @Column()
   type: string; // set to 'OAuth2' for OAuth2 Accounts
-  @Column()
-  clientId: string;
-  @Column()
-  clientSecret: string;
-  @Column()
-  accessUrl: string;
 }

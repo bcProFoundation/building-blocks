@@ -11,6 +11,11 @@ export class AppController {
     res.sendFile(INDEX_HTML);
   }
 
+  @Get('home*')
+  home(@Res() res) {
+    res.sendFile(INDEX_HTML);
+  }
+
   @Get('info')
   async info() {
     return await this.appService.info();

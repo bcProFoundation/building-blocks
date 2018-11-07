@@ -10,6 +10,7 @@ import { EmailService } from './controllers/email/email.service';
 import { EmailController } from './controllers/email/email.controller';
 import { ConfigModule } from './config/config.module';
 import { ServerSettingsService } from './models/server-settings/server-settings.service';
+import { SocialKeyService } from './models/social-key/social-key.service';
 
 @Module({
   imports: [
@@ -19,6 +20,12 @@ import { ServerSettingsService } from './models/server-settings/server-settings.
     HttpModule,
   ],
   controllers: [AppController, SetupController, EmailController],
-  providers: [AppService, SetupService, EmailService, ServerSettingsService],
+  providers: [
+    AppService,
+    SetupService,
+    EmailService,
+    ServerSettingsService,
+    SocialKeyService,
+  ],
 })
 export class AppModule {}

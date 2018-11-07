@@ -16,7 +16,7 @@
     "format:check": "prettier-check \"**/*.ts\"",
     "start:server": "nodemon",
     "start:hmr": "node dist/server",
-    "prestart:prod": "rm -rf dist && ng build --prod && ng run authorization-server:server:production && tsc -p src/server/tsconfig.server.json",
+    "prestart:prod": "rm -rf dist && ng build --prod --aot=false --build-optimizer=false && ng run authorization-server:server:production && tsc -p src/server/tsconfig.server.json",
     "start:prod": "export NODE_ENV=production && node dist/out-tsc/main.js",
     "start": "ts-node -r tsconfig-paths/register --project src/server/tsconfig.server.json src/server/main.ts",
     "test": "export NODE_ENV=test && jest",
@@ -33,7 +33,8 @@
     "serve:ssr": "node dist/server",
     "start:dev": "concurrently --kill-others-on-fail \"npm run start:server\" \"npm run start:client-dev\"",
     "add:user": "ts-node -r tsconfig-paths/register --project src/server/tsconfig.server.json src/server/cli-connector/create-user.ts",
-    "add:oauth2-client": "ts-node -r tsconfig-paths/register --project src/server/tsconfig.server.json src/server/cli-connector/create-client.ts"
+    "add:oauth2-client": "ts-node -r tsconfig-paths/register --project src/server/tsconfig.server.json src/server/cli-connector/create-client.ts",
+    "translate": "ng xi18n --output-path i18n && xliffmerge --profile xliffmerge.json en af am ar bg bn bo bs ca cs da da-DK de el en-GB en-US es es-AR es-BO es-CL es-CO es-DO es-EC es-GT es-MX es-NI es-PE et fa fi fr fr-CA gu he hi hr hu is it ja km kn ko ku lo lt lv mk ml mr ms my nl no pl ps pt pt-BR quc ro ru rw si sk sl sq sr sr-SP sv sw ta te th tr uk ur uz vi zh zh-TW"
   },
   "dependencies": {
     "@angular/animations": "^7.0.0",
@@ -123,6 +124,7 @@
     "karma-coverage-istanbul-reporter": "~2.0.3",
     "karma-jasmine": "~1.1.1",
     "karma-jasmine-html-reporter": "^1.3.1",
+    "ngx-i18nsupport": "^0.17.1",
     "nodemon": "^1.18.4",
     "prettier": "^1.11.1",
     "prettier-check": "^2.0.0",

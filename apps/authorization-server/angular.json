@@ -20,7 +20,8 @@
             "tsConfig": "src/client/tsconfig.app.json",
             "assets": [
               "src/client/favicon.ico",
-              "src/client/assets"
+              "src/client/assets",
+              "src/client/i18n"
             ],
             "styles": [
               "src/client/styles.css"

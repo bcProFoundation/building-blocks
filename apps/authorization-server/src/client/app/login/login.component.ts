@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
+import { FormGroup, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -12,41 +13,55 @@ export class LoginComponent implements OnInit {
   public password: string = '';
   public code: string = '';
 
-  showUsername: boolean = true;
-  showPassword: boolean = false;
-  showCode: boolean = false;
+  hideUsername: boolean = false;
+  hidePassword: boolean = true;
+  hideCode: boolean = true;
   enable2fa: boolean = false;
 
-  // TODO: REplace with proper validation. Quick Poc sin:
-  formError: string;
+  verifyUserForm = new FormGroup({
+    username: new FormControl(this.username),
+    password: new FormControl(this.password),
+  });
+
+  submitOTPForm = new FormGroup({
+    code: new FormControl(this.code),
+  });
 
   constructor(private authService: AuthService) {}
 
   ngOnInit() {}
 
-  onSubmit() {
-    if (!this.enable2fa) {
-      this.authService.logIn(this.username, this.password);
-    } else if (!this.code) {
-      this.showPassword = false;
-      this.showCode = true;
+  onSubmitOTP() {
+    this.authService.logIn(
+      this.verifyUserForm.controls.username.value,
+      this.verifyUserForm.controls.password.value,
+      this.submitOTPForm.controls.code.value,
+    );
+  }
+
+  onSubmitPassword() {
+    if (this.enable2fa) {
+      this.hideCode = false;
+      this.hidePassword = true;
     } else {
-      this.authService.logIn(this.username, this.password, this.code);
+      this.authService.logIn(
+        this.verifyUserForm.controls.username.value,
+        this.verifyUserForm.controls.password.value,
+      );
     }
   }
 
   verifyUser() {
-    this.authService.verifyUser(this.username).subscribe({
-      next: (response: any) => {
-        this.formError = '';
-        this.showUsername = false;
-        this.showPassword = true;
-        this.enable2fa = response.user.enable2fa;
-      },
-      error: err => {
-        this.formError = err.error.message;
-      },
-    });
+    this.authService
+      .verifyUser(this.verifyUserForm.controls.username.value)
+      .subscribe({
+        next: (response: any) => {
+          this.hideUsername = true;
+          this.hidePassword = false;
+          this.enable2fa = response.user.enable2fa;
+        },
+        error: err => {},
+      });
   }
 
   forgotPassword() {

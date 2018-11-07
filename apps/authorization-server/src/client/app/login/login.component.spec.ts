@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LoginComponent } from './login.component';
 import { AuthServerMaterialModule } from '../auth-server-material/auth-server-material.module';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthService } from '../auth/auth.service';
 
@@ -20,7 +20,12 @@ describe('LoginComponent', () => {
         },
       ],
       declarations: [LoginComponent],
-      imports: [FormsModule, AuthServerMaterialModule, BrowserAnimationsModule],
+      imports: [
+        FormsModule,
+        AuthServerMaterialModule,
+        BrowserAnimationsModule,
+        ReactiveFormsModule,
+      ],
     }).compileComponents();
   }));
   beforeEach(() => {
