@@ -6,28 +6,28 @@
         <source>Sign in</source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/login/login.component.html</context>
-          <context context-type="linenumber">5</context>
+          <context context-type="linenumber">4</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usernameOrPhone" datatype="html">
         <source>Username or phone</source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/login/login.component.html</context>
-          <context context-type="linenumber">9</context>
+          <context context-type="linenumber">10</context>
         </context-group>
       </trans-unit>
       <trans-unit id="next" datatype="html">
         <source>Next</source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/login/login.component.html</context>
-          <context context-type="linenumber">13</context>
+          <context context-type="linenumber">17</context>
         </context-group>
       </trans-unit>
       <trans-unit id="signUp" datatype="html">
         <source>Signup</source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/login/login.component.html</context>
-          <context context-type="linenumber">14</context>
+          <context context-type="linenumber">18</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/signup/signup.component.html</context>
@@ -42,7 +42,7 @@
         <source>Password</source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/login/login.component.html</context>
-          <context context-type="linenumber">19</context>
+          <context context-type="linenumber">24</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/signup/signup.component.html</context>
@@ -53,32 +53,32 @@
         <source>Login</source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/login/login.component.html</context>
-          <context context-type="linenumber">22</context>
+          <context context-type="linenumber">30</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/login/login.component.html</context>
-          <context context-type="linenumber">31</context>
+          <context context-type="linenumber">45</context>
         </context-group>
       </trans-unit>
       <trans-unit id="forgot" datatype="html">
         <source>Forgot?</source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/login/login.component.html</context>
-          <context context-type="linenumber">23</context>
+          <context context-type="linenumber">31</context>
         </context-group>
       </trans-unit>
       <trans-unit id="otp" datatype="html">
         <source>OTP</source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/login/login.component.html</context>
-          <context context-type="linenumber">28</context>
+          <context context-type="linenumber">38</context>
         </context-group>
       </trans-unit>
       <trans-unit id="resendOTP" datatype="html">
         <source>Resend OTP?</source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/login/login.component.html</context>
-          <context context-type="linenumber">32</context>
+          <context context-type="linenumber">46</context>
         </context-group>
       </trans-unit>
       <trans-unit id="fullName" datatype="html">

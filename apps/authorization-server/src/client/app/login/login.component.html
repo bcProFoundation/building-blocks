@@ -1,39 +1,53 @@
 <mat-grid-list cols="1" rowHeight="30em">
   <mat-grid-tile>
-    <form>
       <mat-card>
         <mat-card-title i18n="@@signIn">Sign in</mat-card-title>
         <mat-card-content>
-          <div class="login container" [hidden]="!showUsername">
-            <mat-form-field class="full-width">
-              <input [(ngModel)]="username" matInput i18n-placeholder="@@usernameOrPhone" placeholder="Username or phone" name="username"
-              class="form-control" required>
-            </mat-form-field>
-            <div>
-              <button (click)="verifyUser()" mat-raised-button color="primary" i18n="@@next">Next</button>
-              <a routerLink="/signup" class="left-margin-30" i18n="@@signUp">Signup</a>
+          <form [formGroup]="verifyUserForm">
+            <div class="login container" [hidden]="hideUsername">
+                <mat-form-field class="full-width">
+                  <input matInput i18n-placeholder="@@usernameOrPhone"
+                  placeholder="Username or phone" formControlName="username"
+                  class="form-control" required>
+                </mat-form-field>
+                <div>
+                  <button (click)="verifyUser()"
+                    mat-raised-button
+                    color="primary"
+                    i18n="@@next">Next</button>
+                  <a routerLink="/signup" class="left-margin-30" i18n="@@signUp">Signup</a>
+                </div>
             </div>
-          </div>
-          <div class="password" [hidden]="!showPassword">
-            <mat-form-field class="full-width">
-              <input [(ngModel)]="password" matInput i18n-placeholder="@@password" placeholder="Password" type="password" name="password" required>
-            </mat-form-field>
-            <div>
-                <button (click)="onSubmit()" mat-raised-button color="primary" i18n="@@login">Login</button>
-                <a (click)="forgotPassword()" class="left-margin-30" i18n="@@forgot">Forgot?</a>
+            <div class="password" [hidden]="hidePassword">
+              <mat-form-field class="full-width">
+                <input matInput i18n-placeholder="@@password"
+                placeholder="Password" type="password"
+                formControlName="password" required>
+              </mat-form-field>
+              <div>
+                  <button (click)="onSubmitPassword()"
+                    mat-raised-button color="primary"
+                    i18n="@@login">Login</button>
+                  <a (click)="forgotPassword()" class="left-margin-30" i18n="@@forgot">Forgot?</a>
+              </div>
             </div>
-          </div>
-          <div class="otp" [hidden]="!showCode">
-            <mat-form-field class="full-width">
-                <input [(ngModel)]="code" matInput i18n-placeholder="@@otp" placeholder="OTP" name="code">
-            </mat-form-field>
-            <div>
-              <button (click)="onSubmit()" mat-raised-button color="primary" i18n="@@login">Login</button>
-              <a (click)="resendOTP()" class="left-margin-30" i18n="@@resendOTP">Resend OTP?</a>
-            </div>
+          </form>
+          <div class="otp" [hidden]="hideCode">
+            <form [formGroup]="submitOTPForm">
+              <mat-form-field class="full-width">
+                  <input matInput i18n-placeholder="@@otp" placeholder="OTP"
+                  formControlName="code">
+              </mat-form-field>
+              <div>
+                <button (click)="onSubmitOTP()"
+                  mat-raised-button
+                  color="primary"
+                  i18n="@@login">Login</button>
+                <a (click)="resendOTP()" class="left-margin-30" i18n="@@resendOTP">Resend OTP?</a>
+              </div>
+            </form>
           </div>
         </mat-card-content>
       </mat-card>
-    </form>
   </mat-grid-tile>
 </mat-grid-list>

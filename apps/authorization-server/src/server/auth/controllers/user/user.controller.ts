@@ -59,7 +59,7 @@ export class UserController {
 
   @Post('v1/verify_2fa')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
-  async verify2fa(@Req() req, @Body('otp') otp: number) {
+  async verify2fa(@Req() req, @Body('otp') otp: string) {
     return await this.userService.verify2fa(req.user.user, otp);
   }
 
