@@ -59,7 +59,7 @@ export class UserService {
     return await this.userModel.deleteOne({ email });
   }
 
-  async verify2fa(uuid: string, otp: number) {
+  async verify2fa(uuid: string, otp: string) {
     const user = await this.findOne({ uuid });
     if (!otp) throw invalidOTPException;
     if (user.twoFactorTempSecret) {
@@ -71,7 +71,7 @@ export class UserService {
         secret: base32secret,
         encoding: 'base32',
       });
-      if (verified === otp.toString()) {
+      if (verified === otp) {
         const sharedSecret: AuthData = new this.authDataModel();
         sharedSecret.password = twoFactorTempSecret.password;
         await sharedSecret.save();
