@@ -7,19 +7,15 @@
     * [Backend](authorization-server/backend.md)
     * [Frontend](authorization-server/frontend.md)
     * [Testing](authorization-server/testing.md)
-    * [API](http://castlecraft.gitlab.io/building-blocks/api/authorization-server/)
 
 * Communication Server
     * [Development](communication-server/README.md)
-    * [API](http://castlecraft.gitlab.io/building-blocks/api/communication-server/)
 
 * Identity Provider
     * [Development](identity-provider/README.md)
-    * [API](http://castlecraft.gitlab.io/building-blocks/api/identity-provider/)
 
 * Infrastructure Console
     * [Development](infrastructure-console/README.md)
-    * [API](http://castlecraft.gitlab.io/building-blocks/api/infrastructure-console/)
 
 * For Development
     * [Setup](/development/README.md)
