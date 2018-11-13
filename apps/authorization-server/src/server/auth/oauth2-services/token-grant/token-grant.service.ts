@@ -5,6 +5,8 @@ import { ClientService } from '../../../models/client/client.service';
 
 @Injectable()
 export class TokenGrantService {
+  accessToken: string;
+
   constructor(
     private readonly userService: UserService,
     private readonly clientService: ClientService,
@@ -32,9 +34,14 @@ export class TokenGrantService {
         scope,
         false,
       );
+      this.accessToken = bearerToken.accessToken;
       return done(null, bearerToken.accessToken, extraParams);
     } catch (error) {
       return done(error);
     }
+  }
+
+  getAccessToken() {
+    return this.accessToken;
   }
 }

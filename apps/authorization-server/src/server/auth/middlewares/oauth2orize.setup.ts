@@ -234,7 +234,13 @@ export class OAuth2orizeSetup implements OnModuleInit, OnApplicationBootstrap {
           await this.tokenGrantService.grantToken(client, user, res, req, done);
         },
         async (client, user, req, done) => {
-          await this.idTokenGrantService.grantIDToken(client, user, req, done);
+          await this.idTokenGrantService.grantIDToken(
+            client,
+            user,
+            req,
+            done,
+            this.tokenGrantService.getAccessToken(),
+          );
         },
       ),
     );

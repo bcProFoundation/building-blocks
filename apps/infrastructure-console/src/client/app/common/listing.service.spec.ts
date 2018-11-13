@@ -17,7 +17,8 @@ describe('ListingService', () => {
           },
         },
       ],
-    }));
+    }),
+  );
 
   it('should be created', () => {
     const service: ListingService = TestBed.get(ListingService);
