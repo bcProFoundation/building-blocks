@@ -1,5 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { Model, PaginateModel } from 'mongoose';
+import { Model } from 'mongoose';
 import {
   USER_DELETED,
   USER_NOT_ADMINISTRATOR,
@@ -19,6 +19,7 @@ import { AUTH_DATA } from '../auth-data/auth-data.schema';
 import { User } from '../interfaces/user.interface';
 import { AuthData } from '../interfaces/auth-data.interface';
 import { ADMINISTRATOR } from '../../constants/roles';
+import { PaginateModel } from '../../typings/mongoose';
 
 @Injectable()
 export class UserService {

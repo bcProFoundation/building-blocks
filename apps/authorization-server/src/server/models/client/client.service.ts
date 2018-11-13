@@ -1,8 +1,8 @@
-import { PaginateModel } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CLIENT } from './client.schema';
 import { Client } from '../interfaces/client.interface';
+import { PaginateModel } from '../../typings/mongoose';
 
 @Injectable()
 export class ClientService {

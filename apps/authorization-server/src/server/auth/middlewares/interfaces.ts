@@ -22,6 +22,7 @@ export interface IDTokenClaims {
   updated_at?: Date;
   roles?: string[];
   nonce?: string;
+  at_hash?: string;
 }
 
 export interface JWK {
