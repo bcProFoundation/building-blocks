@@ -2,11 +2,6 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../../../models/user/user.service';
 import { CryptographerService } from '../../../utilities/cryptographer.service';
 import {
-  INVALID_PASSWORD,
-  INVALID_USER,
-  USER_DISABLED,
-} from '../../../constants/messages';
-import {
   userAlreadyExistsException,
   invalidOTPException,
 } from '../../filters/exceptions';
@@ -16,6 +11,7 @@ import * as speakeasy from 'speakeasy';
 import { Role } from '../../../models/interfaces/role.interface';
 import { User } from '../../../models/interfaces/user.interface';
 import { AuthData } from '../../../models/interfaces/auth-data.interface';
+import { i18n } from '../../../i18n/i18n.config';
 
 @Injectable()
 export class AuthService {
@@ -69,8 +65,9 @@ export class AuthService {
     const sharedSecret = await this.authDataService.findOne({
       uuid: user.sharedSecret,
     });
-    if (!user) throw new UnauthorizedException(INVALID_USER);
-    if (user.disabled) throw new UnauthorizedException(USER_DISABLED);
+    if (!user) throw new UnauthorizedException(i18n.__('Invalid User'));
+    if (user.disabled)
+      throw new UnauthorizedException(i18n.__('User Disabled'));
     const userPassword = await this.authDataService.findOne({
       uuid: user.password,
     });
@@ -80,7 +77,8 @@ export class AuthService {
       password,
     );
 
-    if (!passwordVerified) throw new UnauthorizedException(INVALID_PASSWORD);
+    if (!passwordVerified)
+      throw new UnauthorizedException(i18n.__('Invalid Password'));
 
     if (user.enable2fa) {
       if (!code) throw invalidOTPException;

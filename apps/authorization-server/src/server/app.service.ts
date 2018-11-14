@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { APP_NAME } from './constants/messages';
-import { INDEX_HTML } from './constants/filesystem';
+import { i18n } from './i18n/i18n.config';
+import { INDEX_HTML } from './constants/app-strings';
 
 @Injectable()
 export class AppService {
   info(req?) {
     return {
-      message: APP_NAME,
+      message: i18n.__('Authorization Server'),
       session: req.isAuthenticated(),
     };
   }

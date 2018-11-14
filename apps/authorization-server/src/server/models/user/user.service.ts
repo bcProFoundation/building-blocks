@@ -1,11 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { Model } from 'mongoose';
 import {
-  USER_DELETED,
-  USER_NOT_ADMINISTRATOR,
-  TWO_FACTOR_DISABLED,
-} from '../../constants/messages';
-import {
   invalidUserException,
   twoFactorEnabledException,
   twoFactorNotEnabledException,
@@ -18,8 +13,9 @@ import { USER } from './user.schema';
 import { AUTH_DATA } from '../auth-data/auth-data.schema';
 import { User } from '../interfaces/user.interface';
 import { AuthData } from '../interfaces/auth-data.interface';
-import { ADMINISTRATOR } from '../../constants/roles';
 import { PaginateModel } from '../../typings/mongoose';
+import { i18n } from '../../i18n/i18n.config';
+import { ADMINISTRATOR } from '../../constants/app-strings';
 
 @Injectable()
 export class UserService {
@@ -49,7 +45,7 @@ export class UserService {
 
   public async delete(params): Promise<any> {
     await this.userModel.deleteOne(params);
-    return { message: USER_DELETED };
+    return { message: i18n.__('User deleted') };
   }
 
   public async find() {
@@ -150,7 +146,9 @@ export class UserService {
   async checkAdministrator(uuid) {
     const user: User = await this.findOne({ uuid });
     if (!user.roles.includes(ADMINISTRATOR)) {
-      throw new UnauthorizedException(USER_NOT_ADMINISTRATOR);
+      throw new UnauthorizedException(
+        i18n.__('User does not have sufficient privileges'),
+      );
     }
   }
 
@@ -173,7 +171,7 @@ export class UserService {
     user.twoFactorTempSecret = null;
     user.sharedSecret = null;
     await user.save();
-    return { message: TWO_FACTOR_DISABLED };
+    return { message: i18n.__('2FA Disabled') };
   }
 
   getModel() {

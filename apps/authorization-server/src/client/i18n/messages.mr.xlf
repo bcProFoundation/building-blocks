@@ -3,61 +3,100 @@
   <file source-language="en" datatype="plaintext" original="ng2.template" target-language="mr">
     <body>
       <trans-unit id="signIn" datatype="html">
-        <source>Sign in</source><target state="final">साइन इन</target>
-        
-      <context-group purpose="location"><context context-type="sourcefile">app/login/login.component.html</context><context context-type="linenumber">4</context></context-group></trans-unit>
+        <source>Sign in</source><target state="new">साइन इन</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/login/login.component.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="usernameOrPhone" datatype="html">
-        <source>Username or phone</source><target state="final">वापरकर्त्याचे नाव किंवा फोन</target>
-        
-      <context-group purpose="location"><context context-type="sourcefile">app/login/login.component.html</context><context context-type="linenumber">10</context></context-group></trans-unit>
+        <source>Username or phone</source><target state="new">वापरकर्त्याचे नाव किंवा फोन</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/login/login.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="next" datatype="html">
-        <source>Next</source><target state="final">पुढे</target>
-        
-      <context-group purpose="location"><context context-type="sourcefile">app/login/login.component.html</context><context context-type="linenumber">17</context></context-group></trans-unit>
+        <source>Next</source><target state="new">पुढे</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/login/login.component.html</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="signUp" datatype="html">
-        <source>Signup</source><target state="final">नोंदणी करा</target>
-        
-        
-        
-      <context-group purpose="location"><context context-type="sourcefile">app/login/login.component.html</context><context context-type="linenumber">18</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/signup/signup.component.html</context><context context-type="linenumber">5</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/signup/signup.component.html</context><context context-type="linenumber">25</context></context-group></trans-unit>
+        <source>Sign Up</source><target state="new">नोंदणी करा</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/login/login.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/signup/signup.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/signup/signup.component.html</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="password" datatype="html">
-        <source>Password</source><target state="final">पासवर्ड</target>
-        
-        
-      <context-group purpose="location"><context context-type="sourcefile">app/login/login.component.html</context><context context-type="linenumber">24</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/signup/signup.component.html</context><context context-type="linenumber">21</context></context-group></trans-unit>
+        <source>Password</source><target state="new">पासवर्ड</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/login/login.component.html</context>
+          <context context-type="linenumber">24</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/signup/signup.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="login" datatype="html">
-        <source>Login</source><target state="final">लॉग इन</target>
-        
-        
-      <context-group purpose="location"><context context-type="sourcefile">app/login/login.component.html</context><context context-type="linenumber">30</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/login/login.component.html</context><context context-type="linenumber">45</context></context-group></trans-unit>
+        <source>Login</source><target state="new">लॉग इन</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/login/login.component.html</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/login/login.component.html</context>
+          <context context-type="linenumber">45</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="forgot" datatype="html">
-        <source>Forgot?</source><target state="final">पासवर्ड विसरलात?</target>
-        
-      <context-group purpose="location"><context context-type="sourcefile">app/login/login.component.html</context><context context-type="linenumber">31</context></context-group></trans-unit>
+        <source>Forgot?</source><target state="new">पासवर्ड विसरलात?</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/login/login.component.html</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="otp" datatype="html">
-        <source>OTP</source><target state="final">ओटीपी</target>
-        
-      <context-group purpose="location"><context context-type="sourcefile">app/login/login.component.html</context><context context-type="linenumber">38</context></context-group></trans-unit>
+        <source>OTP</source><target state="new">ओटीपी</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/login/login.component.html</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="resendOTP" datatype="html">
-        <source>Resend OTP?</source><target state="final">ओटीपी पुन्हा पाठवा</target>
-        
-      <context-group purpose="location"><context context-type="sourcefile">app/login/login.component.html</context><context context-type="linenumber">46</context></context-group></trans-unit>
+        <source>Resend OTP?</source><target state="new">ओटीपी पुन्हा पाठवा</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/login/login.component.html</context>
+          <context context-type="linenumber">46</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="fullName" datatype="html">
-        <source>Full Name</source><target state="final">पूर्ण नाव</target>
+        <source>Full Name</source><target state="new">पूर्ण नाव</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/signup/signup.component.html</context>
           <context context-type="linenumber">9</context>
         </context-group>
       </trans-unit>
       <trans-unit id="email" datatype="html">
-        <source>Email</source><target state="final">ईमेल</target>
+        <source>Email</source><target state="new">ईमेल</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/signup/signup.component.html</context>
           <context context-type="linenumber">13</context>
         </context-group>
       </trans-unit>
       <trans-unit id="mobile" datatype="html">
-        <source>Mobile</source><target state="final">मोबाइल</target>
+        <source>Mobile</source><target state="new">मोबाइल</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/signup/signup.component.html</context>
           <context context-type="linenumber">17</context>

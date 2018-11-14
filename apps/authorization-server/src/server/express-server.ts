@@ -4,10 +4,11 @@ import * as expressSession from 'express-session';
 import * as passport from 'passport';
 import * as helmet from 'helmet';
 import * as rateLimit from 'express-rate-limit';
+import * as connectMongoDBSession from 'connect-mongo';
 import { ConfigService } from './config/config.service';
 import { join } from 'path';
 import { INestApplication } from '@nestjs/common';
-import * as connectMongoDBSession from 'connect-mongo';
+import { i18n } from './i18n/i18n.config';
 const MongoStore = connectMongoDBSession(expressSession);
 
 export class ExpressServer {
@@ -33,14 +34,6 @@ export class ExpressServer {
   setupAssetDir() {
     this.server.use(
       express.static(join(process.cwd(), 'dist/authorization-server')),
-    );
-
-    // TODO: loop through available languages and serve static
-    // Example language set
-
-    this.server.use(
-      '/language/mr',
-      express.static(join(process.cwd(), 'dist/authorization-server-mr')),
     );
   }
 
@@ -75,5 +68,9 @@ export class ExpressServer {
     app.use(expressSession(sessionConfig));
     app.use(passport.initialize());
     app.use(passport.session());
+  }
+
+  setupI18n() {
+    this.server.use(i18n.init);
   }
 }

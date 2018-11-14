@@ -1,6 +1,6 @@
 import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { BearerTokenService } from '../../../models/bearer-token/bearer-token.service';
-import { INVALID_TOKEN, TOKEN_NOT_FOUND } from '../../../constants/messages';
+import { i18n } from '../../../i18n/i18n.config';
 
 @Injectable()
 export class OAuth2Service {
@@ -13,7 +13,10 @@ export class OAuth2Service {
     if (bearerToken) {
       bearerToken.remove();
     } else {
-      throw new HttpException(INVALID_TOKEN, HttpStatus.NOT_FOUND);
+      throw new HttpException(
+        i18n.__('Invalid Bearer Token'),
+        HttpStatus.NOT_FOUND,
+      );
     }
   }
 
@@ -23,7 +26,10 @@ export class OAuth2Service {
     });
 
     if (!bearerToken) {
-      throw new HttpException(TOKEN_NOT_FOUND, HttpStatus.NOT_FOUND);
+      throw new HttpException(
+        i18n.__('Bearer Token not found'),
+        HttpStatus.NOT_FOUND,
+      );
     }
 
     const exp = new Date(

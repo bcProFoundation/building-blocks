@@ -1,35 +1,30 @@
 import { IsString, IsEmail, IsNotEmpty } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
-import {
-  USERDTO_NAME_DESCRIPTION,
-  USERDTO_EMAIL_DESCRIPTION,
-  USERDTO_EMAIL_EXAMPLE,
-  USERDTO_PASSWORD_DESCRIPTION,
-  USERDTO_PASSWORD_EXAMPLE,
-} from '../../constants/swagger';
 import { IsMobileE164 } from '../../auth/decorators/is-mobile-e164.decorator';
-import { MOBILE_FORMAT_ERROR } from '../../constants/messages';
+import { i18n } from '../../i18n/i18n.config';
 
 export class CreateUserDto {
   @IsEmail()
   @IsNotEmpty()
   @ApiModelProperty({
-    description: USERDTO_EMAIL_DESCRIPTION,
+    description: i18n.__('Identifies a user uniquely'),
     required: true,
-    example: USERDTO_EMAIL_EXAMPLE,
+    example: i18n.__('luke.skywalker@twosuns.com'),
   })
   readonly email: string;
 
   @IsNotEmpty()
   @ApiModelProperty({
-    description: USERDTO_PASSWORD_DESCRIPTION,
+    description: i18n.__(
+      'Strong alphanumeric password, enriched with special characters',
+    ),
     required: true,
-    example: USERDTO_PASSWORD_EXAMPLE,
+    example: 'h4cv_4%b2#D:-)',
   })
   public password: string;
 
   @ApiModelProperty({
-    description: USERDTO_NAME_DESCRIPTION,
+    description: i18n.__('Full name of the user'),
     type: 'string',
     required: true,
   })
@@ -37,12 +32,12 @@ export class CreateUserDto {
   readonly name: string;
 
   @ApiModelProperty({
-    description: USERDTO_NAME_DESCRIPTION,
+    description: i18n.__('Mobile number in E.164 format'),
     type: 'string',
     required: true,
   })
   @IsMobileE164({
-    message: MOBILE_FORMAT_ERROR,
+    message: i18n.__('Mobile format must be E.164'),
   })
   phone: string;
 }

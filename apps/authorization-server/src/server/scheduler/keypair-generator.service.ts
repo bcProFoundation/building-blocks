@@ -6,9 +6,9 @@ import {
 } from '@nestjs/common';
 import * as Bull from 'bull';
 import { OIDCKeyService } from '../models/oidc-key/oidc-key.service';
-import { SETUP_ALREADY_COMPLETE } from '../constants/messages';
 import { BullOptions } from './bull-queue.options';
 import { ConfigService } from '../config/config.service';
+import { i18n } from '../i18n/i18n.config';
 
 export const KEYGEN_QUEUE = 'keygen_queue';
 
@@ -49,7 +49,10 @@ export class KeyPairGeneratorService implements OnModuleInit {
       });
       return { id, data };
     } else {
-      new HttpException(SETUP_ALREADY_COMPLETE, HttpStatus.UNAUTHORIZED);
+      new HttpException(
+        i18n.__('Setup already complete'),
+        HttpStatus.UNAUTHORIZED,
+      );
     }
   }
 
