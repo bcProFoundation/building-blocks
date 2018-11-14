@@ -1,34 +1,32 @@
 import { IsString } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
-import { USERDTO_REDIRECT_DESCRIPTION } from '../../constants/swagger';
 import { IsEmail, IsNotEmpty } from 'class-validator';
-import {
-  USERDTO_EMAIL_DESCRIPTION,
-  USERDTO_PASSWORD_DESCRIPTION,
-  USERDTO_EMAIL_EXAMPLE,
-  USERDTO_PASSWORD_EXAMPLE,
-} from '../../constants/swagger';
+import { i18n } from '../../i18n/i18n.config';
 
 export class LoginUserDto {
   @IsEmail()
   @IsNotEmpty()
   @ApiModelProperty({
-    description: USERDTO_EMAIL_DESCRIPTION,
+    description: i18n.__('Identifies a user uniquely'),
     required: true,
-    example: USERDTO_EMAIL_EXAMPLE,
+    example: i18n.__('luke.skywalker@twosuns.com'),
   })
-  readonly email: string;
+  readonly username: string;
 
   @IsNotEmpty()
   @ApiModelProperty({
-    description: USERDTO_PASSWORD_DESCRIPTION,
+    description: i18n.__(
+      'Strong alphanumeric password, enriched with special characters',
+    ),
     required: true,
-    example: USERDTO_PASSWORD_EXAMPLE,
+    example: 'h4cv_4%b2#D:-)',
   })
   public password: string;
 
   @ApiModelProperty({
-    description: USERDTO_REDIRECT_DESCRIPTION,
+    description: i18n.__(
+      'URL to which the user will be redirected after login',
+    ),
     type: 'string',
     required: true,
   })

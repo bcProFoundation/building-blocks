@@ -2,22 +2,22 @@
     <mat-grid-tile>
       <form (ngSubmit)="onSubmit()">
         <mat-card class="login-card">
-          <mat-card-title i18n="@@signUp">Signup</mat-card-title>
+          <mat-card-title i18n="@@signUp">Sign Up</mat-card-title>
             <mat-card-content>
               <mat-form-field class="full-width">
-                <input [(ngModel)]="name" 
+                <input [(ngModel)]="name"
                 matInput i18n-placeholder="@@fullName" placeholder="Full Name" name="name" required>
               </mat-form-field>
               <mat-form-field class="full-width">
-                  <input [(ngModel)]="email" 
+                  <input [(ngModel)]="email"
                   matInput i18n-placeholder="@@email" placeholder="Email" name="email" required>
               </mat-form-field>
               <mat-form-field class="full-width">
-                <input [(ngModel)]="phone" 
+                <input [(ngModel)]="phone"
                 matInput i18n-placeholder="@@mobile" placeholder="Mobile" name="phone" required>
               </mat-form-field>
               <mat-form-field class="full-width">
-                  <input type="password" [(ngModel)]="password" 
+                  <input type="password" [(ngModel)]="password"
                   matInput i18n-placeholder="@@password" placeholder="Password" name="password" required>
               </mat-form-field>
           </mat-card-content>

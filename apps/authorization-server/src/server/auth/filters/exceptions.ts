@@ -1,75 +1,62 @@
-import {
-  INVALID_SCOPE,
-  INVALID_CLIENT,
-  INVALID_AUTHORIZATION_CODE,
-  USER_ALREADY_EXISTS,
-  INVALID_USER,
-  TWO_FACTOR_ALREADY_ENABLED,
-  TWO_FACTOR_NOT_ENABLED,
-  INVALID_OTP,
-  SETTING_NOT_FOUND,
-  JWKS_NOT_FOUND,
-  INVALID_ROLE,
-  INVALID_SESSION,
-} from '../../constants/messages';
 import { HttpStatus, HttpException } from '@nestjs/common';
+import { i18n } from '../../i18n/i18n.config';
 
 export const invalidScopeException = new HttpException(
-  INVALID_SCOPE,
+  i18n.__('Invalid Scope'),
   HttpStatus.FORBIDDEN,
 );
 
 export const invalidClientException = new HttpException(
-  INVALID_CLIENT,
+  i18n.__('Invalid Client'),
   HttpStatus.FORBIDDEN,
 );
 
 export const invalidAuthorizationCodeException = new HttpException(
-  INVALID_AUTHORIZATION_CODE,
+  i18n.__('Invalid Authorization Code'),
   HttpStatus.FORBIDDEN,
 );
 
 export const userAlreadyExistsException = new HttpException(
-  USER_ALREADY_EXISTS,
+  i18n.__('User already exists'),
   HttpStatus.BAD_REQUEST,
 );
 
 export const invalidUserException = new HttpException(
-  INVALID_USER,
+  i18n.__('Invalid User'),
   HttpStatus.BAD_REQUEST,
 );
 
 export const twoFactorEnabledException = new HttpException(
-  TWO_FACTOR_ALREADY_ENABLED,
+  i18n.__('2FA already enabled'),
   HttpStatus.BAD_REQUEST,
 );
 
 export const twoFactorNotEnabledException = new HttpException(
-  TWO_FACTOR_NOT_ENABLED,
+  i18n.__('2FA not enabled'),
   HttpStatus.BAD_REQUEST,
 );
 
 export const invalidOTPException = new HttpException(
-  INVALID_OTP,
+  i18n.__('Invalid OTP'),
   HttpStatus.BAD_REQUEST,
 );
 
 export const settingsNotFoundException = new HttpException(
-  SETTING_NOT_FOUND,
+  i18n.__('Settings not found'),
   HttpStatus.BAD_REQUEST,
 );
 
 export const JWKSNotFound = new HttpException(
-  JWKS_NOT_FOUND,
+  i18n.__('JWKS not found'),
   HttpStatus.BAD_REQUEST,
 );
 
 export const invalidRoleException = new HttpException(
-  INVALID_ROLE,
+  i18n.__('Invalid Role'),
   HttpStatus.BAD_REQUEST,
 );
 
 export const invalidSessionException = new HttpException(
-  INVALID_SESSION,
+  i18n.__('Invalid Session'),
   HttpStatus.BAD_REQUEST,
 );

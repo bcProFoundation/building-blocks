@@ -7,3 +7,9 @@ export const FOLDER_DIST_BROWSER: string = join(
   'authorization-server',
 );
 export const INDEX_HTML = join(FOLDER_DIST_BROWSER, 'index.html');
+export const VIEWS_DIR = join(process.cwd(), '/src/server/views');
+export const ACCOUNTS_ROUTE = '/account';
+export const ADMINISTRATOR = 'administrator';
+export const ADMIN_ROLE = 'admin';
+export const ADMINISTRATOR_NAME = 'Administrator';
+export const ADMIN_EMAIL = 'Administrator';

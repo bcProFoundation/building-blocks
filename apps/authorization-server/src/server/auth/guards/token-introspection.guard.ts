@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { ClientService } from '../../models/client/client.service';
 import { invalidClientException } from '../filters/exceptions';
-import { INVALID_PASSWORD } from '../../constants/messages';
+import { i18n } from '../../i18n/i18n.config';
 
 @Injectable()
 export class TokenIntrospectionGuard implements CanActivate {
@@ -27,7 +27,7 @@ export class TokenIntrospectionGuard implements CanActivate {
         throw invalidClientException;
       }
     } catch (error) {
-      new UnauthorizedException(INVALID_PASSWORD);
+      new UnauthorizedException(i18n.__('Invalid Password'));
     }
     return false;
   }

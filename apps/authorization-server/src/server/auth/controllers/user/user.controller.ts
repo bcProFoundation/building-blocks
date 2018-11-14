@@ -13,7 +13,7 @@ import { CryptographerService } from '../../../utilities/cryptographer.service';
 import { UserService } from '../../../models/user/user.service';
 import { AuthGuard } from '../../guards/auth.guard';
 import { callback } from '../../passport/local.strategy';
-import { INVALID_PASSWORD } from '../../../constants/messages';
+import { i18n } from '../../../i18n/i18n.config';
 
 @Controller('user')
 export class UserController {
@@ -36,7 +36,7 @@ export class UserController {
       authData.password = this.cryptoService.hashPassword(body.newPassword);
       await authData.save();
       res.json({ message: 'updated' });
-    } else throw new UnauthorizedException(INVALID_PASSWORD);
+    } else throw new UnauthorizedException(i18n.__('Invalid Password'));
   }
 
   @Post('v1/update_full_name')

@@ -17,21 +17,9 @@ import {
   AuthGuard as AuthenticationGuard,
   TestAuthGuard,
 } from '../../guards/auth.guard';
-
-// Constants
-import { SUCCESS_MESSAGE, INVALID_PASSWORD } from '../../../constants/messages';
-import {
-  AUTH_LOGIN_TITLE,
-  AUTH_LOGIN_DESCRIPTION,
-  AUTH_SIGNUP_DESCRIPTION,
-  AUTH_SIGNUP_TITLE,
-  APP_LOGOUT_TITLE,
-  APP_ACCOUNT_DESCRIPTION,
-} from '../../../constants/swagger';
-
-// Swagger
 import { ApiOperation } from '@nestjs/swagger';
 import { LoginUserDto } from '../../../models/user/login-user.dto';
+import { i18n } from '../../../i18n/i18n.config';
 
 let AuthGuard;
 if (process.env.NODE_ENV === 'test') AuthGuard = TestAuthGuard;
@@ -49,8 +37,8 @@ export class AuthController {
     }),
   )
   @ApiOperation({
-    title: AUTH_LOGIN_TITLE,
-    description: AUTH_LOGIN_DESCRIPTION,
+    title: i18n.__('Login'),
+    description: 'Login with email or mobile phone',
   })
   login(@Body() body: LoginUserDto, @Req() req, @Res() res) {
     const out: any = { user: req.user.email };
@@ -59,10 +47,10 @@ export class AuthController {
   }
 
   @Post('signup')
-  @UsePipes(new ValidationPipe())
+  @UsePipes(ValidationPipe)
   @ApiOperation({
-    title: AUTH_SIGNUP_TITLE,
-    description: AUTH_SIGNUP_DESCRIPTION,
+    title: i18n.__('Signup'),
+    description: i18n.__('Sign up a new user'),
   })
   async signup(@Body() body: CreateUserDto, @Res() res) {
     /** TODO:
@@ -73,14 +61,14 @@ export class AuthController {
     await this.authService.signUp(body);
     res.json({
       user: body.email,
-      message: SUCCESS_MESSAGE,
+      message: i18n.__('Logged in successfully'),
     });
   }
 
   @Get('logout')
   @ApiOperation({
-    title: APP_LOGOUT_TITLE,
-    description: APP_ACCOUNT_DESCRIPTION,
+    title: i18n.__('Logout'),
+    description: i18n.__('Logout of the session'),
   })
   logout(@Req() req, @Res() res) {
     if (req.session && req.session.secondFactor)
@@ -93,8 +81,8 @@ export class AuthController {
 
   @Post('verify_user')
   @ApiOperation({
-    title: 'Verify User',
-    description: 'Check whether the user exists and retrieve a record',
+    title: i18n.__('Verify User'),
+    description: i18n.__('Check whether the user exists and retrieve a record'),
   })
   async verifyUser(
     @Res() res,
@@ -105,7 +93,7 @@ export class AuthController {
 
     if (password) {
       user = await this.authService.logIn(username, password);
-      if (!user) throw new UnauthorizedException(INVALID_PASSWORD);
+      if (!user) throw new UnauthorizedException(i18n.__('Invalid password'));
     }
 
     delete user._id, user.password;

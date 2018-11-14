@@ -4,15 +4,17 @@ import { join } from 'path';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { VIEWS_DIR } from './constants/locations';
 import { ExpressServer } from './express-server';
-import { APP_NAME, APP_DESCRIPTION } from './constants/messages';
 import { ConfigService } from './config/config.service';
+import { i18n } from './i18n/i18n.config';
+import { VIEWS_DIR } from './constants/app-strings';
 
 async function bootstrap() {
   const authServer = new ExpressServer(new ConfigService());
   authServer.setupSecurity();
   authServer.setupAssetDir();
+  authServer.setupI18n();
+
   const app = await NestFactory.create(AppModule, authServer.server);
 
   const version = JSON.parse(
@@ -21,8 +23,8 @@ async function bootstrap() {
 
   // Swagger
   const options = new DocumentBuilder()
-    .setTitle(APP_NAME)
-    .setDescription(APP_DESCRIPTION)
+    .setTitle(i18n.__('Authorization Server'))
+    .setDescription(i18n.__('OAuth 2.0 OpenID Connect Authorization Server'))
     .setVersion(version)
     .build();
   const document = SwaggerModule.createDocument(app, options);
