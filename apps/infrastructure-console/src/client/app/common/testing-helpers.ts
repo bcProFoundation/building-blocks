@@ -12,4 +12,8 @@ export const oauthServiceStub: Partial<OAuthService> = {
   loadDiscoveryDocumentAndTryLogin(options?: LoginOptions): Promise<boolean> {
     return Promise.resolve(true);
   },
+  loadDiscoveryDocumentAndLogin(optins?: any): Promise<boolean> {
+    return Promise.resolve(true);
+  },
+  getAccessToken: (...args) => 'mockToken',
 };

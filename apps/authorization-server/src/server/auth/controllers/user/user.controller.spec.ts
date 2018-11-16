@@ -5,6 +5,7 @@ import { CryptographerService } from '../../../utilities/cryptographer.service';
 import { getModelToken } from '@nestjs/mongoose';
 import { USER } from '../../../models/user/user.schema';
 import { AUTH_DATA } from '../../../models/auth-data/auth-data.schema';
+import { AuthDataService } from '../../../models/auth-data/auth-data.service';
 
 describe('User Controller', () => {
   let module: TestingModule;
@@ -19,6 +20,10 @@ describe('User Controller', () => {
         {
           provide: 'UserService',
           useClass: UserService,
+        },
+        {
+          provide: 'AuthDataService',
+          useClass: AuthDataService,
         },
         {
           provide: getModelToken(USER),

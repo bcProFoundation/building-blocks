@@ -26,7 +26,7 @@ export class AppController {
     return res.sendFile(INDEX_HTML);
   }
 
-  @Get('scopes*')
+  @Get('scope*')
   scopes(@Res() res) {
     return res.sendFile(INDEX_HTML);
   }

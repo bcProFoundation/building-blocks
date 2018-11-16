@@ -5,6 +5,7 @@ import {
   twoFactorEnabledException,
   twoFactorNotEnabledException,
   invalidOTPException,
+  userAlreadyExistsException,
 } from '../../auth/filters/exceptions';
 import * as speakeasy from 'speakeasy';
 import * as QRCode from 'qrcode';
@@ -25,6 +26,18 @@ export class UserService {
   ) {}
 
   public async save(params) {
+    let localUser: User;
+
+    if (params.email) {
+      localUser = await this.findOne({ email: params.email });
+      if (localUser) throw userAlreadyExistsException;
+    }
+
+    if (params.phone) {
+      localUser = await this.findOne({ phone: params.phone });
+      if (localUser) throw userAlreadyExistsException;
+    }
+
     const createdUser = new this.userModel(params);
     return await createdUser.save();
   }

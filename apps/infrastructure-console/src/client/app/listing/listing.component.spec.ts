@@ -8,7 +8,7 @@ import { ClientService } from '../client/client.service';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
-import { HttpErrorHandler } from '../http-error-handler.service';
+import { HttpErrorHandler } from '../common/http-error-handler.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { oauthServiceStub } from '../common/testing-helpers';
 

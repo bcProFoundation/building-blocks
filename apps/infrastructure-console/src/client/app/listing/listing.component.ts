@@ -77,7 +77,7 @@ export class ListingComponent implements OnInit, AfterViewInit {
         map((data: any) => {
           this._isLoadingResults = false;
           this._hasError = false;
-          this.resultsLength = data.length;
+          this.resultsLength = data.length + 1;
           return data.docs;
         }),
         catchError(err => {
@@ -88,10 +88,7 @@ export class ListingComponent implements OnInit, AfterViewInit {
         }),
       )
       .subscribe(data => {
-        this.dataSource.data = data.map(doc => {
-          if (!doc.uuid && doc.name) doc.uuid = doc.name;
-          return doc;
-        });
+        this.dataSource.data = data;
       });
   }
 
