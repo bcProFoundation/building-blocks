@@ -1,0 +1,9 @@
+.dashboard-container {
+    padding: 1em;
+}
+mat-card-actions {
+    padding: 1em;
+}
+mat-card {
+    padding: 2em;
+}

@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { ListingService } from './listing.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { HttpErrorHandler } from '../http-error-handler.service';
+import { HttpErrorHandler } from './http-error-handler.service';
 
 describe('ListingService', () => {
   beforeEach(() =>

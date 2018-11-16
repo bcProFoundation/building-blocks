@@ -5,8 +5,8 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AppService } from './app.service';
-import { HttpErrorHandler } from './http-error-handler.service';
-import { MessageService } from './message.service';
+import { HttpErrorHandler } from './common/http-error-handler.service';
+import { MessageService } from './common/message.service';
 import { MaterialModule } from './material.module';
 import { OAuthModule, OAuthStorage } from 'angular-oauth2-oidc';
 import { DashboardNavComponent } from './dashboard-nav/dashboard-nav.component';
@@ -20,6 +20,12 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { RoleComponent } from './role/role.component';
+import { ScopeComponent } from './scope/scope.component';
+import { UserComponent } from './user/user.component';
+import { UserService } from './user/user.service';
+import { RoleService } from './role/role.service';
+import { ScopeService } from './scope/scope.service';
 
 @NgModule({
   declarations: [
@@ -29,6 +35,9 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     DashboardNavComponent,
     ListingComponent,
     ClientComponent,
+    RoleComponent,
+    ScopeComponent,
+    UserComponent,
   ],
   imports: [
     BrowserModule,
@@ -57,6 +66,9 @@ import { DashboardComponent } from './dashboard/dashboard.component';
       useValue: localStorage,
     },
     ClientService,
+    UserService,
+    RoleService,
+    ScopeService,
   ],
   bootstrap: [AppComponent],
 })

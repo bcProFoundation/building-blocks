@@ -3,7 +3,10 @@ import { StorageService } from './storage.service';
 import { ISSUER_URL } from '../constants/storage';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
-import { HandleError, HttpErrorHandler } from '../http-error-handler.service';
+import {
+  HandleError,
+  HttpErrorHandler,
+} from '../common/http-error-handler.service';
 import { Observable } from 'rxjs';
 import { CANNOT_FETCH_MODELS } from '../constants/messages';
 

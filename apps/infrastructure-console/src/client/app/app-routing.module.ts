@@ -5,6 +5,9 @@ import { AuthGuard } from './guards/auth.guard.service';
 import { ListingComponent } from './listing/listing.component';
 import { ClientComponent } from './client/client.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { UserComponent } from './user/user.component';
+import { RoleComponent } from './role/role.component';
+import { ScopeComponent } from './scope/scope.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -34,6 +37,22 @@ const routes: Routes = [
     component: ClientComponent,
     canActivateChild: [AuthGuard],
   },
+  {
+    path: 'user/:id',
+    component: UserComponent,
+    canActivateChild: [AuthGuard],
+  },
+  {
+    path: 'role/:id',
+    component: RoleComponent,
+    canActivateChild: [AuthGuard],
+  },
+  {
+    path: 'scope/:id',
+    component: ScopeComponent,
+    canActivateChild: [AuthGuard],
+  },
+
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: '**', redirectTo: 'home' },
 ];

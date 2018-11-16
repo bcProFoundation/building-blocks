@@ -4,7 +4,7 @@ import {
   HttpTestingController,
 } from '@angular/common/http/testing';
 import { AppService } from './app.service';
-import { HttpErrorHandler } from './http-error-handler.service';
+import { HttpErrorHandler } from './common/http-error-handler.service';
 
 describe('AppService', () => {
   let injector: TestBed;

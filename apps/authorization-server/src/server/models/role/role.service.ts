@@ -30,4 +30,11 @@ export class RoleService {
   async paginate(query, options) {
     return await this.roleModel.paginate(query, options);
   }
+
+  async find(params) {
+    return await this.roleModel.find(params);
+  }
+  getRoleModel() {
+    return this.roleModel;
+  }
 }
