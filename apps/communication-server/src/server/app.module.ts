@@ -11,6 +11,9 @@ import { EmailController } from './controllers/email/email.controller';
 import { ConfigModule } from './config/config.module';
 import { ServerSettingsService } from './models/server-settings/server-settings.service';
 import { SocialKeyService } from './models/social-key/social-key.service';
+import { MicroservicePatternController } from './controllers/microservice/pattern.controller';
+import { MicroservicePatternService } from './controllers/microservice/pattern.service';
+import { AuthServerVerificationGuard } from './guards/authserver-verification.guard';
 
 @Module({
   imports: [
@@ -19,13 +22,20 @@ import { SocialKeyService } from './models/social-key/social-key.service';
     ModelsModule,
     HttpModule,
   ],
-  controllers: [AppController, SetupController, EmailController],
+  controllers: [
+    AppController,
+    SetupController,
+    EmailController,
+    MicroservicePatternController,
+  ],
   providers: [
     AppService,
     SetupService,
     EmailService,
     ServerSettingsService,
     SocialKeyService,
+    MicroservicePatternService,
+    AuthServerVerificationGuard,
   ],
 })
 export class AppModule {}

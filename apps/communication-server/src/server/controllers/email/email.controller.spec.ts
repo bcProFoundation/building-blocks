@@ -5,6 +5,8 @@ import { EmailService } from './email.service';
 import { EmailAccountService } from '../../models/email-account/email-account.service';
 import { EmailAccount } from '../../models/email-account/email-account.entity';
 import { ConfigService } from '../../config/config.service';
+import { AuthServerVerificationGuard } from '../../guards/authserver-verification.guard';
+import { ServerSettingsService } from '../../models/server-settings/server-settings.service';
 
 describe('EmailController', () => {
   let module: TestingModule;
@@ -14,6 +16,14 @@ describe('EmailController', () => {
       providers: [
         EmailService,
         EmailAccountService,
+        {
+          provide: AuthServerVerificationGuard,
+          useValue: {},
+        },
+        {
+          provide: ServerSettingsService,
+          useValue: {},
+        },
         {
           provide: getRepositoryToken(EmailAccount),
           useValue: {},

@@ -3,4 +3,3 @@ export const COMMUNICATION_SERVER = 'Communication Server';
 export const PLEASE_RUN_SETUP = 'Please Run Setup';
 export const DELETED = 'Resource deleted';
 export const SYSTEM_EMAIL_ACCOUNT_NOT_FOUND = 'System email account not found';
-export const SOMETHING_WENT_WRONG = 'Something went wrong';
