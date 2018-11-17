@@ -3,6 +3,7 @@ import { Client, Transport, ClientProxy } from '@nestjs/microservices';
 import { ConfigService } from '../../config/config.service';
 import { CHANNEL } from '../../rabbitmq/rabbitmq-connection';
 import { SEND_EMAIL } from '../../constants/app-strings';
+import { EmailAccountService } from '../../models/email-account/email-account.service';
 
 const configService = new ConfigService();
 
@@ -18,6 +19,7 @@ export class EmailService implements OnModuleInit, OnModuleDestroy {
   })
   client: ClientProxy;
 
+  constructor(private readonly emailAccount: EmailAccountService) {}
   async onModuleInit() {
     await this.client.connect();
   }
@@ -26,41 +28,33 @@ export class EmailService implements OnModuleInit, OnModuleDestroy {
     this.client.close();
   }
 
-  sendSystemMessage(
-    emailTo: string,
+  async sendSystemMessage(
+    to: string,
     subject: string,
     text: string,
     html: string,
+    emailAccount: string,
   ) {
-    // TODO: Get email from isSystemEmail account
-    const emailFrom = 'noreply@mntechnique.com';
+    const emailAccountModel = await this.emailAccount.findOne({
+      uuid: emailAccount,
+    });
+    const from = emailAccountModel.from;
 
     const pattern = { cmd: SEND_EMAIL };
-    const data = {
-      from: emailFrom,
-      to: emailTo,
-      subject,
-      text,
-      html,
-    };
+    const message = { from, to, subject, text, html };
+    const data = { message, emailAccount };
     return this.client.send(pattern, data);
   }
 
   sendMessage(
-    emailTo: string,
-    emailFrom: string,
+    to: string,
+    from: string,
     subject: string,
     text: string,
     html: string,
   ) {
     const pattern = { cmd: SEND_EMAIL };
-    const data = {
-      from: emailFrom,
-      to: emailTo,
-      subject,
-      text,
-      html,
-    };
+    const data = { from, to, subject, text, html };
     return this.client.send(pattern, data);
   }
 }

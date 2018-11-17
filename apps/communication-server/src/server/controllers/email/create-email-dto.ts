@@ -1,7 +1,8 @@
-import { IsUrl, IsNumberString, IsString } from 'class-validator';
+import { IsUrl, IsNumberString, IsString, IsEmail } from 'class-validator';
 
 export class CreateEmailDto {
   uuid?: string;
+  owner?: string;
 
   @IsUrl({ require_protocol: false })
   host: string;
@@ -14,4 +15,7 @@ export class CreateEmailDto {
 
   @IsString()
   pass: string;
+
+  @IsEmail()
+  from: string;
 }

@@ -13,6 +13,7 @@ import { AuthServerVerificationGuard } from '../../guards/authserver-verificatio
 import { EmailMessageAuthServerDto } from './email-message-authserver-dto';
 import { EmailAccountService } from '../../models/email-account/email-account.service';
 import { CreateEmailDto } from './create-email-dto';
+import { BearerTokenStatus } from '../../decorators/bearer-token.decorator';
 
 @Controller('email')
 export class EmailController {
@@ -24,18 +25,25 @@ export class EmailController {
   @Post('v1/system')
   @UseGuards(AuthServerVerificationGuard)
   @UsePipes(ValidationPipe)
-  sendSystemEmail(@Body() payload: EmailMessageAuthServerDto) {
-    return this.email.sendSystemMessage(
+  async sendSystemEmail(@Body() payload: EmailMessageAuthServerDto) {
+    return await this.email.sendSystemMessage(
       payload.emailTo,
       payload.subject,
       payload.text,
       payload.html,
+      payload.emailAccount,
     );
   }
 
   @Post('v1/create')
   @UsePipes(ValidationPipe)
-  async create(@Req() req, @Res() res, @Body() payload: CreateEmailDto) {
+  async create(
+    @Req() req,
+    @Res() res,
+    @Body() payload: CreateEmailDto,
+    @BearerTokenStatus() token,
+  ) {
+    payload.owner = token.sub;
     const emailAccount = await this.emailAccount.save(payload);
     delete emailAccount._id;
     res.json(emailAccount);

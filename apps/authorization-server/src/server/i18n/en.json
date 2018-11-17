@@ -43,5 +43,7 @@
 	"Account": "Account",
 	"Infrastructure Console": "Infrastructure Console",
 	"Unauthorized": "Unauthorized",
-	"Logged in successfully": "Logged in successfully"
+	"Logged in successfully": "Logged in successfully",
+	"Bearer Token not found": "Bearer Token not found",
+	"Invalid Password": "Invalid Password"
 }

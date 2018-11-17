@@ -12,6 +12,8 @@ export class EmailAccount extends BaseEntity {
   @Column()
   user: string;
   @Column()
+  from: string;
+  @Column()
   pass: string;
   @Column()
   secure: boolean;
@@ -23,6 +25,10 @@ export class EmailAccount extends BaseEntity {
   tlsRejectUnauthorized: boolean;
   @Column()
   oauth2: boolean; // set to true for OAuth2 Accounts
+  @Column()
+  owner: string; // uuid of owner user
+  @Column()
+  sharedWithUsers: string[];
   constructor() {
     super();
     if (!this.uuid) this.uuid = uuidv4();

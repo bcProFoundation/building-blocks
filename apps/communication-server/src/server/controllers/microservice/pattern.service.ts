@@ -7,13 +7,13 @@ import { EmailAccount } from '../../models/email-account/email-account.entity';
 export class MicroservicePatternService {
   constructor(private readonly emailAccount: EmailAccountService) {}
 
-  async processMessage(message) {
-    const transport = await this.getSMTPTransport(
-      '29f0f33c-01d8-4411-8be2-616ca07a3b1c',
-    );
+  async processMessage(data) {
+    const { message, emailAccount } = data;
+    const transport = await this.getSMTPTransport(emailAccount);
     transport
       .sendMail(message)
       .then(info => {
+        // console.log({ info });
         /*
         // TODO: Log Success Message
           {
@@ -37,6 +37,7 @@ export class MicroservicePatternService {
         /**
          * TODO: Log Error Message
          * { message: 'Missing credentials for "PLAIN"', code: 'EAUTH', command: 'API' }
+         * console.log(error.message, error.code, error.command);
          */
       });
   }
