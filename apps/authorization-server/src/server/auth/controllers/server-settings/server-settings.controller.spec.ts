@@ -3,6 +3,7 @@ import { ServerSettingsController } from './server-settings.controller';
 import { getModelToken } from '@nestjs/mongoose';
 import { ServerSettingsService } from '../../../models/server-settings/server-settings.service';
 import { SERVER_SETTINGS } from '../../../models/server-settings/server-settings.schema';
+import { UserService } from '../../../models/user/user.service';
 
 describe('ServerSettingsController', () => {
   let module: TestingModule;
@@ -13,6 +14,10 @@ describe('ServerSettingsController', () => {
         ServerSettingsService,
         {
           provide: getModelToken(SERVER_SETTINGS),
+          useValue: {},
+        },
+        {
+          provide: UserService,
           useValue: {},
         },
       ],

@@ -4,6 +4,7 @@ import { EmailAccountService } from '../../models/email-account/email-account.se
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { EmailAccount } from '../../models/email-account/email-account.entity';
 import { ConfigService } from '../../config/config.service';
+import { ServerSettingsService } from '../../models/server-settings/server-settings.service';
 
 describe('EmailService', () => {
   let service: EmailService;
@@ -14,6 +15,10 @@ describe('EmailService', () => {
         EmailAccountService,
         {
           provide: getRepositoryToken(EmailAccount),
+          useValue: {},
+        },
+        {
+          provide: ServerSettingsService,
           useValue: {},
         },
         {

@@ -1,9 +1,15 @@
-import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+import {
+  Injectable,
+  OnModuleInit,
+  OnModuleDestroy,
+  BadRequestException,
+} from '@nestjs/common';
 import { Client, Transport, ClientProxy } from '@nestjs/microservices';
 import { ConfigService } from '../../config/config.service';
 import { CHANNEL } from '../../rabbitmq/rabbitmq-connection';
 import { SEND_EMAIL } from '../../constants/app-strings';
 import { EmailAccountService } from '../../models/email-account/email-account.service';
+import { ServerSettingsService } from '../../models/server-settings/server-settings.service';
 
 const configService = new ConfigService();
 
@@ -19,7 +25,10 @@ export class EmailService implements OnModuleInit, OnModuleDestroy {
   })
   client: ClientProxy;
 
-  constructor(private readonly emailAccount: EmailAccountService) {}
+  constructor(
+    private readonly emailAccount: EmailAccountService,
+    private readonly serverSettingsService: ServerSettingsService,
+  ) {}
   async onModuleInit() {
     await this.client.connect();
   }
@@ -33,13 +42,15 @@ export class EmailService implements OnModuleInit, OnModuleDestroy {
     subject: string,
     text: string,
     html: string,
-    emailAccount: string,
   ) {
+    const settings = await this.serverSettingsService.find();
+    if (!settings.communicationServerSystemEmailAccount)
+      throw new BadRequestException();
+    const emailAccount = settings.communicationServerSystemEmailAccount;
     const emailAccountModel = await this.emailAccount.findOne({
       uuid: emailAccount,
     });
     const from = emailAccountModel.from;
-
     const pattern = { cmd: SEND_EMAIL };
     const message = { from, to, subject, text, html };
     const data = { message, emailAccount };

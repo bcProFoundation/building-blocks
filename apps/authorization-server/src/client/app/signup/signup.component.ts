@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { MatSnackBar } from '@angular/material';
 import { SOMETHING_WENT_WRONG } from '../../../client/constants/messages';
+import { SignupService } from './signup.service';
+import { ServerInfo } from '../../common/server-info.interface';
 
 @Component({
   selector: 'app-signup',
@@ -9,26 +11,42 @@ import { SOMETHING_WENT_WRONG } from '../../../client/constants/messages';
   styleUrls: ['./signup.component.css'],
 })
 export class SignupComponent implements OnInit {
-  constructor(
-    private authService: AuthService,
-    private snackBar: MatSnackBar,
-  ) {}
-
   public name: string;
   public email: string;
   public phone: string;
   public password: string;
+  public communicationEnabled: boolean = false;
 
-  ngOnInit() {}
+  constructor(
+    private authService: AuthService,
+    private snackBar: MatSnackBar,
+    private signupService: SignupService,
+  ) {}
+
+  ngOnInit() {
+    this.signupService.getServerInfo().subscribe({
+      next: (response: ServerInfo) => {
+        if (response.communication) {
+          this.communicationEnabled = response.communication;
+        }
+      },
+    });
+  }
 
   onSubmit() {
     this.authService
-      .signUp(this.name, this.email, this.phone, this.password)
+      .signUp(
+        this.communicationEnabled,
+        this.name,
+        this.email,
+        this.phone,
+        this.password,
+      )
       .subscribe({
         next: (response: any) => {},
         error: err => {
           if (typeof err.error.message === 'string') {
-            this.snackBar.open(err.error.message);
+            this.snackBar.open(err.error.message, null, { duration: 2500 });
           } else {
             this.snackBar.open(SOMETHING_WENT_WRONG);
           }

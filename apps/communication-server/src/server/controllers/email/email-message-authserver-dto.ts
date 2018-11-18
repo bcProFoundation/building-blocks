@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsUUID } from 'class-validator';
+import { IsEmail, IsNotEmpty } from 'class-validator';
 
 export class EmailMessageAuthServerDto {
   @IsEmail()
@@ -12,7 +12,4 @@ export class EmailMessageAuthServerDto {
 
   @IsNotEmpty()
   html: string;
-
-  @IsUUID()
-  emailAccount: string;
 }

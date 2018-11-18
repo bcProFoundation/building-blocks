@@ -34,10 +34,10 @@ export class MicroservicePatternService {
          */
       })
       .catch(error => {
+        // console.log(error.message, error.code, error.command);
         /**
          * TODO: Log Error Message
          * { message: 'Missing credentials for "PLAIN"', code: 'EAUTH', command: 'API' }
-         * console.log(error.message, error.code, error.command);
          */
       });
   }

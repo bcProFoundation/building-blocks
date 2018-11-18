@@ -1,37 +1,31 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SignupComponent } from './signup.component';
+import { VerifySignupComponent } from './verify-signup.component';
 import { AuthServerMaterialModule } from '../auth-server-material/auth-server-material.module';
+import { RouterTestingModule } from '@angular/router/testing';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../auth/auth.service';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-describe('SignupComponent', () => {
-  let fixture: ComponentFixture<SignupComponent>;
-  const authServiceStub: Partial<AuthService> = {};
-  let component: SignupComponent;
+describe('VerifySignupComponent', () => {
+  let component: VerifySignupComponent;
+  let fixture: ComponentFixture<VerifySignupComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [SignupComponent],
-      providers: [
-        {
-          provide: AuthService,
-          useValue: authServiceStub, // mock values
-        },
-      ],
       imports: [
         AuthServerMaterialModule,
+        RouterTestingModule,
         FormsModule,
-        BrowserAnimationsModule,
         HttpClientTestingModule,
+        BrowserAnimationsModule,
       ],
+      declarations: [VerifySignupComponent],
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SignupComponent);
+    fixture = TestBed.createComponent(VerifySignupComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

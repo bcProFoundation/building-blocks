@@ -28,7 +28,7 @@ export class AppController {
     this.appService.login(req, res);
   }
 
-  @Get('signup')
+  @Get('signup*')
   @ApiExcludeEndpoint()
   signupForm(@Res() res) {
     res.sendFile(INDEX_HTML);

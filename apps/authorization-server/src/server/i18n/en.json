@@ -45,5 +45,12 @@
 	"Unauthorized": "Unauthorized",
 	"Logged in successfully": "Logged in successfully",
 	"Bearer Token not found": "Bearer Token not found",
-	"Invalid Password": "Invalid Password"
+	"Invalid Password": "Invalid Password",
+	"Setup already complete": "Setup already complete",
+	"Success": "Success",
+	"Please complete sign up for ": "Please complete sign up for ",
+	"Please check your email to complete signup": "Please check your email to complete signup",
+	"Password set successfully": "Password set successfully",
+	"User Disabled": "User Disabled",
+	"Signed up successfully": "Signed up successfully"
 }

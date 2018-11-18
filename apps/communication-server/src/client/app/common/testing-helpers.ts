@@ -12,4 +12,7 @@ export const oauthServiceStub: Partial<OAuthService> = {
   loadDiscoveryDocumentAndTryLogin(options?: LoginOptions): Promise<boolean> {
     return Promise.resolve(true);
   },
+  loadDiscoveryDocumentAndLogin(options?: LoginOptions): Promise<boolean> {
+    return Promise.resolve(true);
+  },
 };

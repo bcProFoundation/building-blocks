@@ -31,7 +31,6 @@ export class EmailController {
       payload.subject,
       payload.text,
       payload.html,
-      payload.emailAccount,
     );
   }
 
