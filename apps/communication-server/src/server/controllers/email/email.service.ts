@@ -37,6 +37,10 @@ export class EmailService implements OnModuleInit, OnModuleDestroy {
     this.client.close();
   }
 
+  async findOne(params) {
+    return await this.emailAccount.findOne(params);
+  }
+
   async sendSystemMessage(
     to: string,
     subject: string,

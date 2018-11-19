@@ -8,6 +8,7 @@ import {
   Req,
   Res,
   InternalServerErrorException,
+  Get,
 } from '@nestjs/common';
 import { ServerSettingsService } from '../../../models/server-settings/server-settings.service';
 import { ServerSettingDto } from '../../../models/server-settings/server-setting.dto';
@@ -22,13 +23,24 @@ export class ServerSettingsController {
     private readonly userService: UserService,
   ) {}
 
+  @Get('v1/get')
+  @UseGuards(AuthGuard('bearer', { callback }))
+  async getSettings(@Req() req, @Res() res) {
+    await this.userService.checkAdministrator(req.user.user);
+    const settings = await this.settingsService.find();
+    res.json(settings);
+  }
+
   @Post('v1/update')
   @UsePipes(ValidationPipe)
   @UseGuards(AuthGuard('bearer', { callback }))
-  async save(@Body() settings: ServerSettingDto, @Req() req, @Res() res) {
+  async save(@Body() payload: ServerSettingDto, @Req() req, @Res() res) {
     await this.userService.checkAdministrator(req.user.user);
     try {
-      await this.settingsService.update({ uuid: settings.uuid }, settings);
+      const settings = await this.settingsService.find();
+      settings.issuerUrl = payload.issuerUrl;
+      settings.communicationServerClientId = payload.communicationServerClientId;
+      await settings.save();
       res.json({ message: res.__('Success') });
     } catch (error) {
       throw new InternalServerErrorException(error.message);

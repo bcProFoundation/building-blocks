@@ -1,10 +1,7 @@
-import { IsUrl, IsNotEmpty, IsOptional, IsUUID } from 'class-validator';
+import { IsUrl, IsNotEmpty, IsOptional } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 
 export class ServerSettingsUpdateDto {
-  @IsUUID()
-  uuid?: string;
-
   @IsOptional()
   @IsUrl()
   @ApiModelProperty({

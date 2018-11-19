@@ -41,6 +41,11 @@ export class AppController {
     return res.sendFile(INDEX_HTML);
   }
 
+  @Get('settings*')
+  settings(@Res() res) {
+    return res.sendFile(INDEX_HTML);
+  }
+
   @Get('info')
   async info() {
     return await this.appService.info();
