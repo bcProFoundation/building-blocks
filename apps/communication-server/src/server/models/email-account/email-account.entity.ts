@@ -1,21 +1,18 @@
-import {
-  Entity,
-  BaseEntity,
-  Index,
-  ObjectIdColumn,
-  Column,
-  ObjectID,
-} from 'typeorm';
+import { Entity, BaseEntity, ObjectIdColumn, Column, ObjectID } from 'typeorm';
+import * as uuidv4 from 'uuid/v4';
 
 @Entity()
-@Index(['user'], { unique: true })
 export class EmailAccount extends BaseEntity {
   @ObjectIdColumn()
   _id: ObjectID;
   @Column()
+  uuid: string;
+  @Column()
   host: string;
   @Column()
   user: string;
+  @Column()
+  from: string;
   @Column()
   pass: string;
   @Column()
@@ -27,5 +24,13 @@ export class EmailAccount extends BaseEntity {
   @Column()
   tlsRejectUnauthorized: boolean;
   @Column()
-  type: string; // set to 'OAuth2' for OAuth2 Accounts
+  oauth2: boolean; // set to true for OAuth2 Accounts
+  @Column()
+  owner: string; // uuid of owner user
+  @Column()
+  sharedWithUsers: string[];
+  constructor() {
+    super();
+    if (!this.uuid) this.uuid = uuidv4();
+  }
 }

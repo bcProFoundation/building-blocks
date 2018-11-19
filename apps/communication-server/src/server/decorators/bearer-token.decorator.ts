@@ -2,39 +2,51 @@ import {
   createParamDecorator,
   ForbiddenException,
   NotImplementedException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import Axios from 'axios';
-import { getConnection } from 'typeorm';
+import { getConnection, Repository } from 'typeorm';
 import { ServerSettings } from '../models/server-settings/server-settings.entity';
 import { ServerSettingsService } from '../models/server-settings/server-settings.service';
+import { TokenCache } from '../models/token-cache/token-cache.entity';
 
 export const BearerTokenStatus = createParamDecorator(async (data, req) => {
-  // TODO: Show meaningful errors
-  // header is 'Bearer token_hash' and not just token_hash
-  const clientRepo = getConnection().getRepository(ServerSettings);
-  const clientService = new ServerSettingsService(clientRepo);
-  const client = await clientService.find();
-  if (!client) throw new NotImplementedException();
-  const baseEncodedCred = Buffer.from(
-    client.clientId + ':' + client.clientSecret,
-  ).toString('base64');
+  const tokenCacheRepo = getConnection().getRepository(TokenCache);
+  const serverSettingsRepo = getConnection().getRepository(ServerSettings);
+
   const accessToken = getAccessToken(req);
-  if (accessToken) {
-    const bearertokenData = await Axios.post(
-      'http://localhost:3000/oauth2/introspection',
-      {
-        token: accessToken,
-      },
-      {
-        headers: {
-          Authorization: 'Basic ' + baseEncodedCred,
-        },
-      },
+  try {
+    const introspectedToken = await checkLocalToken(
+      accessToken,
+      tokenCacheRepo,
     );
-    return bearertokenData.data;
-  } else {
-    throw new ForbiddenException();
+    if (introspectedToken && introspectedToken.exp) {
+      const now = new Date().getTime();
+      if (now < introspectedToken.exp) {
+        delete introspectedToken._id;
+        delete introspectedToken.accessToken;
+        delete introspectedToken.uuid;
+
+        return introspectedToken;
+      } else if (now > introspectedToken.exp) {
+        await introspectedToken.remove();
+        const newToken = await introspectToken(accessToken, serverSettingsRepo);
+        if (newToken) {
+          await cacheToken(newToken, accessToken, tokenCacheRepo);
+          return newToken;
+        }
+      }
+    } else {
+      const freshToken = await introspectToken(accessToken, serverSettingsRepo);
+      if (freshToken) {
+        await cacheToken(freshToken, accessToken, tokenCacheRepo);
+        return freshToken;
+      }
+    }
+  } catch (error) {
+    throw new InternalServerErrorException(error.message);
   }
+  throw new ForbiddenException();
 });
 
 export function getAccessToken(request) {
@@ -43,4 +55,52 @@ export function getAccessToken(request) {
     request.headers.authorization.split(' ')[1] ||
     null
   );
+}
+
+export async function checkLocalToken(
+  accessToken: string,
+  tokenCacheRepo: Repository<TokenCache>,
+) {
+  const cachedToken = await tokenCacheRepo.findOne({ accessToken });
+  return cachedToken;
+}
+
+export async function introspectToken(
+  accessToken: string,
+  serverSettingsRepo: Repository<ServerSettings>,
+) {
+  const settingsService = new ServerSettingsService(serverSettingsRepo);
+  const settings = await settingsService.find();
+  if (!settings) throw new NotImplementedException();
+
+  // header is 'Bearer token_hash' and not just token_hash
+  const baseEncodedCred = Buffer.from(
+    settings.clientId + ':' + settings.clientSecret,
+  ).toString('base64');
+  const bearertokenData = await Axios.post(
+    settings.introspectionURL,
+    {
+      token: accessToken,
+    },
+    {
+      headers: {
+        Authorization: 'Basic ' + baseEncodedCred,
+      },
+    },
+  );
+  if (bearertokenData.data.active) return bearertokenData.data;
+}
+
+export async function cacheToken(
+  introspectedToken: any,
+  accessToken: string,
+  tokenCacheRepo: Repository<TokenCache>,
+): Promise<TokenCache> {
+  introspectedToken.accessToken = accessToken;
+  introspectedToken.clientId = introspectedToken.client_id;
+  delete introspectedToken.client_id;
+  const cachedToken = await tokenCacheRepo.save(introspectedToken);
+  delete cachedToken._id;
+  delete cachedToken.accessToken;
+  return cachedToken;
 }

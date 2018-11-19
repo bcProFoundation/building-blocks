@@ -9,7 +9,18 @@ describe('AppController', () => {
   beforeAll(async () => {
     app = await Test.createTestingModule({
       controllers: [AppController],
-      providers: [AppService],
+      providers: [
+        {
+          provide: AppService,
+          useValue: {
+            info: (...args) => ({
+              message: 'Authorization Server',
+              session: false,
+            }),
+            login: (...args) => {},
+          },
+        },
+      ],
     }).compile();
 
     // Mock Express req object

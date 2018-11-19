@@ -55,7 +55,19 @@ export class AuthService {
       });
   }
 
-  signUp(name: string, email: string, phone: string, password: string) {
+  signUp(
+    communicationEnabled: boolean,
+    name: string,
+    email: string,
+    phone: string,
+    password: string,
+  ) {
+    if (communicationEnabled) {
+      return this.http.post(environment.routes.SIGNUP_VIA_EMAIL, {
+        name,
+        email,
+      });
+    }
     return this.http.post(environment.routes.SIGNUP, {
       name,
       email,

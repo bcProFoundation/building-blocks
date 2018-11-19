@@ -2,7 +2,7 @@ import { Entity, BaseEntity, ObjectIdColumn, Column, ObjectID } from 'typeorm';
 import * as uuidv4 from 'uuid/v4';
 
 @Entity()
-export class EmailAccount extends BaseEntity {
+export class SocialToken extends BaseEntity {
   @ObjectIdColumn()
   _id: ObjectID;
   @Column()

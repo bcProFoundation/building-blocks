@@ -4,9 +4,7 @@
 
 export const environment = {
   production: false,
-  routes: {
-    GET_SETTINGS: '/settings/v1/get',
-  },
+  routes: {},
 };
 
 /*

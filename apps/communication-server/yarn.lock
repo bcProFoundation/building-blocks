@@ -974,6 +974,13 @@ amdefine@>=0.0.4:
   resolved "https://registry.yarnpkg.com/amdefine/-/amdefine-1.0.1.tgz#4a5282ac164729e93619bcfd3ad151f817ce91f5"
   integrity sha1-SlKCrBZHKek2Gbz9OtFR+BfOkfU=
 
+amqp-connection-manager@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/amqp-connection-manager/-/amqp-connection-manager-2.2.0.tgz#6871f36fc2d4c4ce95409e7b9633897b6a4f69bf"
+  integrity sha512-wR7t4Gkq532yR+vjTSksKGVA9vVlFkXvXcKdw0/QIJaH/piL3pqJWlCbUI2srFArOb/wdTe7BZ5VViwOYEdihA==
+  dependencies:
+    promise-breaker "^4.1.2"
+
 amqplib@^0.5.2:
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/amqplib/-/amqplib-0.5.2.tgz#d2d7313c7ffaa4d10bcf1e6252de4591b6cc7b63"
@@ -7325,6 +7332,11 @@ process@^0.11.10:
   version "0.11.10"
   resolved "https://registry.yarnpkg.com/process/-/process-0.11.10.tgz#7332300e840161bda3e69a1d1d91a7d4bc16f182"
   integrity sha1-czIwDoQBYb2j5podHZGn1LwW8YI=
+
+promise-breaker@^4.1.2:
+  version "4.1.11"
+  resolved "https://registry.yarnpkg.com/promise-breaker/-/promise-breaker-4.1.11.tgz#c9cbd28a3c5627451ad2e3eabcc3e4617bf97491"
+  integrity sha512-pzp+uNPxHofRhgZ27y+94Kj87fNX2Mu9A9HGpTQQWdyzMpfYT419lhE32zWnqhUCQVrXmvYPDw76pnrwWc+BpQ==
 
 promise-inflight@^1.0.1:
   version "1.0.1"

@@ -17,4 +17,5 @@ export interface User extends Document {
   otpPeriod?: number;
   otpCounter?: string;
   twoFactorTempSecret?: string;
+  verificationCode?: string;
 }

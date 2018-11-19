@@ -1,4 +1,9 @@
-import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
+import {
+  Module,
+  NestModule,
+  MiddlewareConsumer,
+  HttpModule,
+} from '@nestjs/common';
 import { PassportAuthenticateMiddleware } from '@nest-middlewares/passport';
 import { AuthController } from './controllers/auth/auth.controller';
 import { AuthService } from './controllers/auth/auth.service';
@@ -38,6 +43,8 @@ import { OIDCKeyService } from '../models/oidc-key/oidc-key.service';
 import { TokenIntrospectionGuard } from './guards/token-introspection.guard';
 import { ScopeController } from './controllers/scope/scope.controller';
 import { SchedulerModule } from '../scheduler/scheduler.module';
+import { SignupController } from './controllers/signup/signup.controller';
+import { SignupService } from './controllers/signup/signup.service';
 
 @Module({
   providers: [
@@ -53,6 +60,7 @@ import { SchedulerModule } from '../scheduler/scheduler.module';
     RefreshTokenExchangeService,
     IDTokenGrantService,
     OIDCKeyService,
+    SignupService,
 
     // Passport Strategies
     CookieSerializer,
@@ -82,8 +90,15 @@ import { SchedulerModule } from '../scheduler/scheduler.module';
     ServerSettingsController,
     WellKnownController,
     ScopeController,
+    SignupController,
   ],
-  imports: [ModelsModule, UtilitiesModule, ConfigModule, SchedulerModule],
+  imports: [
+    ModelsModule,
+    UtilitiesModule,
+    ConfigModule,
+    SchedulerModule,
+    HttpModule,
+  ],
 })
 export class AuthModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

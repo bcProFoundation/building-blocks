@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { EmailAccount } from './email-account.entity';
 import { DELETED } from '../../constants/messages';
+import { CreateEmailDto } from '../../controllers/email/create-email-dto';
 
 @Injectable()
 export class EmailAccountService {
@@ -11,7 +12,9 @@ export class EmailAccountService {
     private readonly emailAccountRepository: Repository<EmailAccount>,
   ) {}
 
-  public async create(emailAccount) {
+  public async save(params: EmailAccount | CreateEmailDto) {
+    const emailAccount = new EmailAccount();
+    Object.assign(emailAccount, params);
     return await this.emailAccountRepository.save(emailAccount);
   }
 

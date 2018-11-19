@@ -45,10 +45,14 @@ export class ConfigService {
   }
 
   getRabbitMQConfig() {
-    const ampqHost = this.get('AMQP_HOST');
-    const ampqUser = this.get('AMQP_USER');
-    const ampqPort = this.get('AMQP_PORT');
-    const ampqPassword = this.get('AMQP_PASSWORD');
-    return `amqp://${ampqUser}:${ampqPassword}@${ampqHost}:${ampqPort}`;
+    if (process.env.NODE_ENV !== 'test') {
+      const ampqHost = this.get('AMQP_HOST');
+      const ampqUser = this.get('AMQP_USER');
+      const ampqPort = this.get('AMQP_PORT');
+      const ampqPassword = this.get('AMQP_PASSWORD');
+      return `amqp://${ampqUser}:${ampqPassword}@${ampqHost}:${ampqPort}`;
+    } else {
+      return '';
+    }
   }
 }

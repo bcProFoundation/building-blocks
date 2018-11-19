@@ -1,95 +1,71 @@
 import {
   Injectable,
-  // HttpException,
-  // HttpStatus,
   OnModuleInit,
   OnModuleDestroy,
+  BadRequestException,
 } from '@nestjs/common';
-// import {
-//   SETUP_ALREADY_COMPLETE,
-//   COMMUNICATION_SERVER,
-//   SYSTEM_EMAIL_ACCOUNT_NOT_FOUND,
-// } from '../../constants/messages';
-import * as nodemailer from 'nodemailer';
-// import { EmailAccountService } from '../../models/email-account/email-account.service';
-import { RabbitMQClient } from '../../rabbitmq/rabbitmq-client';
+import { Client, Transport, ClientProxy } from '@nestjs/microservices';
 import { ConfigService } from '../../config/config.service';
 import { CHANNEL } from '../../rabbitmq/rabbitmq-connection';
+import { SEND_EMAIL } from '../../constants/app-strings';
+import { EmailAccountService } from '../../models/email-account/email-account.service';
+import { ServerSettingsService } from '../../models/server-settings/server-settings.service';
+
+const configService = new ConfigService();
 
 @Injectable()
 export class EmailService implements OnModuleInit, OnModuleDestroy {
-  rabbitMQClient: RabbitMQClient | any;
+  @Client({
+    transport: Transport.RMQ,
+    options: {
+      urls: [configService.getRabbitMQConfig()],
+      queue: CHANNEL,
+      queueOptions: { durable: true },
+    },
+  })
+  client: ClientProxy;
+
   constructor(
-    private readonly configService: ConfigService, // private readonly emailAccountService: EmailAccountService,
-  ) {
-    this.rabbitMQClient = ['production', 'development'].includes(
-      process.env.NODE_ENV,
-    )
-      ? new RabbitMQClient(this.configService.getRabbitMQConfig(), CHANNEL)
-      : {};
-  }
-
+    private readonly emailAccount: EmailAccountService,
+    private readonly serverSettingsService: ServerSettingsService,
+  ) {}
   async onModuleInit() {
-    this.rabbitMQClient.connect();
+    await this.client.connect();
   }
 
-  async onModuleDestroy() {
-    this.rabbitMQClient.close();
+  onModuleDestroy() {
+    this.client.close();
   }
 
-  async sendMessage() {
-    // const transport = await this.getSMTPTransport();
-    // const message = {
-    //   from: 'sender@server.com',
-    //   to: 'receiver@sender.com',
-    //   subject: 'Message title',
-    //   text: 'Plaintext version of the message',
-    //   html: '<p>HTML version of the message</p>',
-    // };
-
-    const pattern = { cmd: 'sum' };
-    const data = [1, 2, 3];
-
-    // console.log('publishing . . .');
-    this.rabbitMQClient.publish(
-      {
-        pattern,
-        data,
-      },
-      (err?, response?, isDisposed?) => {
-        // console.log('Code in Publish!', { err, response, isDisposed });
-      },
-    );
-
-    // transport.sendMail(message).then(info => {
-    //   console.log('Preview URL: ' + nodemailer.getTestMessageUrl(info));
-    // });
-  }
-
-  async getSMTPTransport() {
-    // const emailAccount = await this.emailAccountService.findOne(params);
-    // if(!emailAccount) throw new HttpException(SYSTEM_EMAIL_ACCOUNT_NOT_FOUND, HttpStatus.BAD_REQUEST)
-    // let selfSignedConfig = {
-    //   host: emailAccount.host,
-    //   port: emailAccount.port,
-    //   secure: emailAccount.secure, // use TLS
-    //   auth: {
-    //       user: emailAccount.user,
-    //       pass: emailAccount.pass,
-    //   },
-    //   tls: {
-    //       // do not fail on invalid certs
-    //       rejectUnauthorized: emailAccount.rejectUnauthorized,
-    //   }
-    // };
-    // return nodemailer.createTransport(selfSignedConfig);
-    return nodemailer.createTransport({
-      host: 'smtp.ethereal.email',
-      port: 587,
-      auth: {
-        user: 'gmlexezocztzjal4@ethereal.email',
-        pass: 'qCfkxWfztHqfrG2Ggd',
-      },
+  async sendSystemMessage(
+    to: string,
+    subject: string,
+    text: string,
+    html: string,
+  ) {
+    const settings = await this.serverSettingsService.find();
+    if (!settings.communicationServerSystemEmailAccount)
+      throw new BadRequestException();
+    const emailAccount = settings.communicationServerSystemEmailAccount;
+    const emailAccountModel = await this.emailAccount.findOne({
+      uuid: emailAccount,
     });
+    const from = emailAccountModel.from;
+    const pattern = { cmd: SEND_EMAIL };
+    const message = { from, to, subject, text, html };
+    const data = { message, emailAccount };
+    return this.client.send(pattern, data);
+  }
+
+  sendMessage(
+    to: string,
+    from: string,
+    subject: string,
+    text: string,
+    html: string,
+  ) {
+    const pattern = { cmd: SEND_EMAIL };
+    const data = { from, to, subject, text, html };
+    return this.client.send(pattern, data);
   }
 }

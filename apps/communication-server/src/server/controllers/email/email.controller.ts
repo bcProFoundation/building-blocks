@@ -1,22 +1,50 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UsePipes,
+  ValidationPipe,
+  UseGuards,
+  Req,
+  Res,
+} from '@nestjs/common';
 import { EmailService } from './email.service';
 import { AuthServerVerificationGuard } from '../../guards/authserver-verification.guard';
-import { MessagePattern } from '@nestjs/microservices';
-import { from, Observable } from 'rxjs';
+import { EmailMessageAuthServerDto } from './email-message-authserver-dto';
+import { EmailAccountService } from '../../models/email-account/email-account.service';
+import { CreateEmailDto } from './create-email-dto';
+import { BearerTokenStatus } from '../../decorators/bearer-token.decorator';
 
 @Controller('email')
 export class EmailController {
-  constructor(private readonly emailService: EmailService) {}
+  constructor(
+    private readonly email: EmailService,
+    private readonly emailAccount: EmailAccountService,
+  ) {}
 
-  @Post('auth-server')
+  @Post('v1/system')
   @UseGuards(AuthServerVerificationGuard)
-  async sendSystemEmail(@Body() setupForm) {
-    return await this.emailService.sendMessage();
+  @UsePipes(ValidationPipe)
+  async sendSystemEmail(@Body() payload: EmailMessageAuthServerDto) {
+    return await this.email.sendSystemMessage(
+      payload.emailTo,
+      payload.subject,
+      payload.text,
+      payload.html,
+    );
   }
 
-  @MessagePattern({ cmd: 'sum' })
-  sum(data: number[]): Observable<number> {
-    // console.log('inside message pattern', {data});
-    return from(data);
+  @Post('v1/create')
+  @UsePipes(ValidationPipe)
+  async create(
+    @Req() req,
+    @Res() res,
+    @Body() payload: CreateEmailDto,
+    @BearerTokenStatus() token,
+  ) {
+    payload.owner = token.sub;
+    const emailAccount = await this.emailAccount.save(payload);
+    delete emailAccount._id;
+    res.json(emailAccount);
   }
 }

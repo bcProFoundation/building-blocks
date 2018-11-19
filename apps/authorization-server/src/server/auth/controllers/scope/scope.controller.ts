@@ -44,13 +44,6 @@ export class ScopeController {
     return this.scopeService.find({});
   }
 
-  @Get('v1/:uuid')
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
-  async findOne(@Param('uuid') uuid: string, @Req() req) {
-    await this.userService.checkAdministrator(req.user.user);
-    return await this.scopeService.findOne({ uuid });
-  }
-
   @Post('v1/update')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
   async update(@Body() payload, @Req() req, @Res() res) {
@@ -73,5 +66,12 @@ export class ScopeController {
 
     scope._id = undefined;
     res.json(scope);
+  }
+
+  @Get('v1/:uuid')
+  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  async findOne(@Param('uuid') uuid: string, @Req() req) {
+    await this.userService.checkAdministrator(req.user.user);
+    return await this.scopeService.findOne({ uuid });
   }
 }

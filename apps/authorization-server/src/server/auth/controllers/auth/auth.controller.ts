@@ -53,15 +53,10 @@ export class AuthController {
     description: i18n.__('Sign up a new user'),
   })
   async signup(@Body() body: CreateUserDto, @Res() res) {
-    /** TODO:
-     *  - Fire email to signup
-     *  - Sign via phone
-     *  - 2FA
-     */
     await this.authService.signUp(body);
     res.json({
       user: body.email,
-      message: i18n.__('Logged in successfully'),
+      message: i18n.__('Signed up successfully'),
     });
   }
 
