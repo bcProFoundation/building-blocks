@@ -4,28 +4,30 @@ import { ISSUER_URL } from '../constants/storage';
 import { OAuthService } from 'angular-oauth2-oidc';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SettingsService {
   headers: HttpHeaders;
-  constructor(
-    private http: HttpClient,
-    private oauthService: OAuthService,
-  ) {
+  constructor(private http: HttpClient, private oauthService: OAuthService) {
     this.headers = new HttpHeaders({
       Authorization: 'Bearer ' + this.oauthService.getAccessToken(),
-    })
-   }
+    });
+  }
 
-  getSettings(){
+  getSettings() {
     const requestUrl = localStorage.getItem(ISSUER_URL) + '/settings/v1/get';
     return this.http.get(requestUrl, { headers: this.headers });
   }
 
   update(issuerUrl, communicationServerClientId) {
     const requestUrl = localStorage.getItem(ISSUER_URL) + '/settings/v1/update';
-    return this.http.post(requestUrl, {
-      issuerUrl, communicationServerClientId,
-    }, { headers: this.headers });
+    return this.http.post(
+      requestUrl,
+      {
+        issuerUrl,
+        communicationServerClientId,
+      },
+      { headers: this.headers },
+    );
   }
 }

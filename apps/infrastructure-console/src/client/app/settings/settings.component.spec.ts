@@ -1,6 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SettingsComponent } from './settings.component';
+import { MaterialModule } from '../material.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SettingsService } from './settings.service';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { of } from 'rxjs';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('SettingsComponent', () => {
   let component: SettingsComponent;
@@ -8,9 +14,23 @@ describe('SettingsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SettingsComponent ]
-    })
-    .compileComponents();
+      imports: [
+        MaterialModule,
+        FormsModule,
+        ReactiveFormsModule,
+        HttpClientTestingModule,
+        BrowserAnimationsModule,
+      ],
+      providers: [
+        {
+          provide: SettingsService,
+          useValue: {
+            getSettings: (...args) => of([]),
+          },
+        },
+      ],
+      declarations: [SettingsComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
