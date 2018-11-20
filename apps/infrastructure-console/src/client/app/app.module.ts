@@ -26,6 +26,8 @@ import { UserComponent } from './user/user.component';
 import { UserService } from './user/user.service';
 import { RoleService } from './role/role.service';
 import { ScopeService } from './scope/scope.service';
+import { SettingsComponent } from './settings/settings.component';
+import { SettingsService } from './settings/settings.service';
 
 @NgModule({
   declarations: [
@@ -38,6 +40,7 @@ import { ScopeService } from './scope/scope.service';
     RoleComponent,
     ScopeComponent,
     UserComponent,
+    SettingsComponent,
   ],
   imports: [
     BrowserModule,
@@ -69,6 +72,7 @@ import { ScopeService } from './scope/scope.service';
     UserService,
     RoleService,
     ScopeService,
+    SettingsService,
   ],
   bootstrap: [AppComponent],
 })

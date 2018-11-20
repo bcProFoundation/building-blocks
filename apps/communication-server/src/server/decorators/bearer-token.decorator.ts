@@ -2,7 +2,6 @@ import {
   createParamDecorator,
   ForbiddenException,
   NotImplementedException,
-  InternalServerErrorException,
 } from '@nestjs/common';
 import Axios from 'axios';
 import { getConnection, Repository } from 'typeorm';
@@ -14,8 +13,8 @@ export const BearerTokenStatus = createParamDecorator(async (data, req) => {
   const tokenCacheRepo = getConnection().getRepository(TokenCache);
   const serverSettingsRepo = getConnection().getRepository(ServerSettings);
 
-  const accessToken = getAccessToken(req);
   try {
+    const accessToken = getAccessToken(req);
     const introspectedToken = await checkLocalToken(
       accessToken,
       tokenCacheRepo,
@@ -44,7 +43,7 @@ export const BearerTokenStatus = createParamDecorator(async (data, req) => {
       }
     }
   } catch (error) {
-    throw new InternalServerErrorException(error.message);
+    throw new ForbiddenException(error.message);
   }
   throw new ForbiddenException();
 });

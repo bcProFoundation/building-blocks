@@ -8,9 +8,11 @@
     [opened]="!(isHandset$ | async)">
     <mat-toolbar color="primary">Connect</mat-toolbar>
     <mat-nav-list *ngIf="tokenIsValid">
-      <a mat-list-item routerLink="/email">Email Accounts</a>
-      <a mat-list-item routerLink="/webhook">Webhooks</a>
-      <a mat-list-item routerLink="/social-keys">Social Keys</a>
+      <a mat-list-item routerLink="/email/list">Email Accounts</a>
+      <a mat-list-item routerLink="/webhook/list">Webhooks</a>
+      <a mat-list-item routerLink="/social-keys/list">Social Keys</a>
+      <a mat-list-item routerLink="/settings">Settings</a>
+
     </mat-nav-list>
     <mat-nav-list>
         <a mat-list-item (click)="login()" *ngIf="!loggedIn">Login</a>
@@ -25,7 +27,7 @@
         mat-icon-button
         (click)="drawer.toggle()"
         *ngIf="isHandset$ | async">
-        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+        <mat-icon aria-label="Side nav toggle icon"></mat-icon>
       </button>
     </mat-toolbar>
     <router-outlet></router-outlet>

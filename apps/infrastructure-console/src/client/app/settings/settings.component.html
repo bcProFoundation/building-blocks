@@ -1,0 +1,18 @@
+<div class="settings-container">
+  <form (ngSubmit)="updateAuthSettings()" [formGroup]="authSettingsForm">
+    <mat-card>
+      <mat-card-title>Authorization Server Settings</mat-card-title>
+      <mat-card-content fxLayout="column">
+        <mat-form-field>
+          <input matInput formControlName="issuerUrl" placeholder="Server Url">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput formControlName="communicationServerClientId" placeholder="Communication Server Client ID">
+        </mat-form-field>
+      </mat-card-content>
+      <mat-card-actions>
+        <button type="submit" mat-button color="primary" [disabled]="!authSettingsForm.valid">Update</button>
+      </mat-card-actions>
+    </mat-card>
+  </form>
+</div>

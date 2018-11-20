@@ -14,6 +14,7 @@ import { SocialKeyService } from './models/social-key/social-key.service';
 import { MicroservicePatternController } from './controllers/microservice/pattern.controller';
 import { MicroservicePatternService } from './controllers/microservice/pattern.service';
 import { AuthServerVerificationGuard } from './guards/authserver-verification.guard';
+import { SettingsController } from './controllers/settings/settings.controller';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { AuthServerVerificationGuard } from './guards/authserver-verification.gu
     AppController,
     SetupController,
     EmailController,
+    SettingsController,
     MicroservicePatternController,
   ],
   providers: [

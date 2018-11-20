@@ -1,14 +1,7 @@
-import { IsUrl, IsUUID, IsOptional } from 'class-validator';
+import { IsUrl, IsOptional } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 
 export class ServerSettingDto {
-  @ApiModelProperty({
-    description: 'Substitute for datastore key.',
-    type: 'string',
-  })
-  @IsUUID()
-  uuid: string;
-
   @IsUrl()
   @ApiModelProperty({
     description: 'The URL of the server.',

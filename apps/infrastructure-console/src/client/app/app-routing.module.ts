@@ -8,6 +8,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { UserComponent } from './user/user.component';
 import { RoleComponent } from './role/role.component';
 import { ScopeComponent } from './scope/scope.component';
+import { SettingsComponent } from './settings/settings.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -50,6 +51,11 @@ const routes: Routes = [
   {
     path: 'scope/:id',
     component: ScopeComponent,
+    canActivateChild: [AuthGuard],
+  },
+  {
+    path: 'settings',
+    component: SettingsComponent,
     canActivateChild: [AuthGuard],
   },
 
