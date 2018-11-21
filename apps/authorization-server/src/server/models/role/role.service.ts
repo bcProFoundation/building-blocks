@@ -34,6 +34,7 @@ export class RoleService {
   async find(params) {
     return await this.roleModel.find(params);
   }
+
   getRoleModel() {
     return this.roleModel;
   }

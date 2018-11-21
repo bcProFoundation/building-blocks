@@ -60,8 +60,9 @@ if [ "$1" = 'rollback' ]; then
   checkConnection
   # Configure server
   configureServer
-  # TODO: revert Migrations
-  echo "revert migrations"
+  # Rollback Migrations
+  echo "Rollback migrations"
+  ./node_modules/.bin/migrate down updateRoleScopeUuid -d mongodb://$DB_HOST:27017/$DB_NAME
 fi
 
 if [ "$1" = 'start' ]; then
@@ -71,8 +72,10 @@ if [ "$1" = 'start' ]; then
   checkConnection
   # Configure server
   configureServer
-  # TODO: Run Migrations
-  echo "run migrations"
+  # Run Migrations
+  echo "Run migrations"
+  ./node_modules/.bin/migrate up -d mongodb://$DB_HOST:27017/$DB_NAME
+
   export NODE_ENV=production
   node dist/out-tsc/main.js
 fi
