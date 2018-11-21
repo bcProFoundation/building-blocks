@@ -26,6 +26,7 @@ describe('SettingsComponent', () => {
           provide: SettingsService,
           useValue: {
             getSettings: (...args) => of([]),
+            getClientList: (...args) => of([]),
           },
         },
       ],
