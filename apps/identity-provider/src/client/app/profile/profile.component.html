@@ -23,7 +23,7 @@
             <mat-option *ngFor="let g of genders" [value]="g">
               {{ g }}
             </mat-option>
-          </mat-select> 
+          </mat-select>
         </mat-form-field>
         <mat-form-field>
           <mat-datepicker-toggle matSuffix [for]="birthdatePicker"></mat-datepicker-toggle>
@@ -52,7 +52,11 @@
       </div>
       <mat-card-content fxLayout="column">
         <mat-form-field>
-          <ngx-mat-file-input formControlName="picture" placeholder="Avatar" valuePlaceholder="{{ avatarUrl }}"></ngx-mat-file-input>
+          <ngx-mat-file-input
+            formControlName="picture"
+            placeholder="Avatar"
+            accept="image/*"
+            valuePlaceholder="{{ avatarUrl }}"></ngx-mat-file-input>
           <mat-icon matSuffix>folder</mat-icon>
         </mat-form-field>
         <mat-form-field>
@@ -74,7 +78,7 @@
         </mat-form-field>
       </mat-card-content>
       <mat-card-actions>
-          <button type="submit" mat-button color="primary">{{ updateConstant }}</button>
+          <button type="submit" mat-button color="primary">Update</button>
       </mat-card-actions>
     </mat-card>
   </form>
@@ -120,13 +124,13 @@
       <mat-card-content fxLayout="column">
         <mat-form-field>
           <input matInput type="password" formControlName="currentPassword" placeholder="Current Password" required>
-        </mat-form-field>    
+        </mat-form-field>
         <mat-form-field>
           <input matInput type="password" formControlName="newPassword" placeholder="New Password" required>
-        </mat-form-field>    
+        </mat-form-field>
         <mat-form-field>
           <input matInput type="password" formControlName="repeatPassword" placeholder="Repeat Password" required>
-        </mat-form-field>    
+        </mat-form-field>
       </mat-card-content>
       <mat-card-actions>
           <button type="submit" mat-button color="primary">{{ updateConstant }}</button>
