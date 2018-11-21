@@ -60,6 +60,13 @@ export class ClientController {
     });
   }
 
+  @Get('v1/trusted_clients')
+  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  async findAllTrustedClients(@Req() req) {
+    await this.userService.checkAdministrator(req.user.user);
+    return await this.clientService.find({ isTrusted: 1 });
+  }
+
   @Get('v1/:id')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
   async findOne(@Param('id') id: number, @Req() request) {

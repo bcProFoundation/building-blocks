@@ -20,7 +20,7 @@ export class ClientService {
   }
 
   async find(params) {
-    return await this.clientModel.find(params).exec();
+    return await this.clientModel.find(params, ['uuid', 'name']).exec();
   }
 
   async paginate(query, options) {
