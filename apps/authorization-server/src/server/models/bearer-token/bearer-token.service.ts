@@ -3,7 +3,7 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { BEARER_TOKEN } from './bearer-token.schema';
 import { BearerToken } from '../interfaces/bearer-token.interface';
-import { INVALID_TOKEN } from '../../constants/messages';
+import { i18n } from '../../i18n/i18n.config';
 
 @Injectable()
 export class BearerTokenService {
@@ -25,7 +25,10 @@ export class BearerTokenService {
     }
 
     if (checkAccessToken || checkRefreshToken) {
-      throw new HttpException(INVALID_TOKEN, HttpStatus.NOT_FOUND);
+      throw new HttpException(
+        i18n.__('Invalid Bearer Token'),
+        HttpStatus.NOT_FOUND,
+      );
     }
 
     const createdToken = new this.bearerTokenModel(params);

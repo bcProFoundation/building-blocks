@@ -1,14 +1,9 @@
-import {
-  Injectable,
-  HttpException,
-  HttpStatus,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { PassportStrategy } from './passport.strategy';
 import { Strategy } from 'passport-http-bearer';
 import { BearerTokenService } from '../../models/bearer-token/bearer-token.service';
 import { ConfigService } from '../../config/config.service';
-import { UNAUTHORIZED } from '../../constants/messages';
+import { i18n } from '../../i18n/i18n.config';
 
 @Injectable()
 export class HttpBearerStrategy extends PassportStrategy(Strategy) {
@@ -21,7 +16,7 @@ export class HttpBearerStrategy extends PassportStrategy(Strategy) {
   async validate(token: any, done: (err?, user?, info?) => any) {
     try {
       const unauthorizedError = new HttpException(
-        UNAUTHORIZED,
+        i18n.__('Unauthorized'),
         HttpStatus.UNAUTHORIZED,
       );
       const localToken = await this.bearerTokenService.findOne({
@@ -43,12 +38,3 @@ export class HttpBearerStrategy extends PassportStrategy(Strategy) {
     }
   }
 }
-
-export const callback = (err, user, info) => {
-  if (typeof info !== 'undefined') {
-    throw new UnauthorizedException(info.message);
-  } else if (err || !user) {
-    throw err || new UnauthorizedException();
-  }
-  return user.user;
-};

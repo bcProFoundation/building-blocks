@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { PaginateModel } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { ROLE } from './role.schema';
 import { Role } from '../interfaces/role.interface';
 import { invalidRoleException } from '../../auth/filters/exceptions';
+import { PaginateModel } from '../../typings/mongoose';
 
 @Injectable()
 export class RoleService {
@@ -29,5 +29,12 @@ export class RoleService {
 
   async paginate(query, options) {
     return await this.roleModel.paginate(query, options);
+  }
+
+  async find(params) {
+    return await this.roleModel.find(params);
+  }
+  getRoleModel() {
+    return this.roleModel;
   }
 }

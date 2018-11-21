@@ -5,6 +5,7 @@ import { AuthServerMaterialModule } from '../auth-server-material/auth-server-ma
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../auth/auth.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('SignupComponent', () => {
   let fixture: ComponentFixture<SignupComponent>;
@@ -20,7 +21,12 @@ describe('SignupComponent', () => {
           useValue: authServiceStub, // mock values
         },
       ],
-      imports: [AuthServerMaterialModule, FormsModule, BrowserAnimationsModule],
+      imports: [
+        AuthServerMaterialModule,
+        FormsModule,
+        BrowserAnimationsModule,
+        HttpClientTestingModule,
+      ],
     }).compileComponents();
   }));
 

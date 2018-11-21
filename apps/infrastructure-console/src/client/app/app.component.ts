@@ -31,13 +31,12 @@ export class AppComponent {
         loginUrl: response.authorizationURL,
         scope: 'openid roles',
         issuer: response.authServerURL,
-        disableAtHashCheck: true,
       };
       if (isDevMode()) authConfig.requireHttps = false;
       this.oauthService.configure(authConfig);
       this.oauthService.tokenValidationHandler = new JwksValidationHandler();
       this.oauthService.setupAutomaticSilentRefresh();
-      this.oauthService.loadDiscoveryDocumentAndTryLogin();
+      this.oauthService.loadDiscoveryDocumentAndLogin();
     });
   }
 }

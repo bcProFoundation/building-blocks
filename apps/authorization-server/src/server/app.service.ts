@@ -1,12 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { APP_NAME } from './constants/messages';
-import { INDEX_HTML } from './constants/filesystem';
+import { i18n } from './i18n/i18n.config';
+import { INDEX_HTML } from './constants/app-strings';
+import { ServerSettingsService } from './models/server-settings/server-settings.service';
 
 @Injectable()
 export class AppService {
-  info(req?) {
+  constructor(private readonly serverSettings: ServerSettingsService) {}
+
+  async info(req?) {
+    const settings = await this.serverSettings.find();
     return {
-      message: APP_NAME,
+      message: i18n.__('Authorization Server'),
+      communication: settings.communicationServerClientId ? true : false,
       session: req.isAuthenticated(),
     };
   }

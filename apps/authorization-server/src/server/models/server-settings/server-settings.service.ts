@@ -4,7 +4,7 @@ import { settingsNotFoundException } from '../../auth/filters/exceptions';
 import { InjectModel } from '@nestjs/mongoose';
 import { SERVER_SETTINGS } from './server-settings.schema';
 import { ServerSettings } from '../interfaces/server-settings.interface';
-import { SETUP_ALREADY_COMPLETE } from '../../constants/messages';
+import { i18n } from '../../i18n/i18n.config';
 
 @Injectable()
 export class ServerSettingsService {
@@ -16,7 +16,10 @@ export class ServerSettingsService {
   async save(params) {
     const checkSettings = await this.count();
     if (checkSettings > 0) {
-      throw new HttpException(SETUP_ALREADY_COMPLETE, HttpStatus.UNAUTHORIZED);
+      throw new HttpException(
+        i18n.__('Setup already complete'),
+        HttpStatus.UNAUTHORIZED,
+      );
     }
     const createdSettings = new this.settingsModel(params);
     return await createdSettings.save();

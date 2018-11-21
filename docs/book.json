@@ -1,3 +1,6 @@
 {
-    "root": "./manual"
+    "root": ".",
+    "variables": {
+        "docUrl": "http://castlecraft.gitlab.io/building-blocks"
+    }
 }

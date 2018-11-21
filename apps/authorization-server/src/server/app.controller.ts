@@ -5,17 +5,13 @@ import {
   UseGuards,
   UseFilters,
   Req,
-  Param,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { EnsureLoginGuard } from 'nestjs-ensureloggedin-guard';
 import { ErrorFilter } from './auth/filters/errors.filter';
 import { ApiOperation, ApiExcludeEndpoint } from '@nestjs/swagger';
-import {
-  APP_ACCOUNT_TITLE,
-  APP_ACCOUNT_DESCRIPTION,
-} from './constants/swagger';
-import { INDEX_HTML, FOLDER_DIST_BROWSER } from './constants/filesystem';
+import { i18n } from './i18n/i18n.config';
+import { INDEX_HTML } from './constants/app-strings';
 
 @Controller()
 export class AppController {
@@ -27,12 +23,12 @@ export class AppController {
   }
 
   @Get('login')
-  @ApiExcludeEndpoint() // Exclude from Swagger documentation
+  @ApiExcludeEndpoint()
   loginForm(@Req() req, @Res() res) {
     this.appService.login(req, res);
   }
 
-  @Get('signup')
+  @Get('signup*')
   @ApiExcludeEndpoint()
   signupForm(@Res() res) {
     res.sendFile(INDEX_HTML);
@@ -42,15 +38,10 @@ export class AppController {
   @UseGuards(EnsureLoginGuard)
   @UseFilters(ErrorFilter)
   @ApiOperation({
-    title: APP_ACCOUNT_TITLE,
-    description: APP_ACCOUNT_DESCRIPTION,
+    title: i18n.__('Account'),
+    description: i18n.__('View the logged in User account'),
   })
   account(@Res() res) {
     res.sendFile(INDEX_HTML);
-  }
-
-  @Get('language/:lang*')
-  localeRoot(@Res() res, @Param('lang') lang) {
-    res.sendFile(FOLDER_DIST_BROWSER + `-${lang}/index.html`);
   }
 }

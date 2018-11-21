@@ -8,18 +8,24 @@ import {
   Get,
   Res,
   UnauthorizedException,
+  Param,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CryptographerService } from '../../../utilities/cryptographer.service';
 import { UserService } from '../../../models/user/user.service';
 import { AuthGuard } from '../../guards/auth.guard';
 import { callback } from '../../passport/local.strategy';
-import { INVALID_PASSWORD } from '../../../constants/messages';
+import { CreateUserDto } from '../../../models/user/create-user.dto';
+import { AuthDataService } from '../../../models/auth-data/auth-data.service';
+import { i18n } from '../../../i18n/i18n.config';
 
 @Controller('user')
 export class UserController {
   constructor(
     private readonly userService: UserService,
     private readonly cryptoService: CryptographerService,
+    private readonly authDataService: AuthDataService,
   ) {}
 
   @Post('v1/change_password')
@@ -36,7 +42,7 @@ export class UserController {
       authData.password = this.cryptoService.hashPassword(body.newPassword);
       await authData.save();
       res.json({ message: 'updated' });
-    } else throw new UnauthorizedException(INVALID_PASSWORD);
+    } else throw new UnauthorizedException(i18n.__('Invalid Password'));
   }
 
   @Post('v1/update_full_name')
@@ -76,6 +82,51 @@ export class UserController {
     res.json(user);
   }
 
+  @Post('v1/create')
+  @UsePipes(ValidationPipe)
+  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  async create(@Body() body: CreateUserDto, @Req() req, @Res() res) {
+    await this.userService.checkAdministrator(req.user.user);
+    const user = await this.userService.save(body);
+
+    // create Password
+    const authData = new (this.authDataService.getModel())();
+    authData.password = this.cryptoService.hashPassword(body.password);
+    await authData.save();
+
+    // link password with user
+    user.password = authData.uuid;
+    await user.save();
+
+    // delete mongodb _id
+    user._id = undefined;
+    res.json(user);
+  }
+
+  @Post('v1/update')
+  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  async update(@Body() payload, @Req() req, @Res() res) {
+    await this.userService.checkAdministrator(req.user.user);
+    const user = await this.userService.findOne({
+      uuid: payload.uuid,
+    });
+    user.name = payload.name;
+    user.roles = payload.roles;
+
+    // Set password if exists
+    if (payload.password) {
+      const authData = await this.authDataService.findOne({
+        uuid: user.password,
+      });
+      authData.password = this.cryptoService.hashPassword(payload.password);
+      await authData.save();
+    }
+
+    await user.save();
+    user._id, (user.password = undefined);
+    res.json(user);
+  }
+
   @Get('v1/list')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
   async list(
@@ -89,5 +140,11 @@ export class UserController {
       offset: Number(offset),
       limit: Number(limit),
     });
+  }
+
+  @Get('v1/:id')
+  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  async findOne(@Param('id') id: number, @Req() request) {
+    return await this.userService.findOne({ uuid: id });
   }
 }

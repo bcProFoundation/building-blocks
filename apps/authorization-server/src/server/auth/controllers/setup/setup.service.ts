@@ -1,10 +1,6 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { ScopeService } from '../../../models/scope/scope.service';
 import { ClientService } from '../../../models/client/client.service';
-import {
-  SETUP_ALREADY_COMPLETE,
-  INFRASTRUCTURE_CONSOLE,
-} from '../../../constants/messages';
 import { AuthService } from '../auth/auth.service';
 import { CreateUserDto } from '../../../models/user/create-user.dto';
 import { UserService } from '../../../models/user/user.service';
@@ -13,7 +9,8 @@ import { ServerSettingsService } from '../../../models/server-settings/server-se
 import { Scope } from '../../../models/interfaces/scope.interface';
 import { Client } from '../../../models/interfaces/client.interface';
 import { KeyPairGeneratorService } from '../../../scheduler/keypair-generator.service';
-import { ADMINISTRATOR } from '../../../constants/roles';
+import { i18n } from '../../../i18n/i18n.config';
+import { ADMINISTRATOR } from '../../../constants/app-strings';
 
 @Injectable()
 export class SetupService {
@@ -39,7 +36,10 @@ export class SetupService {
     const existingUsers = await this.userService.find();
 
     if (existingClients.length > 0 || existingUsers.length > 0) {
-      throw new HttpException(SETUP_ALREADY_COMPLETE, HttpStatus.UNAUTHORIZED);
+      throw new HttpException(
+        i18n.__('Setup already complete'),
+        HttpStatus.UNAUTHORIZED,
+      );
     }
     await this.settingsService.save({ issuerUrl });
     await this.createUser(fullName, email, phone, adminPassword);
@@ -65,7 +65,7 @@ export class SetupService {
     const ClientModel = this.clientService.getModel();
     const client: Client = new ClientModel();
     client.redirectUris = callbackUrls;
-    client.name = INFRASTRUCTURE_CONSOLE;
+    client.name = i18n.__('Infrastructure Console');
     client.allowedScopes = allowedScopes;
     client.createdBy = createdBy.uuid;
     client.modifiedBy = createdBy.uuid;

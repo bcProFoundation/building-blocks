@@ -15,7 +15,8 @@ describe('MultifactorService', () => {
           useValue: oauthServiceStub,
         },
       ],
-    }));
+    }),
+  );
 
   it('should be created', () => {
     const service: MultifactorService = TestBed.get(MultifactorService);

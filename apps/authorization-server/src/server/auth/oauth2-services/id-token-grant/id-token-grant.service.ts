@@ -6,6 +6,7 @@ import { ServerSettingsService } from '../../../models/server-settings/server-se
 import { ServerSettings } from '../../../models/interfaces/server-settings.interface';
 import { JWKSNotFound } from '../../filters/exceptions';
 import { ConfigService } from '../../../config/config.service';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class IDTokenGrantService {
@@ -17,7 +18,7 @@ export class IDTokenGrantService {
     private readonly configService: ConfigService,
   ) {}
 
-  async grantIDToken(client, user, req, done) {
+  async grantIDToken(client, user, req, done, accessToken?: string) {
     try {
       if (!this.settings) this.settings = await this.settingsService.find();
 
@@ -35,6 +36,11 @@ export class IDTokenGrantService {
       };
 
       if (req.scope.includes('roles')) claims.roles = user.roles;
+      if (accessToken) {
+        // Thanks https://github.com/mozilla/fxa-oauth-server/pull/598/files
+        const atHash = this.generateTokenHash(accessToken);
+        claims.at_hash = atHash;
+      }
 
       const jwks = await this.oidcKeyService.find();
       const foundKey = jwks[0];
@@ -53,5 +59,25 @@ export class IDTokenGrantService {
     } catch (error) {
       done(error, null);
     }
+  }
+
+  generateTokenHash(accessTokenBuf) {
+    const hash = this.encryptHash(accessTokenBuf.toString('ascii'));
+    return this.base64URLEncode(hash.slice(0, hash.length / 2));
+  }
+
+  base64URLEncode(buf) {
+    return buf
+      .toString('base64')
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '');
+  }
+
+  encryptHash(hash) {
+    const value = Buffer.from(hash, 'ascii');
+    const sha = crypto.createHash('sha256');
+    sha.update(value);
+    return sha.digest();
   }
 }

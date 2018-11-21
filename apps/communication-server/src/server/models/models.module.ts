@@ -7,11 +7,17 @@ import { ServerSettingsService } from './server-settings/server-settings.service
 import { ServerSettings } from './server-settings/server-settings.entity';
 import { SocialKey } from './social-key/social-key.entity';
 import { SocialKeyService } from './social-key/social-key.service';
+import { TokenCache } from './token-cache/token-cache.entity';
 
 @Module({
   imports: [
     ConfigModule,
-    TypeOrmModule.forFeature([EmailAccount, ServerSettings, SocialKey]),
+    TypeOrmModule.forFeature([
+      EmailAccount,
+      ServerSettings,
+      SocialKey,
+      TokenCache,
+    ]),
   ],
   providers: [EmailAccountService, ServerSettingsService, SocialKeyService],
   exports: [EmailAccountService, ServerSettingsService, SocialKeyService],

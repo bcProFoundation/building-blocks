@@ -26,7 +26,7 @@ export class AppController {
     return res.sendFile(INDEX_HTML);
   }
 
-  @Get('scopes*')
+  @Get('scope*')
   scopes(@Res() res) {
     return res.sendFile(INDEX_HTML);
   }
@@ -38,6 +38,11 @@ export class AppController {
 
   @Get('user*')
   users(@Res() res) {
+    return res.sendFile(INDEX_HTML);
+  }
+
+  @Get('settings*')
+  settings(@Res() res) {
     return res.sendFile(INDEX_HTML);
   }
 

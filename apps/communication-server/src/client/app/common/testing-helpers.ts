@@ -1,4 +1,4 @@
-import { OAuthService } from 'angular-oauth2-oidc';
+import { OAuthService, LoginOptions } from 'angular-oauth2-oidc';
 import { Observable } from 'rxjs';
 
 export const oauthServiceStub: Partial<OAuthService> = {
@@ -9,7 +9,11 @@ export const oauthServiceStub: Partial<OAuthService> = {
   },
   configure(...args) {},
   setupAutomaticSilentRefresh(...args) {},
-  loadDiscoveryDocumentAndTryLogin(optins?: any): Promise<void> {
-    return Promise.resolve();
+  loadDiscoveryDocumentAndTryLogin(options?: LoginOptions): Promise<boolean> {
+    return Promise.resolve(true);
   },
+  loadDiscoveryDocumentAndLogin(options?: LoginOptions): Promise<boolean> {
+    return Promise.resolve(true);
+  },
+  getAccessToken: () => 'mock_token',
 };

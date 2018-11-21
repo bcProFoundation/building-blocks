@@ -1,16 +1,11 @@
 import { IsUrl, IsInt, IsAlphanumeric } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
-import {
-  CLIENT_NAME_DESCRIPTION,
-  CLIENT_SECRET_DESCRIPTION,
-  CLIENT_IS_TRUSTED,
-  CLIENT_REDIRECT_URI,
-} from '../../constants/swagger';
+import { i18n } from '../../i18n/i18n.config';
 
 export class CreateClientDto {
   @IsAlphanumeric()
   @ApiModelProperty({
-    description: CLIENT_NAME_DESCRIPTION,
+    description: i18n.__('e.g MyAwesomeApp'),
     type: 'string',
     required: true,
   })
@@ -18,19 +13,24 @@ export class CreateClientDto {
 
   @IsAlphanumeric()
   @ApiModelProperty({
-    description: CLIENT_SECRET_DESCRIPTION,
+    description: i18n.__('Auto generated OAuth2.0 Client secret key'),
     type: 'string',
     required: true,
   })
   clientSecret: string;
 
   @IsInt()
-  @ApiModelProperty({ description: CLIENT_IS_TRUSTED, type: 'number' })
+  @ApiModelProperty({
+    description: i18n.__('Skips the Allow/Deny screen if value is 1'),
+    type: 'number',
+  })
   isTrusted: number;
 
   @IsUrl()
   @ApiModelProperty({
-    description: CLIENT_REDIRECT_URI,
+    description: i18n.__(
+      'Client app endpoint which will receive the token/code',
+    ),
     type: 'string',
     required: true,
   })

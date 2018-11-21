@@ -16,6 +16,12 @@ import { AppsComponent } from './apps/apps.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { NavigationComponent } from './navigation/navigation.component';
+import { ListingComponent } from './listing/listing.component';
+import { ListingService } from './common/listing.service';
+import { EmailComponent } from './email/email.component';
+import { EmailService } from './email/email.service';
+import { SettingsComponent } from './settings/settings.component';
+import { WebhookComponent } from './webhook/webhook.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +29,10 @@ import { NavigationComponent } from './navigation/navigation.component';
     HomeComponent,
     AppsComponent,
     NavigationComponent,
+    ListingComponent,
+    EmailComponent,
+    SettingsComponent,
+    WebhookComponent,
   ],
   imports: [
     BrowserModule,
@@ -41,6 +51,8 @@ import { NavigationComponent } from './navigation/navigation.component';
     MessageService,
     AuthGuard,
     Title,
+    ListingService,
+    EmailService,
     { provide: OAuthStorage, useValue: localStorage },
   ],
   bootstrap: [AppComponent],

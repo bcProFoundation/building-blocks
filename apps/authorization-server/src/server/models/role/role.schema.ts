@@ -1,8 +1,12 @@
 import * as mongoose from 'mongoose';
 import * as mongoosePaginate from 'mongoose-paginate';
+import * as uuidv4 from 'uuid/v4';
 
 const schema = new mongoose.Schema(
-  { name: String },
+  {
+    uuid: { type: String, default: uuidv4 },
+    name: String,
+  },
   { collection: 'role', versionKey: false },
 );
 

@@ -39,6 +39,9 @@ export class ServerSettings extends BaseEntity {
   @Column()
   revocationURL: string;
 
+  @Column()
+  communicationServerSystemEmailAccount: string;
+
   constructor() {
     super();
     if (!this.uuid) this.uuid = uuidv4();

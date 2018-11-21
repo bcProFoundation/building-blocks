@@ -1,17 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { MongoRepository } from 'typeorm';
 import { EmailAccount } from './email-account.entity';
 import { DELETED } from '../../constants/messages';
+import { CreateEmailDto } from '../../controllers/email/create-email-dto';
 
 @Injectable()
 export class EmailAccountService {
   constructor(
     @InjectRepository(EmailAccount)
-    private readonly emailAccountRepository: Repository<EmailAccount>,
+    private readonly emailAccountRepository: MongoRepository<EmailAccount>,
   ) {}
 
-  public async create(emailAccount) {
+  public async save(params: EmailAccount | CreateEmailDto) {
+    const emailAccount = new EmailAccount();
+    Object.assign(emailAccount, params);
     return await this.emailAccountRepository.save(emailAccount);
   }
 
@@ -27,5 +30,10 @@ export class EmailAccountService {
     return await this.findOne(params).then(emailAccount =>
       emailAccount.remove().then(() => Promise.resolve({ message: DELETED })),
     );
+  }
+
+  public async list(skip, take) {
+    const emailAccount = await this.emailAccountRepository.find({ skip, take });
+    return emailAccount;
   }
 }
