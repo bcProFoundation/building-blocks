@@ -38,7 +38,6 @@ export class SetupService {
           return this.idpSettings;
         },
         error: error => {
-          // TODO : meaningful errors
           throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
         },
       });
