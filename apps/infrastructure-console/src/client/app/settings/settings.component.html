@@ -10,8 +10,8 @@
           <mat-select
             placeholder="Communication Server Client ID"
             formControlName="communicationServerClientId">
-            <mat-option *ngFor="let client of clientList" [value]="client.uuid">
-              {{ client.name + " (" + client.uuid + ")"}}
+            <mat-option *ngFor="let client of clientList" [value]="client.clientId">
+              {{ client.name + " (" + client.clientId + ")"}}
             </mat-option>
           </mat-select>
         </mat-form-field>
