@@ -20,6 +20,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { ProfileNavService } from './profile-nav/profile-nav.service';
 import { ProfileService } from './profile/profile.service';
 import { MultifactorComponent } from './multifactor/multifactor.component';
+import { SettingsComponent } from './settings/settings.component';
+import { SettingsService } from './settings/settings.service';
 
 @NgModule({
   declarations: [
@@ -29,6 +31,7 @@ import { MultifactorComponent } from './multifactor/multifactor.component';
     ProfileComponent,
     AppsComponent,
     MultifactorComponent,
+    SettingsComponent,
   ],
   imports: [
     BrowserModule,
@@ -51,6 +54,7 @@ import { MultifactorComponent } from './multifactor/multifactor.component';
     { provide: OAuthStorage, useValue: localStorage },
     ProfileService,
     ProfileNavService,
+    SettingsService,
   ],
   bootstrap: [AppComponent],
 })
