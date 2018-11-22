@@ -4,6 +4,7 @@ import { MongoConnectionOptions } from 'typeorm/driver/mongodb/MongoConnectionOp
 import { ServerSettings } from './server-settings/server-settings.entity';
 import { SocialKey } from './social-key/social-key.entity';
 import { TokenCache } from './token-cache/token-cache.entity';
+import { QueueLog } from './queue-log/queue-log.entity';
 
 const config = new ConfigService();
 
@@ -14,5 +15,5 @@ export const TYPEORM_CONNECTION: MongoConnectionOptions = {
   database: config.get('DB_NAME'),
   logging: false,
   synchronize: true,
-  entities: [EmailAccount, ServerSettings, SocialKey, TokenCache],
+  entities: [EmailAccount, ServerSettings, SocialKey, TokenCache, QueueLog],
 };

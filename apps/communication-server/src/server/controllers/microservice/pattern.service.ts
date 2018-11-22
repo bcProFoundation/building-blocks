@@ -2,43 +2,35 @@ import { Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import { EmailAccountService } from '../../models/email-account/email-account.service';
 import { EmailAccount } from '../../models/email-account/email-account.entity';
+import { QueueLogService } from '../../models/queue-log/queue-log.service';
+import { QueueLog } from '../../models/queue-log/queue-log.entity';
+import { SEND_EMAIL } from '../../constants/app-strings';
 
 @Injectable()
 export class MicroservicePatternService {
-  constructor(private readonly emailAccount: EmailAccountService) {}
+  constructor(
+    private readonly emailAccount: EmailAccountService,
+    private readonly queueLogSerice: QueueLogService,
+  ) {}
 
   async processMessage(data) {
     const { message, emailAccount } = data;
     const transport = await this.getSMTPTransport(emailAccount);
     transport
       .sendMail(message)
-      .then(info => {
-        // console.log({ info });
-        /*
-        // TODO: Log Success Message
-          {
-              info: {
-              accepted: [ 'revant@mntechnique.com' ],
-              rejected: [],
-              envelopeTime: 104,
-              messageTime: 113,
-              messageSize: 542,
-              response: '250 2.0.0 Ok: queued as 3595160730',
-              envelope: {
-                from: 'noreply@mntechnique.com',
-                to: [ 'revant@mntechnique.com' ]
-              },
-              messageId: '<3e13a33b-7342-8acc-ad75-b01ed00c63ae@mntechnique.com>'
-            }
-          }
-         */
+      .then(async success => {
+        const log = new QueueLog();
+        log.data = { success };
+        log.senderType = SEND_EMAIL;
+        log.senderUuid = emailAccount;
+        await this.queueLogSerice.save(log);
       })
-      .catch(error => {
-        // console.log(error.message, error.code, error.command);
-        /**
-         * TODO: Log Error Message
-         * { message: 'Missing credentials for "PLAIN"', code: 'EAUTH', command: 'API' }
-         */
+      .catch(async error => {
+        const log = new QueueLog();
+        log.data = { error };
+        log.senderType = SEND_EMAIL;
+        log.senderUuid = emailAccount;
+        await this.queueLogSerice.save(log);
       });
   }
 
@@ -46,7 +38,6 @@ export class MicroservicePatternService {
     const emailAccount: EmailAccount = await this.emailAccount.findOne({
       uuid,
     });
-    // TODO: get from Email Account
     return nodemailer.createTransport({
       host: emailAccount.host,
       port: emailAccount.port,

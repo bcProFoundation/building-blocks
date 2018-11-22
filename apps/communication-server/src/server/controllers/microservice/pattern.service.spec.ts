@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '../../config/config.service';
 import { MicroservicePatternService } from './pattern.service';
 import { EmailAccountService } from '../../models/email-account/email-account.service';
+import { QueueLogService } from '../../models/queue-log/queue-log.service';
 
 describe('MicroservicePatternService', () => {
   let service: MicroservicePatternService;
@@ -14,6 +15,10 @@ describe('MicroservicePatternService', () => {
         },
         {
           provide: EmailAccountService,
+          useValue: {},
+        },
+        {
+          provide: QueueLogService,
           useValue: {},
         },
         {

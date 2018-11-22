@@ -27,9 +27,9 @@ export class SettingsComponent implements OnInit {
   ngOnInit() {
     this.settingsService.getSettings().subscribe({
       next: (response: IdpServerSettings) => {
-        (this.appURL = response.appURL),
-          (this.authServerURL = response.authServerURL),
-          (this.clientId = response.clientId);
+        this.appURL = response.appURL;
+        this.authServerURL = response.authServerURL;
+        this.clientId = response.clientId;
         this.clientSecret = response.clientSecret;
       },
     });

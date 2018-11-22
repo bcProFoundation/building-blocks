@@ -8,6 +8,8 @@ import { ServerSettings } from './server-settings/server-settings.entity';
 import { SocialKey } from './social-key/social-key.entity';
 import { SocialKeyService } from './social-key/social-key.service';
 import { TokenCache } from './token-cache/token-cache.entity';
+import { QueueLogService } from './queue-log/queue-log.service';
+import { QueueLog } from './queue-log/queue-log.entity';
 
 @Module({
   imports: [
@@ -17,9 +19,20 @@ import { TokenCache } from './token-cache/token-cache.entity';
       ServerSettings,
       SocialKey,
       TokenCache,
+      QueueLog,
     ]),
   ],
-  providers: [EmailAccountService, ServerSettingsService, SocialKeyService],
-  exports: [EmailAccountService, ServerSettingsService, SocialKeyService],
+  providers: [
+    EmailAccountService,
+    ServerSettingsService,
+    SocialKeyService,
+    QueueLogService,
+  ],
+  exports: [
+    EmailAccountService,
+    ServerSettingsService,
+    SocialKeyService,
+    QueueLogService,
+  ],
 })
 export class ModelsModule {}
