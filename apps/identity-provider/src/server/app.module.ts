@@ -7,6 +7,7 @@ import { TYPEORM_CONNECTION } from './models/typeorm.connection';
 import { SetupService } from './controllers/setup/setup.service';
 import { SetupController } from './controllers/setup/setup.controller';
 import { ProfileController } from './controllers/profile/profile.controller';
+import { SettingsController } from './controllers/settings/settings.controller';
 
 @Module({
   imports: [
@@ -14,7 +15,12 @@ import { ProfileController } from './controllers/profile/profile.controller';
     ModelsModule,
     HttpModule,
   ],
-  controllers: [AppController, SetupController, ProfileController],
+  controllers: [
+    AppController,
+    SetupController,
+    ProfileController,
+    SettingsController,
+  ],
   providers: [AppService, SetupService],
 })
 export class AppModule {}

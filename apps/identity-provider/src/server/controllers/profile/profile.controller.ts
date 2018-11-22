@@ -12,7 +12,7 @@ import { ProfileService } from '../../models/profile/profile.service';
 import { PersonalDetailsDTO } from './personal-details-dto';
 import { BearerTokenStatus } from '../../decorators/bearer-token-status.decorator';
 import { Profile } from '../../models/profile/profile.entity';
-import { PersonalSecondDetailsDTO } from './personal-second-details-dto';
+import { ProfileDetailsDTO } from './profile-details-dto';
 import { INDEX_HTML } from '../../constants/filesystem';
 
 @Controller('profile')
@@ -26,8 +26,8 @@ export class ProfileController {
 
   @Post('v1/update_profile_details')
   @UsePipes(ValidationPipe)
-  async updateSecondProfile(
-    @Body() profile: PersonalSecondDetailsDTO,
+  async updateProfileDetails(
+    @Body() profile: ProfileDetailsDTO,
     @Res() res,
     @BearerTokenStatus() tokenStatus,
   ) {

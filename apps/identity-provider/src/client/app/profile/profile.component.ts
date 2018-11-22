@@ -80,12 +80,6 @@ export class ProfileComponent implements OnInit {
     }),
   });
 
-  // personalSecondForm = new FormGroup({
-  //   website : new FormControl(this.website),
-  //   zoneinfo : new FormControl(this.zoneinfo),
-  //   locale : new FormControl(this.locale),
-  // })
-
   profileForm = new FormGroup({
     picture: new FormControl(this.picture),
     website: new FormControl(this.website),
@@ -190,7 +184,7 @@ export class ProfileComponent implements OnInit {
     this.profileService
       .updateProfileDetails({
         uuid: this.uuid,
-        // avatarUrl : this.personalSecondForm.controls.avatarUrl.value,
+        // avatarUrl : this.profileForm.controls.avatarUrl.value,
         website: this.profileForm.controls.website.value,
         zoneinfo: this.profileForm.controls.zoneinfo.value,
         locale: this.profileForm.controls.locale.value,

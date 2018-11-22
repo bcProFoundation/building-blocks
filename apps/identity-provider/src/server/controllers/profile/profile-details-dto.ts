@@ -1,6 +1,6 @@
 import { IsString, IsUUID } from 'class-validator';
 
-export class PersonalSecondDetailsDTO {
+export class ProfileDetailsDTO {
   @IsUUID()
   uuid: string;
   //   @IsUrl()
