@@ -31,7 +31,7 @@ export async function up() {
   for (let i = 0; i < scopes.length; i++) {
     const scope = scopes[i];
     scope.uuid = uuidv4();
-    await scopeService.update(scope);
+    await scopeModel.updateOne({ name: scope.name }, scope);
   }
 }
 
