@@ -256,6 +256,8 @@ pack_production_infrastructure_console:
 
 pages:
   stage: docs
+  only:
+    - staging
   before_script:
     - npm install -g lerna
     - yarn
