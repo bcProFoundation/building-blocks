@@ -25,9 +25,10 @@ import { UserResponse } from '../interfaces/user-response.interface';
 import { MatDatepickerInputEvent, MatSnackBar } from '@angular/material';
 import { USER_UUID, ISSUER_URL, APP_URL } from '../../constants/storage';
 import { map } from 'rxjs/operators';
-import { ProfileResponse } from '../interfaces/profile-response.interface';
+import { PersonalResponse } from '../interfaces/personal-response.interface';
 import { LOGOUT_URL } from '../../constants/url-paths';
 import { Router } from '@angular/router';
+import { ProfileResponse } from '../interfaces/profile-response.interface';
 
 @Component({
   selector: 'app-profile',
@@ -106,6 +107,7 @@ export class ProfileComponent implements OnInit {
     this.roles = roles;
     this.subscribeGetUser();
     this.subscribeGetProfilePersonal();
+    this.subscribeGetProfile();
   }
 
   subscribeGetUser() {
@@ -129,7 +131,7 @@ export class ProfileComponent implements OnInit {
   subscribeGetProfilePersonal() {
     const uuid = localStorage.getItem(USER_UUID);
     this.profileService.getPersonalDetails(uuid).subscribe({
-      next: (response: ProfileResponse) => {
+      next: (response: PersonalResponse) => {
         if (response) {
           this.personalForm.controls.familyName.setValue(response.familyName);
           this.personalForm.controls.birthdate.setValue(response.birthdate);
@@ -138,6 +140,19 @@ export class ProfileComponent implements OnInit {
           this.personalForm.controls.middleName.setValue(response.middleName);
           this.personalForm.controls.familyName.setValue(response.familyName);
           this.personalForm.controls.nickname.setValue(response.nickname);
+        }
+      },
+    });
+  }
+
+  subscribeGetProfile() {
+    const uuid = localStorage.getItem(USER_UUID);
+    this.profileService.getProfileDetails(uuid).subscribe({
+      next: (response: ProfileResponse) => {
+        if (response) {
+          this.profileForm.controls.website.setValue(response.website);
+          this.profileForm.controls.zoneinfo.setValue(response.zoneinfo);
+          this.profileForm.controls.locale.setValue(response.locale);
         }
       },
     });
@@ -165,7 +180,25 @@ export class ProfileComponent implements OnInit {
       .subscribe();
   }
 
-  updateProfile() {}
+  updateProfile() {
+    this.profileService
+      .updateProfileDetails({
+        uuid: this.uuid,
+        // avatarUrl : this.profileForm.controls.avatarUrl.value,
+        website: this.profileForm.controls.website.value,
+        zoneinfo: this.profileForm.controls.zoneinfo.value,
+        locale: this.profileForm.controls.locale.value,
+      })
+      .subscribe({
+        next: response =>
+          this.snackbar.open(UPDATE_SUCCESSFUL, CLOSE, {
+            duration: 2000,
+          }),
+      });
+    // this.profileService
+    //   .setAuthServerUser({ avatarUrl : this.personalForm.controls.website.value })
+    //   .subscribe();
+  }
 
   enableDisable2fa() {
     this.router.navigate(['mfa']);

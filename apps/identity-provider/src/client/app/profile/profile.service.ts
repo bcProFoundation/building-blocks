@@ -37,7 +37,9 @@ export class ProfileService {
   }
 
   updateProfileDetails(profileDetails) {
-    return this.http.post(UPDATE_PROFILE_DETAILS_URL, profileDetails);
+    return this.http.post(UPDATE_PROFILE_DETAILS_URL, profileDetails, {
+      headers: this.authorizationHeader,
+    });
   }
 
   getPersonalDetails(uuid) {
@@ -46,8 +48,11 @@ export class ProfileService {
     });
   }
 
-  getProfileDetails() {
-    return this.http.get(GET_PROFILE_DETAILS_URL);
+  getProfileDetails(uuid) {
+    // console.log(this.http.get(GET_PROFILE_DETAILS_URL + '/' + uuid));
+    return this.http.get(GET_PROFILE_DETAILS_URL + '/' + uuid, {
+      headers: this.authorizationHeader,
+    });
   }
 
   getAuthServerUser() {

@@ -10,6 +10,7 @@ import { SettingsService } from './settings.service';
 export class SettingsComponent implements OnInit {
   issuerUrl: string;
   communicationServerClientId: string;
+  clientList: any[];
   authSettingsForm = new FormGroup({
     issuerUrl: new FormControl(this.issuerUrl),
     communicationServerClientId: new FormControl(
@@ -28,6 +29,11 @@ export class SettingsComponent implements OnInit {
         this.issuerUrl = response.issuerUrl;
         this.communicationServerClientId = response.communicationServerClientId;
         this.populateForm(response);
+      },
+    });
+    this.settingsService.getClientList().subscribe({
+      next: (response: any[]) => {
+        this.clientList = response;
       },
     });
   }

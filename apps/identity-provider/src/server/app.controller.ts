@@ -16,11 +16,6 @@ export class AppController {
     return res.sendFile(INDEX_HTML);
   }
 
-  @Get('profile')
-  profile(@Res() res) {
-    return res.sendFile(INDEX_HTML);
-  }
-
   @Get('apps')
   apps(@Res() res) {
     return res.sendFile(INDEX_HTML);

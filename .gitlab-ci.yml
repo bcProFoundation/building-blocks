@@ -10,7 +10,7 @@ stages:
   - pack
   - docs
 
-test_backend:
+test_authorization_server:
   stage: tests
   variables:
     SESSION_SECRET: "secret"
@@ -23,34 +23,94 @@ test_backend:
     BULL_QUEUE_REDIS_HOST: redis
     BULL_QUEUE_REDIS_PORT: "6379"
   before_script:
-    - npm install -g lerna
+    - cd apps/authorization-server
     - yarn
-    - lerna clean -y
-    - lerna bootstrap
   script:
+    # Check Code Quality
+    - yarn lint
+    - yarn format:check
+    # Test backend unit tests
+    - yarn test:server
     # Create .env file
-    - dockerize -template apps/authorization-server/docker/env.tmpl:apps/authorization-server/.env
-    - lerna run lint
-    - lerna run format:check
-    - yarn test
-    - lerna run test:e2e --stream
+    - dockerize -template docker/env.tmpl:.env
+    # set env variable for test
+    - export NODE_ENV=test
+    # Test backend e2e
+    - yarn test:e2e
+    # Test frontend
+    - export DISPLAY=:99
+    - Xvfb :0 -ac -screen 0 1024x768x24 &
+    - yarn test:client
+    - yarn e2e
   tags:
     - docker
 
-test_frontend:
+test_communication_server:
   stage: tests
   before_script:
-    - npm install -g lerna
+    - cd apps/communication-server
     - yarn
-    - lerna clean -y
-    - lerna bootstrap
   script:
-    # Launch Xvfb
-    - Xvfb :0 -ac -screen 0 1024x768x24 &
-    # Export display for Chrome
+    # set env variable for test
+    - export NODE_ENV=test
+    # Check Code Quality
+    - yarn lint
+    - yarn format:check
+    # Test backend unit tests
+    - yarn test:server
+    # Test backend e2e
+    - yarn test:e2e
+    # Test frontend
     - export DISPLAY=:99
-    - export NODE_ENV=test && lerna run e2e --stream --concurrency 1
-    - export NODE_ENV=test && lerna run test:client --stream --concurrency 1
+    - Xvfb :0 -ac -screen 0 1024x768x24 &
+    - yarn test:client
+    - yarn e2e
+  tags:
+    - docker
+
+test_identity_provider:
+  stage: tests
+  before_script:
+    - cd apps/identity-provider
+    - yarn
+  script:
+    # set env variable for test
+    - export NODE_ENV=test
+    # Check Code Quality
+    - yarn lint
+    - yarn format:check
+    # Test backend unit tests
+    - yarn test:server
+    # Test backend e2e
+    - yarn test:e2e
+    # Test frontend
+    - export DISPLAY=:99
+    - Xvfb :0 -ac -screen 0 1024x768x24 &
+    - yarn test:client
+    - yarn e2e
+  tags:
+    - docker
+
+test_infrastructure_console:
+  stage: tests
+  before_script:
+    - cd apps/infrastructure-console
+    - yarn
+  script:
+    # set env variable for test
+    - export NODE_ENV=test
+    # Check Code Quality
+    - yarn lint
+    - yarn format:check
+    # Test backend unit tests
+    - yarn test:server
+    # Test backend e2e
+    - yarn test:e2e
+    # Test frontend
+    - export DISPLAY=:99
+    - Xvfb :0 -ac -screen 0 1024x768x24 &
+    - yarn test:client
+    - yarn e2e
   tags:
     - docker
 
@@ -63,13 +123,30 @@ pack_staging_authorization_server:
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
-    # get latest tag for app in staging branchs
+    # get latest tag for app in staging branch
     # Authorization Server
     - export ASVERSION=$(echo $CI_COMMIT_SHA | cut -c1-7)
     - docker build -t authorization-server apps/authorization-server
     - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:$ASVERSION
     - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server
+
+pack_staging_communication_server:
+  image: docker
+  stage: pack
+  environment: staging
+  only:
+    - staging
+  before_script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+  script:
+    # get latest tag for app in staging branch
+    # Communication Server
+    - export CSVERSION=$(echo $CI_COMMIT_SHA | cut -c1-7)
+    - docker build -t communication-server apps/communication-server
+    - docker tag communication-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/communication-server:$CSVERSION
+    - docker tag communication-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/communication-server:latest
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/communication-server
 
 pack_staging_identity_provider:
   image: docker
@@ -80,7 +157,7 @@ pack_staging_identity_provider:
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
-    # get latest tag for app in staging branchs
+    # get latest tag for app in staging branch
     # Identity Provider
     - export IDPVERSION=$(echo $CI_COMMIT_SHA | cut -c1-7)
     - docker build -t identity-provider apps/identity-provider
@@ -97,7 +174,7 @@ pack_staging_infrastructure_console:
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
-    # get latest tag for app in staging branchs
+    # get latest tag for app in staging branch
     # Infrastructure Console
     - export ICVERSION=$(echo $CI_COMMIT_SHA | cut -c1-7)
     - docker build -t infrastructure-console apps/infrastructure-console
@@ -115,13 +192,31 @@ pack_production_authorization_server:
     - apk add git
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
-    # get latest tag for app in master branchs
+    # get latest tag for app in master branch
     # Authorization Server
     - export ASVERSION=$(git tag --list "authorization-server@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
     - docker build -t authorization-server apps/authorization-server
     - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:$ASVERSION
     - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server
+
+pack_production_communication_server:
+  image: docker
+  stage: pack
+  environment: production
+  only:
+    - master
+  before_script:
+    - apk add git
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+  script:
+    # get latest tag for app in master branch
+    # Communication Server
+    - export CSVERSION=$(git tag --list "communication-server@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
+    - docker build -t communication-server apps/communication-server
+    - docker tag communication-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/communication-server:$CSVERSION
+    - docker tag communication-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/communication-server:latest
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/communication-server
 
 pack_production_identity_provider:
   image: docker
@@ -133,7 +228,7 @@ pack_production_identity_provider:
     - apk add git
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
-    # get latest tag for app in master branchs
+    # get latest tag for app in master branch
     # Idenitiy Provider
     - export IDPVERSION=$(git tag --list "identity-provider@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
     - docker build -t identity-provider apps/identity-provider
@@ -151,7 +246,7 @@ pack_production_infrastructure_console:
     - apk add git
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
-    # get latest tag for app in master branchs
+    # get latest tag for app in master branch
     # Infrastructure Console
     - export ICVERSION=$(git tag --list "infrastructure-console@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
     - docker build -t infrastructure-console apps/infrastructure-console
@@ -161,6 +256,8 @@ pack_production_infrastructure_console:
 
 pages:
   stage: docs
+  only:
+    - staging
   before_script:
     - npm install -g lerna
     - yarn

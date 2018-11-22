@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  communication-server-service:
+    image: communication-server:latest
+    ports:
+      - "4100:4100"
+    environment:
+      - DB_HOST=${CS_DB_HOST}
+      - DB_NAME=${CS_DB_NAME}
+      - AMQP_HOST=${AMQP_HOST}
+      - AMQP_USER=${CS_AMQP_USER}
+      - AMQP_PASSWORD=${CS_AMQP_PASS}
+      - AMQP_PORT=${AMQP_PORT}
+    container_name: communication-server

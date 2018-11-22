@@ -19,6 +19,12 @@ export class SettingsService {
     return this.http.get(requestUrl, { headers: this.headers });
   }
 
+  getClientList() {
+    const requestUrl =
+      localStorage.getItem(ISSUER_URL) + '/client/v1/trusted_clients';
+    return this.http.get(requestUrl, { headers: this.headers });
+  }
+
   update(issuerUrl, communicationServerClientId) {
     const requestUrl = localStorage.getItem(ISSUER_URL) + '/settings/v1/update';
     return this.http.post(

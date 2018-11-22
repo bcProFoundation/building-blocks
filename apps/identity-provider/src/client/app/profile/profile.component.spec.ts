@@ -43,6 +43,9 @@ describe('ProfileComponent', () => {
             getAuthServerUser() {
               return from([]);
             },
+            getProfileDetails() {
+              return from([]);
+            },
           },
         },
         MatSnackBar,
