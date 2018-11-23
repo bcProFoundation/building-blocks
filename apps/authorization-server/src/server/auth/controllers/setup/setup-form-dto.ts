@@ -8,8 +8,8 @@ export class SetupFormDTO {
   @IsEmail()
   email: string;
 
-  @IsUrl({}, { each: true })
-  infrastructureConsoleCallbackUrls: string[];
+  @IsUrl()
+  infrastructureConsoleUrl: string;
 
   @IsUrl()
   issuerUrl: string;

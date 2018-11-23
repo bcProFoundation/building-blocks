@@ -33,3 +33,5 @@
     * [Environment Parity](/development/10-environment-parity.md)
     * [Logs](/development/11-logs.md)
     * [Admin Processes](/development/12-admin-processes.md)
+    * [Updates and upgrades](/development/updates.md)
+    * [How to develop microservices?](/development/how-to-develop-microservices.md)
