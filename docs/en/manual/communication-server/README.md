@@ -42,3 +42,32 @@ AMQP_PASSWORD=secret
 ```
 
 Note: It is important to change the secrets and password. DO NOT USE example passwords or secrets.
+
+### Setup /etc/hosts
+
+add `127.0.0.1 connect.localhost` in `/etc/hosts` file or hosts file of your operating system.
+
+### Server with POST request
+
+Add Client using Infrastructure console to obtain clientId, clientSecret. Use these to setup the server.
+
+If a POST request with no body is sent to `http://connect.localhost:4100/setup` error response will specify required fields.
+
+Use `clientId` and `clientSecret` from response of `authorization-server` setup.
+
+```
+curl -d "appURL=http://connect.localhost:4100" \
+    -d "authServerURL=http://accounts.localhost:3000" \
+    -d "clientId=d318d6cb-2b60-4afa-bd1c-9b9f9fa068a2" \
+    -d "clientSecret=472188a19a11e6702c9aec54d86e42113b305f966d683147329fbba111454826" \
+    -X POST http://connect.localhost:4100/setup \
+    -H "Content-Type: application/x-www-form-urlencoded"
+```
+
+Sample response
+
+```
+Response 201
+```
+
+Use Communication Server to setup personal and system Email Accounts.

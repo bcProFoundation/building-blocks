@@ -28,7 +28,7 @@ export class SetupService {
     fullName: string,
     email: string,
     phone: string,
-    infrastructureConsoleCallbackUrl: string[],
+    infrastructureConsoleUrl: string,
     adminPassword: string,
     issuerUrl: string,
   ) {
@@ -41,6 +41,12 @@ export class SetupService {
         HttpStatus.UNAUTHORIZED,
       );
     }
+
+    const infrastructureConsoleCallbackUrl = [
+      infrastructureConsoleUrl + '/index.html',
+      infrastructureConsoleUrl + '/silent-refresh.html',
+    ];
+
     await this.settingsService.save({ issuerUrl });
     await this.createUser(fullName, email, phone, adminPassword);
     await this.keyGenService.generateKeyPair();
