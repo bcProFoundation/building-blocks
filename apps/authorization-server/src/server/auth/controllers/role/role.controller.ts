@@ -12,25 +12,24 @@ import {
 import { callback } from '../../passport/local.strategy';
 import { AuthGuard } from '../../guards/auth.guard';
 import { RoleService } from '../../../models/role/role.service';
-import { UserService } from '../../../models/user/user.service';
 import { invalidRoleException } from '../../../auth/filters/exceptions';
+import { ADMINISTRATOR } from '../../../constants/app-strings';
+import { Roles } from '../../../auth/decorators/roles.decorator';
+import { RoleGuard } from '../../../auth/guards/role.guard';
 
 @Controller('role')
 export class RoleController {
-  constructor(
-    private readonly roleService: RoleService,
-    private readonly userService: UserService,
-  ) {}
+  constructor(private readonly roleService: RoleService) {}
 
   @Get('v1/list')
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @Roles(ADMINISTRATOR)
+  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   async list(
     @Req() req,
     @Query('offset') offset: number,
     @Query('limit') limit: number,
     @Query('search') search?: string,
   ) {
-    await this.userService.checkAdministrator(req.user.user);
     return await this.roleService.paginate(search, {
       offset: Number(offset),
       limit: Number(limit),
@@ -38,17 +37,17 @@ export class RoleController {
   }
 
   @Post('v1/create')
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @Roles(ADMINISTRATOR)
+  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   async create(@Body() body, @Req() req, @Res() res) {
-    await this.userService.checkAdministrator(req.user.user);
     const role = await this.roleService.save(body);
     res.json(role);
   }
 
   @Post('v1/update')
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @Roles(ADMINISTRATOR)
+  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   async update(@Body() payload, @Req() req, @Res() res) {
-    await this.userService.checkAdministrator(req.user.user);
     const existingRole = await this.roleService.findOne({ uuid: payload.uuid });
     if (!existingRole) throw invalidRoleException;
     existingRole.name = payload.name;
@@ -60,14 +59,16 @@ export class RoleController {
   }
 
   @Get('v1/find')
+  @Roles(ADMINISTRATOR)
+  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   async findAll() {
     return await this.roleService.find({});
   }
 
   @Get('v1/:uuid')
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @Roles(ADMINISTRATOR)
+  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   async findOne(@Param('uuid') uuid: string, @Req() req) {
-    await this.userService.checkAdministrator(req.user.user);
     return await this.roleService.findOne({ uuid });
   }
 }

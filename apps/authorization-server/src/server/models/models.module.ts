@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, HttpModule } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { USER, User } from './user/user.schema';
 import { UserService } from './user/user.service';
@@ -29,6 +29,7 @@ import { OIDCKey, OIDC_KEY } from './oidc-key/oidc-key.schema';
 import { OIDCKeyService } from './oidc-key/oidc-key.service';
 import { WellKnownService } from './well-known/well-known.service';
 import { ConfigModule } from '../config/config.module';
+import { UserManagementService } from './user/user-management.service';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { ConfigModule } from '../config/config.module';
     ]),
     UtilitiesModule,
     ConfigModule,
+    HttpModule,
   ],
   providers: [
     AuthDataService,
@@ -59,6 +61,7 @@ import { ConfigModule } from '../config/config.module';
     ServerSettingsService,
     WellKnownService,
     OIDCKeyService,
+    UserManagementService,
   ],
   exports: [
     AuthDataService,
@@ -72,6 +75,7 @@ import { ConfigModule } from '../config/config.module';
     ServerSettingsService,
     WellKnownService,
     OIDCKeyService,
+    UserManagementService,
   ],
 })
 export class ModelsModule {}

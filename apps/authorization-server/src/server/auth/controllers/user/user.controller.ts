@@ -11,6 +11,7 @@ import {
   Param,
   UsePipes,
   ValidationPipe,
+  ForbiddenException,
 } from '@nestjs/common';
 import { CryptographerService } from '../../../utilities/cryptographer.service';
 import { UserService } from '../../../models/user/user.service';
@@ -19,6 +20,9 @@ import { callback } from '../../passport/local.strategy';
 import { CreateUserDto } from '../../../models/user/create-user.dto';
 import { AuthDataService } from '../../../models/auth-data/auth-data.service';
 import { i18n } from '../../../i18n/i18n.config';
+import { Roles } from '../../../auth/decorators/roles.decorator';
+import { ADMINISTRATOR } from '../../../constants/app-strings';
+import { RoleGuard } from '../../../auth/guards/role.guard';
 
 @Controller('user')
 export class UserController {
@@ -84,9 +88,9 @@ export class UserController {
 
   @Post('v1/create')
   @UsePipes(ValidationPipe)
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @Roles(ADMINISTRATOR)
+  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   async create(@Body() body: CreateUserDto, @Req() req, @Res() res) {
-    await this.userService.checkAdministrator(req.user.user);
     const user = await this.userService.save(body);
 
     // create Password
@@ -96,6 +100,8 @@ export class UserController {
 
     // link password with user
     user.password = authData.uuid;
+    user.createdBy = req.user.user;
+    user.creation = new Date();
     await user.save();
 
     // delete mongodb _id
@@ -104,9 +110,9 @@ export class UserController {
   }
 
   @Post('v1/update')
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @Roles(ADMINISTRATOR)
+  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   async update(@Body() payload, @Req() req, @Res() res) {
-    await this.userService.checkAdministrator(req.user.user);
     const user = await this.userService.findOne({
       uuid: payload.uuid,
     });
@@ -122,29 +128,38 @@ export class UserController {
       await authData.save();
     }
 
+    user.modifiedBy = req.user.user;
+    user.modified = new Date();
     await user.save();
     user._id, (user.password = undefined);
     res.json(user);
   }
 
   @Get('v1/list')
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @Roles(ADMINISTRATOR)
+  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   async list(
     @Req() req,
     @Query('offset') offset: number,
     @Query('limit') limit: number,
     @Query('search') search?: string,
   ) {
-    await this.userService.checkAdministrator(req.user.user);
     return await this.userService.paginate(search, {
       offset: Number(offset),
       limit: Number(limit),
     });
   }
 
-  @Get('v1/:id')
+  @Get('v1/:uuid')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
-  async findOne(@Param('id') id: number, @Req() request) {
-    return await this.userService.findOne({ uuid: id });
+  async findOne(@Param('uuid') uuid: number, @Req() req) {
+    let user;
+    if (await this.userService.checkAdministrator(req.user.user)) {
+      user = await this.userService.findOne({ uuid });
+    } else {
+      user = await this.userService.findOne({ uuid, createdBy: req.user.user });
+    }
+    if (!user) throw new ForbiddenException();
+    return user;
   }
 }

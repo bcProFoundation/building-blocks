@@ -33,6 +33,10 @@ export class ClientService {
     return await this.clientModel.deleteMany({});
   }
 
+  async deleteClientsByUser(uuid) {
+    return await this.clientModel.deleteMany({ createdBy: uuid });
+  }
+
   getModel() {
     return this.clientModel;
   }

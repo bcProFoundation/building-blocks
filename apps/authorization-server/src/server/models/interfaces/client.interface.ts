@@ -12,4 +12,6 @@ export interface Client extends Document {
   isTrusted?: number;
   redirectUris?: string[];
   allowedScopes?: string[];
+  userDeleteEndpoint?: string;
+  tokenDeleteEndpoint?: string;
 }

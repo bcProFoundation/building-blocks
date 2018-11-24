@@ -15,6 +15,8 @@ import { MicroservicePatternController } from './controllers/microservice/patter
 import { MicroservicePatternService } from './controllers/microservice/pattern.service';
 import { AuthServerVerificationGuard } from './guards/authserver-verification.guard';
 import { SettingsController } from './controllers/settings/settings.controller';
+import { TokenGuard } from './guards/token.guard';
+import { RoleGuard } from './guards/role.guard';
 
 @Module({
   imports: [
@@ -38,6 +40,8 @@ import { SettingsController } from './controllers/settings/settings.controller';
     SocialKeyService,
     MicroservicePatternService,
     AuthServerVerificationGuard,
+    TokenGuard,
+    RoleGuard,
   ],
 })
 export class AppModule {}

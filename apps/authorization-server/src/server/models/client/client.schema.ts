@@ -16,6 +16,8 @@ const schema = new mongoose.Schema(
     isTrusted: Number,
     redirectUris: [String],
     allowedScopes: [String],
+    userDeleteEndpoint: String,
+    tokenDeleteEndpoint: String,
   },
   { collection: 'client', versionKey: false },
 );

@@ -21,7 +21,7 @@ import { OAuth2AuthorizationMiddleware } from './middlewares/oauth2-authorizatio
 import { OAuth2TokenMiddleware } from './middlewares/oauth2-token.middleware';
 import { OAuth2ErrorHandlerMiddleware } from './middlewares/oauth2-errorhandler.middleware';
 import { UserController } from './controllers/user/user.controller';
-import { RolesGuard } from './guards/roles.guard';
+import { RoleGuard } from './guards/role.guard';
 import { RoleController } from './controllers/role/role.controller';
 import { ClientController } from './controllers/client/client.controller';
 import { ConfigModule } from '../config/config.module';
@@ -42,7 +42,6 @@ import { WellKnownController } from './controllers/well-known/well-known.control
 import { OIDCKeyService } from '../models/oidc-key/oidc-key.service';
 import { TokenIntrospectionGuard } from './guards/token-introspection.guard';
 import { ScopeController } from './controllers/scope/scope.controller';
-import { SchedulerModule } from '../scheduler/scheduler.module';
 import { SignupController } from './controllers/signup/signup.controller';
 import { SignupService } from './controllers/signup/signup.service';
 
@@ -77,7 +76,7 @@ import { SignupService } from './controllers/signup/signup.service';
     OAuth2ErrorHandlerMiddleware,
 
     // Guards
-    RolesGuard,
+    RoleGuard,
     TokenIntrospectionGuard,
   ],
   controllers: [
@@ -92,13 +91,7 @@ import { SignupService } from './controllers/signup/signup.service';
     ScopeController,
     SignupController,
   ],
-  imports: [
-    ModelsModule,
-    UtilitiesModule,
-    ConfigModule,
-    SchedulerModule,
-    HttpModule,
-  ],
+  imports: [ModelsModule, UtilitiesModule, ConfigModule, HttpModule],
 })
 export class AuthModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

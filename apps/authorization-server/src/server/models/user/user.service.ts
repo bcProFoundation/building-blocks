@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import {
   invalidUserException,
@@ -46,7 +46,7 @@ export class UserService {
     return await this.userModel.find().exec();
   }
 
-  public async findOne(params): Promise<any> {
+  public async findOne(params): Promise<User> {
     return await this.userModel.findOne(params);
   }
 
@@ -158,11 +158,10 @@ export class UserService {
 
   async checkAdministrator(uuid) {
     const user: User = await this.findOne({ uuid });
-    if (!user.roles.includes(ADMINISTRATOR)) {
-      throw new UnauthorizedException(
-        i18n.__('User does not have sufficient privileges'),
-      );
+    if (user.roles.includes(ADMINISTRATOR)) {
+      return true;
     }
+    return false;
   }
 
   async disable2fa(uuid: string) {

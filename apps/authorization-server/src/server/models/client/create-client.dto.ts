@@ -1,4 +1,4 @@
-import { IsUrl, IsInt, IsAlphanumeric } from 'class-validator';
+import { IsUrl, IsInt, IsAlphanumeric, IsOptional } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 import { i18n } from '../../i18n/i18n.config';
 
@@ -20,6 +20,7 @@ export class CreateClientDto {
   clientSecret: string;
 
   @IsInt()
+  @IsOptional()
   @ApiModelProperty({
     description: i18n.__('Skips the Allow/Deny screen if value is 1'),
     type: 'number',
@@ -35,4 +36,24 @@ export class CreateClientDto {
     required: true,
   })
   redirectUris: string[];
+
+  @IsUrl()
+  @IsOptional()
+  @ApiModelProperty({
+    description: i18n.__(
+      'This endpoint on resource server will be informed when user is deleted',
+    ),
+    type: 'string',
+  })
+  userDeleteEndpoint: string;
+
+  @IsUrl()
+  @IsOptional()
+  @ApiModelProperty({
+    description: i18n.__(
+      'This endpoint on resource server will be informed when token is deleted',
+    ),
+    type: 'string',
+  })
+  tokenDeleteEndpoint: string;
 }

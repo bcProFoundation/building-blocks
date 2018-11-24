@@ -40,7 +40,7 @@ export class AppComponent {
         loginUrl: localStorage.getItem(LOGIN_URL),
         scope: 'openid roles',
         issuer: localStorage.getItem(ISSUER_URL),
-        disableAtHashCheck: true,
+        requireHttps: false,
       };
       if (isDevMode()) authConfig.requireHttps = false;
       this.oauthService.configure(authConfig);

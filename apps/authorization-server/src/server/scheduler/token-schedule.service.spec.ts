@@ -2,6 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TokenSchedulerService } from './token-schedule.service';
 import { BearerTokenService } from '../models/bearer-token/bearer-token.service';
 import { ConfigService } from '../config/config.service';
+import { ClientService } from '../models/client/client.service';
+import { HttpService } from '@nestjs/common';
 
 describe('TokenSchedulerService', () => {
   let service: TokenSchedulerService;
@@ -12,6 +14,14 @@ describe('TokenSchedulerService', () => {
         TokenSchedulerService,
         {
           provide: BearerTokenService,
+          useValue: {}, // mock
+        },
+        {
+          provide: ClientService,
+          useValue: {}, // mock
+        },
+        {
+          provide: HttpService,
           useValue: {}, // mock
         },
         {

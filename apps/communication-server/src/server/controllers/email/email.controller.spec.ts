@@ -7,6 +7,7 @@ import { EmailAccount } from '../../models/email-account/email-account.entity';
 import { ConfigService } from '../../config/config.service';
 import { AuthServerVerificationGuard } from '../../guards/authserver-verification.guard';
 import { ServerSettingsService } from '../../models/server-settings/server-settings.service';
+import { TokenCacheService } from '../../models/token-cache/token-cache.service';
 
 describe('EmailController', () => {
   let module: TestingModule;
@@ -22,6 +23,10 @@ describe('EmailController', () => {
         },
         {
           provide: ServerSettingsService,
+          useValue: {},
+        },
+        {
+          provide: TokenCacheService,
           useValue: {},
         },
         {

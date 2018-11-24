@@ -1,10 +1,15 @@
 import * as mongoose from 'mongoose';
 import * as uuidv4 from 'uuid/v4';
 
+function dateNow() {
+  return new Date();
+}
+
 export const OIDCKey = new mongoose.Schema(
   {
     uuid: { type: String, default: uuidv4 },
     keyPair: mongoose.Schema.Types.Mixed,
+    creation: { type: Date, default: dateNow },
   },
   { collection: 'oidc_key', versionKey: false },
 );

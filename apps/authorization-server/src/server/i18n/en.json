@@ -52,5 +52,9 @@
 	"Please check your email to complete signup": "Please check your email to complete signup",
 	"Password set successfully": "Password set successfully",
 	"User Disabled": "User Disabled",
-	"Signed up successfully": "Signed up successfully"
+	"Signed up successfully": "Signed up successfully",
+	"User does not have sufficient privileges": "User does not have sufficient privileges",
+	"Not Found": "Not Found",
+	"This endpoint on resource server will be informed when user is deleted": "This endpoint on resource server will be informed when user is deleted",
+	"This endpoint on resource server will be informed when token is deleted": "This endpoint on resource server will be informed when token is deleted"
 }

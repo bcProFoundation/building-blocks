@@ -10,17 +10,18 @@ import {
   Get,
   Query,
   Param,
-  ForbiddenException,
 } from '@nestjs/common';
 import { EmailService } from './email.service';
 import { AuthServerVerificationGuard } from '../../guards/authserver-verification.guard';
 import { EmailMessageAuthServerDto } from './email-message-authserver-dto';
 import { EmailAccountService } from '../../models/email-account/email-account.service';
 import { CreateEmailDto } from './create-email-dto';
-import { BearerTokenStatus } from '../../decorators/bearer-token.decorator';
 import { INDEX_HTML } from '../../constants/filesystem';
 import { EmailListingDto } from './email-listing-dto';
 import { ADMINISTRATOR } from '../../constants/app-strings';
+import { TokenGuard } from '../../guards/token.guard';
+import { RoleGuard } from '../../guards/role.guard';
+import { Roles } from '../../decorators/roles.decorator';
 
 @Controller('email')
 export class EmailController {
@@ -42,22 +43,19 @@ export class EmailController {
   }
 
   @Post('v1/create')
+  @UseGuards(TokenGuard)
   @UsePipes(ValidationPipe)
-  async create(
-    @Req() req,
-    @Res() res,
-    @Body() payload: CreateEmailDto,
-    @BearerTokenStatus() token,
-  ) {
-    payload.owner = token.sub;
+  async create(@Req() req, @Res() res, @Body() payload: CreateEmailDto) {
+    payload.owner = req.token.sub;
     const emailAccount = await this.emailAccount.save(payload);
     delete emailAccount._id;
     res.json(emailAccount);
   }
 
   @Get('v1/list')
+  @UseGuards(TokenGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
-  async list(@Query() query: EmailListingDto, @BearerTokenStatus() token) {
+  async list(@Query() query: EmailListingDto) {
     const skip = Number(query.skip);
     const take = Number(query.take);
     const emailAccounts = await this.emailAccount.list(skip, take);
@@ -65,13 +63,9 @@ export class EmailController {
   }
 
   @Post('v1/update')
-  async update(
-    @Body() payload,
-    @Req() req,
-    @Res() res,
-    @BearerTokenStatus() token,
-  ) {
-    if (!token.roles.includes(ADMINISTRATOR)) throw new ForbiddenException();
+  @Roles(ADMINISTRATOR)
+  @UseGuards(TokenGuard, RoleGuard)
+  async update(@Body() payload, @Req() req, @Res() res) {
     const existingEmail = await this.emailAccount.findOne({
       uuid: payload.uuid,
     });
@@ -87,17 +81,15 @@ export class EmailController {
   }
 
   @Get('v1/find')
+  @UseGuards(TokenGuard)
   async findAll() {
     return await this.emailAccount.findAll();
   }
 
   @Get('v1/:uuid')
-  async findOne(
-    @Param('uuid') uuid: string,
-    @Req() req,
-    @BearerTokenStatus() token,
-  ) {
-    if (!token.roles.includes(ADMINISTRATOR)) throw new ForbiddenException();
+  @Roles(ADMINISTRATOR)
+  @UseGuards(TokenGuard, RoleGuard)
+  async findOne(@Param('uuid') uuid: string, @Req() req) {
     return await this.emailService.findOne({ uuid });
   }
 

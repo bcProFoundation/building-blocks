@@ -5,13 +5,19 @@ import { IdentityProviderSettings } from './identity-provider-settings/identity-
 import { IdentityProviderSettingsService } from './identity-provider-settings/identity-provider-settings.service';
 import { Profile } from './profile/profile.entity';
 import { ProfileService } from './profile/profile.service';
+import { TokenCache } from './token-cache/token-cache.entity';
+import { TokenCacheService } from './token-cache/token-cache.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([IdentityProviderSettings, Profile]),
+    TypeOrmModule.forFeature([IdentityProviderSettings, Profile, TokenCache]),
     ConfigModule,
   ],
-  providers: [IdentityProviderSettingsService, ProfileService],
-  exports: [IdentityProviderSettingsService, ProfileService],
+  providers: [
+    IdentityProviderSettingsService,
+    ProfileService,
+    TokenCacheService,
+  ],
+  exports: [IdentityProviderSettingsService, ProfileService, TokenCacheService],
 })
 export class ModelsModule {}
