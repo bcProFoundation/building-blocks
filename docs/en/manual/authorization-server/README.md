@@ -58,8 +58,8 @@ If a POST request with no body is sent to `http://accounts.localhost:3000/setup`
 curl -d "fullName=John%20Doe" \
     -d "email=admin@example.com" \
     -d "phone=%2B919876543210" \
-    -d "infrastructureConsoleUrl=admin.localhost:5000" \
-    -d "issuerUrl=accounts.localhost:3000" \
+    -d "infrastructureConsoleUrl=http://admin.localhost:5000" \
+    -d "issuerUrl=http://accounts.localhost:3000" \
     -d "adminPassword=secret" \
     -X POST http://accounts.localhost:3000/setup \
     -H "Content-Type: application/x-www-form-urlencoded"
