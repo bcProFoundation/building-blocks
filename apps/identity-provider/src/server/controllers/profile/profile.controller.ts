@@ -7,13 +7,16 @@ import {
   ValidationPipe,
   Param,
   Get,
+  UseGuards,
+  Req,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { ProfileService } from '../../models/profile/profile.service';
 import { PersonalDetailsDTO } from './personal-details-dto';
-import { BearerTokenStatus } from '../../decorators/bearer-token-status.decorator';
 import { Profile } from '../../models/profile/profile.entity';
 import { ProfileDetailsDTO } from './profile-details-dto';
 import { INDEX_HTML } from '../../constants/filesystem';
+import { TokenGuard } from '../../guards/token.guard';
 
 @Controller('profile')
 export class ProfileController {
@@ -25,15 +28,16 @@ export class ProfileController {
   }
 
   @Post('v1/update_profile_details')
+  @UseGuards(TokenGuard)
   @UsePipes(ValidationPipe)
   async updateProfileDetails(
     @Body() profile: ProfileDetailsDTO,
+    @Req() req,
     @Res() res,
-    @BearerTokenStatus() tokenStatus,
   ) {
-    if (tokenStatus.active) {
+    if (req.token.active) {
       let updatedProfile: Profile;
-      if (profile.uuid) {
+      if (profile.uuid && profile.uuid === req.token.sub) {
         updatedProfile = await this.profileService.findOne({
           uuid: profile.uuid,
         });
@@ -42,6 +46,7 @@ export class ProfileController {
         Object.assign(updatedProfile, profile);
         await updatedProfile.save();
       } else {
+        if (req.token.sub) profile.uuid = req.token.sub;
         updatedProfile = await this.profileService.save(profile);
       }
       res.json(updatedProfile);
@@ -51,13 +56,14 @@ export class ProfileController {
   }
 
   @Post('v1/update_personal_details')
+  @UseGuards(TokenGuard)
   @UsePipes(ValidationPipe)
   async updateProfile(
     @Body() profile: PersonalDetailsDTO,
-    @BearerTokenStatus() tokenStatus,
+    @Req() req,
     @Res() res,
   ) {
-    if (tokenStatus.active) {
+    if (req.token.active) {
       let updatedProfile: Profile;
       if (profile.uuid) {
         updatedProfile = await this.profileService.findOne({
@@ -78,26 +84,20 @@ export class ProfileController {
   }
 
   @Get('v1/get_personal_details/:uuid')
-  async getPersonalDetails(
-    @Res() res,
-    @BearerTokenStatus() tokenStatus,
-    @Param('uuid') uuid,
-  ) {
-    if (tokenStatus.active) {
+  @UseGuards(TokenGuard)
+  async getPersonalDetails(@Req() req, @Res() res, @Param('uuid') uuid) {
+    if (req.token.active && req.token.sub === uuid) {
       const profile = await this.profileService.findOne({ uuid });
       res.json(profile);
-    }
+    } else throw new UnauthorizedException();
   }
 
   @Get('v1/get_profile_details/:uuid')
-  async getProfileDetails(
-    @Res() res,
-    @BearerTokenStatus() tokenStatus,
-    @Param('uuid') uuid,
-  ) {
-    if (tokenStatus.active) {
+  @UseGuards(TokenGuard)
+  async getProfileDetails(@Req() req, @Res() res, @Param('uuid') uuid) {
+    if (req.token.active && req.token.sub === uuid) {
       const profile = await this.profileService.findOne({ uuid });
       res.json(profile);
-    }
+    } else throw new UnauthorizedException();
   }
 }
