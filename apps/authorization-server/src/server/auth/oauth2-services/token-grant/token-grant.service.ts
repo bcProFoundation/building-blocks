@@ -2,6 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { UserService } from '../../../models/user/user.service';
 import { OAuth2TokenGeneratorService } from '../../middlewares/oauth2-token-generator.service';
 import { ClientService } from '../../../models/client/client.service';
+import {
+  invalidUserException,
+  invalidClientException,
+} from '../../../auth/filters/exceptions';
 
 @Injectable()
 export class TokenGrantService {
@@ -16,11 +20,16 @@ export class TokenGrantService {
   async grantToken(client, user, ares, areq, done) {
     try {
       const localUser = await this.userService.findOne({
-        email: user.email,
+        uuid: user.uuid,
       });
+
+      if (!localUser) throw invalidUserException;
+
       const localClient = await this.clientService.findOne({
         clientId: areq.clientID,
       });
+
+      if (!localClient) throw invalidClientException;
       const scope = await this.tokenGeneratorService.getValidScopes(
         client,
         areq.scope,

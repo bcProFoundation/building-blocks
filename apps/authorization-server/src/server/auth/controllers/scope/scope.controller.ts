@@ -14,25 +14,24 @@ import {
 import { ScopeService } from '../../../models/scope/scope.service';
 import { callback } from '../../passport/local.strategy';
 import { AuthGuard } from '../../guards/auth.guard';
-import { UserService } from '../../../models/user/user.service';
 import { CreateScopeDto } from '../../../models/user/create-scope.dto';
+import { Roles } from '../../../auth/decorators/roles.decorator';
+import { ADMINISTRATOR } from '../../../constants/app-strings';
+import { RoleGuard } from '../../../auth/guards/role.guard';
 
 @Controller('scope')
 export class ScopeController {
-  constructor(
-    private readonly scopeService: ScopeService,
-    private readonly userService: UserService,
-  ) {}
+  constructor(private readonly scopeService: ScopeService) {}
 
   @Get('v1/list')
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @Roles(ADMINISTRATOR)
+  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   async list(
     @Req() req,
     @Query('offset') offset: number,
     @Query('limit') limit: number,
     @Query('search') search?: string,
   ) {
-    await this.userService.checkAdministrator(req.user.user);
     return await this.scopeService.paginate(search, {
       offset: Number(offset),
       limit: Number(limit),
@@ -45,9 +44,9 @@ export class ScopeController {
   }
 
   @Post('v1/update')
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @Roles(ADMINISTRATOR)
+  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   async update(@Body() payload, @Req() req, @Res() res) {
-    await this.userService.checkAdministrator(req.user.user);
     const scope = await this.scopeService.findOne({
       uuid: payload.uuid,
     });
@@ -59,9 +58,9 @@ export class ScopeController {
 
   @Post('v1/create')
   @UsePipes(ValidationPipe)
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
-  async create(@Body() body: CreateScopeDto, @Req() req, @Res() res) {
-    await this.userService.checkAdministrator(req.user.user);
+  @Roles(ADMINISTRATOR)
+  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  async create(@Body() body: CreateScopeDto, @Res() res) {
     const scope = await this.scopeService.save(body);
 
     scope._id = undefined;
@@ -69,9 +68,9 @@ export class ScopeController {
   }
 
   @Get('v1/:uuid')
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @Roles(ADMINISTRATOR)
+  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   async findOne(@Param('uuid') uuid: string, @Req() req) {
-    await this.userService.checkAdministrator(req.user.user);
     return await this.scopeService.findOne({ uuid });
   }
 }

@@ -8,11 +8,15 @@ import {
   Param,
   Req,
   Res,
+  ForbiddenException,
 } from '@nestjs/common';
 import { ClientService } from '../../../models/client/client.service';
 import { callback } from '../../passport/local.strategy';
 import { AuthGuard } from '../../guards/auth.guard';
 import { CreateClientDto } from '../../../models/client/create-client.dto';
+import { Roles } from '../../../auth/decorators/roles.decorator';
+import { ADMINISTRATOR } from '../../../constants/app-strings';
+import { RoleGuard } from '../../../auth/guards/role.guard';
 import { UserService } from '../../../models/user/user.service';
 
 @Controller('client')
@@ -25,8 +29,13 @@ export class ClientController {
   @Post('v1/create')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
   async create(@Body() body: CreateClientDto, @Req() req, @Res() res) {
-    await this.userService.checkAdministrator(req.user.user);
-    const client = await this.clientService.save(body);
+    const payload: any = body;
+    if (!(await this.userService.checkAdministrator(req.user.user))) {
+      payload.isTrusted = 0;
+    }
+    payload.createdBy = req.user.user;
+    payload.creation = new Date();
+    const client = await this.clientService.save(payload);
     delete client._id;
     res.json(client);
   }
@@ -34,7 +43,6 @@ export class ClientController {
   @Post('v1/update')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
   async update(@Body() payload, @Req() req) {
-    await this.userService.checkAdministrator(req.user.user);
     const client = await this.clientService.findOne({
       clientId: payload.clientId,
     });
@@ -42,7 +50,9 @@ export class ClientController {
     client.allowedScopes = payload.allowedScopes;
     client.isTrusted = payload.isTrusted;
     client.redirectUris = payload.redirectUris;
-    client.save();
+    client.modifiedBy = req.user.user;
+    client.modified = new Date();
+    await client.save();
   }
 
   @Get('v1/list')
@@ -53,23 +63,37 @@ export class ClientController {
     @Query('limit') limit: number,
     @Query('search') search?: string,
   ) {
-    await this.userService.checkAdministrator(req.user.user);
-    return await this.clientService.paginate(search, {
+    const query: { createdBy?: string; name?: RegExp } = {};
+    if (search) query.name = new RegExp(search, 'i');
+    if (!(await this.userService.checkAdministrator(req.user.user))) {
+      query.createdBy = req.user.user;
+    }
+    return await this.clientService.paginate(query, {
       offset: Number(offset),
       limit: Number(limit),
     });
   }
 
   @Get('v1/trusted_clients')
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @Roles(ADMINISTRATOR)
+  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   async findAllTrustedClients(@Req() req) {
-    await this.userService.checkAdministrator(req.user.user);
     return await this.clientService.find({ isTrusted: 1 });
   }
 
-  @Get('v1/:id')
+  @Get('v1/:uuid')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
-  async findOne(@Param('id') id: number, @Req() request) {
-    return await this.clientService.findOne({ uuid: id });
+  async findOne(@Param('uuid') uuid: number, @Req() req) {
+    let client;
+    if (await this.userService.checkAdministrator(req.user.user)) {
+      client = await this.clientService.findOne({ uuid });
+    } else {
+      client = await this.clientService.findOne({
+        uuid,
+        createdBy: req.user.user,
+      });
+    }
+    if (!client) throw new ForbiddenException();
+    return client;
   }
 }

@@ -43,13 +43,15 @@ export class IDTokenGrantService {
       }
 
       const jwks = await this.oidcKeyService.find();
+
+      // Pick first or only key from array
       const foundKey = jwks[0];
       if (!foundKey) {
         throw JWKSNotFound;
       }
 
       const signedToken = await jose.JWS.createSign(
-        { alg: 'RS256', format: 'compact' },
+        { alg: 'RS256', format: 'compact', kid: foundKey.keyPair.kid },
         foundKey.keyPair,
       )
         .update(JSON.stringify(claims))

@@ -22,7 +22,7 @@ export class CodeGrantService {
         clientId: areq.clientID,
       });
       const localUser = await this.userService.findOne({
-        email: user.email,
+        uuid: user.uuid,
       });
       const scope = await this.tokenGeneratorService.getValidScopes(
         localClient,

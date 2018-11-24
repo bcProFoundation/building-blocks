@@ -8,7 +8,6 @@ import { RoleService } from '../../../models/role/role.service';
 import { ServerSettingsService } from '../../../models/server-settings/server-settings.service';
 import { Scope } from '../../../models/interfaces/scope.interface';
 import { Client } from '../../../models/interfaces/client.interface';
-import { KeyPairGeneratorService } from '../../../scheduler/keypair-generator.service';
 import { i18n } from '../../../i18n/i18n.config';
 import { ADMINISTRATOR } from '../../../constants/app-strings';
 
@@ -21,7 +20,6 @@ export class SetupService {
     private readonly roleService: RoleService,
     private readonly authService: AuthService,
     private readonly settingsService: ServerSettingsService,
-    private readonly keyGenService: KeyPairGeneratorService,
   ) {}
 
   async setupInfrastructureClient(
@@ -49,7 +47,6 @@ export class SetupService {
 
     await this.settingsService.save({ issuerUrl });
     await this.createUser(fullName, email, phone, adminPassword);
-    await this.keyGenService.generateKeyPair();
     return await this.createClient(email, infrastructureConsoleCallbackUrl);
   }
 
