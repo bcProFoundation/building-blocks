@@ -10,6 +10,7 @@ import { SocialKeyService } from './social-key/social-key.service';
 import { TokenCache } from './token-cache/token-cache.entity';
 import { QueueLogService } from './queue-log/queue-log.service';
 import { QueueLog } from './queue-log/queue-log.entity';
+import { TokenCacheService } from './token-cache/token-cache.service';
 
 @Module({
   imports: [
@@ -27,12 +28,14 @@ import { QueueLog } from './queue-log/queue-log.entity';
     ServerSettingsService,
     SocialKeyService,
     QueueLogService,
+    TokenCacheService,
   ],
   exports: [
     EmailAccountService,
     ServerSettingsService,
     SocialKeyService,
     QueueLogService,
+    TokenCacheService,
   ],
 })
 export class ModelsModule {}
