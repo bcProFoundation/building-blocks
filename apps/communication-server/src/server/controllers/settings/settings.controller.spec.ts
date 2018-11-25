@@ -2,6 +2,7 @@ import { TestingModule, Test } from '@nestjs/testing';
 import { SettingsController } from './settings.controller';
 import { ServerSettingsService } from '../../models/server-settings/server-settings.service';
 import { TokenCacheService } from '../../models/token-cache/token-cache.service';
+import { TokenGuard } from '../../guards/token.guard';
 
 describe('SettingsController', () => {
   let module: TestingModule;
@@ -18,7 +19,10 @@ describe('SettingsController', () => {
           useValue: {},
         },
       ],
-    }).compile();
+    })
+      .overrideGuard(TokenGuard)
+      .useValue({})
+      .compile();
   });
   it('should be defined', () => {
     const controller: SettingsController = module.get<SettingsController>(
