@@ -17,6 +17,7 @@ import { AuthServerVerificationGuard } from './guards/authserver-verification.gu
 import { SettingsController } from './controllers/settings/settings.controller';
 import { TokenGuard } from './guards/token.guard';
 import { RoleGuard } from './guards/role.guard';
+import { ConnectController } from './controllers/microservice/connect.controller';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { RoleGuard } from './guards/role.guard';
     EmailController,
     SettingsController,
     MicroservicePatternController,
+    ConnectController,
   ],
   providers: [
     AppService,

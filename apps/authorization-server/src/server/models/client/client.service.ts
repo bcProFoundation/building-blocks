@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CLIENT } from './client.schema';
 import { Client } from '../interfaces/client.interface';
-import { PaginateModel } from '../../typings/mongoose';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class ClientService {
   constructor(
-    @InjectModel(CLIENT) private readonly clientModel: PaginateModel<Client>,
+    @InjectModel(CLIENT) private readonly clientModel: Model<Client>,
   ) {}
 
   async findOne(params) {
@@ -23,10 +23,6 @@ export class ClientService {
     return await this.clientModel
       .find(params, ['uuid', 'name', 'clientId'])
       .exec();
-  }
-
-  async paginate(query, options) {
-    return await this.clientModel.paginate(query, options);
   }
 
   async clear() {

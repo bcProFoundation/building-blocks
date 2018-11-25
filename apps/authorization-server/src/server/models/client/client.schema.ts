@@ -1,6 +1,5 @@
 import * as mongoose from 'mongoose';
 import * as uuidv4 from 'uuid/v4';
-import * as mongoosePaginate from 'mongoose-paginate';
 import { randomBytes } from 'crypto';
 
 const schema = new mongoose.Schema(
@@ -21,7 +20,6 @@ const schema = new mongoose.Schema(
   },
   { collection: 'client', versionKey: false },
 );
-schema.plugin(mongoosePaginate);
 
 export const Client = schema;
 

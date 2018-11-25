@@ -32,10 +32,22 @@ export class ScopeController {
     @Query('limit') limit: number,
     @Query('search') search?: string,
   ) {
-    return await this.scopeService.paginate(search, {
+    const query: { search?: RegExp } = {};
+
+    if (search) query.search = new RegExp(search, 'i');
+
+    const scopeModel = this.scopeService.getModel();
+    const data = await scopeModel
+      .find(query)
+      .skip(Number(offset))
+      .limit(Number(limit))
+      .exec();
+
+    return {
+      docs: data,
+      length: await scopeModel.estimatedDocumentCount(),
       offset: Number(offset),
-      limit: Number(limit),
-    });
+    };
   }
 
   @Get('v1/find')

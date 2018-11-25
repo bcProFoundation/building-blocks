@@ -1,5 +1,4 @@
 import * as mongoose from 'mongoose';
-import * as mongoosePaginate from 'mongoose-paginate';
 import * as uuidv4 from 'uuid/v4';
 
 const schema = new mongoose.Schema(
@@ -9,8 +8,6 @@ const schema = new mongoose.Schema(
   },
   { collection: 'role', versionKey: false },
 );
-
-schema.plugin(mongoosePaginate);
 
 export const Role = schema;
 

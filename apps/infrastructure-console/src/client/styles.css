@@ -9,3 +9,7 @@ body { margin: 0; font-family: 'Roboto', sans-serif; }
 .full-width {
     width: 100%;
 }
+
+.card-container {
+    padding: 1em;
+}

@@ -144,10 +144,22 @@ export class UserController {
     @Query('limit') limit: number,
     @Query('search') search?: string,
   ) {
-    return await this.userService.paginate(search, {
-      offset: Number(offset),
-      limit: Number(limit),
-    });
+    const query: { search?: RegExp } = {};
+
+    if (search) query.search = new RegExp(search, 'i');
+
+    const userModel = this.userService.getModel();
+    const data = await userModel
+      .find(query)
+      .skip(Number(offset))
+      .limit(Number(limit))
+      .exec();
+
+    return {
+      docs: data,
+      length: await userModel.estimatedDocumentCount(),
+      offset,
+    };
   }
 
   @Get('v1/:uuid')

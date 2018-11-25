@@ -1,5 +1,4 @@
 import * as mongoose from 'mongoose';
-import * as mongoosePaginate from 'mongoose-paginate';
 import * as uuidv4 from 'uuid/v4';
 
 export const schema = new mongoose.Schema(
@@ -10,8 +9,6 @@ export const schema = new mongoose.Schema(
   },
   { collection: 'scope', versionKey: false },
 );
-
-schema.plugin(mongoosePaginate);
 
 export const Scope = schema;
 

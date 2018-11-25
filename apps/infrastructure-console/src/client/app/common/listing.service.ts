@@ -31,7 +31,8 @@ export class ListingService {
     model: string,
   ): Observable<any> {
     const issuer = this.storageService.getInfo(ISSUER_URL);
-    const url = `${issuer}/${model}/v1/list?limit=${limit}&offset=${offset}&search=${search}`;
+    const url = `${issuer}/${model}/v1/list?limit=${limit}&offset=${offset *
+      limit}&search=${search}`;
     return this.http
       .get<string>(url)
       .pipe(

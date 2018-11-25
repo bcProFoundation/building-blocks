@@ -30,10 +30,22 @@ export class RoleController {
     @Query('limit') limit: number,
     @Query('search') search?: string,
   ) {
-    return await this.roleService.paginate(search, {
-      offset: Number(offset),
-      limit: Number(limit),
-    });
+    const query: { search?: RegExp } = {};
+
+    if (search) query.search = new RegExp(search, 'i');
+
+    const roleModel = this.roleService.getRoleModel();
+    const data = await roleModel
+      .find(query)
+      .skip(Number(offset))
+      .limit(Number(limit))
+      .exec();
+
+    return {
+      docs: data,
+      length: await roleModel.estimatedDocumentCount(),
+      offset,
+    };
   }
 
   @Post('v1/create')
