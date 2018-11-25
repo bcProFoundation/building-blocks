@@ -33,4 +33,8 @@ export class TokenCacheService {
   async paginate(skip: number, take: number) {
     return await this.tokenCacheRepository.find({ skip, take });
   }
+
+  async deleteMany(params) {
+    return await this.tokenCacheRepository.deleteMany(params);
+  }
 }

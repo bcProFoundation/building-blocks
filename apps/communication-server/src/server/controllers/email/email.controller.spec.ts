@@ -8,6 +8,7 @@ import { ConfigService } from '../../config/config.service';
 import { AuthServerVerificationGuard } from '../../guards/authserver-verification.guard';
 import { ServerSettingsService } from '../../models/server-settings/server-settings.service';
 import { TokenCacheService } from '../../models/token-cache/token-cache.service';
+import { TokenGuard } from '../../guards/token.guard';
 
 describe('EmailController', () => {
   let module: TestingModule;
@@ -48,7 +49,10 @@ describe('EmailController', () => {
           },
         },
       ],
-    }).compile();
+    })
+      .overrideGuard(TokenGuard)
+      .useValue({})
+      .compile();
   });
   it('should be defined', () => {
     const controller: EmailController = module.get<EmailController>(

@@ -13,8 +13,7 @@ export class ConnectController {
   @Post('v1/token_delete')
   @UseGuards(AuthServerVerificationGuard)
   async tokenDelete(@Body('accessToken') accessToken) {
-    const token = await this.tokenCacheService.findOne({ accessToken });
-    if (token) await token.remove();
+    await this.tokenCacheService.deleteMany({ accessToken });
   }
 
   @Post('v1/user_delete')
