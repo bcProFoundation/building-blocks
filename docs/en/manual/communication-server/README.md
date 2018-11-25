@@ -43,11 +43,11 @@ AMQP_PASSWORD=secret
 
 Note: It is important to change the secrets and password. DO NOT USE example passwords or secrets.
 
-### Setup /etc/hosts
+### Setup hosts file
 
 add `127.0.0.1 connect.localhost` in `/etc/hosts` file or hosts file of your operating system.
 
-### Server with POST request
+### Setup server with POST request
 
 Add Client using Infrastructure console to obtain clientId, clientSecret. Use these to setup the server.
 

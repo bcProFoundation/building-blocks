@@ -77,7 +77,7 @@ export class ListingComponent implements OnInit, AfterViewInit {
         map((data: any) => {
           this._isLoadingResults = false;
           this._hasError = false;
-          this.resultsLength = data.length + 1;
+          this.resultsLength = data.length;
           return data.docs;
         }),
         catchError(err => {

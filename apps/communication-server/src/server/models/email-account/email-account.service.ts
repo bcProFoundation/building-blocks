@@ -36,4 +36,8 @@ export class EmailAccountService {
     const emailAccount = await this.emailAccountRepository.find({ skip, take });
     return emailAccount;
   }
+
+  public async find(params) {
+    return await this.emailAccountRepository.find(params);
+  }
 }

@@ -63,15 +63,26 @@ export class ClientController {
     @Query('limit') limit: number,
     @Query('search') search?: string,
   ) {
-    const query: { createdBy?: string; name?: RegExp } = {};
-    if (search) query.name = new RegExp(search, 'i');
+    const query: { createdBy?: string; search?: RegExp } = {};
+
     if (!(await this.userService.checkAdministrator(req.user.user))) {
       query.createdBy = req.user.user;
     }
-    return await this.clientService.paginate(query, {
-      offset: Number(offset),
-      limit: Number(limit),
-    });
+
+    if (search) query.search = new RegExp(search, 'i');
+
+    const clientModel = this.clientService.getModel();
+    const data = await clientModel
+      .find(query)
+      .skip(Number(offset))
+      .limit(Number(limit))
+      .exec();
+
+    return {
+      docs: data,
+      length: await clientModel.estimatedDocumentCount(),
+      offset,
+    };
   }
 
   @Get('v1/trusted_clients')

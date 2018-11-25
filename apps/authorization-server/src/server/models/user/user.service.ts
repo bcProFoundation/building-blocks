@@ -14,14 +14,13 @@ import { USER } from './user.schema';
 import { AUTH_DATA } from '../auth-data/auth-data.schema';
 import { User } from '../interfaces/user.interface';
 import { AuthData } from '../interfaces/auth-data.interface';
-import { PaginateModel } from '../../typings/mongoose';
 import { i18n } from '../../i18n/i18n.config';
 import { ADMINISTRATOR } from '../../constants/app-strings';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel(USER) private readonly userModel: PaginateModel<User>,
+    @InjectModel(USER) private readonly userModel: Model<User>,
     @InjectModel(AUTH_DATA) private readonly authDataModel: Model<AuthData>,
   ) {}
 
@@ -150,10 +149,6 @@ export class UserService {
     if (!user) user = await this.findOne({ phone: emailOrPhone });
     if (!user) throw invalidUserException;
     return user;
-  }
-
-  async paginate(query, options) {
-    return await this.userModel.paginate(query, options);
   }
 
   async checkAdministrator(uuid) {

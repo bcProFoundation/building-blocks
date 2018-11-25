@@ -3,13 +3,11 @@ import { SCOPE } from './scope.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Scope } from '../interfaces/scope.interface';
 import { invalidScopeException } from '../../auth/filters/exceptions';
-import { PaginateModel } from '../../typings/mongoose';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class ScopeService {
-  constructor(
-    @InjectModel(SCOPE) private readonly scopeModel: PaginateModel<Scope>,
-  ) {}
+  constructor(@InjectModel(SCOPE) private readonly scopeModel: Model<Scope>) {}
 
   async save(params) {
     params.name = params.name.toLowerCase().trim();
@@ -25,10 +23,6 @@ export class ScopeService {
 
   public async clear() {
     return await this.scopeModel.deleteMany({});
-  }
-
-  async paginate(query, options) {
-    return await this.scopeModel.paginate(query, options);
   }
 
   getModel() {

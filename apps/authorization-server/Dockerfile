@@ -31,7 +31,6 @@ RUN rm -fr authorization-server/config authorization-server/docker-entrypoint.sh
 
 # set project directory
 RUN chown -R craft:craft /home/craft
-USER craft
 WORKDIR /home/craft/authorization-server
 
 EXPOSE 3000

@@ -13,4 +13,5 @@ export const TYPEORM_CONNECTION: MongoConnectionOptions = {
   logging: false,
   synchronize: true,
   entities: [IdentityProviderSettings, Profile, TokenCache],
+  useNewUrlParser: true,
 };

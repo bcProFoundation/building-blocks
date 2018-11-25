@@ -1,4 +1,4 @@
-<div class="dashboard-container">
+<div class="card-container">
     <form [formGroup]="clientForm">
       <mat-card>
         <mat-card-title>{{ clientName || "New Client" }}</mat-card-title>
@@ -11,7 +11,7 @@
               <input matInput placeholder="Client ID" formControlName="clientId" password readonly>
             </mat-form-field>
             <mat-form-field *ngIf="clientSecret">
-              <input matInput placeholder="Client Secret" formControlName="clientSecret" 
+              <input matInput placeholder="Client Secret" formControlName="clientSecret"
               [type]="hide ? 'password' : 'text'" readonly>
               <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
             </mat-form-field>
@@ -33,7 +33,7 @@
             <button mat-icon-button color="accent" (click)="addCallbackURL()">
                 Add Callback URL <mat-icon>add</mat-icon>
             </button>
-              
+
         </mat-card-content>
         <mat-card-actions>
           <button (click)="createClient()" mat-flat-button color="primary" [disabled]="!clientForm.valid" *ngIf="!clientId">Create</button>

@@ -44,11 +44,11 @@ BULL_QUEUE_REDIS_PORT=6379
 
 Note: It is important to change the secrets and password. DO NOT USE example passwords or secrets.
 
-### Setup /etc/hosts
+### Setup hosts file
 
 add `127.0.0.1 accounts.localhost` in `/etc/hosts` file or hosts file of your operating system.
 
-### Server with POST request
+### Setup server with POST request
 
 `authorization-server` needs to have first client (app), i.e `infrastructure-console` for administration dashboard for all apps, users, roles, scopes and general settings.
 
