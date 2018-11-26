@@ -3,48 +3,66 @@ import {
   ExecutionContext,
   Injectable,
   NotImplementedException,
+  HttpService,
 } from '@nestjs/common';
+import { IdentityProviderSettingsService } from '../models/identity-provider-settings/identity-provider-settings.service';
 import { TokenCache } from '../models/token-cache/token-cache.entity';
 import { TokenCacheService } from '../models/token-cache/token-cache.service';
-import Axios from 'axios';
 import { TOKEN } from '../constants/app-strings';
-import { IdentityProviderSettingsService } from '../models/identity-provider-settings/identity-provider-settings.service';
+import { switchMap, retry } from 'rxjs/operators';
+import { of, from } from 'rxjs';
 
 @Injectable()
 export class TokenGuard implements CanActivate {
   constructor(
     private readonly settingsService: IdentityProviderSettingsService,
     private readonly tokenCacheService: TokenCacheService,
+    private readonly http: HttpService,
   ) {}
-  async canActivate(context: ExecutionContext) {
+  canActivate(context: ExecutionContext) {
     const httpContext = context.switchToHttp();
     const req = httpContext.getRequest();
     const accessToken = this.getAccessToken(req);
-    const introspectedToken = await this.checkLocalToken(accessToken);
-    if (introspectedToken && introspectedToken.exp) {
-      const now = new Date().getTime();
-      if (now < introspectedToken.exp) {
-        delete introspectedToken._id;
-        delete introspectedToken.uuid;
-        req[TOKEN] = introspectedToken;
-        return introspectedToken.active;
-      } else if (now > introspectedToken.exp) {
-        await introspectedToken.remove();
-        const newToken = await this.introspectToken(accessToken);
-        if (newToken) {
-          await this.cacheToken(newToken, accessToken);
-          req[TOKEN] = newToken;
-          return newToken.active;
+    return from(this.tokenCacheService.findOne({ accessToken })).pipe(
+      switchMap(cachedToken => {
+        if (!cachedToken) {
+          return this.introspectToken(accessToken, req);
+        } else if (new Date().getTime() < cachedToken.exp) {
+          req[TOKEN] = cachedToken;
+          return of(true);
+        } else {
+          this.tokenCacheService.deleteMany({
+            accessToken: cachedToken.accessToken,
+          });
+          return this.introspectToken(accessToken, req);
         }
-      }
-    } else {
-      const freshToken = await this.introspectToken(accessToken);
-      if (freshToken) {
-        await this.cacheToken(freshToken, accessToken);
-        req[TOKEN] = freshToken;
-        return freshToken.active;
-      }
-    }
+      }),
+    );
+  }
+
+  introspectToken(accessToken: string, req: Express.Request) {
+    return from(this.settingsService.find()).pipe(
+      switchMap(settings => {
+        if (!settings) throw new NotImplementedException();
+        const baseEncodedCred = Buffer.from(
+          settings.clientId + ':' + settings.clientSecret,
+        ).toString('base64');
+        return this.http
+          .post(
+            settings.introspectionURL,
+            { token: accessToken },
+            { headers: { Authorization: 'Basic ' + baseEncodedCred } },
+          )
+          .pipe(
+            retry(3),
+            switchMap(response => {
+              return from(this.cacheToken(response.data, accessToken)).pipe(
+                switchMap(cachedToken => of(cachedToken.active)),
+              );
+            }),
+          );
+      }),
+    );
   }
 
   getAccessToken(request) {
@@ -58,42 +76,9 @@ export class TokenGuard implements CanActivate {
     );
   }
 
-  async checkLocalToken(accessToken: string) {
-    const cachedToken = await this.tokenCacheService.findOne({ accessToken });
-    return cachedToken;
-  }
-
-  async introspectToken(accessToken: string) {
-    const settings = await this.settingsService.find();
-    if (!settings) throw new NotImplementedException();
-
-    // header is 'Bearer token_hash' and not just token_hash
-    const baseEncodedCred = Buffer.from(
-      settings.clientId + ':' + settings.clientSecret,
-    ).toString('base64');
-    const bearertokenData = await Axios.post(
-      settings.introspectionURL,
-      {
-        token: accessToken,
-      },
-      {
-        headers: {
-          Authorization: 'Basic ' + baseEncodedCred,
-        },
-      },
-    );
-    if (bearertokenData.data.active) return bearertokenData.data;
-  }
-
-  async cacheToken(
-    introspectedToken: any,
-    accessToken: string,
-  ): Promise<TokenCache> {
+  cacheToken(introspectedToken: any, accessToken: string): Promise<TokenCache> {
     introspectedToken.accessToken = accessToken;
     introspectedToken.clientId = introspectedToken.client_id;
-    delete introspectedToken.client_id;
-    const cachedToken = await this.tokenCacheService.save(introspectedToken);
-    delete cachedToken._id;
-    return cachedToken;
+    return this.tokenCacheService.save(introspectedToken);
   }
 }
