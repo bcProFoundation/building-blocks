@@ -9,7 +9,7 @@ import { ServerSettingsService } from '../models/server-settings/server-settings
 import { TokenCache } from '../models/token-cache/token-cache.entity';
 import { TokenCacheService } from '../models/token-cache/token-cache.service';
 import { TOKEN } from '../constants/app-strings';
-import { map, switchMap, retry } from 'rxjs/operators';
+import { switchMap, retry } from 'rxjs/operators';
 import { of, from } from 'rxjs';
 
 @Injectable()
@@ -55,11 +55,10 @@ export class TokenGuard implements CanActivate {
           )
           .pipe(
             retry(3),
-            map(response => {
-              this.cacheToken(response.data, accessToken).then(
-                token => (req[TOKEN] = token),
+            switchMap(response => {
+              return from(this.cacheToken(response.data, accessToken)).pipe(
+                switchMap(cachedToken => of(cachedToken.active)),
               );
-              return response.data.active;
             }),
           );
       }),

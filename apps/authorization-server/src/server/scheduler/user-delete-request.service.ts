@@ -54,7 +54,11 @@ export class UserDeleteRequestService implements OnModuleInit {
               },
             )
             .pipe(retry(3))
-            .subscribe();
+            .subscribe({
+              error: error => {
+                // TODO: Log Error
+              },
+            });
         }
       }
       done(null, job.id);

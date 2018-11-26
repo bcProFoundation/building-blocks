@@ -62,7 +62,11 @@ export class TokenSchedulerService implements OnModuleInit {
                   },
                 )
                 .pipe(retry(3))
-                .subscribe();
+                .subscribe({
+                  error: error => {
+                    // TODO: Log Error
+                  },
+                });
             }
           }
         }
