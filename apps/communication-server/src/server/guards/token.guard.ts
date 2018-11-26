@@ -26,29 +26,7 @@ export class TokenGuard implements CanActivate {
     return from(this.tokenCacheService.findOne({ accessToken })).pipe(
       switchMap(cachedToken => {
         if (!cachedToken) {
-          return from(this.settingsService.find()).pipe(
-            switchMap(settings => {
-              if (!settings) throw new NotImplementedException();
-              const baseEncodedCred = Buffer.from(
-                settings.clientId + ':' + settings.clientSecret,
-              ).toString('base64');
-              return this.http
-                .post(
-                  settings.introspectionURL,
-                  { token: accessToken },
-                  { headers: { Authorization: 'Basic ' + baseEncodedCred } },
-                )
-                .pipe(
-                  retry(3),
-                  map(response => {
-                    this.cacheToken(response.data, accessToken).then(
-                      token => (req[TOKEN] = token),
-                    );
-                    return response.data.active;
-                  }),
-                );
-            }),
-          );
+          return this.introspectToken(accessToken, req);
         } else if (new Date().getTime() < cachedToken.exp) {
           req[TOKEN] = cachedToken;
           return of(true);
@@ -56,8 +34,34 @@ export class TokenGuard implements CanActivate {
           this.tokenCacheService.deleteMany({
             accessToken: cachedToken.accessToken,
           });
-          return of(false);
+          return this.introspectToken(accessToken, req);
         }
+      }),
+    );
+  }
+
+  introspectToken(accessToken: string, req: Express.Request) {
+    return from(this.settingsService.find()).pipe(
+      switchMap(settings => {
+        if (!settings) throw new NotImplementedException();
+        const baseEncodedCred = Buffer.from(
+          settings.clientId + ':' + settings.clientSecret,
+        ).toString('base64');
+        return this.http
+          .post(
+            settings.introspectionURL,
+            { token: accessToken },
+            { headers: { Authorization: 'Basic ' + baseEncodedCred } },
+          )
+          .pipe(
+            retry(3),
+            map(response => {
+              this.cacheToken(response.data, accessToken).then(
+                token => (req[TOKEN] = token),
+              );
+              return response.data.active;
+            }),
+          );
       }),
     );
   }
