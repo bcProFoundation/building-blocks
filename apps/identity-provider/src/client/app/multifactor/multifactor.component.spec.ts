@@ -9,6 +9,7 @@ import { OAuthService } from 'angular-oauth2-oidc';
 import { oauthServiceStub } from '../common/testing-helpers';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('MultifactorComponent', () => {
   let component: MultifactorComponent;
@@ -21,6 +22,7 @@ describe('MultifactorComponent', () => {
         FormsModule,
         RouterTestingModule,
         BrowserAnimationsModule,
+        HttpClientTestingModule,
       ],
       declarations: [MultifactorComponent],
       providers: [

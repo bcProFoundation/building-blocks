@@ -21,7 +21,8 @@
             "assets": [
               "src/client/favicon.ico",
               "src/client/assets",
-              "src/client/silent-refresh.html"
+              "src/client/silent-refresh.html",
+              "src/client/assets/missing_avatar.png"
             ],
             "styles": [
               {
@@ -89,7 +90,8 @@
             "assets": [
               "src/client/favicon.ico",
               "src/client/assets",
-              "src/client/silent-refresh.html"
+              "src/client/silent-refresh.html",
+              "src/client/assets/missing_avatar.png"
             ]
           }
         },
