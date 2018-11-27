@@ -10,3 +10,4 @@ export const LOGOUT_URL = '/auth/logout';
 export const INITIALIZE_2FA = '/user/v1/initialize_2fa';
 export const VERIFY_2FA = '/user/v1/verify_2fa';
 export const DISABLE_2FA = '/user/v1/disable_2fa';
+export const MISSING_AVATAR_IMAGE = 'assets/missing_avatar.png';

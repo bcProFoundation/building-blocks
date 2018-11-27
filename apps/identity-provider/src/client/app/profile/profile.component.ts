@@ -26,7 +26,7 @@ import { MatDatepickerInputEvent, MatSnackBar } from '@angular/material';
 import { USER_UUID, ISSUER_URL, APP_URL } from '../../constants/storage';
 import { map } from 'rxjs/operators';
 import { PersonalResponse } from '../interfaces/personal-response.interface';
-import { LOGOUT_URL } from '../../constants/url-paths';
+import { LOGOUT_URL, MISSING_AVATAR_IMAGE } from '../../constants/url-paths';
 import { Router } from '@angular/router';
 import { ProfileResponse } from '../interfaces/profile-response.interface';
 
@@ -47,6 +47,7 @@ export class ProfileComponent implements OnInit {
   changePassword = CHANGE_PASSWORD;
 
   uuid: string;
+  selectedFile: File;
   fullName: string;
   givenName: string;
   middleName: string;
@@ -66,6 +67,7 @@ export class ProfileComponent implements OnInit {
   currentPassword: string;
   newPassword: string;
   repeatPassword: string;
+  hideAvatar: boolean = false;
 
   personalForm = new FormGroup({
     fullName: new FormControl(this.fullName),
@@ -150,10 +152,26 @@ export class ProfileComponent implements OnInit {
     this.profileService.getProfileDetails(uuid).subscribe({
       next: (response: ProfileResponse) => {
         if (response) {
+          if (response.picture) {
+            this.picture = response.picture;
+          } else {
+            this.picture = MISSING_AVATAR_IMAGE;
+          }
           this.profileForm.controls.website.setValue(response.website);
           this.profileForm.controls.zoneinfo.setValue(response.zoneinfo);
           this.profileForm.controls.locale.setValue(response.locale);
         }
+      },
+    });
+  }
+
+  onFileChanged(event) {
+    this.selectedFile = event.target.files[0];
+    this.profileService.uploadAvatar(this.selectedFile).subscribe({
+      next: (profile: any) => {
+        this.hideAvatar = false;
+        this.picture = profile.picture;
+        this.profileForm.controls.picture.setValue(profile.picture);
       },
     });
   }
@@ -180,11 +198,14 @@ export class ProfileComponent implements OnInit {
       .subscribe();
   }
 
+  toggleFileField() {
+    this.hideAvatar = !this.hideAvatar;
+  }
+
   updateProfile() {
     this.profileService
       .updateProfileDetails({
         uuid: this.uuid,
-        // avatarUrl : this.profileForm.controls.avatarUrl.value,
         website: this.profileForm.controls.website.value,
         zoneinfo: this.profileForm.controls.zoneinfo.value,
         locale: this.profileForm.controls.locale.value,
@@ -195,9 +216,6 @@ export class ProfileComponent implements OnInit {
             duration: 2000,
           }),
       });
-    // this.profileService
-    //   .setAuthServerUser({ avatarUrl : this.personalForm.controls.website.value })
-    //   .subscribe();
   }
 
   enableDisable2fa() {

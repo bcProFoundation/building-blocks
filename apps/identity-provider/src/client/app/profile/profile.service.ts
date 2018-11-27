@@ -64,6 +64,15 @@ export class ProfileService {
     );
   }
 
+  uploadAvatar(selectedFile) {
+    const uploadData = new FormData();
+    uploadData.append('file', selectedFile, selectedFile.name);
+    return this.http.post('/profile/v1/upload_avatar', uploadData, {
+      reportProgress: true,
+      headers: this.authorizationHeader,
+    });
+  }
+
   setAuthServerUser(user) {
     return this.http.post(
       localStorage.getItem(ISSUER_URL) + SET_AUTH_SERVER_USER,

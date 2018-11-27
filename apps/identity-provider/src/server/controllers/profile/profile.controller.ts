@@ -10,6 +10,9 @@ import {
   UseGuards,
   Req,
   UnauthorizedException,
+  UseInterceptors,
+  FileInterceptor,
+  UploadedFile,
 } from '@nestjs/common';
 import { ProfileService } from '../../models/profile/profile.service';
 import { PersonalDetailsDTO } from './personal-details-dto';
@@ -17,6 +20,7 @@ import { Profile } from '../../models/profile/profile.entity';
 import { ProfileDetailsDTO } from './profile-details-dto';
 import { INDEX_HTML } from '../../constants/filesystem';
 import { TokenGuard } from '../../guards/token.guard';
+import { multerAvatarConnection } from './multer-avatar.connection';
 
 @Controller('profile')
 export class ProfileController {
@@ -99,5 +103,18 @@ export class ProfileController {
       const profile = await this.profileService.findOne({ uuid });
       res.json(profile);
     } else throw new UnauthorizedException();
+  }
+
+  @Post('v1/upload_avatar')
+  @UseGuards(TokenGuard)
+  @UseInterceptors(FileInterceptor('file', multerAvatarConnection))
+  async uploadFile(@Req() req, @Res() res, @UploadedFile() file) {
+    if (req.token.active) {
+      const uploadResponse = await this.profileService.uploadAndSetAvatar(
+        file,
+        req.token.sub,
+      );
+      res.json(uploadResponse);
+    }
   }
 }
