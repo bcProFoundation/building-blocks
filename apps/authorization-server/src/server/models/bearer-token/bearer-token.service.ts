@@ -50,6 +50,10 @@ export class BearerTokenService {
     return await this.bearerTokenModel.find().exec();
   }
 
+  async deleteMany(params) {
+    return await this.bearerTokenModel.deleteMany(params);
+  }
+
   getModel() {
     return this.bearerTokenModel;
   }

@@ -4,6 +4,7 @@ import { AuthDataService } from '../auth-data/auth-data.service';
 import { ClientService } from '../client/client.service';
 import { invalidUserException } from '../../auth/filters/exceptions';
 import { UserDeleteRequestService } from '../../scheduler/user-delete-request.service';
+import { BearerTokenService } from '../bearer-token/bearer-token.service';
 
 @Injectable()
 export class UserManagementService {
@@ -12,6 +13,7 @@ export class UserManagementService {
     private readonly authDataService: AuthDataService,
     private readonly clientService: ClientService,
     private readonly userDeleteRequestService: UserDeleteRequestService,
+    private readonly bearerTokenService: BearerTokenService,
   ) {}
 
   async deleteUser(uuid) {
@@ -36,6 +38,7 @@ export class UserManagementService {
     });
     if (twoFactorTempSecret) await twoFactorTempSecret.remove();
     await this.clientService.deleteClientsByUser(user.uuid);
+    await this.bearerTokenService.deleteMany({ user: user.uuid });
     this.informUserDeleted(uuid);
   }
 

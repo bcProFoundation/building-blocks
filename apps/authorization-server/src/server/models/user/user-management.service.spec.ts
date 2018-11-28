@@ -4,6 +4,7 @@ import { UserService } from './user.service';
 import { AuthDataService } from '../auth-data/auth-data.service';
 import { ClientService } from '../client/client.service';
 import { UserDeleteRequestService } from '../../scheduler/user-delete-request.service';
+import { BearerTokenService } from '../bearer-token/bearer-token.service';
 
 describe('UserManagementService', () => {
   let service: UserManagementService;
@@ -25,6 +26,10 @@ describe('UserManagementService', () => {
         },
         {
           provide: UserDeleteRequestService,
+          useValue: {},
+        },
+        {
+          provide: BearerTokenService,
           useValue: {},
         },
       ],

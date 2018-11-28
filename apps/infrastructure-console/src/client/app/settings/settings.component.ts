@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { SettingsService } from './settings.service';
-import { APP_URL } from '../constants/storage';
+import { APP_URL, ISSUER_URL } from '../constants/storage';
 
 @Component({
   selector: 'app-settings',
@@ -12,13 +12,13 @@ export class SettingsComponent implements OnInit {
   issuerUrl: string;
   communicationServerClientId: string;
   clientList: any[];
-  authServerURL: string;
+  appURL: string;
   clientId: string;
   clientSecret: string;
   hide: boolean = true;
 
-  comSettingsForm = new FormGroup({
-    authServerURL: new FormControl(this.authServerURL),
+  infraSettingsForm = new FormGroup({
+    appURL: new FormControl(this.appURL),
     clientId: new FormControl(this.clientId),
     clientSecret: new FormControl(this.clientSecret),
   });
@@ -35,11 +35,11 @@ export class SettingsComponent implements OnInit {
   ngOnInit() {
     this.settingsService.getClientSettings().subscribe({
       next: (clientResponse: {
-        authServerURL: string;
+        appURL: string;
         clientId: string;
         clientSecret: string;
       }) => {
-        this.authServerURL = clientResponse.authServerURL;
+        this.appURL = clientResponse.appURL;
         this.clientId = clientResponse.clientId;
         this.clientSecret = clientResponse.clientSecret;
         this.populateClientForm(clientResponse);
@@ -71,11 +71,9 @@ export class SettingsComponent implements OnInit {
   }
 
   populateClientForm(clientResponse) {
-    this.comSettingsForm.controls.authServerURL.setValue(
-      clientResponse.authServerURL,
-    );
-    this.comSettingsForm.controls.clientId.setValue(clientResponse.clientId);
-    this.comSettingsForm.controls.clientSecret.setValue(
+    this.infraSettingsForm.controls.appURL.setValue(clientResponse.appURL);
+    this.infraSettingsForm.controls.clientId.setValue(clientResponse.clientId);
+    this.infraSettingsForm.controls.clientSecret.setValue(
       clientResponse.clientSecret,
     );
   }
@@ -94,9 +92,9 @@ export class SettingsComponent implements OnInit {
   updateAuthClientSettings() {
     this.settingsService.getClientUpdate(
       localStorage.getItem(APP_URL),
-      this.comSettingsForm.controls.authServerURL.value,
-      this.comSettingsForm.controls.clientId.value,
-      this.comSettingsForm.controls.clientSecret.value,
+      localStorage.getItem(ISSUER_URL),
+      this.infraSettingsForm.controls.clientId.value,
+      this.infraSettingsForm.controls.clientSecret.value,
     );
   }
 }
