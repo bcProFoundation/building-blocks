@@ -9,3 +9,8 @@ mat-card-actions {
 mat-card {
     padding: 2em;
 }
+
+.avatar-image {
+    background-image: url('/assets/missing_avatar.png');
+    background-size: cover;
+}

@@ -49,7 +49,6 @@ export class ProfileService {
   }
 
   getProfileDetails(uuid) {
-    // console.log(this.http.get(GET_PROFILE_DETAILS_URL + '/' + uuid));
     return this.http.get(GET_PROFILE_DETAILS_URL + '/' + uuid, {
       headers: this.authorizationHeader,
     });

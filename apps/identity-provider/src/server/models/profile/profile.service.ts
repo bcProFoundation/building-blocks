@@ -2,7 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Profile } from './profile.entity';
-import { AVATAR_ROUTE_PREFIX } from '../../constants/filesystem';
+import {
+  AVATAR_ROUTE_PREFIX,
+  AVATAR_IMAGE_FOLDER,
+} from '../../constants/filesystem';
+import { unlink } from 'fs';
 
 @Injectable()
 export class ProfileService {
@@ -29,8 +33,11 @@ export class ProfileService {
 
   public async uploadAndSetAvatar(file, profileUuid) {
     const profile: Profile = await this.findOne({ uuid: profileUuid });
-    profile.picture = AVATAR_ROUTE_PREFIX + file.filename;
-    await profile.save();
-    return profile;
+    const oldPicture = profile.picture.split('/')[2];
+    unlink(AVATAR_IMAGE_FOLDER + '/' + oldPicture, async () => {
+      profile.picture = AVATAR_ROUTE_PREFIX + file.filename;
+      await profile.save();
+      return profile;
+    });
   }
 }
