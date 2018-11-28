@@ -1,11 +1,28 @@
 version: '3'
 
 services:
-  infrastructure-console-service:
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-vol:/data/db
+
+  infrastructure-console:
+    # image: registry.gitlab.com/castlecraft/building-blocks/infrastructure-console:latest
     image: infrastructure-console:latest
     ports:
       - "5000:5000"
+    depends_on:
+      - mongo
+    links:
+      - mongo
     environment:
-      - DB_HOST=${IC_DB_HOST}
-      - DB_NAME=${IC_DB_NAME}
-    container_name: infrastructure-console
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+    volumes:
+      - infrastructure-console-vol:/home/craft/infrastructure-console/files
+
+volumes:
+  mongo-vol:
+  infrastructure-console-vol:

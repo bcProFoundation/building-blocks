@@ -1,11 +1,28 @@
 version: '3'
 
 services:
-  identity-provider-service:
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-vol:/data/db
+
+  identity-provider:
+    # image: registry.gitlab.com/castlecraft/building-blocks/identity-provider:latest
     image: identity-provider:latest
     ports:
       - "3200:3200"
+    depends_on:
+      - mongo
+    links:
+      - mongo
     environment:
-      - DB_HOST=${IDP_DB_HOST}
-      - DB_NAME=${IDP_DB_NAME}
-    container_name: identity-provider
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+    volumes:
+      - identity-provider-vol:/home/craft/identity-provider/files
+
+volumes:
+  mongo-vol:
+  identity-provider-vol:
