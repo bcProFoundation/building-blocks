@@ -1,15 +1,45 @@
 version: '3'
 
 services:
-  communication-server-service:
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-vol:/data/db
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+    volumes:
+      - rabbitmq-vol:/var/lib/rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=${AMQP_USER}
+      - RABBITMQ_DEFAULT_PASS=${AMQP_PASS}
+
+  communication-server:
+    # image: registry.gitlab.com/castlecraft/building-blocks/communication-server:latest
     image: communication-server:latest
     ports:
       - "4100:4100"
+    depends_on:
+      - mongo
+      - rabbitmq
+    links:
+      - mongo
+      - rabbitmq
     environment:
-      - DB_HOST=${CS_DB_HOST}
-      - DB_NAME=${CS_DB_NAME}
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
       - AMQP_HOST=${AMQP_HOST}
-      - AMQP_USER=${CS_AMQP_USER}
-      - AMQP_PASSWORD=${CS_AMQP_PASS}
+      - AMQP_USER=${AMQP_USER}
+      - AMQP_PASSWORD=${AMQP_PASS}
       - AMQP_PORT=${AMQP_PORT}
-    container_name: communication-server
+    volumes:
+      - communication-server-vol:/home/craft/communication-server/files
+
+volumes:
+  rabbitmq-vol:
+  mongo-vol:
+  communication-server-vol:
