@@ -8,4 +8,4 @@ export const FOLDER_DIST_BROWSER: string = join(
 export const INDEX_HTML = join(FOLDER_DIST_BROWSER, 'index.html');
 
 export const AVATAR_IMAGE_FOLDER: string = join(process.cwd(), '/files/public');
-export const AVATAR_ROUTE_PREFIX = '/avatar';
+export const AVATAR_ROUTE_PREFIX = '/avatar/';

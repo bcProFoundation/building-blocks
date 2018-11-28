@@ -45,7 +45,7 @@
 </div>
 
 <div class="profile-container">
-  <form (ngSubmit)="updateProfile()" [formGroup]="profileForm">
+  <form [formGroup]="profileForm">
     <mat-card>
       <div fxLayout="row" fxLayoutAlign="space-between none">
         <mat-card-title> {{ profileDetails }} </mat-card-title>
@@ -58,8 +58,9 @@
           mat-card-avatar
           class="avatar-image"
           (click)="toggleFileField()"
-          *ngIf="!picture"></div>
+          *ngIf="!picture">
         </div>
+      </div>
       <mat-card-content fxLayout="column">
         <mat-form-field *ngIf="hideAvatar">
           <ngx-mat-file-input
@@ -70,8 +71,8 @@
             accept="image/*"
             valuePlaceholder="{{ avatarUrl }}" #fileInput></ngx-mat-file-input>
             <mat-icon matSuffix>folder</mat-icon>
-          </mat-form-field>
-          <mat-form-field>
+        </mat-form-field>
+        <mat-form-field>
           <input matInput formControlName="website" placeholder="Website">
         </mat-form-field>
         <mat-form-field>
@@ -89,8 +90,15 @@
           </mat-select>
         </mat-form-field>
         <mat-card-actions>
-          <button type="submit" mat-button color="primary">{{ updateConstant }}</button>
-      </mat-card-actions>
+          <button
+            (click)="updateProfile()"
+            mat-button color="primary">{{ updateConstant }}</button>
+          <button
+            *ngIf="hideAvatar"
+            mat-button
+            color="warn"
+            (click)="deleteAvatar()">Delete Avatar</button>
+        </mat-card-actions>
       </mat-card-content>
     </mat-card>
   </form>

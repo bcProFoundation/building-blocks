@@ -14,6 +14,7 @@ export class SettingsComponent implements OnInit {
   clientId: string;
   clientSecret: string;
   emailAccounts: any[];
+  hide: boolean = true;
 
   authSettingsForm = new FormGroup({
     appURL: new FormControl(this.appURL),
