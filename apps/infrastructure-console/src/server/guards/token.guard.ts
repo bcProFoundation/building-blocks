@@ -11,6 +11,7 @@ import { TokenCacheService } from '../models/token-cache/token-cache.service';
 import { TOKEN } from '../constants/app-strings';
 import { switchMap, retry } from 'rxjs/operators';
 import { of, from } from 'rxjs';
+import * as Express from 'express';
 
 @Injectable()
 export class TokenGuard implements CanActivate {
@@ -31,9 +32,11 @@ export class TokenGuard implements CanActivate {
           req[TOKEN] = cachedToken;
           return of(true);
         } else {
-          this.tokenCacheService.deleteMany({
-            accessToken: cachedToken.accessToken,
-          });
+          from(
+            this.tokenCacheService.deleteMany({
+              accessToken: cachedToken.accessToken,
+            }),
+          ).subscribe();
           return this.introspectToken(accessToken, req);
         }
       }),
