@@ -31,16 +31,17 @@ export class ScopeController {
     @Query('offset') offset: number,
     @Query('limit') limit: number,
     @Query('search') search?: string,
+    @Query('sort') sort?: string,
   ) {
-    const query: { search?: RegExp } = {};
-
-    if (search) query.search = new RegExp(search, 'i');
+    const query: { name?: RegExp } = {};
+    if (search) query.name = new RegExp(search, 'i');
 
     const scopeModel = this.scopeService.getModel();
     const data = await scopeModel
       .find(query)
       .skip(Number(offset))
       .limit(Number(limit))
+      .sort({ name: sort || 'asc' })
       .exec();
 
     return {

@@ -1,70 +1,45 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ListingComponent } from './listing.component';
-import { MaterialModule } from '../material.module';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatSnackBar, MatTableDataSource } from '@angular/material';
-import { ClientService } from '../client/client.service';
-import { OAuthService } from 'angular-oauth2-oidc';
-import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
-import { HttpErrorHandler } from '../common/http-error-handler.service';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { oauthServiceStub } from '../common/testing-helpers';
+import { ListingService } from '../common/listing.service';
+import { MaterialModule } from '../material.module';
+import { of } from 'rxjs';
+import { FormsModule } from '@angular/forms';
+
+const listingService: Partial<ListingService> = {
+  findModels: (...args) => of([]),
+};
 
 describe('ListingComponent', () => {
   let component: ListingComponent;
   let fixture: ComponentFixture<ListingComponent>;
 
-  @Component({ selector: 'app-home', template: '' })
-  class HomeComponent {}
-
-  const clientServiceStub: Partial<ClientService> = {};
-
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      declarations: [ListingComponent],
       imports: [
-        RouterTestingModule.withRoutes([
-          { path: 'home', component: HomeComponent },
-        ]),
+        NoopAnimationsModule,
         MaterialModule,
-        BrowserAnimationsModule,
-        MaterialModule,
-        HttpClientTestingModule,
+        RouterTestingModule,
+        FormsModule,
       ],
-      declarations: [ListingComponent, HomeComponent],
       providers: [
         {
-          provide: OAuthService,
-          useValue: oauthServiceStub,
+          provide: ListingService,
+          useValue: listingService,
         },
-        {
-          provide: ClientService,
-          useValue: clientServiceStub,
-        },
-        {
-          provide: HttpErrorHandler,
-          useValue: {
-            handleError<T>(...args) {},
-            createHandleError(...args) {},
-          },
-        },
-        MatSnackBar,
       ],
-      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ListingComponent);
     component = fixture.componentInstance;
-    component.dataSource = new MatTableDataSource();
-    component.dataSource.data = [];
-    component._skipLoading = true;
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should compile', () => {
     expect(component).toBeTruthy();
   });
 });

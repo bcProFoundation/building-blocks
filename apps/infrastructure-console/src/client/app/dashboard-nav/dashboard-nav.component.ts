@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, filter } from 'rxjs/operators';
 import { OAuthService, OAuthEvent } from 'angular-oauth2-oidc';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { StorageService } from '../common/storage.service';
 import { ISSUER_URL, APP_URL } from '../constants/storage';
 import { IDTokenClaims } from '../interfaces/id-token-claims.interfaces';
@@ -21,12 +21,20 @@ export class DashboardNavComponent {
 
   tokenIsValid: boolean;
   loggedIn: boolean;
+  route: string;
+
   constructor(
     private breakpointObserver: BreakpointObserver,
     private oauthService: OAuthService,
     private router: Router,
     private storageService: StorageService,
-  ) {}
+  ) {
+    this.router.events
+      .pipe(filter(route => route instanceof NavigationEnd))
+      .subscribe((route: NavigationEnd) => {
+        this.route = route.url;
+      });
+  }
 
   ngOnInit(): void {
     this.oauthService.events.subscribe(({ type }: OAuthEvent) => {
@@ -62,5 +70,13 @@ export class DashboardNavComponent {
     };
     this.tokenIsValid = idClaims.roles.includes(ADMINISTRATOR);
     this.loggedIn = this.oauthService.hasValidAccessToken();
+  }
+
+  addModel() {
+    // TODO: make it better in UI/UX
+    const routeArray = this.route.split('/');
+    const index = routeArray.indexOf('list');
+    if (index !== -1) routeArray[index] = 'new';
+    this.router.navigate(routeArray);
   }
 }

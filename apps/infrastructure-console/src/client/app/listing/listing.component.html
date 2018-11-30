@@ -1,28 +1,38 @@
-<div class="card-container">
-  <mat-card>
-    <mat-card-content>
-      <div class="loading-shade" *ngIf="isLoadingResults">
-        <mat-progress-bar *ngIf="isLoadingResults" mode="indeterminate"></mat-progress-bar>
-        <div class="error" *ngIf="haserror">
-          {{errorText}}
-        </div>
-      </div>
-      <mat-table [dataSource]="dataSource" matSort>
-        <ng-container matColumnDef="name">
-          <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
-          <mat-cell *matCellDef="let row">
-            <a [routerLink]="['/' + model, row.uuid]" >{{row.name}}</a>
-          </mat-cell>
-        </ng-container>
-        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-      </mat-table>
-      <mat-paginator
-        [pageSizeOptions]="[5,10,25,100]"
-        [length]="resultsLength"></mat-paginator>
-    </mat-card-content>
-    <mat-card-actions>
-        <button mat-flat-button color="primary" [routerLink]="['/' + model, 'new']">New</button>
-    </mat-card-actions>
-  </mat-card>
+<div class="mat-elevation-z0">
+  <div class="loading-shade" *ngIf="dataSource.loading$ | async">
+    <mat-progress-bar *ngIf="dataSource.loading$ | async" mode="indeterminate"></mat-progress-bar>
+  </div>
+  <div class="search-models">
+    <mat-form-field class="full-width">
+      <input matInput placeholder="Search" [(ngModel)]="search" (keyup.enter)="setFilter()">
+      <button mat-button matSuffix (click)="setFilter()">
+        <mat-icon>search</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+  <table mat-table class="full-width-table" [dataSource]="dataSource" matSort aria-label="Elements">
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header (click)="setFilter()">Name</th>
+      <td mat-cell *matCellDef="let row">
+        <a [routerLink]="['/' + model, row.uuid]">{{row.name}}</a>
+      </td>
+    </ng-container>
+
+    <!-- UUID Column -->
+    <ng-container matColumnDef="uuid">
+      <th mat-header-cell *matHeaderCellDef>UUID</th>
+      <td mat-cell *matCellDef="let row">{{row.uuid}}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <mat-paginator #paginator
+    (page)="getUpdate($event)"
+    [pageIndex]="paginator.pageIndex"
+    [length]="dataSource.length"
+    [pageSizeOptions]="[10, 50, 100, 500]">
+  </mat-paginator>
 </div>
