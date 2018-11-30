@@ -1,44 +1,25 @@
-import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
-import { merge, of } from 'rxjs';
-import {
-  catchError,
-  debounceTime,
-  map,
-  startWith,
-  switchMap,
-  filter,
-} from 'rxjs/operators';
+import { Component, ViewChild } from '@angular/core';
+import { MatPaginator, MatSort } from '@angular/material';
+import { ListingDataSource } from './listing-datasource';
 import { ListingService } from '../common/listing.service';
-import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
+import { NavigationEnd, Router } from '@angular/router';
 
 @Component({
   selector: 'app-listing',
   templateUrl: './listing.component.html',
   styleUrls: ['./listing.component.css'],
 })
-export class ListingComponent implements OnInit, AfterViewInit {
-  displayedColumns = ['name'];
+export class ListingComponent {
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+  dataSource: ListingDataSource;
 
-  dataSource = new MatTableDataSource();
-  resultsLength = 0;
-  _isLoadingResults = true;
-  _hasError = false;
-  errorText = '';
-  _skipLoading = false;
-
-  search = new FormControl('');
-
-  @ViewChild(MatPaginator)
-  paginator: MatPaginator;
-  @ViewChild(MatSort)
-  sort: MatSort;
+  displayedColumns = ['name', 'uuid'];
   model: string;
-  constructor(
-    private readonly listingService: ListingService,
-    private router: Router,
-  ) {
+  search: string = '';
+
+  constructor(private listingService: ListingService, private router: Router) {
     this.router.events
       .pipe(filter(route => route instanceof NavigationEnd))
       .subscribe((route: NavigationEnd) => {
@@ -46,57 +27,26 @@ export class ListingComponent implements OnInit, AfterViewInit {
       });
   }
 
-  ngOnInit(): void {}
-
-  ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-
-    this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
-
-    if (this._skipLoading) {
-      return;
-    }
-
-    merge(
-      this.sort.sortChange,
-      this.paginator.page,
-      this.search.valueChanges.pipe(debounceTime(1000)),
-    )
-      .pipe(
-        startWith({}),
-        switchMap(() => {
-          this._isLoadingResults = true;
-          return this.listingService.getModels(
-            this.paginator.pageIndex,
-            this.paginator.pageSize,
-            this.search.value,
-            this.model,
-          );
-        }),
-        map((data: any) => {
-          this._isLoadingResults = false;
-          this._hasError = false;
-          this.resultsLength = data.length;
-          return data.docs;
-        }),
-        catchError(err => {
-          this._isLoadingResults = false;
-          this._hasError = true;
-          this.errorText = err;
-          return of([]);
-        }),
-      )
-      .subscribe(data => {
-        this.dataSource.data = data;
-      });
+  ngOnInit() {
+    this.dataSource = new ListingDataSource(this.model, this.listingService);
+    this.dataSource.loadItems();
   }
 
-  get isLoadingResults() {
-    return this._isLoadingResults;
+  getUpdate(event) {
+    this.dataSource.loadItems(
+      this.search,
+      this.sort.direction,
+      event.pageIndex,
+      event.pageSize,
+    );
   }
 
-  get hasError() {
-    return this._hasError;
+  setFilter() {
+    this.dataSource.loadItems(
+      this.search, // TODO: Filter
+      this.sort.direction,
+      this.paginator.pageIndex,
+      this.paginator.pageSize,
+    );
   }
 }
