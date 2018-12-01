@@ -23,7 +23,7 @@ export class ProfileService {
     return await this.profileRepository.find();
   }
 
-  public async findOne(params): Promise<any> {
+  public async findOne(params): Promise<Profile> {
     return await this.profileRepository.findOne(params);
   }
 
@@ -33,11 +33,21 @@ export class ProfileService {
 
   public async uploadAndSetAvatar(file, profileUuid) {
     const profile: Profile = await this.findOne({ uuid: profileUuid });
-    const oldPicture = profile.picture.split('/')[2];
-    unlink(AVATAR_IMAGE_FOLDER + '/' + oldPicture, async () => {
+    if (profile && profile.picture) {
+      const oldPicture = profile.picture.split('/')[2];
+      this.deleteAvatarFile(oldPicture);
+
       profile.picture = AVATAR_ROUTE_PREFIX + file.filename;
       await profile.save();
       return profile;
-    });
+    } else {
+      profile.picture = AVATAR_ROUTE_PREFIX + file.filename;
+      await profile.save();
+      return profile;
+    }
+  }
+
+  public deleteAvatarFile(pictureFile) {
+    unlink(AVATAR_IMAGE_FOLDER + '/' + pictureFile, () => {});
   }
 }

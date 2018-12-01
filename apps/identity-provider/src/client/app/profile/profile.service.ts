@@ -8,8 +8,9 @@ import {
   GET_AUTH_SERVER_USER,
   SET_AUTH_SERVER_USER,
   CHANGE_PASSWORD_ENDPOINT,
+  DELETE_AVATAR_ENDPOINT,
 } from '../../constants/url-paths';
-import { ISSUER_URL } from '../../constants/storage';
+import { ISSUER_URL, APP_URL } from '../../constants/storage';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { MatSnackBar } from '@angular/material';
 import { CLOSE, CURRENT_PASSWORD_MISMATCH } from '../../constants/messages';
@@ -104,5 +105,14 @@ export class ProfileService {
 
   logout() {
     this.profileNavService.clearInfoLocalStorage();
+  }
+
+  deleteAvatar() {
+    return this.http.delete(
+      localStorage.getItem(APP_URL) + DELETE_AVATAR_ENDPOINT,
+      {
+        headers: this.authorizationHeader,
+      },
+    );
   }
 }

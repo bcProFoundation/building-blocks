@@ -7,7 +7,7 @@
         <input matInput formControlName="appURL" placeholder="appURL"></mat-form-field>
         <mat-form-field><input matInput formControlName="authServerURL" placeholder="Authorization Server URL"></mat-form-field>
         <mat-form-field><input matInput formControlName="clientId" placeholder="Client ID registered on Authorization Server"></mat-form-field>
-        <mat-form-field><input matInput formControlName="clientSecret" placeholder="Client Secret registered on Authorization Server" [type]="!hide ? 'password' : 'text'">
+        <mat-form-field><input matInput formControlName="clientSecret" placeholder="Client Secret registered on Authorization Server" [type]="hide ? 'password' : 'text'">
                         <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
         </mat-form-field>
 

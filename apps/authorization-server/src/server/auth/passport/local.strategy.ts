@@ -16,7 +16,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   async validate(req, username, password, done: (err, user) => any) {
     const code = lookup(req.body, 'code') || lookup(req.query, 'code');
     await this.authService
-      .logIn(username.toLowerCase(), password, code)
+      .logIn(username.trim().toLowerCase(), password, code)
       .then(user => done(null, user))
       .catch(err => done(err, false));
   }

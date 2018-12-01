@@ -60,7 +60,10 @@ export class TokenGuard implements CanActivate {
             retry(3),
             switchMap(response => {
               return from(this.cacheToken(response.data, accessToken)).pipe(
-                switchMap(cachedToken => of(cachedToken.active)),
+                switchMap(cachedToken => {
+                  req[TOKEN] = cachedToken;
+                  return of(cachedToken.active);
+                }),
               );
             }),
           );

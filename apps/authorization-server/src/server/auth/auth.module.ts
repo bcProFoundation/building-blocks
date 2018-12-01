@@ -44,6 +44,7 @@ import { TokenIntrospectionGuard } from './guards/token-introspection.guard';
 import { ScopeController } from './controllers/scope/scope.controller';
 import { SignupController } from './controllers/signup/signup.controller';
 import { SignupService } from './controllers/signup/signup.service';
+import { CRUDOperationService } from './controllers/common/crudoperation/crudoperation.service';
 
 @Module({
   providers: [
@@ -78,6 +79,7 @@ import { SignupService } from './controllers/signup/signup.service';
     // Guards
     RoleGuard,
     TokenIntrospectionGuard,
+    CRUDOperationService,
   ],
   controllers: [
     AuthController,

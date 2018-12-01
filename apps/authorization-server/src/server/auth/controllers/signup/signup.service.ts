@@ -1,4 +1,4 @@
-import { Injectable, HttpService, BadGatewayException } from '@nestjs/common';
+import { Injectable, HttpService } from '@nestjs/common';
 import { UserService } from '../../../models/user/user.service';
 import { AuthDataService } from '../../../models/auth-data/auth-data.service';
 import { randomBytes } from 'crypto';
@@ -48,34 +48,30 @@ export class SignupService {
     const txtMessage =
       'Visit the following link to complete signup\n' + verificationUrl;
     const htmlMessage = `To complete signup <a href='${verificationUrl}'>click here</a>`;
-    try {
-      this.http
-        .post(
-          requestUrl,
-          {
-            emailTo: unverifiedUser.email,
-            subject:
-              res.__('Please complete sign up for ') + unverifiedUser.email,
-            text: txtMessage,
-            html: htmlMessage,
+    this.http
+      .post(
+        requestUrl,
+        {
+          emailTo: unverifiedUser.email,
+          subject:
+            res.__('Please complete sign up for ') + unverifiedUser.email,
+          text: txtMessage,
+          html: htmlMessage,
+        },
+        {
+          headers: {
+            authorization: 'Basic ' + baseEncodedCred,
           },
-          {
-            headers: {
-              authorization: 'Basic ' + baseEncodedCred,
-            },
-          },
-        )
-        .subscribe({
-          next: response => {
-            return response;
-          },
-        });
-    } catch (error) {
-      throw new BadGatewayException(
-        'SignupService#initSignup ' + error.message,
-        error,
-      );
-    }
+        },
+      )
+      .subscribe({
+        next: response => {
+          return response;
+        },
+        error: async err => {
+          await unverifiedUser.remove();
+        },
+      });
   }
 
   async verifyEmail(payload, res) {

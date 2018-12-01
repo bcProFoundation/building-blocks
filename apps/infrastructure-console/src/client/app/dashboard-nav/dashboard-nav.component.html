@@ -15,12 +15,8 @@
         <mat-list-item routerLink="/scope/list">Scopes</mat-list-item>
         <mat-list-item routerLink="/settings">Settings</mat-list-item>
       </mat-nav-list>
-      <mat-divider></mat-divider>
-      <mat-nav-list>
-        <mat-list-item (click)="addModel()">Add</mat-list-item>
-      </mat-nav-list>
-      <mat-divider></mat-divider>
     </ng-container>
+    <mat-divider></mat-divider>
     <mat-nav-list>
       <a mat-list-item (click)="login()" *ngIf="!loggedIn">Login</a>
       <a mat-list-item (click)="logout()" *ngIf="tokenIsValid || loggedIn">Logout</a>
@@ -38,5 +34,11 @@
       </button>
     </mat-toolbar>
     <router-outlet></router-outlet>
+    <button
+      class="fab-container"
+      (click)="addModel()"
+      mat-fab>
+      <mat-icon>add</mat-icon>
+    </button>
   </mat-sidenav-content>
 </mat-sidenav-container>

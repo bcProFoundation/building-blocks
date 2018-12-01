@@ -26,7 +26,7 @@ export class VerifySignupComponent implements OnInit {
         .updateUser(this.verificationCode, this.newPassword)
         .subscribe({
           next: response => {
-            // console.log({ response });
+            window.location.href = '/login';
           },
         });
     }
