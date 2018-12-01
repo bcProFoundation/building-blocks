@@ -84,6 +84,7 @@ export class AuthController {
     @Body('username') username: string,
     @Body('password') password?: string,
   ) {
+    username = username.trim().toLocaleLowerCase();
     let user = await this.authService.findUserByEmailOrPhone(username);
 
     if (password) {

@@ -13,6 +13,7 @@ import {
   UseInterceptors,
   FileInterceptor,
   UploadedFile,
+  Delete,
 } from '@nestjs/common';
 import { ProfileService } from '../../models/profile/profile.service';
 import { PersonalDetailsDTO } from './personal-details-dto';
@@ -115,6 +116,21 @@ export class ProfileController {
         req.token.sub,
       );
       res.json(uploadResponse);
+    }
+  }
+
+  @Delete('v1/delete_avatar')
+  @UseGuards(TokenGuard)
+  async deleteAvatar(@Req() req, @Res() res) {
+    if (req.token.active) {
+      const profile = await this.profileService.findOne({
+        uuid: req.token.sub,
+      });
+      if (profile.picture) {
+        this.profileService.deleteAvatarFile(profile.picture.split('/')[2]);
+        profile.picture = undefined;
+        await profile.save();
+      }
     }
   }
 }

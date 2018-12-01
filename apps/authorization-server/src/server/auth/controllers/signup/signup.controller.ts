@@ -15,9 +15,10 @@ export class SignupController {
   constructor(private readonly signupService: SignupService) {}
 
   @Post('v1/email')
-  async signupViaEmail(@Body() payload: SignupViaEmailDto, @Res() res) {
-    const signupResponse = await this.signupService.initSignup(payload, res);
-    res.json(signupResponse);
+  @UsePipes(ValidationPipe)
+  signupViaEmail(@Body() payload: SignupViaEmailDto, @Res() res) {
+    payload.email = payload.email.trim().toLocaleLowerCase();
+    return this.signupService.initSignup(payload, res);
   }
 
   @Post('v1/verify')

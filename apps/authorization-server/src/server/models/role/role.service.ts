@@ -29,7 +29,7 @@ export class RoleService {
     return await this.roleModel.find(params);
   }
 
-  getRoleModel() {
+  getModel() {
     return this.roleModel;
   }
 }

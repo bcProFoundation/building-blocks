@@ -16,10 +16,14 @@ import { invalidRoleException } from '../../../auth/filters/exceptions';
 import { ADMINISTRATOR } from '../../../constants/app-strings';
 import { Roles } from '../../../auth/decorators/roles.decorator';
 import { RoleGuard } from '../../../auth/guards/role.guard';
+import { CRUDOperationService } from '../common/crudoperation/crudoperation.service';
 
 @Controller('role')
 export class RoleController {
-  constructor(private readonly roleService: RoleService) {}
+  constructor(
+    private readonly roleService: RoleService,
+    private readonly crudService: CRUDOperationService,
+  ) {}
 
   @Get('v1/list')
   @Roles(ADMINISTRATOR)
@@ -29,23 +33,19 @@ export class RoleController {
     @Query('offset') offset: number,
     @Query('limit') limit: number,
     @Query('search') search?: string,
+    @Query('sort') sort?: string,
   ) {
-    const query: { search?: RegExp } = {};
-
-    if (search) query.search = new RegExp(search, 'i');
-
-    const roleModel = this.roleService.getRoleModel();
-    const data = await roleModel
-      .find(query)
-      .skip(Number(offset))
-      .limit(Number(limit))
-      .exec();
-
-    return {
-      docs: data,
-      length: await roleModel.estimatedDocumentCount(),
+    const sortQuery = { name: sort };
+    const query: any = {};
+    return this.crudService.listPaginate(
+      this.roleService.getModel(),
       offset,
-    };
+      limit,
+      search,
+      query,
+      ['name'],
+      sortQuery,
+    );
   }
 
   @Post('v1/create')

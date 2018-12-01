@@ -45,6 +45,7 @@ export class ProfileComponent implements OnInit {
   accessDetails = ACCESS_DETAILS;
   securityDetails = SECURITY_DETAILS;
   changePassword = CHANGE_PASSWORD;
+  missingAvatarImage = MISSING_AVATAR_IMAGE;
 
   uuid: string;
   selectedFile: File;
@@ -108,8 +109,6 @@ export class ProfileComponent implements OnInit {
     const { roles } = this.oauthService.getIdentityClaims() as IDTokenClaims;
     this.roles = roles;
     this.subscribeGetUser();
-    this.subscribeGetProfilePersonal();
-    this.subscribeGetProfile();
   }
 
   subscribeGetUser() {
@@ -118,6 +117,8 @@ export class ProfileComponent implements OnInit {
       .pipe(
         map(project => {
           localStorage.setItem(USER_UUID, (project as UserResponse).uuid);
+          this.subscribeGetProfilePersonal();
+          this.subscribeGetProfile();
           return project;
         }),
       )
@@ -252,5 +253,11 @@ export class ProfileComponent implements OnInit {
           this.snackbar.open(err.error.message, CLOSE, { duration: 2000 });
         },
       });
+  }
+
+  deleteAvatar() {
+    this.profileService.deleteAvatar().subscribe(response => {
+      this.picture = undefined;
+    });
   }
 }

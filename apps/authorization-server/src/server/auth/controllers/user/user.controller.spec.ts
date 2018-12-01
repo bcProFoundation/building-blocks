@@ -2,10 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from './user.controller';
 import { UserService } from '../../../models/user/user.service';
 import { CryptographerService } from '../../../utilities/cryptographer.service';
-import { getModelToken } from '@nestjs/mongoose';
-import { USER } from '../../../models/user/user.schema';
-import { AUTH_DATA } from '../../../models/auth-data/auth-data.schema';
 import { AuthDataService } from '../../../models/auth-data/auth-data.service';
+import { CRUDOperationService } from '../common/crudoperation/crudoperation.service';
 
 describe('User Controller', () => {
   let module: TestingModule;
@@ -14,24 +12,20 @@ describe('User Controller', () => {
       controllers: [UserController],
       providers: [
         {
-          provide: 'CryptographerService',
-          useClass: CryptographerService,
+          provide: CryptographerService,
+          useValue: {},
         },
         {
-          provide: 'UserService',
-          useClass: UserService,
+          provide: UserService,
+          useValue: {},
         },
         {
-          provide: 'AuthDataService',
-          useClass: AuthDataService,
+          provide: AuthDataService,
+          useValue: {},
         },
         {
-          provide: getModelToken(USER),
-          useValue: {}, // provide mock values
-        },
-        {
-          provide: getModelToken(AUTH_DATA),
-          useValue: {}, // provide mock values
+          provide: CRUDOperationService,
+          useValue: {},
         },
       ],
     }).compile();

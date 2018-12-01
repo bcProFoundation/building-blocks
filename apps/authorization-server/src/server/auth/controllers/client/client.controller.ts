@@ -18,12 +18,14 @@ import { Roles } from '../../../auth/decorators/roles.decorator';
 import { ADMINISTRATOR } from '../../../constants/app-strings';
 import { RoleGuard } from '../../../auth/guards/role.guard';
 import { UserService } from '../../../models/user/user.service';
+import { CRUDOperationService } from '../common/crudoperation/crudoperation.service';
 
 @Controller('client')
 export class ClientController {
   constructor(
     private readonly clientService: ClientService,
     private readonly userService: UserService,
+    private readonly crudService: CRUDOperationService,
   ) {}
 
   @Post('v1/create')
@@ -62,27 +64,24 @@ export class ClientController {
     @Query('offset') offset: number,
     @Query('limit') limit: number,
     @Query('search') search?: string,
+    @Query('sort') sort?: string,
   ) {
-    const query: { createdBy?: string; search?: RegExp } = {};
+    const query: { createdBy?: string } = {};
 
     if (!(await this.userService.checkAdministrator(req.user.user))) {
       query.createdBy = req.user.user;
     }
 
-    if (search) query.search = new RegExp(search, 'i');
-
-    const clientModel = this.clientService.getModel();
-    const data = await clientModel
-      .find(query)
-      .skip(Number(offset))
-      .limit(Number(limit))
-      .exec();
-
-    return {
-      docs: data,
-      length: await clientModel.estimatedDocumentCount(),
+    const sortQuery = { name: sort };
+    return this.crudService.listPaginate(
+      this.clientService.getModel(),
       offset,
-    };
+      limit,
+      search,
+      query,
+      ['name', 'clientId'],
+      sortQuery,
+    );
   }
 
   @Get('v1/trusted_clients')

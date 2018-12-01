@@ -23,6 +23,7 @@ import { i18n } from '../../../i18n/i18n.config';
 import { Roles } from '../../../auth/decorators/roles.decorator';
 import { ADMINISTRATOR } from '../../../constants/app-strings';
 import { RoleGuard } from '../../../auth/guards/role.guard';
+import { CRUDOperationService } from '../common/crudoperation/crudoperation.service';
 
 @Controller('user')
 export class UserController {
@@ -30,6 +31,7 @@ export class UserController {
     private readonly userService: UserService,
     private readonly cryptoService: CryptographerService,
     private readonly authDataService: AuthDataService,
+    private readonly crudService: CRUDOperationService,
   ) {}
 
   @Post('v1/change_password')
@@ -143,23 +145,19 @@ export class UserController {
     @Query('offset') offset: number,
     @Query('limit') limit: number,
     @Query('search') search?: string,
+    @Query('sort') sort?: string,
   ) {
-    const query: { search?: RegExp } = {};
-
-    if (search) query.search = new RegExp(search, 'i');
-
-    const userModel = this.userService.getModel();
-    const data = await userModel
-      .find(query)
-      .skip(Number(offset))
-      .limit(Number(limit))
-      .exec();
-
-    return {
-      docs: data,
-      length: await userModel.estimatedDocumentCount(),
+    const query = {};
+    const sortQuery = { name: sort || 'asc' };
+    return this.crudService.listPaginate(
+      this.userService.getModel(),
       offset,
-    };
+      limit,
+      search,
+      query,
+      ['name', 'phone', 'email'],
+      sortQuery,
+    );
   }
 
   @Get('v1/:uuid')

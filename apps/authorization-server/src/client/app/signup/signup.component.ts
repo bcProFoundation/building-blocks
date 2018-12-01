@@ -43,7 +43,9 @@ export class SignupComponent implements OnInit {
         this.password,
       )
       .subscribe({
-        next: (response: any) => {},
+        next: (response: any) => {
+          window.location.href = '/login';
+        },
         error: err => {
           if (typeof err.error.message === 'string') {
             this.snackBar.open(err.error.message, null, { duration: 2500 });

@@ -10,6 +10,7 @@ import {
   UsePipes,
   ValidationPipe,
   Res,
+  SerializeOptions,
 } from '@nestjs/common';
 import { ScopeService } from '../../../models/scope/scope.service';
 import { callback } from '../../passport/local.strategy';
@@ -18,10 +19,15 @@ import { CreateScopeDto } from '../../../models/user/create-scope.dto';
 import { Roles } from '../../../auth/decorators/roles.decorator';
 import { ADMINISTRATOR } from '../../../constants/app-strings';
 import { RoleGuard } from '../../../auth/guards/role.guard';
+import { CRUDOperationService } from '../common/crudoperation/crudoperation.service';
 
 @Controller('scope')
+@SerializeOptions({ excludePrefixes: ['_'] })
 export class ScopeController {
-  constructor(private readonly scopeService: ScopeService) {}
+  constructor(
+    private readonly scopeService: ScopeService,
+    private readonly crudService: CRUDOperationService,
+  ) {}
 
   @Get('v1/list')
   @Roles(ADMINISTRATOR)
@@ -33,22 +39,17 @@ export class ScopeController {
     @Query('search') search?: string,
     @Query('sort') sort?: string,
   ) {
-    const query: { name?: RegExp } = {};
-    if (search) query.name = new RegExp(search, 'i');
-
-    const scopeModel = this.scopeService.getModel();
-    const data = await scopeModel
-      .find(query)
-      .skip(Number(offset))
-      .limit(Number(limit))
-      .sort({ name: sort || 'asc' })
-      .exec();
-
-    return {
-      docs: data,
-      length: await scopeModel.estimatedDocumentCount(),
-      offset: Number(offset),
-    };
+    const sortQuery = { name: sort };
+    const query: any = {};
+    return this.crudService.listPaginate(
+      this.scopeService.getModel(),
+      offset,
+      limit,
+      search,
+      query,
+      ['name', 'description'],
+      sortQuery,
+    );
   }
 
   @Get('v1/find')

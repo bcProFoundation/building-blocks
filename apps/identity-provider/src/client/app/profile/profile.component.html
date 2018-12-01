@@ -94,7 +94,7 @@
             (click)="updateProfile()"
             mat-button color="primary">{{ updateConstant }}</button>
           <button
-            *ngIf="hideAvatar"
+            *ngIf="hideAvatar && picture !== missingAvatarImage"
             mat-button
             color="warn"
             (click)="deleteAvatar()">Delete Avatar</button>
@@ -110,13 +110,7 @@
     <mat-card-content fxLayout="column" fxAlignLayout="space-evenly none" fxLayoutGap="1em">
       <mat-chip-list>
         <mat-chip *ngFor="let role of roles" disabled>
-          {{ role.charAt(0).toUpperCase() + role.substr(1).toLowerCase() }}
-        </mat-chip>
-      </mat-chip-list>
-      <hr/>
-      <mat-chip-list>
-        <mat-chip *ngFor="let group of groups" disabled selected color="accent">
-          {{ group.charAt(0).toUpperCase() + group.substr(1).toLowerCase() }}
+          {{ role }}
         </mat-chip>
       </mat-chip-list>
     </mat-card-content>
