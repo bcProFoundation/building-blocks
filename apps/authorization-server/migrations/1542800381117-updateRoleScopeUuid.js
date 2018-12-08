@@ -10,7 +10,7 @@ export async function up() {
 
   // Patch Roles
   const roleService = await app.get(RoleService);
-  const roleModel = roleService.getRoleModel();
+  const roleModel = roleService.getModel();
   const roles = await roleModel
     .find()
     .select('-uuid')
@@ -40,7 +40,7 @@ export async function down() {
 
   // Rollback Roles
   const roleService = await app.get(RoleService);
-  const roleModel = roleService.getRoleModel();
+  const roleModel = roleService.getModel();
   const roles = await roleModel
     .find()
     .select('-uuid')
