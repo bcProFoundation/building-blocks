@@ -1,0 +1,8 @@
+dependencies:
+- name: mongodb
+  version: 4.9.1
+  repository: https://kubernetes-charts.storage.googleapis.com/
+# Added a custom Redis chart for simple installation
+- name: authorization-server-redis
+  version: 5.1.0
+  repository: "file://charts/authorization-server-redis"

@@ -1,0 +1,82 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "authorization-server-redis.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "authorization-server-redis.name" . }}
+    helm.sh/chart: {{ include "authorization-server-redis.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "authorization-server-redis.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "authorization-server-redis.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      {{- if .Values.persistence.enabled }}
+      volumes:
+        - name: authorization-server-redis
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-redis
+      {{- else }}
+      volumes:
+        - name: authorization-server-redis
+          emptyDir: {}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name : authorization-server-redis
+              mountPath : "/data"
+          ports:
+            - name: http
+              containerPort: 6379
+              protocol: TCP
+          {{- if .Values.livenessProbe.enabled }}
+          livenessProbe:
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+            exec:
+              command:
+              - sh
+              - -c
+              - redis-cli -h $(hostname) ping
+          {{- end }}
+          {{- if .Values.readinessProbe.enabled}}
+          readinessProbe:
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+            exec:
+              command:
+              - sh
+              - -c
+              - redis-cli -h $(hostname) ping
+          {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

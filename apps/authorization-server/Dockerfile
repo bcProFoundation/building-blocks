@@ -1,9 +1,8 @@
 FROM node:latest
-# Copy app
+# Copy and build app
 COPY . /home/craft/authorization-server
 WORKDIR /home/craft/
-RUN rm -fr authorization-server/config authorization-server/docker-entrypoint.sh \
-    && cd authorization-server \
+RUN cd authorization-server \
     && yarn \
     && yarn prestart:prod \
     && rm -fr node_modules yarn.lock \
@@ -21,17 +20,13 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
 COPY docker/docker-entrypoint.sh usr/local/bin/docker-entrypoint.sh
 RUN ln -s usr/local/bin/docker-entrypoint.sh / # backwards compat
 
-# Add non root user
+# Add non root user and set home directory
 RUN useradd -ms /bin/bash craft
 WORKDIR /home/craft/authorization-server
 COPY --from=0 /home/craft/authorization-server .
-
 RUN chown -R craft:craft /home/craft
 
-# set project directory
-WORKDIR /home/craft/authorization-server
-
-# Mount volume for files
+# Create volume directory and sub directories
 RUN mkdir -p /home/craft/authorization-server/files/public \
     /home/craft/authorization-server/files/private
 
