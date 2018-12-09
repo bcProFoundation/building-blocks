@@ -8,6 +8,8 @@ services:
 stages:
   - tests
   - pack
+  - deploy
+  - setup
   - docs
 
 test_authorization_server:
@@ -123,12 +125,9 @@ pack_staging_authorization_server:
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
-    # get latest tag for app in staging branch
     # Authorization Server
-    - export ASVERSION=$(echo $CI_COMMIT_SHA | cut -c1-7)
     - docker build -t authorization-server apps/authorization-server
-    - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:$ASVERSION
-    - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:latest
+    - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:edge
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server
 
 pack_staging_communication_server:
@@ -140,12 +139,9 @@ pack_staging_communication_server:
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
-    # get latest tag for app in staging branch
     # Communication Server
-    - export CSVERSION=$(echo $CI_COMMIT_SHA | cut -c1-7)
     - docker build -t communication-server apps/communication-server
-    - docker tag communication-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/communication-server:$CSVERSION
-    - docker tag communication-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/communication-server:latest
+    - docker tag communication-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/communication-server:edge
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/communication-server
 
 pack_staging_identity_provider:
@@ -157,12 +153,9 @@ pack_staging_identity_provider:
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
-    # get latest tag for app in staging branch
     # Identity Provider
-    - export IDPVERSION=$(echo $CI_COMMIT_SHA | cut -c1-7)
     - docker build -t identity-provider apps/identity-provider
-    - docker tag identity-provider $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:$IDPVERSION
-    - docker tag identity-provider $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:latest
+    - docker tag identity-provider $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:edge
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider
 
 pack_staging_infrastructure_console:
@@ -174,12 +167,9 @@ pack_staging_infrastructure_console:
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
-    # get latest tag for app in staging branch
     # Infrastructure Console
-    - export ICVERSION=$(echo $CI_COMMIT_SHA | cut -c1-7)
     - docker build -t infrastructure-console apps/infrastructure-console
-    - docker tag infrastructure-console $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:$ICVERSION
-    - docker tag infrastructure-console $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:latest
+    - docker tag infrastructure-console $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:edge
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console
 
 pack_production_authorization_server:
@@ -194,9 +184,9 @@ pack_production_authorization_server:
   script:
     # get latest tag for app in master branch
     # Authorization Server
-    - export ASVERSION=$(git tag --list "authorization-server@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
+    - export VERSION=$(git tag --list "authorization-server@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
     - docker build -t authorization-server apps/authorization-server
-    - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:$ASVERSION
+    - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:$VERSION
     - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server
 
@@ -212,9 +202,9 @@ pack_production_communication_server:
   script:
     # get latest tag for app in master branch
     # Communication Server
-    - export CSVERSION=$(git tag --list "communication-server@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
+    - export VERSION=$(git tag --list "communication-server@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
     - docker build -t communication-server apps/communication-server
-    - docker tag communication-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/communication-server:$CSVERSION
+    - docker tag communication-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/communication-server:$VERSION
     - docker tag communication-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/communication-server:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/communication-server
 
@@ -230,9 +220,9 @@ pack_production_identity_provider:
   script:
     # get latest tag for app in master branch
     # Idenitiy Provider
-    - export IDPVERSION=$(git tag --list "identity-provider@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
+    - export VERSION=$(git tag --list "identity-provider@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
     - docker build -t identity-provider apps/identity-provider
-    - docker tag identity-provider $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:$IDPVERSION
+    - docker tag identity-provider $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:$VERSION
     - docker tag identity-provider $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider
 
@@ -248,11 +238,22 @@ pack_production_infrastructure_console:
   script:
     # get latest tag for app in master branch
     # Infrastructure Console
-    - export ICVERSION=$(git tag --list "infrastructure-console@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
+    - export VERSION=$(git tag --list "infrastructure-console@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
     - docker build -t infrastructure-console apps/infrastructure-console
-    - docker tag infrastructure-console $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:$ICVERSION
+    - docker tag infrastructure-console $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:$VERSION
     - docker tag infrastructure-console $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console
+
+deploy_staging_authorization_server:
+  image: dtzar/helm-kubectl
+  stage: deploy
+  environment:
+    name: staging
+    url: https://staging-accounts.castlecraft.in
+  only:
+    - staging
+  script:
+    - ./helm-charts/authorization-server/deploy/deploy-staging.sh
 
 pages:
   stage: docs

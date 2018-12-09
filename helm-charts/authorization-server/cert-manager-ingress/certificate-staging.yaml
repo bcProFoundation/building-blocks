@@ -1,0 +1,23 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: accounts-castlecraft-in-staging
+  namespace: default
+spec:
+  secretName: accounts-castlecraft-in-staging-tls
+  issuerRef:
+    name: letsencrypt-staging
+    kind: ClusterIssuer
+  commonName: staging-accounts.castlecraft.in
+  dnsNames:
+  - staging-accounts.castlecraft.in
+  acme:
+    config:
+    - http01:
+        ingressClass: nginx
+      domains:
+      - staging-accounts.castlecraft.in
+    - http01:
+        ingress: authorization-server-staging
+      domains:
+      - staging-accounts.castlecraft.in
