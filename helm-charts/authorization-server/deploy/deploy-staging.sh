@@ -1,23 +1,5 @@
 #!/bin/bash
 
-# Check ClusterIssuer letsencrypt-staging or create
-export CHECKCLUSTERISSUER=$(kubectl get ClusterIssuer letsencrypt-staging -o name)
-if [ "$CHECKCLUSTERISSUER" = "clusterissuer.certmanager.k8s.io/letsencrypt-staging" ]
-then
-    echo "ClusterIssuer Already Exists"
-else
-    kubectl apply -f ./helm-charts/authorization-server/cert-manager-ingress/cluster-issuer-staging.yaml
-fi
-
-# Check Certificate accounts-castlecraft-in-staging or create
-export CHECKCERTIFICATE=$(kubectl get Certificate accounts-castlecraft-in-staging -o name)
-if [ "$CHECKCERTIFICATE" = "certificate.certmanager.k8s.io/accounts-castlecraft-in-staging" ]
-then
-    echo "Certificate Already Exists"
-else
-    kubectl apply -f ./helm-charts/authorization-server/cert-manager-ingress/certificate-staging.yaml
-fi
-
 # Check helm chart is installed or create
 export CHECKINSTALL=$(helm ls -q authorization-server-staging)
 if [ "$CHECKINSTALL" = "authorization-server-staging" ]
