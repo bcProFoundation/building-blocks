@@ -6,7 +6,7 @@ metadata:
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
-    email: revant@castlecraft.in
+    email: support@castlecraft.in
     privateKeySecretRef:
       name: letsencrypt-prod
     http01: {}

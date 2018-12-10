@@ -18,6 +18,6 @@ spec:
       domains:
       - accounts.castlecraft.in
     - http01:
-        ingress: authorization-server
+        ingress: authorization-server-prod
       domains:
       - accounts.castlecraft.in
