@@ -9,6 +9,9 @@ import {
   Req,
   Res,
   ForbiddenException,
+  SerializeOptions,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ClientService } from '../../../models/client/client.service';
 import { callback } from '../../passport/local.strategy';
@@ -21,6 +24,7 @@ import { UserService } from '../../../models/user/user.service';
 import { CRUDOperationService } from '../common/crudoperation/crudoperation.service';
 
 @Controller('client')
+@SerializeOptions({ excludePrefixes: ['_'] })
 export class ClientController {
   constructor(
     private readonly clientService: ClientService,
@@ -30,6 +34,7 @@ export class ClientController {
 
   @Post('v1/create')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @UsePipes(ValidationPipe)
   async create(@Body() body: CreateClientDto, @Req() req, @Res() res) {
     const payload: any = body;
     if (!(await this.userService.checkAdministrator(req.user.user))) {
@@ -38,7 +43,6 @@ export class ClientController {
     payload.createdBy = req.user.user;
     payload.creation = new Date();
     const client = await this.clientService.save(payload);
-    delete client._id;
     res.json(client);
   }
 
