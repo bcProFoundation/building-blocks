@@ -59,6 +59,16 @@ export class KeyPairGeneratorService implements OnModuleInit {
     });
   }
 
+  async generateKeyPair() {
+    const countOfKeys = await this.keyService.count();
+    if (countOfKeys === 0) {
+      const { id, data } = await this.queue.add(KEYGEN_QUEUE, {
+        message: KEYGEN_QUEUE,
+      });
+      return { id, data };
+    }
+  }
+
   async getQueue(id: Bull.JobId) {
     return await this.queue.getJob(id);
   }
