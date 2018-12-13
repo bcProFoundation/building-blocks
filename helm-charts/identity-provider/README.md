@@ -3,6 +3,7 @@
 ```
 helm install --name identity-provider-staging \
     --namespace default \
+    --set NODE_ENV=staging \
     --set persistence.enabled=false \
     --set mongodb.persistence.enabled=false \
     --set image.tag=edge \

@@ -36,6 +36,7 @@ services:
       - AMQP_USER=${AMQP_USER}
       - AMQP_PASSWORD=${AMQP_PASS}
       - AMQP_PORT=${AMQP_PORT}
+      - NODE_ENV=${NODE_ENV}
     volumes:
       - communication-server-vol:/home/craft/communication-server/files
 

@@ -45,6 +45,8 @@ spec:
               value: {{ template "mongodb.fullname" . }}
             - name: "DB_NAME"
               value: "communication-server"
+            - name: "NODE_ENV"
+              value: {{ .Values.NODE_ENV }}
           ports:
             - name: http
               containerPort: 4100
