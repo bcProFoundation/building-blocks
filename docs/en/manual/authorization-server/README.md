@@ -55,7 +55,7 @@ add `127.0.0.1 accounts.localhost` in `/etc/hosts` file or hosts file of your op
 If a POST request with no body is sent to `http://accounts.localhost:3000/setup` error response will specify required fields.
 
 ```
-curl -d "fullName=John%20Doe" \
+curl -d "fullName=Administrator" \
     -d "email=admin@example.com" \
     -d "phone=%2B919876543210" \
     -d "infrastructureConsoleUrl=http://admin.localhost:5000" \
