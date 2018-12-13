@@ -244,16 +244,24 @@ pack_production_infrastructure_console:
     - docker tag infrastructure-console $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console
 
-deploy_staging_authorization_server:
+deploy_staging:
   image: dtzar/helm-kubectl:2.11.0
   stage: deploy
   environment:
     name: staging
-    url: https://staging-accounts.castlecraft.in
   only:
     - staging
   script:
-    - ./helm-charts/authorization-server/deploy/deploy-staging.sh
+    - ./helm-charts/deploy/deploy-staging.sh
+
+setup_staging:
+  image: python:3
+  stage: setup
+  only:
+    - staging
+  script:
+    - ./scripts/staging-wiz.py setup-as https://staging-accounts.castlecraft.in Administrator admin@example.com admin +919876543210 https://staging-admin.castlecraft.in
+    - ./scripts/staging-wiz.py add-client admin@example.com admin https://staging-admin.castlecraft.in "Identity Provider" http://staging-myaccount.castlecraft.in
 
 pages:
   stage: docs

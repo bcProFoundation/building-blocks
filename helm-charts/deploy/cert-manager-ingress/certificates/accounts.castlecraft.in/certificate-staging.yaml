@@ -6,7 +6,7 @@ metadata:
 spec:
   secretName: accounts-castlecraft-in-staging-tls
   issuerRef:
-    name: letsencrypt-staging
+    name: letsencrypt-prod
     kind: ClusterIssuer
   commonName: staging-accounts.castlecraft.in
   dnsNames:

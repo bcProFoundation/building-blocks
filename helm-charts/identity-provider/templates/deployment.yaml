@@ -1,22 +1,22 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ include "authorization-server.fullname" . }}
+  name: {{ include "identity-provider.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ include "authorization-server.name" . }}
-    helm.sh/chart: {{ include "authorization-server.chart" . }}
+    app.kubernetes.io/name: {{ include "identity-provider.name" . }}
+    helm.sh/chart: {{ include "identity-provider.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "authorization-server.name" . }}
+      app.kubernetes.io/name: {{ include "identity-provider.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ include "authorization-server.name" . }}
+        app.kubernetes.io/name: {{ include "identity-provider.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       volumes:
@@ -34,41 +34,24 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
             - name : {{ .Release.Name }}-data
-              mountPath : "/home/craft/authorization-server/files"
+              mountPath : "/home/craft/identity-provider/files"
           env:
-            - name: "BULL_QUEUE_REDIS_HOST"
-              value: {{ template "authorization-server-redis.fullname" . }}
-            - name: "BULL_QUEUE_REDIS_PORT"
-              value: "6379"
-            - name: "SESSION_SECRET"
-              valueFrom:
-                secretKeyRef:
-                  key:  sessionSecret
-                  name: {{ .Release.Name }}-secrets
-            - name: "EXPIRY_DAYS"
-              value: "1"
-            - name: "COOKIE_MAX_AGE"
-              value: "86400000"
-            - name: "SESSION_NAME"
-              value: "AS_SESSION"
-            - name: "TOKEN_VALIDITY"
-              value: "3600"
             - name: "DB_HOST"
               value: {{ template "mongodb.fullname" . }}
             - name: "DB_NAME"
-              value: "authorization-server"
+              value: "identity-provider"
           ports:
             - name: http
-              containerPort: 3000
+              containerPort: 3200
               protocol: TCP
-          # livenessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
-          # readinessProbe:
-          #   httpGet:
-          #     path: /info
-          #     port: http
+          livenessProbe:
+            httpGet:
+              path: /info
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /info
+              port: http
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}

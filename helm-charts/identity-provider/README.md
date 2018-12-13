@@ -1,24 +1,22 @@
 ### Install
 
 ```
-helm install --name authorization-server-staging \
+helm install --name identity-provider-staging \
     --namespace default \
-    --set sessionSecret=SuperSecretString \
     --set persistence.enabled=false \
-    --set authorization-server-redis.persistence.enabled=false \
     --set mongodb.persistence.enabled=false \
     --set image.tag=edge \
     --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=letsencrypt-prod \
-    --set ingress.hosts={staging-accounts.castlecraft.in} \
-    --set ingress.tls[0].secretName=accounts-castlecraft-in-staging-tls \
-    --set ingress.tls[0].hosts={staging-accounts.castlecraft.in} \
-    helm-charts/authorization-server
+    --set ingress.hosts={staging-myaccount.castlecraft.in} \
+    --set ingress.tls[0].secretName=myaccount-castlecraft-in-staging-tls \
+    --set ingress.tls[0].hosts={staging-myaccount.castlecraft.in} \
+    helm-charts/identity-provider
 ```
 
 ### Delete
 
 ```
-helm del --purge authorization-server-staging
+helm del --purge identity-provider
 ```
 
 ### Other Resources
@@ -27,10 +25,10 @@ To install letsencrypt ssl along with cert-manager. (requires cert-manager and n
 
 ```
 # Create ClusterIssuer for domain
-$ kubectl apply -f cert-manager-ingress/cluster-issuer.yaml
+$ kubectl apply -f cluster-issuer.yaml
 
 # Create Certificate
-$ kubectl apply -f cert-manager-ingress/certificate.yaml
+$ kubectl apply -f certificate.yaml
 ```
 
 Notes:
