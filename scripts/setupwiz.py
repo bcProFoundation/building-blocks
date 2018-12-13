@@ -1,41 +1,58 @@
 #! /usr/bin/env python
 
-import requests
+"""
+Script to setup servers for development, staging
+"""
+
 import sys
 from urllib.parse import urlsplit, parse_qs
+import requests
 
 
 def print_usage():
+    """
+    Prints Usage
+    """
     print_setup_as_usage()
     print_add_client_usage()
 
 
 def print_setup_as_usage():
+    """
+    Prints setup-as usage
+    """
     print("""
     Setup Authorization Server and Infrastructure Console
-    ./blockwiz.py setup-as \\
+    {command} setup-as \\
         https://accounts.example.com \\
         "Mr Administrator" \\
         admin@example.com \\
         secretPassword \\
         +919876543210 \\
         https://admin.example.com
-    """)
+    """.format(command=sys.argv[0]))
 
 
 def print_add_client_usage():
+    """
+    Prints add-client usage
+    """
     print("""
     Add OAuth Client and Setup Server (Authorization server must be setup)
-    ./blockwiz.py add-client \\
+    {command} add-client \\
         admin@example.com \\
         secretPassword \\
         https://admin.example.com \\
         "Identity Provider" \\
         https://myaccount.example.com \\
-    """)
+    """.format(command=sys.argv[0]))
 
 
 def setup_as():
+    """
+    Sets up authorization server and infrastructure console. takes 6 arguments
+    auth_server, full_name, email, password, mobile, infrastructure_console url
+    """
     try:
         auth_server = sys.argv[2]
         full_name = sys.argv[3]
@@ -66,6 +83,10 @@ def setup_as():
 
 
 def add_client():
+    """
+    Adds client using other servers and runs setup wizard on trusted client
+    email, password, infrastructure_console_url, client_name, client_url
+    """
     try:
         email = sys.argv[2]
         password = sys.argv[3]
@@ -99,7 +120,7 @@ def add_client():
                 'clientSecret': added_client.get('clientSecret'),
             }
         )
-        print(added_client, setup_response)
+        print(setup_response)
     except requests.exceptions.ConnectionError as identifier:
         request_error = identifier.__dict__['request']
         print('Connection Error:\n', request_error.__dict__)
@@ -107,22 +128,32 @@ def add_client():
         print_add_client_usage()
 
 
-def get_token(user, pw, info):
-    s = requests.Session()
-    s.post(
+def get_token(user, password, info):
+    """
+    get access_token using user, password and trusted server info
+    """
+    session = requests.Session()
+    session.post(
         info.get('authServerURL') + '/auth/login',
         data={
             'username': user,
-            'password': pw,
+            'password': password,
         }
     )
-    token_request_url = "{url}?scope={scope}&response_type=token&client_id={client_id}&redirect_uri={redirect_uri}".format(
+    token_request_url = "{url}?scope={scope}&".format(
         url=info.get('authorizationURL'),
         scope='openid%20email',
+    )
+
+    token_request_url += "response_type=token&client_id={client_id}&".format(
         client_id=info.get('clientId'),
+    )
+
+    token_request_url += "redirect_uri={redirect_uri}".format(
         redirect_uri=info.get('callbackURLs')[0],
     )
-    token_response = s.get(token_request_url).__dict__.get('url')
+
+    token_response = session.get(token_request_url).__dict__.get('url')
     split_result = urlsplit(token_response.replace('index.html#', '?'))
     return parse_qs(split_result.query).get('access_token')[0]
 
@@ -154,18 +185,18 @@ def setup_infrastructure_console(
             'clientSecret': setup_response.get('clientSecret')
         }
     )
-    print(setup_response, response)
+    print(response)
 
 
 if __name__ == '__main__':
-    command = None
+    COMMAND = None
 
     if len(sys.argv) > 1:
-        command = sys.argv[1].lower()
+        COMMAND = sys.argv[1].lower()
 
-    if command == 'setup-as':
+    if COMMAND == 'setup-as':
         setup_as()
-    elif command == 'add-client':
+    elif COMMAND == 'add-client':
         add_client()
     else:
         print_usage()

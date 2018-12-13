@@ -259,9 +259,11 @@ setup_staging:
   stage: setup
   only:
     - staging
+  before_script:
+    - pip install -q requests
   script:
-    - ./scripts/staging-wiz.py setup-as https://staging-accounts.castlecraft.in Administrator admin@example.com admin +919876543210 https://staging-admin.castlecraft.in
-    - ./scripts/staging-wiz.py add-client admin@example.com admin https://staging-admin.castlecraft.in "Identity Provider" http://staging-myaccount.castlecraft.in
+    - ./scripts/setupwiz.py setup-as https://staging-accounts.castlecraft.in Administrator admin@example.com admin +919876543210 https://staging-admin.castlecraft.in
+    - ./scripts/setupwiz.py add-client admin@example.com admin https://staging-admin.castlecraft.in "Identity Provider" http://staging-myaccount.castlecraft.in
 
 pages:
   stage: docs
