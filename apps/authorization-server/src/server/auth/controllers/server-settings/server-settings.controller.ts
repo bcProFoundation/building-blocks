@@ -38,8 +38,10 @@ export class ServerSettingsController {
     try {
       const settings = await this.settingsService.find();
       settings.issuerUrl = payload.issuerUrl;
-      settings.communicationServerClientId =
-        payload.communicationServerClientId;
+      if (process.env.NODE_ENV === 'production') {
+        settings.communicationServerClientId =
+          payload.communicationServerClientId;
+      }
       await settings.save();
       res.json({ message: res.__('Success') });
     } catch (error) {

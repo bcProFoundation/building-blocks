@@ -11,6 +11,10 @@ function checkEnv() {
     echo "DB_NAME is not set"
     exit 1
   fi
+  if [[ -z "$NODE_ENV" ]]; then
+    echo "NODE_ENV is not set"
+    exit 1
+  fi
 }
 
 function checkConnection() {
@@ -48,7 +52,6 @@ if [ "$1" = 'start' ]; then
   echo "Run migrations"
   # su craft -c "./node_modules/.bin/migrate up -d mongodb://$DB_HOST:27017/$DB_NAME"
 
-  export NODE_ENV=production
   su craft -c "node dist/out-tsc/main.js"
 fi
 

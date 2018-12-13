@@ -57,18 +57,20 @@ spec:
               value: {{ template "mongodb.fullname" . }}
             - name: "DB_NAME"
               value: "authorization-server"
+            - name: "NODE_ENV"
+              value: {{ .Values.NODE_ENV }}
           ports:
             - name: http
               containerPort: 3000
               protocol: TCP
-          # livenessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
-          # readinessProbe:
-          #   httpGet:
-          #     path: /info
-          #     port: http
+          livenessProbe:
+            httpGet:
+              path: /info
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /info
+              port: http
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}

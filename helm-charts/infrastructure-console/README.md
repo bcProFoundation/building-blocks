@@ -2,6 +2,7 @@
 
 ```
 helm install --name infrastructure-console-staging \
+    --set NODE_ENV=staging \
     --namespace default \
     --set persistence.enabled=false \
     --set mongodb.persistence.enabled=false \

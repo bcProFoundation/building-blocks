@@ -11,6 +11,7 @@ then
         --reuse-values \
         --recreate-pods \
         --set image.tag=edge \
+        --wait \
         helm-charts/authorization-server
 fi
 
@@ -22,6 +23,7 @@ then
         --reuse-values \
         --recreate-pods \
         --set image.tag=edge \
+        --wait \
         helm-charts/infrastructure-console
 fi
 
@@ -33,5 +35,6 @@ then
         --reuse-values \
         --recreate-pods \
         --set image.tag=edge \
+        --wait \
         helm-charts/identity-provider
 fi

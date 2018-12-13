@@ -40,6 +40,8 @@ spec:
               value: {{ template "mongodb.fullname" . }}
             - name: "DB_NAME"
               value: "identity-provider"
+            - name: "NODE_ENV"
+              value: {{ .Values.NODE_ENV }}
           ports:
             - name: http
               containerPort: 3200
