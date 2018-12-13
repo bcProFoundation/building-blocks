@@ -19,22 +19,21 @@ spec:
         app.kubernetes.io/name: {{ include "authorization-server-redis.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
-      {{- if .Values.persistence.enabled }}
       volumes:
-        - name: authorization-server-redis
+        - name: {{ .Release.Name }}-redis
+      {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
             claimName: {{ .Release.Name }}-redis
       {{- else }}
-      volumes:
-        - name: authorization-server-redis
           emptyDir: {}
       {{- end }}
+
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
-            - name : authorization-server-redis
+            - name : {{ .Release.Name }}-redis
               mountPath : "/data"
           ports:
             - name: http

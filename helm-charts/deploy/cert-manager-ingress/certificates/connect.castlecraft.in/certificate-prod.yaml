@@ -1,0 +1,23 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: connect-castlecraft-in-prod
+  namespace: default
+spec:
+  secretName: connect-castlecraft-in-prod-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: connect.castlecraft.in
+  dnsNames:
+  - connect.castlecraft.in
+  acme:
+    config:
+    - http01:
+        ingressClass: nginx
+      domains:
+      - connect.castlecraft.in
+    - http01:
+        ingress: infrastructure-console-prod
+      domains:
+      - connect.castlecraft.in
