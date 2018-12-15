@@ -5,14 +5,13 @@ import { AppModule } from './app.module';
 import { CHANNEL } from './rabbitmq/rabbitmq-connection';
 import { ConfigService } from './config/config.service';
 import { Transport } from '@nestjs/microservices';
-import * as bodyParser from 'body-parser';
 
 const config = new ConfigService();
 
 async function bootstrap() {
   const server = express();
   server.use(express.static(join(process.cwd(), 'dist/communication-server')));
-  server.use(bodyParser.raw({ inflate: true }));
+
   const rabbitUrl = config.getRabbitMQConfig();
   const app = await NestFactory.create(AppModule, server);
   app.connectMicroservice({
