@@ -20,7 +20,7 @@ export class ConfigService {
   private validateInput(envConfig: EnvConfig): EnvConfig {
     const envVarsSchema: Joi.ObjectSchema = Joi.object({
       NODE_ENV: Joi.string()
-        .valid(['development', 'production', 'test', 'provision'])
+        .valid(['development', 'production', 'test', 'provision', 'staging'])
         .default('development'),
       SESSION_SECRET: Joi.string().required(),
       EXPIRY_DAYS: Joi.number().required(),
