@@ -35,3 +35,9 @@
     * [Admin Processes](/development/12-admin-processes.md)
     * [Updates and upgrades](/development/updates.md)
     * [How to develop microservices?](/development/how-to-develop-microservices.md)
+
+* Kubernetes
+    * [Introduction](/kubernetes/README.md)
+    * [Gitlab Kubernetes Integration](/kubernetes/gitlab-do-k8-integration.md)
+    * [Configuring and initializing Helm Tiller](/kubernetes/configuring-and-initializing-helm-tiller.md)
+    * [Cert Manager and Letsencrypt](/kubernetes/cert-manager-letsencrypt.md)
