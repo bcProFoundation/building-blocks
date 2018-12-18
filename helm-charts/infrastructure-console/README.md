@@ -2,6 +2,7 @@
 
 ```
 helm install --name infrastructure-console-staging \
+    --tiller-namespace staging \
     --set NODE_ENV=staging \
     --namespace default \
     --set persistence.enabled=false \

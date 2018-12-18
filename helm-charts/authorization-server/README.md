@@ -2,7 +2,8 @@
 
 ```
 helm install --name authorization-server-staging \
-    --namespace default \
+    --tiller-namespace staging \
+    --namespace staging \
     --set NODE_ENV=staging \
     --set sessionSecret=SuperSecretString \
     --set persistence.enabled=false \

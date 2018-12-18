@@ -2,6 +2,7 @@
 
 ```
 helm install --name identity-provider-staging \
+    --tiller-namespace staging \
     --namespace default \
     --set NODE_ENV=staging \
     --set persistence.enabled=false \
