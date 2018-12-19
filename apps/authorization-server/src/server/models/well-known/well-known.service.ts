@@ -18,7 +18,7 @@ export class WellKnownService {
       issuer: authServerURL,
       jwks_uri: `${authServerURL}/.well-known/jwks`,
       authorization_endpoint: `${authServerURL}/oauth2/confirmation`,
-      token_endpoint: `${authServerURL}/oauth2/get_token`,
+      token_endpoint: `${authServerURL}/oauth2/token`,
       userinfo_endpoint: `${authServerURL}/oauth2/profile`,
       revocation_endpoint: `${authServerURL}/oauth2/revoke`,
       introspection_endpoint: `${authServerURL}/oauth2/introspection`,
