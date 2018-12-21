@@ -92,7 +92,7 @@ export class ClientComponent implements OnInit {
         this.clientForm.controls.clientName.value,
         this.getCallbackURLs(),
         this.clientForm.controls.clientScopes.value,
-        this.clientForm.controls.isTrusted.value,
+        this.clientForm.controls.isTrusted.value || '0',
       )
       .subscribe({
         next: (response: CreateClientResponse) => {

@@ -1,4 +1,4 @@
-import { IsUrl, IsOptional, IsString, IsNumber } from 'class-validator';
+import { IsUrl, IsOptional, IsString, IsNumberString } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 import { i18n } from '../../i18n/i18n.config';
 
@@ -11,7 +11,7 @@ export class CreateClientDto {
   })
   name: string;
 
-  @IsNumber()
+  @IsNumberString()
   @IsOptional()
   @ApiModelProperty({
     description: i18n.__('Skips the Allow/Deny screen if value is 1'),
