@@ -3,6 +3,8 @@ import { BearerTokenService } from '../../../models/bearer-token/bearer-token.se
 import { i18n } from '../../../i18n/i18n.config';
 import { ROLES } from '../../../constants/app-strings';
 import { UserService } from '../../../models/user/user.service';
+import { from, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 @Injectable()
 export class OAuth2Service {
@@ -54,5 +56,18 @@ export class OAuth2Service {
       }
     }
     return tokenData;
+  }
+
+  getProfile(req) {
+    return from(this.userService.findOne({ uuid: req.user.user })).pipe(
+      switchMap(user => {
+        return of({
+          uuid: user.uuid,
+          name: user.name,
+          email: user.email,
+          roles: user.roles,
+        });
+      }),
+    );
   }
 }

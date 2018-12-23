@@ -13,7 +13,6 @@ import { AuthGuard } from '../../guards/auth.guard';
 import { EnsureLoginGuard } from 'nestjs-ensureloggedin-guard';
 import { ErrorFilter } from '../../filters/errors.filter';
 import { callback } from '../../passport/local.strategy';
-import { Token } from '../../decorators/auth.decorators';
 import { ApiExcludeEndpoint, ApiOperation } from '@nestjs/swagger';
 import { OAuth2Service } from './oauth2.service';
 import { TokenIntrospectionGuard } from '../../guards/token-introspection.guard';
@@ -60,12 +59,8 @@ export class OAuth2Controller {
 
   @Get('profile')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
-  profile(@Token('user') user) {
-    return {
-      uuid: user.uuid,
-      name: user.name,
-      email: user.email,
-    };
+  profile(@Req() req) {
+    return this.oauth2Service.getProfile(req);
   }
 
   @Post('revoke')
