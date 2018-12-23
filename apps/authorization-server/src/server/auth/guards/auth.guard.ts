@@ -23,9 +23,7 @@ const defaultOptions = {
   },
 };
 
-interface Type<T = any> extends Function {
-  new (...args: any[]): T;
-}
+type Type<T = any> = new (...args: any[]) => T;
 
 export function AuthGuard(
   types,
