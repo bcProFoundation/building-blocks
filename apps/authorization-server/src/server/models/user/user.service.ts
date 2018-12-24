@@ -106,6 +106,15 @@ export class UserService {
 
   async initializeMfa(uuid: string, restart: boolean = false) {
     const user: User = await this.findOne({ uuid });
+
+    // Disable 2FA for admin in env staging
+    if (
+      process.env.NODE_ENV === 'staging' &&
+      user.roles.includes(ADMINISTRATOR)
+    ) {
+      return { environment: process.env.NODE_ENV };
+    }
+
     if (restart || !user.enable2fa) {
       // TODO: setup issuer from server url
       const secret = speakeasy.generateSecret({ name: user.email });
