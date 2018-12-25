@@ -2,13 +2,11 @@ FROM node:latest
 # Copy app
 COPY . /home/craft/infrastructure-console
 WORKDIR /home/craft/
-RUN rm -fr infrastructure-console/config infrastructure-console/docker-entrypoint.sh \
-    && cd infrastructure-console \
-    && yarn \
-    && yarn prestart:prod \
-    && rm -fr node_modules yarn.lock \
-    && yarn --production=true \
-    && yarn cache clean
+RUN cd infrastructure-console \
+    && npm install \
+    && npm run prestart:prod \
+    && rm -fr node_modules \
+    && npm install --only=production
 
 FROM node:slim
 # Install Dockerize

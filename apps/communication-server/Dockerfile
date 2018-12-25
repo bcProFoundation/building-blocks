@@ -2,13 +2,11 @@ FROM node:latest
 # Copy app
 COPY . /home/craft/communication-server
 WORKDIR /home/craft/
-RUN rm -fr communication-server/config communication-server/docker-entrypoint.sh \
-    && cd communication-server \
-    && yarn \
-    && yarn prestart:prod \
-    && rm -fr node_modules yarn.lock \
-    && yarn --production=true \
-    && yarn cache clean
+RUN cd communication-server \
+    && npm install \
+    && npm run prestart:prod \
+    && rm -fr node_modules \
+    && npm install --only=production
 
 FROM node:slim
 # Install mysql Dockerize

@@ -2,13 +2,11 @@ FROM node:latest
 # Copy app
 COPY . /home/craft/identity-provider
 WORKDIR /home/craft/
-RUN rm -fr identity-provider/config identity-provider/docker-entrypoint.sh \
-    && cd identity-provider \
-    && yarn \
-    && yarn prestart:prod \
-    && rm -fr node_modules yarn.lock \
-    && yarn --production=true \
-    && yarn cache clean
+RUN cd identity-provider \
+    && npm install \
+    && npm run prestart:prod \
+    && rm -fr node_modules \
+    && npm install --only=production
 
 FROM node:slim
 # Install Dockerize

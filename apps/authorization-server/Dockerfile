@@ -3,14 +3,13 @@ FROM node:latest
 COPY . /home/craft/authorization-server
 WORKDIR /home/craft/
 RUN cd authorization-server \
-    && yarn \
-    && yarn prestart:prod \
-    && rm -fr node_modules yarn.lock \
-    && yarn --production=true \
-    && yarn cache clean
+    && npm install \
+    && npm run prestart:prod \
+    && rm -fr node_modules \
+    && npm install --only=production
 
 FROM node:slim
-# Install mysql Dockerize
+# Install mysqfl Dockerize
 ENV DOCKERIZE_VERSION v0.6.1
 RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
     && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
