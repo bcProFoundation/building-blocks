@@ -9,5 +9,8 @@
     "jest": "^23.4.0",
     "lerna": "^3.8.0",
     "typedoc": "^0.13.0"
+  },
+  "dependencies": {
+    "npm-check": "^5.9.0"
   }
 }

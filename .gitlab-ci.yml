@@ -26,24 +26,24 @@ test_authorization_server:
     BULL_QUEUE_REDIS_PORT: "6379"
   before_script:
     - cd apps/authorization-server
-    - yarn
+    - npm install
   script:
     # Check Code Quality
-    - yarn lint
-    - yarn format:check
+    - npm run lint
+    - npm run format:check
     # Test backend unit tests
-    - yarn test:server
+    - npm run test:server
     # Create .env file
     - dockerize -template docker/env.tmpl:.env
     # set env variable for test
     - export NODE_ENV=test
     # Test backend e2e
-    - yarn test:e2e
+    - npm run test:e2e
     # Test frontend
     - export DISPLAY=:99
     - Xvfb :0 -ac -screen 0 1024x768x24 &
-    - yarn test:client
-    - yarn e2e
+    - npm run test:client
+    - npm run e2e
   tags:
     - docker
 
@@ -51,22 +51,22 @@ test_communication_server:
   stage: tests
   before_script:
     - cd apps/communication-server
-    - yarn
+    - npm install
   script:
     # set env variable for test
     - export NODE_ENV=test
     # Check Code Quality
-    - yarn lint
-    - yarn format:check
+    - npm run lint
+    - npm run format:check
     # Test backend unit tests
-    - yarn test:server
+    - npm run test:server
     # Test backend e2e
-    - yarn test:e2e
+    - npm run test:e2e
     # Test frontend
     - export DISPLAY=:99
     - Xvfb :0 -ac -screen 0 1024x768x24 &
-    - yarn test:client
-    - yarn e2e
+    - npm run test:client
+    - npm run e2e
   tags:
     - docker
 
@@ -74,22 +74,22 @@ test_identity_provider:
   stage: tests
   before_script:
     - cd apps/identity-provider
-    - yarn
+    - npm install
   script:
     # set env variable for test
     - export NODE_ENV=test
     # Check Code Quality
-    - yarn lint
-    - yarn format:check
+    - npm run lint
+    - npm run format:check
     # Test backend unit tests
-    - yarn test:server
+    - npm run test:server
     # Test backend e2e
-    - yarn test:e2e
+    - npm run test:e2e
     # Test frontend
     - export DISPLAY=:99
     - Xvfb :0 -ac -screen 0 1024x768x24 &
-    - yarn test:client
-    - yarn e2e
+    - npm run test:client
+    - npm run e2e
   tags:
     - docker
 
@@ -97,22 +97,22 @@ test_infrastructure_console:
   stage: tests
   before_script:
     - cd apps/infrastructure-console
-    - yarn
+    - npm install
   script:
     # set env variable for test
     - export NODE_ENV=test
     # Check Code Quality
-    - yarn lint
-    - yarn format:check
+    - npm run lint
+    - npm run format:check
     # Test backend unit tests
-    - yarn test:server
+    - npm run test:server
     # Test backend e2e
-    - yarn test:e2e
+    - npm run test:e2e
     # Test frontend
     - export DISPLAY=:99
     - Xvfb :0 -ac -screen 0 1024x768x24 &
-    - yarn test:client
-    - yarn e2e
+    - npm run test:client
+    - npm run e2e
   tags:
     - docker
 
@@ -271,7 +271,7 @@ pages:
     - staging
   before_script:
     - npm install -g lerna
-    - yarn
+    - npm install
     - lerna clean -y
     - lerna bootstrap
   script:
@@ -280,7 +280,7 @@ pages:
     # - gitbook fetch latest # fetch latest stable version
     # - gitbook install # add any requested plugins in book.json
     - gitbook build docs public # build to public path
-    - yarn docs
+    - npm run docs
   artifacts:
     paths:
       - public

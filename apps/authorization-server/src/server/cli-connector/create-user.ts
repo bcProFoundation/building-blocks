@@ -5,7 +5,10 @@ import { CreateUserDto } from '../models/user/create-user.dto';
 import * as yargs from 'yargs';
 
 const app = NestFactory.create(AppModule);
-const args = createUserCLI();
+
+// TODO use Interface for args
+const args: any = createUserCLI();
+
 app.then(r => {
   const authService = r.get(AuthService);
   const user: CreateUserDto = {

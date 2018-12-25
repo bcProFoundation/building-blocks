@@ -5,7 +5,10 @@ import { Client } from '../models/interfaces/client.interface';
 import * as yargs from 'yargs';
 
 const app = NestFactory.create(AppModule);
-const args = createIDPClientCLI();
+
+// TODO use Interface for args
+const args: any = createIDPClientCLI();
+
 app.then(async r => {
   const clientService = r.get(ClientService);
   const ClientModel = clientService.getModel();
