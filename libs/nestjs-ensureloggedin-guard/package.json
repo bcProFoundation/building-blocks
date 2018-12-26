@@ -1,6 +1,6 @@
 {
   "name": "nestjs-ensureloggedin-guard",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "NestJS Ensure Loggedin Guard",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",

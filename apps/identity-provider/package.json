@@ -1,6 +1,6 @@
 {
   "name": "identity-provider",
-  "version": "1.0.4",
+  "version": "2.0.0-alpha.0",
   "scripts": {
     "ng": "ng",
     "format": "prettier --write \"**/*.ts\"",
