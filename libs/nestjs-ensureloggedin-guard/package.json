@@ -11,8 +11,8 @@
     "coverage": "npm test -- --coverage --no-cache",
     "coverage:watch": "npm run coverage -- --watch",
     "release": "standard-version && npm pack",
-    "format": "prettier --write \"**/*.ts\"",
-    "lint": "tslint -c tslint.json 'src/**/*.ts'"
+    "format": "prettier --write \"./src/**/*.ts\"",
+    "lint": "tslint -c tslint.json './src/**/*.ts'"
   },
   "license": "MIT",
   "devDependencies": {
@@ -30,6 +30,7 @@
     "tslint-loader": "^3.5.3",
     "typescript": "^3.2.2",
     "webpack": "^4.28.2",
+    "webpack-cli": "^3.1.2",
     "webpack-node-externals": "^1.6.0"
   },
   "dependencies": {
