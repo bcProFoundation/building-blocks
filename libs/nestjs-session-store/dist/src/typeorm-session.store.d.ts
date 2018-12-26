@@ -31,5 +31,5 @@ export declare class TypeormStore extends Store {
     get(sid: string, callback: (error: any, session?: any) => void): void;
     set(sid: string, session: any, callback: (error: any) => void): Promise<void>;
     touch(sid: string, session: any, callback: (error: any) => void): void;
-    private getTTL(session);
+    private getTTL;
 }

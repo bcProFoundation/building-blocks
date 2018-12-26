@@ -1,12 +1,7 @@
 var nodeExternals = require('webpack-node-externals');
 var webpack = require('webpack');
-var browserify = require('browserify');
 var path = require('path');
 var fs = require('fs');
-var os = require('os');
-var deleteEmpty = require('delete-empty');
-var PACKAGE_FILE = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf-8'));
-var LIB_NAME = PACKAGE_FILE.name;
 
 /* helper function to get into build directory */
 var libPath = function(name) {
@@ -14,7 +9,7 @@ var libPath = function(name) {
     return 'dist';
   }
 
-  return path.join('dist', name);
+  return name;
 }
 
 /* helper to clean leftovers */
@@ -41,21 +36,10 @@ var outputCleanup = function(dir) {
   fs.rmdirSync(dir);
 };
 
-/* precentage handler is used to hook build start and ending */
-var percentage_handler = function handler(percentage, msg) {
-  if ( 0 === percentage ) {
-    /* Build Started */
-    outputCleanup(libPath());
-    console.log('Build started... Good luck!');
-  } else if ( 1.0 === percentage ) {
-    // TODO: No Error detection. :(
-    create_browser_version(webpack_opts.output.filename);
-  }
-}
-
 var webpack_opts = {
   entry: './index.ts',
   target: 'node',
+  mode: process.env.NODE_ENV || 'production',
   output: {
     filename: libPath('index.js'),
     libraryTarget: 'commonjs2'
@@ -68,7 +52,7 @@ var webpack_opts = {
     ]
   },
   module: {
-    loaders: [
+    rules: [
       {
         enforce: 'pre',
         test: /\.ts$/,
@@ -85,7 +69,6 @@ var webpack_opts = {
   },
   externals: [nodeExternals()],
   plugins: [
-    new webpack.optimize.UglifyJsPlugin(),
     new webpack.LoaderOptionsPlugin({
       options: {
         tslint: {
@@ -94,25 +77,7 @@ var webpack_opts = {
         }
       }
     }),
-    new webpack.ProgressPlugin(percentage_handler)
   ],
-}
-
-var create_browser_version = function (inputJs) {
-  let outputName = inputJs.replace(/\.[^/.]+$/, '');
-  outputName = `${outputName}.browser.js`;
-  console.log('Creating browser version ...');
-
-  let b = browserify(inputJs, {
-    standalone: LIB_NAME,
-  });
-
-  b.bundle(function(err, src) {
-    if ( err != null ) {
-      console.error('Browserify error:');
-      console.error(err);
-    }
-  }).pipe(fs.createWriteStream(outputName));
 }
 
 module.exports = webpack_opts;

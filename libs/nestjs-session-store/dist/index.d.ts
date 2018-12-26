@@ -1,1 +1,1 @@
-export { TypeormStore, UserEntity, SessionEntity, Options } from './src/typeorm-session.store';
+export { TypeormStore, UserEntity, SessionEntity, Options, } from './src/typeorm-session.store';
