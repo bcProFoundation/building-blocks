@@ -6,7 +6,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { SetupService } from './setup.service';
-import { IdentityProviderSettingsDto } from '../../models/identity-provider-settings/identity-provider-setting.dto';
+import { ServerSettingsDto } from '../../models/server-settings/server-setting.dto';
 
 @Controller('setup')
 export class SetupController {
@@ -14,7 +14,7 @@ export class SetupController {
 
   @Post()
   @UsePipes(ValidationPipe)
-  async setup(@Body() idpSettingsDTO: IdentityProviderSettingsDto) {
-    return await this.settingsService.setup(idpSettingsDTO);
+  async setup(@Body() payload: ServerSettingsDto) {
+    return await this.settingsService.setup(payload);
   }
 }

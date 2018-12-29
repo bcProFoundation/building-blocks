@@ -5,16 +5,16 @@ import {
 } from '@nestjs/common';
 import Axios from 'axios';
 import { getConnection } from 'typeorm';
-import { IdentityProviderSettings } from '../models/identity-provider-settings/identity-provider-settings.entity';
-import { IdentityProviderSettingsService } from '../models/identity-provider-settings/identity-provider-settings.service';
+import { ServerSettings } from '../models/identity-provider-settings/identity-provider-settings.entity';
+import { ServerSettingsService } from '../models/identity-provider-settings/identity-provider-settings.service';
 
 export const BearerTokenStatus = createParamDecorator(async (data, req) => {
   // TODO: Show meaningful errors
   // headers are 'Bearer token_hash' and not just token_hash
   const identityProviderSettingsRepo = getConnection().getRepository(
-    IdentityProviderSettings,
+    ServerSettings,
   );
-  const identityProviderSettingsService = new IdentityProviderSettingsService(
+  const identityProviderSettingsService = new ServerSettingsService(
     identityProviderSettingsRepo,
   );
   const settings = await identityProviderSettingsService.find();

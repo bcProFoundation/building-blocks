@@ -106,6 +106,8 @@ def add_client():
                 ],
                 'allowedScopes': ['openid', 'email', 'roles'],
                 'isTrusted': 1,
+                'tokenDeleteEndpoint': client_url + '/connect/v1/token_delete',
+                'userDeleteEndpoint': client_url + '/connect/v1/user_delete',
             },
             headers={
                 'Authorization': 'Bearer ' + token,

@@ -33,6 +33,18 @@ export class ClientService {
     return await this.clientModel.deleteMany({ createdBy: uuid });
   }
 
+  async deleteByUUID(uuid) {
+    return await this.clientModel.deleteOne({ uuid });
+  }
+
+  async deleteByClientId(clientId) {
+    return await this.clientModel.deleteOne({ clientId });
+  }
+
+  async update(query, doc) {
+    return await this.clientModel.updateOne({ query }, doc);
+  }
+
   getModel() {
     return this.clientModel;
   }

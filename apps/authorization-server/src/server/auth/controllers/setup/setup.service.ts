@@ -42,15 +42,10 @@ export class SetupService {
       );
     }
 
-    const infrastructureConsoleCallbackUrl = [
-      infrastructureConsoleUrl + '/index.html',
-      infrastructureConsoleUrl + '/silent-refresh.html',
-    ];
-
     await this.keyPairService.generateKeyPair();
     await this.settingsService.save({ issuerUrl });
     await this.createUser(fullName, email, phone, adminPassword);
-    return await this.createClient(email, infrastructureConsoleCallbackUrl);
+    return await this.createClient(email, infrastructureConsoleUrl);
   }
 
   /**
@@ -59,7 +54,17 @@ export class SetupService {
    * @param email
    * @param callbackUrl
    */
-  async createClient(email: string, callbackUrls: string[]) {
+  async createClient(email: string, infrastructureConsoleUrl: string) {
+    const callbackUrls = [
+      infrastructureConsoleUrl + '/index.html',
+      infrastructureConsoleUrl + '/silent-refresh.html',
+    ];
+
+    const userDeleteEndpoint =
+      infrastructureConsoleUrl + '/connect/v1/user_delete';
+    const tokenDeleteEndpoint =
+      infrastructureConsoleUrl + '/connect/v1/token_delete';
+
     const ScopeModel = this.scopeService.getModel();
     const scope: Scope[] = await ScopeModel.insertMany([
       { name: 'openid' },
@@ -76,6 +81,8 @@ export class SetupService {
     client.createdBy = createdBy.uuid;
     client.modifiedBy = createdBy.uuid;
     client.isTrusted = 1;
+    client.userDeleteEndpoint = userDeleteEndpoint;
+    client.tokenDeleteEndpoint = tokenDeleteEndpoint;
 
     const response = await this.clientService.save(client);
 

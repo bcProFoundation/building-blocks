@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  HttpService,
-  HttpException,
-  HttpStatus,
-} from '@nestjs/common';
+import { Injectable, HttpService } from '@nestjs/common';
 import { settingsAlreadyExists } from '../../exceptions';
 import { ServerSettings } from '../../models/server-settings/server-settings.entity';
 import { ServerSettingsService } from '../../models/server-settings/server-settings.service';
@@ -38,7 +33,7 @@ export class SetupService {
           return this.idpSettings;
         },
         error: error => {
-          throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+          // TODO: Log errors
         },
       });
   }

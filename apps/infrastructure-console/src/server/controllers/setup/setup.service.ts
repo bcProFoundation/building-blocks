@@ -1,5 +1,5 @@
 import { Injectable, HttpService } from '@nestjs/common';
-import { settingsAlreadyExists, somethingWentWrong } from '../../exceptions';
+import { settingsAlreadyExists } from '../../exceptions';
 import { ServerSettingsService } from '../../models/server-settings/server-settings.service';
 import { ServerSettings } from '../../models/server-settings/server-settings.entity';
 
@@ -33,8 +33,7 @@ export class SetupService {
           return this.icSettings;
         },
         error: error => {
-          // TODO : meaningful errors
-          throw somethingWentWrong;
+          // TODO : Log errors
         },
       });
   }
