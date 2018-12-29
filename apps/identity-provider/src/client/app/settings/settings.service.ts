@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { OAuthService } from 'angular-oauth2-oidc';
-import { APP_URL } from '../../constants/storage';
+import { APP_URL } from '../constants/storage';
 import { OpenIDConfiguration } from '../interfaces/openid-configuration.interface';
 
 @Injectable({

@@ -9,13 +9,13 @@ import {
   SET_AUTH_SERVER_USER,
   CHANGE_PASSWORD_ENDPOINT,
   DELETE_AVATAR_ENDPOINT,
-} from '../../constants/url-paths';
-import { ISSUER_URL, APP_URL } from '../../constants/storage';
+} from '../constants/url-paths';
+import { ISSUER_URL, APP_URL } from '../constants/storage';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { MatSnackBar } from '@angular/material';
-import { CLOSE, CURRENT_PASSWORD_MISMATCH } from '../../constants/messages';
+import { CLOSE, CURRENT_PASSWORD_MISMATCH } from '../constants/messages';
 import { of } from 'rxjs';
-import { ProfileNavService } from '../profile-nav/profile-nav.service';
+import { NavigationService } from '../navigation/navigation.service';
 
 @Injectable()
 export class ProfileService {
@@ -24,7 +24,7 @@ export class ProfileService {
     private http: HttpClient,
     private oauthService: OAuthService,
     private snackBar: MatSnackBar,
-    private profileNavService: ProfileNavService,
+    private navigationService: NavigationService,
   ) {
     this.authorizationHeader = new HttpHeaders({
       Authorization: 'Bearer ' + this.oauthService.getAccessToken(),
@@ -104,7 +104,7 @@ export class ProfileService {
   }
 
   logout() {
-    this.profileNavService.clearInfoLocalStorage();
+    this.navigationService.clearInfoLocalStorage();
   }
 
   deleteAvatar() {

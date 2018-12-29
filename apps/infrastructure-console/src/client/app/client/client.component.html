@@ -20,6 +20,12 @@
                 <mat-option *ngFor="let scope of scopes" [value]="scope">{{scope}}</mat-option>
               </mat-select>
             </mat-form-field>
+            <mat-form-field>
+              <input matInput placeholder="Token Delete Endoint" formControlName="tokenDeleteEndpoint">
+            </mat-form-field>
+            <mat-form-field>
+              <input matInput placeholder="User Delete Endpoint" formControlName="userDeleteEndpoint">
+            </mat-form-field>
             <div formArrayName="callbackURLForms" *ngFor="let url of clientForm.get('callbackURLForms')['controls']; let i = index;" style="width:100%">
               <div [formGroupName]="i">
                 <mat-form-field>

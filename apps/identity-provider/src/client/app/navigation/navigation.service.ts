@@ -6,10 +6,10 @@ import {
   LOGIN_URL,
   ISSUER_URL,
   USER_UUID,
-} from '../../constants/storage';
+} from '../constants/storage';
 
 @Injectable()
-export class ProfileNavService {
+export class NavigationService {
   clearInfoLocalStorage() {
     localStorage.removeItem(CLIENT_ID);
     localStorage.removeItem(REDIRECT_URI);

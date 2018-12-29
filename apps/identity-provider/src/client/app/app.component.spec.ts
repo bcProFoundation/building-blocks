@@ -6,8 +6,8 @@ import { from } from 'rxjs';
 import { Component } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
 
-@Component({ selector: 'app-profile-nav', template: '' })
-class ProfileNavComponent {}
+@Component({ selector: 'app-navigation', template: '' })
+class NavigationComponent {}
 
 describe('AppComponent', () => {
   const appServiceStub: Partial<AppService> = {
@@ -20,7 +20,7 @@ describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [AppComponent, ProfileNavComponent],
+      declarations: [AppComponent, NavigationComponent],
       providers: [
         {
           provide: AppService,

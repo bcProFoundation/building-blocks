@@ -43,7 +43,7 @@ export class ListingComponent {
 
   setFilter() {
     this.dataSource.loadItems(
-      this.search, // TODO: Filter
+      this.search,
       this.sort.direction,
       this.paginator.pageIndex,
       this.paginator.pageSize,

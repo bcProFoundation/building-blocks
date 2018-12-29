@@ -1,14 +1,14 @@
 import { fakeAsync, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ProfileNavComponent } from './profile-nav.component';
+import { NavigationComponent } from './navigation.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ProfileNavService } from './profile-nav.service';
+import { NavigationService } from './navigation.service';
 
-describe('ProfileNavComponent', () => {
-  let component: ProfileNavComponent;
-  let fixture: ComponentFixture<ProfileNavComponent>;
+describe('NavigationComponent', () => {
+  let component: NavigationComponent;
+  let fixture: ComponentFixture<NavigationComponent>;
 
   beforeEach(fakeAsync(() => {
     const oauthServiceStub: Partial<OAuthService> = {
@@ -17,7 +17,7 @@ describe('ProfileNavComponent', () => {
     };
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [ProfileNavComponent],
+      declarations: [NavigationComponent],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
         {
@@ -25,7 +25,7 @@ describe('ProfileNavComponent', () => {
           useValue: oauthServiceStub,
         },
         {
-          provide: ProfileNavService,
+          provide: NavigationService,
           useValue: {
             clearInfoLocalStorage() {}, // mock function
           },
@@ -33,7 +33,7 @@ describe('ProfileNavComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ProfileNavComponent);
+    fixture = TestBed.createComponent(NavigationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

@@ -25,6 +25,7 @@ import { ADMINISTRATOR } from '../../../constants/app-strings';
 import { RoleGuard } from '../../../auth/guards/role.guard';
 import { UserService } from '../../../models/user/user.service';
 import { CRUDOperationService } from '../common/crudoperation/crudoperation.service';
+import { randomBytes32 } from '../../../models/client/client.schema';
 
 @Controller('client')
 @SerializeOptions({ excludePrefixes: ['_'] })
@@ -61,7 +62,25 @@ export class ClientController {
       (await this.userService.checkAdministrator(req.user.user)) ||
       client.createdBy === req.user.user
     ) {
-      return await this.clientService.update({ clientId }, payload);
+      Object.assign(client, payload);
+      await client.save();
+      return client;
+    } else {
+      throw new UnauthorizedException();
+    }
+  }
+
+  @Put('v1/update_secret/:clientId')
+  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  async updateSecret(@Param('clientId') clientId: string, @Req() req) {
+    const client = await this.clientService.findOne({ clientId });
+    if (
+      (await this.userService.checkAdministrator(req.user.user)) ||
+      client.createdBy === req.user.user
+    ) {
+      client.clientSecret = randomBytes32();
+      await client.save();
+      return client;
     } else {
       throw new UnauthorizedException();
     }

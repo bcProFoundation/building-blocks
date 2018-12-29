@@ -59,6 +59,8 @@ export class ClientService {
   updateClient(
     clientId: string,
     clientName: string,
+    tokenDeleteEndpoint: string,
+    userDeleteEndpoint: string,
     callbackURLs: string[],
     scopes: string[],
     isTrusted: boolean,
@@ -68,6 +70,8 @@ export class ClientService {
     )}/client/v1/update/${clientId}`;
     return this.http.put(url, {
       name: clientName,
+      tokenDeleteEndpoint,
+      userDeleteEndpoint,
       redirectUris: callbackURLs,
       allowedScopes: scopes,
       isTrusted,

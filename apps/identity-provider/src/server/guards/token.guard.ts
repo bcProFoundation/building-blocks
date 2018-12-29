@@ -5,7 +5,7 @@ import {
   NotImplementedException,
   HttpService,
 } from '@nestjs/common';
-import { ServerSettingsService } from '../models/identity-provider-settings/identity-provider-settings.service';
+import { ServerSettingsService } from '../models/server-settings/server-settings.service';
 import { TokenCache } from '../models/token-cache/token-cache.entity';
 import { TokenCacheService } from '../models/token-cache/token-cache.service';
 import { TOKEN } from '../constants/app-strings';

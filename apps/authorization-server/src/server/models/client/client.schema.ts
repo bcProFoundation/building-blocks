@@ -27,6 +27,6 @@ export const CLIENT = 'Client';
 
 export const ClientModel = mongoose.model(CLIENT, Client);
 
-function randomBytes32() {
+export function randomBytes32() {
   return randomBytes(32).toString('hex');
 }

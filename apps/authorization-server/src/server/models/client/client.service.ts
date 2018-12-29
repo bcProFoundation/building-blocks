@@ -41,10 +41,6 @@ export class ClientService {
     return await this.clientModel.deleteOne({ clientId });
   }
 
-  async update(query, doc) {
-    return await this.clientModel.updateOne({ query }, doc);
-  }
-
   getModel() {
     return this.clientModel;
   }
