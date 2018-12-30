@@ -12,7 +12,7 @@ import {
   SILENT_REFRESH_REDIRECT_URI,
   LOGIN_URL,
   ISSUER_URL,
-} from '../constants/storage';
+} from './constants/storage';
 
 @Component({
   selector: 'app-root',

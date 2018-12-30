@@ -1,18 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { MongoRepository } from 'typeorm';
 import { Profile } from './profile.entity';
 import {
   AVATAR_ROUTE_PREFIX,
   AVATAR_IMAGE_FOLDER,
 } from '../../constants/filesystem';
 import { unlink } from 'fs';
+import { from } from 'rxjs';
 
 @Injectable()
 export class ProfileService {
   constructor(
     @InjectRepository(Profile)
-    private readonly profileRepository: Repository<Profile>,
+    private readonly profileRepository: MongoRepository<Profile>,
   ) {}
 
   public async save(profile) {
@@ -49,5 +50,9 @@ export class ProfileService {
 
   public deleteAvatarFile(pictureFile) {
     unlink(AVATAR_IMAGE_FOLDER + '/' + pictureFile, () => {});
+  }
+
+  public deleteProfile(uuid) {
+    return from(this.profileRepository.deleteOne({ uuid }));
   }
 }

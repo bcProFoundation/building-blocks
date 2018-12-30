@@ -1,34 +1,28 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import {
-  PROFILE_TITLE,
-  PERSONAL_DETAILS,
-  PROFILE_DETAILS,
-  ACCESS_DETAILS,
-  UPDATE_CONSTANT,
-  NO_AVATAR_SET,
-  MALE_CONST,
-  FEMALE_CONST,
-  OTHER_CONST,
-  SECURITY_DETAILS,
-  UPDATE_SUCCESSFUL,
-  CLOSE,
-  CHANGE_PASSWORD,
-} from '../../constants/messages';
 import { FormControl, FormGroup } from '@angular/forms';
-import { TIME_ZONES } from '../../constants/timezones';
-import { LOCALES } from '../../constants/locale';
+import { TIME_ZONES } from '../constants/timezones';
+import { LOCALES } from '../constants/locale';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { IDTokenClaims } from '../../../server/models/id-token-claims.interfaces';
 import { ProfileService } from './profile.service';
 import { UserResponse } from '../interfaces/user-response.interface';
 import { MatDatepickerInputEvent, MatSnackBar } from '@angular/material';
-import { USER_UUID, ISSUER_URL, APP_URL } from '../../constants/storage';
+import { USER_UUID, ISSUER_URL, APP_URL } from '../constants/storage';
 import { map } from 'rxjs/operators';
 import { PersonalResponse } from '../interfaces/personal-response.interface';
-import { LOGOUT_URL, MISSING_AVATAR_IMAGE } from '../../constants/url-paths';
+import { LOGOUT_URL, MISSING_AVATAR_IMAGE } from '../constants/url-paths';
 import { Router } from '@angular/router';
 import { ProfileResponse } from '../interfaces/profile-response.interface';
+import {
+  MALE_CONST,
+  FEMALE_CONST,
+  OTHER_CONST,
+  NO_AVATAR_SET,
+  PROFILE_TITLE,
+  UPDATE_SUCCESSFUL,
+  CLOSE,
+} from '../constants/messages';
 
 @Component({
   selector: 'app-profile',
@@ -39,12 +33,6 @@ export class ProfileComponent implements OnInit {
   genders: string[] = [MALE_CONST, FEMALE_CONST, OTHER_CONST];
   timezones = TIME_ZONES;
   locales = LOCALES;
-  updateConstant = UPDATE_CONSTANT;
-  personalDetails = PERSONAL_DETAILS;
-  profileDetails = PROFILE_DETAILS;
-  accessDetails = ACCESS_DETAILS;
-  securityDetails = SECURITY_DETAILS;
-  changePassword = CHANGE_PASSWORD;
   missingAvatarImage = MISSING_AVATAR_IMAGE;
 
   uuid: string;

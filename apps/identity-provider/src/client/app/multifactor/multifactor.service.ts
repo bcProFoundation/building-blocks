@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
-// import { MatSnackBar } from '@angular/material';
-// import { ProfileNavService } from '../profile-nav/profile-nav.service';
-import { ISSUER_URL } from '../../constants/storage';
+import { ISSUER_URL } from '../constants/storage';
 import {
   INITIALIZE_2FA,
   VERIFY_2FA,
   DISABLE_2FA,
-} from '../../constants/url-paths';
+} from '../constants/url-paths';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 
 @Injectable({

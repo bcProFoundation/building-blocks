@@ -25,8 +25,12 @@ export class ClientComponent implements OnInit {
   isTrusted: boolean;
   clientScopes: any[];
   callbackURLs: string[];
+  tokenDeleteEndpoint: string;
+  userDeleteEndpoint: string;
+  changedClientSecret: string;
 
-  hide: boolean = true;
+  hideClientSecret: boolean = true;
+  hideChangedClientSecret: boolean = true;
 
   scopes: any[] = [];
 
@@ -44,13 +48,16 @@ export class ClientComponent implements OnInit {
 
   ngOnInit() {
     this.clientForm = this.formBuilder.group({
-      clientName: '',
-      clientURL: '',
-      clientScopes: '',
+      clientName: this.clientName,
+      clientURL: this.clientURL,
+      clientScopes: this.clientScopes,
+      tokenDeleteEndpoint: this.tokenDeleteEndpoint,
+      userDeleteEndpoint: this.userDeleteEndpoint,
       callbackURLForms: this.formBuilder.array([]),
-      isTrusted: '',
-      clientId: '',
-      clientSecret: '',
+      isTrusted: this.isTrusted,
+      clientId: this.clientId,
+      clientSecret: this.clientSecret,
+      changedClientSecret: this.changedClientSecret,
     });
 
     if (this.uuid && this.uuid !== NEW_ID) {
@@ -80,6 +87,7 @@ export class ClientComponent implements OnInit {
     this.clientService.getClient(clientId).subscribe({
       next: response => {
         if (response) {
+          this.changedClientSecret = response.changedClientSecret;
           this.populateClientForm(response);
         }
       },
@@ -102,6 +110,9 @@ export class ClientComponent implements OnInit {
           this.uuid = response.uuid;
           this.clientForm.controls.clientId.setValue(response.clientId);
           this.clientForm.controls.clientSecret.setValue(response.clientSecret);
+          this.tokenDeleteEndpoint = response.tokenDeleteEndpoint;
+          this.userDeleteEndpoint = response.userDeleteEndpoint;
+          this.changedClientSecret = response.changedClientSecret;
           this.snackbar.open(CLIENT_CREATED, 'Close', { duration: 2500 });
         },
         error: error => {
@@ -126,6 +137,8 @@ export class ClientComponent implements OnInit {
       .updateClient(
         this.clientId,
         this.clientForm.controls.clientName.value,
+        this.clientForm.controls.tokenDeleteEndpoint.value,
+        this.clientForm.controls.userDeleteEndpoint.value,
         this.getCallbackURLs(),
         this.clientForm.controls.clientScopes.value,
         this.clientForm.controls.isTrusted.value,
@@ -154,6 +167,15 @@ export class ClientComponent implements OnInit {
     this.clientSecret = client.clientSecret;
     this.clientName = client.name;
     this.callbackURLs = client.redirectUris;
+    this.clientForm.controls.tokenDeleteEndpoint.setValue(
+      client.tokenDeleteEndpoint,
+    );
+    this.clientForm.controls.userDeleteEndpoint.setValue(
+      client.userDeleteEndpoint,
+    );
+    this.clientForm.controls.changedClientSecret.setValue(
+      client.changedClientSecret,
+    );
     this.callbackURLs.forEach(element => {
       this.addCallbackURL(element);
     });

@@ -5,7 +5,7 @@ import {
   NotImplementedException,
   HttpService,
 } from '@nestjs/common';
-import { IdentityProviderSettingsService } from '../models/identity-provider-settings/identity-provider-settings.service';
+import { ServerSettingsService } from '../models/server-settings/server-settings.service';
 import { TokenCache } from '../models/token-cache/token-cache.entity';
 import { TokenCacheService } from '../models/token-cache/token-cache.service';
 import { TOKEN } from '../constants/app-strings';
@@ -16,7 +16,7 @@ import * as Express from 'express';
 @Injectable()
 export class TokenGuard implements CanActivate {
   constructor(
-    private readonly settingsService: IdentityProviderSettingsService,
+    private readonly settingsService: ServerSettingsService,
     private readonly tokenCacheService: TokenCacheService,
     private readonly http: HttpService,
   ) {}

@@ -29,14 +29,14 @@ const appServiceStub: Partial<AppService> = {
   },
 };
 
-@Component({ selector: 'app-dashboard-nav', template: '' })
-class DashboardNavComponent {}
+@Component({ selector: 'app-navigation', template: '' })
+class NavigationComponent {}
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule, MaterialModule, BrowserAnimationsModule],
-      declarations: [AppComponent, DashboardNavComponent],
+      declarations: [AppComponent, NavigationComponent],
       providers: [
         {
           provide: AppService,

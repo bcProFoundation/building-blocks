@@ -1,7 +1,7 @@
 import { IsUrl, IsNotEmpty } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 
-export class IdentityProviderSettingsDto {
+export class ServerSettingsDto {
   uuid?: string;
 
   @IsUrl()

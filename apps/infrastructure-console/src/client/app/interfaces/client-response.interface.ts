@@ -5,4 +5,7 @@ export interface CreateClientResponse {
   name: string;
   redirectUris?: string[];
   uuid?: string;
+  userDeleteEndpoint?: string;
+  tokenDeleteEndpoint?: string;
+  changedClientSecret?: string;
 }

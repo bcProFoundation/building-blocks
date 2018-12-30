@@ -9,7 +9,7 @@ import { HttpErrorHandler } from './common/http-error-handler.service';
 import { MessageService } from './common/message.service';
 import { MaterialModule } from './material.module';
 import { OAuthModule, OAuthStorage } from 'angular-oauth2-oidc';
-import { DashboardNavComponent } from './dashboard-nav/dashboard-nav.component';
+import { NavigationComponent } from './navigation/navigation.component';
 import { HomeComponent } from './home/home.component';
 import { ListingComponent } from './listing/listing.component';
 import { ClientComponent } from './client/client.component';
@@ -34,7 +34,7 @@ import { SettingsService } from './settings/settings.service';
     AppComponent,
     HomeComponent,
     DashboardComponent,
-    DashboardNavComponent,
+    NavigationComponent,
     ListingComponent,
     ClientComponent,
     RoleComponent,

@@ -14,4 +14,5 @@ export interface Client extends Document {
   allowedScopes?: string[];
   userDeleteEndpoint?: string;
   tokenDeleteEndpoint?: string;
+  changedClientSecret?: string;
 }

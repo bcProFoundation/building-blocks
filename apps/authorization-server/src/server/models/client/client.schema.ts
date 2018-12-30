@@ -17,6 +17,7 @@ const schema = new mongoose.Schema(
     allowedScopes: [String],
     userDeleteEndpoint: String,
     tokenDeleteEndpoint: String,
+    changedClientSecret: String,
   },
   { collection: 'client', versionKey: false },
 );
@@ -27,6 +28,6 @@ export const CLIENT = 'Client';
 
 export const ClientModel = mongoose.model(CLIENT, Client);
 
-function randomBytes32() {
+export function randomBytes32() {
   return randomBytes(32).toString('hex');
 }

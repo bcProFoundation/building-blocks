@@ -1,5 +1,5 @@
 import { fakeAsync, ComponentFixture, TestBed } from '@angular/core/testing';
-import { DashboardNavComponent } from './dashboard-nav.component';
+import { NavigationComponent } from './navigation.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { MaterialModule } from '../material.module';
@@ -7,9 +7,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Component } from '@angular/core';
 import { oauthServiceStub } from '../common/testing-helpers';
 
-describe('DashboardNavComponent', () => {
-  let component: DashboardNavComponent;
-  let fixture: ComponentFixture<DashboardNavComponent>;
+describe('NavigationComponent', () => {
+  let component: NavigationComponent;
+  let fixture: ComponentFixture<NavigationComponent>;
 
   @Component({ selector: 'app-home', template: '' })
   class HomeComponent {}
@@ -17,7 +17,7 @@ describe('DashboardNavComponent', () => {
   beforeEach(fakeAsync(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule, BrowserAnimationsModule, MaterialModule],
-      declarations: [HomeComponent, DashboardNavComponent],
+      declarations: [HomeComponent, NavigationComponent],
       providers: [
         {
           provide: OAuthService,
@@ -26,7 +26,7 @@ describe('DashboardNavComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(DashboardNavComponent);
+    fixture = TestBed.createComponent(NavigationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

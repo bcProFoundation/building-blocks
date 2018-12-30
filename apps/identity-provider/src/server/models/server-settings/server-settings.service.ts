@@ -1,20 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { IdentityProviderSettings } from './identity-provider-settings.entity';
+import { ServerSettings } from './server-settings.entity';
 import { settingsAlreadyExists } from '../../exceptions';
 
 @Injectable()
-export class IdentityProviderSettingsService {
+export class ServerSettingsService {
   constructor(
-    @InjectRepository(IdentityProviderSettings)
-    private readonly idpSettingsRepository: Repository<
-      IdentityProviderSettings
-    >,
+    @InjectRepository(ServerSettings)
+    private readonly idpSettingsRepository: Repository<ServerSettings>,
   ) {}
 
   async save(params) {
-    let serverSettings = new IdentityProviderSettings();
+    let serverSettings = new ServerSettings();
     if (params.uuid) {
       const exists: number = await this.count();
       serverSettings = await this.findOne({ uuid: params.uuid });
@@ -29,7 +27,7 @@ export class IdentityProviderSettingsService {
     return await this.idpSettingsRepository.save(serverSettings);
   }
 
-  async find(): Promise<IdentityProviderSettings> {
+  async find(): Promise<ServerSettings> {
     const settings = await this.idpSettingsRepository.find();
     return settings.length ? settings[0] : null;
   }

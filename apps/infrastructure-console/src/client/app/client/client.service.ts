@@ -25,7 +25,7 @@ export class ClientService {
   getClient(clientID: string): Observable<any> {
     const url = `${this.storageService.getInfo(
       ISSUER_URL,
-    )}/client/v1/${clientID}`;
+    )}/client/v1/get/${clientID}`;
     return this.http
       .get<string>(url)
       .pipe(
@@ -59,19 +59,23 @@ export class ClientService {
   updateClient(
     clientId: string,
     clientName: string,
+    tokenDeleteEndpoint: string,
+    userDeleteEndpoint: string,
     callbackURLs: string[],
     scopes: string[],
     isTrusted: boolean,
   ) {
-    const url = `${this.storageService.getInfo(ISSUER_URL)}/client/v1/update`;
-    const clientData = {
-      clientId,
+    const url = `${this.storageService.getInfo(
+      ISSUER_URL,
+    )}/client/v1/update/${clientId}`;
+    return this.http.put(url, {
       name: clientName,
+      tokenDeleteEndpoint,
+      userDeleteEndpoint,
       redirectUris: callbackURLs,
       allowedScopes: scopes,
       isTrusted,
-    };
-    return this.http.post(url, clientData);
+    });
   }
 
   invokeSetup(clientURL: string, savedClient: any) {

@@ -4,15 +4,15 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { OAuthService, OAuthEvent } from 'angular-oauth2-oidc';
 import { Router } from '@angular/router';
-import { ProfileNavService } from './profile-nav.service';
-import { ISSUER_URL, APP_URL } from '../../constants/storage';
+import { NavigationService } from './navigation.service';
+import { ISSUER_URL, APP_URL } from '../constants/storage';
 
 @Component({
-  selector: 'app-profile-nav',
-  templateUrl: './profile-nav.component.html',
-  styleUrls: ['./profile-nav.component.css'],
+  selector: 'app-navigation',
+  templateUrl: './navigation.component.html',
+  styleUrls: ['./navigation.component.css'],
 })
-export class ProfileNavComponent implements OnInit {
+export class NavigationComponent implements OnInit {
   isHandset$: Observable<boolean> = this.breakpointObserver
     .observe(Breakpoints.Handset)
     .pipe(map(result => result.matches));
@@ -22,7 +22,7 @@ export class ProfileNavComponent implements OnInit {
     private breakpointObserver: BreakpointObserver,
     private oauthService: OAuthService,
     private router: Router,
-    private profileNavService: ProfileNavService,
+    private navigationService: NavigationService,
   ) {}
 
   ngOnInit(): void {
@@ -46,7 +46,7 @@ export class ProfileNavComponent implements OnInit {
       localStorage.getItem(ISSUER_URL) +
       '/auth/logout?redirect=' +
       localStorage.getItem(APP_URL);
-    this.profileNavService.clearInfoLocalStorage();
+    this.navigationService.clearInfoLocalStorage();
     this.oauthService.logOut();
     this.tokenIsValid = false;
     window.location.href = logoutUrl;

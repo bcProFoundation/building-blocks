@@ -13,7 +13,7 @@ import {
   LOGIN_URL,
   ISSUER_URL,
   APP_URL,
-} from '../constants/storage';
+} from './constants/storage';
 
 @Injectable()
 export class AppService {

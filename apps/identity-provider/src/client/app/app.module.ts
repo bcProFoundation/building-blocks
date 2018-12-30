@@ -8,7 +8,7 @@ import { AppComponent } from './app.component';
 import { AppService } from './app.service';
 import { HttpErrorHandler } from './common/http-error-handler.service';
 import { MessageService } from './common/message.service';
-import { ProfileNavComponent } from './profile-nav/profile-nav.component';
+import { NavigationComponent } from './navigation/navigation.component';
 import { MaterialModule } from './material.module';
 import { OAuthModule, OAuthStorage } from 'angular-oauth2-oidc';
 import { AuthGuard } from './guards/auth.guard.service';
@@ -17,7 +17,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { AppsComponent } from './apps/apps.component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { ProfileNavService } from './profile-nav/profile-nav.service';
+import { NavigationService } from './navigation/navigation.service';
 import { ProfileService } from './profile/profile.service';
 import { MultifactorComponent } from './multifactor/multifactor.component';
 import { SettingsComponent } from './settings/settings.component';
@@ -26,7 +26,7 @@ import { SettingsService } from './settings/settings.service';
 @NgModule({
   declarations: [
     AppComponent,
-    ProfileNavComponent,
+    NavigationComponent,
     HomeComponent,
     ProfileComponent,
     AppsComponent,
@@ -53,7 +53,7 @@ import { SettingsService } from './settings/settings.service';
     Title,
     { provide: OAuthStorage, useValue: localStorage },
     ProfileService,
-    ProfileNavService,
+    NavigationService,
     SettingsService,
   ],
   bootstrap: [AppComponent],

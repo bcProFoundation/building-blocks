@@ -6,3 +6,5 @@ export const CLIENT_ERROR = 'Could not create client.';
 export const CANNOT_FETCH_MODELS = 'Cannot fetch models';
 export const CANNOT_FETCH_CLIENT = 'Cannot fetch client';
 export const LOGIN_AS_ADMINISTRATOR = 'Please login as administrator';
+export const HOME_TITLE = 'Home';
+export const UPDATE_BUTTON = 'Update';

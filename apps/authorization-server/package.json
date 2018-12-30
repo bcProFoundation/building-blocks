@@ -73,10 +73,10 @@
     "hbs": "^4.0.1",
     "helmet": "^3.15.0",
     "i18n": "^0.8.3",
-    "joi": "^14.3.0",
+    "joi": "^14.3.1",
     "migrate-mongoose": "^3.2.2",
     "mongodb": "^3.1.10",
-    "mongoose": "^5.4.0",
+    "mongoose": "^5.4.1",
     "nestjs-ensureloggedin-guard": "^1.1.0",
     "node-jose": "^1.1.0",
     "oauth2orize": "^1.11.0",
@@ -95,7 +95,6 @@
     "rxjs-compat": "^6.3.3",
     "speakeasy": "^2.0.0",
     "uuid": "^3.3.2",
-    "yargs": "^12.0.5",
     "zone.js": "^0.8.26"
   },
   "devDependencies": {
@@ -114,7 +113,6 @@
     "@types/node": "^10.12.18",
     "@types/passport-local": "^1.0.33",
     "@types/supertest": "^2.0.7",
-    "@types/yargs": "^12.0.2",
     "codelyzer": "^4.5.0",
     "concurrently": "^4.1.0",
     "jasmine-core": "^3.3.0",
@@ -138,7 +136,7 @@
     "tsconfig-paths": "^3.7.0",
     "tslint": "^5.12.0",
     "typescript": "~3.1.6",
-    "webpack": "4.28.2",
+    "webpack": "^4.28.3",
     "webpack-cli": "3.1.2",
     "webpack-node-externals": "^1.6.0"
   },

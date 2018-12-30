@@ -13,7 +13,7 @@ This package requires:
 ## Install
 
 ```bash
-npm i -g @nestjs-session-store --prefix='~/.nodejs'
+npm i nestjs-session-store
 ```
 
 ## Usage
@@ -38,7 +38,7 @@ export class Session implements SessionEntity {
 }
 ```
 
-##### Create TypeormStore instance in a function in main.ts and call it in bootstrap. 
+##### Create TypeormStore instance in a function in main.ts and call it in bootstrap.
 
 Import TypeormStore, instantiate and bootstrap it.
 

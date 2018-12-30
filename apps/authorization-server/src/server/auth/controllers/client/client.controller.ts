@@ -12,6 +12,9 @@ import {
   SerializeOptions,
   UsePipes,
   ValidationPipe,
+  UnauthorizedException,
+  Delete,
+  Put,
 } from '@nestjs/common';
 import { ClientService } from '../../../models/client/client.service';
 import { callback } from '../../passport/local.strategy';
@@ -22,6 +25,7 @@ import { ADMINISTRATOR } from '../../../constants/app-strings';
 import { RoleGuard } from '../../../auth/guards/role.guard';
 import { UserService } from '../../../models/user/user.service';
 import { CRUDOperationService } from '../common/crudoperation/crudoperation.service';
+import { randomBytes32 } from '../../../models/client/client.schema';
 
 @Controller('client')
 @SerializeOptions({ excludePrefixes: ['_'] })
@@ -46,19 +50,45 @@ export class ClientController {
     res.json(client);
   }
 
-  @Post('v1/update')
+  @Put('v1/update/:clientId')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
-  async update(@Body() payload, @Req() req) {
-    const client = await this.clientService.findOne({
-      clientId: payload.clientId,
-    });
-    client.name = payload.name;
-    client.allowedScopes = payload.allowedScopes;
-    client.isTrusted = payload.isTrusted;
-    client.redirectUris = payload.redirectUris;
-    client.modifiedBy = req.user.user;
-    client.modified = new Date();
-    await client.save();
+  async update(
+    @Body() payload: CreateClientDto,
+    @Param('clientId') clientId: string,
+    @Req() req,
+  ) {
+    const client = await this.clientService.findOne({ clientId });
+    if (
+      (await this.userService.checkAdministrator(req.user.user)) ||
+      client.createdBy === req.user.user
+    ) {
+      Object.assign(client, payload);
+      await client.save();
+      return client;
+    } else {
+      throw new UnauthorizedException();
+    }
+  }
+
+  @Put('v1/update_secret/:clientId')
+  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  async updateSecret(@Param('clientId') clientId: string, @Req() req) {
+    const client = await this.clientService.findOne({ clientId });
+    if (
+      (await this.userService.checkAdministrator(req.user.user)) ||
+      client.createdBy === req.user.user
+    ) {
+      client.changedClientSecret = randomBytes32();
+      await client.save();
+      return client;
+    } else {
+      throw new UnauthorizedException();
+    }
+  }
+
+  @Post('v1/verify_changed_secret')
+  async verifyChangedSecret(@Req() req) {
+    return await this.clientService.verifyChangedSecret(req);
   }
 
   @Get('v1/list')
@@ -95,9 +125,9 @@ export class ClientController {
     return await this.clientService.find({ isTrusted: 1 });
   }
 
-  @Get('v1/:uuid')
+  @Get('v1/get/:uuid')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
-  async findOne(@Param('uuid') uuid: number, @Req() req) {
+  async findOne(@Param('uuid') uuid: string, @Req() req) {
     let client;
     if (await this.userService.checkAdministrator(req.user.user)) {
       client = await this.clientService.findOne({ uuid });
@@ -109,5 +139,19 @@ export class ClientController {
     }
     if (!client) throw new ForbiddenException();
     return client;
+  }
+
+  @Delete('v1/delete/:clientId')
+  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  async deleteByUUID(@Param('clientId') clientId, @Req() req) {
+    const client = await this.clientService.findOne({ clientId });
+    if (
+      (await this.userService.checkAdministrator(req.user.user)) ||
+      client.createdBy === req.user.user
+    ) {
+      return await this.clientService.deleteByClientId(clientId);
+    } else {
+      throw new UnauthorizedException();
+    }
   }
 }

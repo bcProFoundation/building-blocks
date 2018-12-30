@@ -10,11 +10,11 @@ import { IDTokenClaims } from '../interfaces/id-token-claims.interfaces';
 import { ADMINISTRATOR } from '../constants/roles';
 
 @Component({
-  selector: 'app-dashboard-nav',
-  templateUrl: './dashboard-nav.component.html',
-  styleUrls: ['./dashboard-nav.component.css'],
+  selector: 'app-navigation',
+  templateUrl: './navigation.component.html',
+  styleUrls: ['./navigation.component.css'],
 })
-export class DashboardNavComponent {
+export class NavigationComponent {
   isHandset$: Observable<boolean> = this.breakpointObserver
     .observe(Breakpoints.Handset)
     .pipe(map(result => result.matches));

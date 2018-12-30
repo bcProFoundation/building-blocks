@@ -1,19 +1,19 @@
 import { Injectable, HttpService } from '@nestjs/common';
-import { IdentityProviderSettingsService } from '../../models/identity-provider-settings/identity-provider-settings.service';
-import { settingsAlreadyExists, somethingWentWrong } from '../../exceptions';
-import { IdentityProviderSettings } from '../../models/identity-provider-settings/identity-provider-settings.entity';
+import { settingsAlreadyExists } from '../../exceptions';
+import { ServerSettings } from '../../models/server-settings/server-settings.entity';
+import { ServerSettingsService } from '../../models/server-settings/server-settings.service';
 
 @Injectable()
 export class SetupService {
-  protected idpSettings: IdentityProviderSettings;
+  protected idpSettings: ServerSettings;
 
   constructor(
-    protected readonly idpSettingsService: IdentityProviderSettingsService,
+    protected readonly serverSettingsService: ServerSettingsService,
     protected readonly http: HttpService,
   ) {}
 
   async setup(params) {
-    if (await this.idpSettingsService.count()) {
+    if (await this.serverSettingsService.count()) {
       throw settingsAlreadyExists;
     }
     this.http
@@ -29,18 +29,17 @@ export class SetupService {
             params.appURL + '/index.html',
             params.appURL + '/silent-refresh.html',
           ];
-          this.idpSettings = await this.idpSettingsService.save(params);
+          this.idpSettings = await this.serverSettingsService.save(params);
           return this.idpSettings;
         },
         error: error => {
-          // TODO : meaningful errors
-          throw somethingWentWrong;
+          // TODO : Log error
         },
       });
   }
 
   async getInfo() {
-    const info = await this.idpSettingsService.find();
+    const info = await this.serverSettingsService.find();
     if (info) {
       delete info.clientSecret, info._id;
     }

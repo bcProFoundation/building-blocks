@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { HOME_TITLE } from '../../constants/messages';
+import { HOME_TITLE } from '../constants/messages';
 
 @Component({
   selector: 'app-home',
