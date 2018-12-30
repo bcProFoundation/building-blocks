@@ -8,6 +8,8 @@ import { SetupService } from './controllers/setup/setup.service';
 import { SetupController } from './controllers/setup/setup.controller';
 import { ProfileController } from './controllers/profile/profile.controller';
 import { SettingsController } from './controllers/settings/settings.controller';
+import { ConnectController } from './controllers/connect/connect.controller';
+import { SettingsService } from './controllers/settings/settings.service';
 
 @Module({
   imports: [
@@ -20,7 +22,8 @@ import { SettingsController } from './controllers/settings/settings.controller';
     SetupController,
     ProfileController,
     SettingsController,
+    ConnectController,
   ],
-  providers: [AppService, SetupService],
+  providers: [AppService, SetupService, SettingsService],
 })
 export class AppModule {}

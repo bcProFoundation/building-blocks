@@ -7,7 +7,7 @@
 
         <mat-form-field><input matInput formControlName="appURL" placeholder="appURL"></mat-form-field>
         <mat-form-field><input matInput formControlName="authServerURL" placeholder="Authorization Server URL"></mat-form-field>
-        <mat-form-field><input matInput formControlName="clientId" placeholder="Client ID registered on Authorization Server"></mat-form-field>
+        <mat-form-field><input matInput formControlName="clientId" placeholder="Client ID registered on Authorization Server" readonly></mat-form-field>
         <mat-form-field *ngIf="clientSecret">
             <input matInput placeholder="Client Secret" formControlName="clientSecret"
             [type]="hide ? 'password' : 'text'">

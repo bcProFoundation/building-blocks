@@ -27,8 +27,10 @@ export class ClientComponent implements OnInit {
   callbackURLs: string[];
   tokenDeleteEndpoint: string;
   userDeleteEndpoint: string;
+  changedClientSecret: string;
 
-  hide: boolean = true;
+  hideClientSecret: boolean = true;
+  hideChangedClientSecret: boolean = true;
 
   scopes: any[] = [];
 
@@ -55,6 +57,7 @@ export class ClientComponent implements OnInit {
       isTrusted: this.isTrusted,
       clientId: this.clientId,
       clientSecret: this.clientSecret,
+      changedClientSecret: this.changedClientSecret,
     });
 
     if (this.uuid && this.uuid !== NEW_ID) {
@@ -84,6 +87,7 @@ export class ClientComponent implements OnInit {
     this.clientService.getClient(clientId).subscribe({
       next: response => {
         if (response) {
+          this.changedClientSecret = response.changedClientSecret;
           this.populateClientForm(response);
         }
       },
@@ -108,6 +112,7 @@ export class ClientComponent implements OnInit {
           this.clientForm.controls.clientSecret.setValue(response.clientSecret);
           this.tokenDeleteEndpoint = response.tokenDeleteEndpoint;
           this.userDeleteEndpoint = response.userDeleteEndpoint;
+          this.changedClientSecret = response.changedClientSecret;
           this.snackbar.open(CLIENT_CREATED, 'Close', { duration: 2500 });
         },
         error: error => {
@@ -167,6 +172,9 @@ export class ClientComponent implements OnInit {
     );
     this.clientForm.controls.userDeleteEndpoint.setValue(
       client.userDeleteEndpoint,
+    );
+    this.clientForm.controls.changedClientSecret.setValue(
+      client.changedClientSecret,
     );
     this.callbackURLs.forEach(element => {
       this.addCallbackURL(element);

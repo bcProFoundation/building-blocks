@@ -7,4 +7,5 @@ export interface CreateClientResponse {
   uuid?: string;
   userDeleteEndpoint?: string;
   tokenDeleteEndpoint?: string;
+  changedClientSecret?: string;
 }

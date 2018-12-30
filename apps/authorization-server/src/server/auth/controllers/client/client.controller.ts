@@ -78,12 +78,17 @@ export class ClientController {
       (await this.userService.checkAdministrator(req.user.user)) ||
       client.createdBy === req.user.user
     ) {
-      client.clientSecret = randomBytes32();
+      client.changedClientSecret = randomBytes32();
       await client.save();
       return client;
     } else {
       throw new UnauthorizedException();
     }
+  }
+
+  @Post('v1/verify_changed_secret')
+  async verifyChangedSecret(@Req() req) {
+    return await this.clientService.verifyChangedSecret(req);
   }
 
   @Get('v1/list')

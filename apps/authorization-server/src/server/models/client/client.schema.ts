@@ -17,6 +17,7 @@ const schema = new mongoose.Schema(
     allowedScopes: [String],
     userDeleteEndpoint: String,
     tokenDeleteEndpoint: String,
+    changedClientSecret: String,
   },
   { collection: 'client', versionKey: false },
 );
