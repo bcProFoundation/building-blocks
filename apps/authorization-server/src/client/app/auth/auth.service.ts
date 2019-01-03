@@ -41,18 +41,12 @@ export class AuthService {
   }
 
   logIn(username: string, password: string, code?: string) {
-    this.http
-      .post(environment.routes.LOGIN, {
-        username,
-        password,
-        code,
-        redirect: this.redirectTo,
-      })
-      .subscribe({
-        next: (response: any) => {
-          window.location.href = response.path;
-        },
-      });
+    return this.http.post(environment.routes.LOGIN, {
+      username,
+      password,
+      code,
+      redirect: this.redirectTo,
+    });
   }
 
   signUp(
@@ -86,6 +80,13 @@ export class AuthService {
   verifyUser(username: string) {
     return this.http.post(environment.routes.CHECK_USER, {
       username,
+    });
+  }
+
+  verifyPassword(username, password) {
+    return this.http.post(environment.routes.CHECK_PASSWORD, {
+      username,
+      password,
     });
   }
 }

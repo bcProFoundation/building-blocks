@@ -4,6 +4,7 @@ import { CryptographerService } from '../../../utilities/cryptographer.service';
 import {
   userAlreadyExistsException,
   invalidOTPException,
+  invalidUserException,
 } from '../../filters/exceptions';
 import { AuthDataService } from '../../../models/auth-data/auth-data.service';
 import { CreateUserDto } from '../../../models/user/create-user.dto';
@@ -95,6 +96,9 @@ export class AuthService {
         const otpCounter = await this.authDataService.findOne({
           uuid: user.otpCounter,
         });
+
+        if (!otpCounter) throw invalidOTPException;
+
         const hotp = speakeasy.hotp({
           secret: sharedSecret.password,
           encoding: 'base32',
@@ -137,5 +141,20 @@ export class AuthService {
 
   async findUserByEmailOrPhone(emailOrPhone: string) {
     return await this.userService.findUserByEmailOrPhone(emailOrPhone);
+  }
+
+  async verifyPassword(emailOrPhone: string, password: string) {
+    const user = await this.findUserByEmailOrPhone(emailOrPhone);
+    const passwordData = await this.authDataService.findOne({
+      uuid: user.password,
+    });
+    if (!passwordData) throw invalidUserException;
+    const checkPassword = this.cryptoService.checkPassword(
+      passwordData.password,
+      password,
+    );
+    if (!checkPassword)
+      throw new UnauthorizedException(i18n.__('Invalid password'));
+    return checkPassword;
   }
 }

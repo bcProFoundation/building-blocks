@@ -95,4 +95,11 @@ export class AuthController {
     delete user._id, user.password;
     res.json({ user });
   }
+
+  @Post('verify_password')
+  async verifyPassword(@Body('username') username, @Body('password') password) {
+    return {
+      verified: await this.authService.verifyPassword(username, password),
+    };
+  }
 }
