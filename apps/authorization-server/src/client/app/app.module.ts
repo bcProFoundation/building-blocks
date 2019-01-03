@@ -13,6 +13,7 @@ import { AccountComponent } from './account/account.component';
 import { AuthService } from './auth/auth.service';
 import { APP_ID, AVAILABLE_TRANSLATIONS } from '../constants/app-strings';
 import { VerifySignupComponent } from './verify-signup/verify-signup.component';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 let lang = navigator.language;
 if (!AVAILABLE_TRANSLATIONS.includes(lang)) {
@@ -35,6 +36,7 @@ if (!AVAILABLE_TRANSLATIONS.includes(lang)) {
     AuthServerMaterialModule,
     FormsModule,
     ReactiveFormsModule,
+    FlexLayoutModule,
   ],
   providers: [AuthService, { provide: LOCALE_ID, useValue: lang }],
   bootstrap: [AppComponent],

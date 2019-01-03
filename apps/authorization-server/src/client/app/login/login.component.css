@@ -1,0 +1,9 @@
+mat-card {
+    width: 20em;
+    height: 20em;
+}
+
+.fullscreen {
+    height: 100%;
+    width: 100%;
+}

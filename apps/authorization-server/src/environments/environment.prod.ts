@@ -9,5 +9,6 @@ export const environment = {
     INFO: '/info',
     SIGNUP_VIA_EMAIL: '/signup/v1/email',
     VERIFY_SIGNUP_CODE: 'signup/v1/verify',
+    CHECK_PASSWORD: '/auth/verify_password',
   },
 };

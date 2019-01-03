@@ -1,6 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { FormGroup, FormControl } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-login',
@@ -17,8 +20,17 @@ export class LoginComponent implements OnInit {
   hidePassword: boolean = true;
   hideCode: boolean = true;
   enable2fa: boolean = false;
+  serverError: string;
+
+  @ViewChild('password') passwordRef: ElementRef;
+  @ViewChild('otp') otpRef: ElementRef;
+  @ViewChild('username') usernameRef: ElementRef;
 
   verifyUserForm = new FormGroup({
+    username: new FormControl(this.username),
+  });
+
+  loginUserForm = new FormGroup({
     username: new FormControl(this.username),
     password: new FormControl(this.password),
   });
@@ -27,27 +39,77 @@ export class LoginComponent implements OnInit {
     code: new FormControl(this.code),
   });
 
-  constructor(private authService: AuthService) {}
+  isHandset$: Observable<boolean> = this.breakpointObserver
+    .observe(Breakpoints.Handset)
+    .pipe(map(result => result.matches));
 
-  ngOnInit() {}
+  constructor(
+    private authService: AuthService,
+    private breakpointObserver: BreakpointObserver,
+  ) {}
+
+  ngOnInit() {
+    this.usernameRef.nativeElement.focus();
+  }
 
   onSubmitOTP() {
-    this.authService.logIn(
-      this.verifyUserForm.controls.username.value,
-      this.verifyUserForm.controls.password.value,
-      this.submitOTPForm.controls.code.value,
-    );
+    this.authService
+      .logIn(
+        this.verifyUserForm.controls.username.value,
+        this.loginUserForm.controls.password.value,
+        this.submitOTPForm.controls.code.value,
+      )
+      .subscribe({
+        next: (response: any) => {
+          this.submitOTPForm.controls.code.setErrors(null);
+          window.location.href = response.path;
+        },
+        error: err => {
+          this.serverError = err.error.message;
+          this.submitOTPForm.controls.code.setErrors({ incorrect: true });
+        },
+      });
   }
 
   onSubmitPassword() {
     if (this.enable2fa) {
-      this.hideCode = false;
-      this.hidePassword = true;
+      this.authService
+        .verifyPassword(
+          this.verifyUserForm.controls.username.value,
+          this.loginUserForm.controls.password.value,
+        )
+        .subscribe({
+          next: (response: any) => {
+            this.loginUserForm.controls.password.setErrors(null);
+            this.hideCode = false;
+            this.hidePassword = true;
+            setTimeout(() => this.otpRef.nativeElement.focus());
+          },
+          error: err => {
+            this.serverError = err.error.message;
+            this.loginUserForm.controls.password.setErrors({
+              incorrect: true,
+            });
+          },
+        });
     } else {
-      this.authService.logIn(
-        this.verifyUserForm.controls.username.value,
-        this.verifyUserForm.controls.password.value,
-      );
+      this.authService
+        .logIn(
+          this.verifyUserForm.controls.username.value,
+          this.loginUserForm.controls.password.value,
+        )
+        .subscribe({
+          next: (response: any) => {
+            this.loginUserForm.controls.password.setErrors(null);
+            window.location.href = response.path;
+          },
+          error: err => {
+            this.serverError = err.error.message;
+            this.verifyUserForm.controls.password.setErrors({
+              incorrect: true,
+            });
+          },
+        });
     }
   }
 
@@ -56,11 +118,21 @@ export class LoginComponent implements OnInit {
       .verifyUser(this.verifyUserForm.controls.username.value)
       .subscribe({
         next: (response: any) => {
+          this.verifyUserForm.controls.username.setErrors(null);
+          this.loginUserForm.controls.username.setValue(
+            this.verifyUserForm.controls.username.value,
+          );
           this.hideUsername = true;
           this.hidePassword = false;
           this.enable2fa = response.user.enable2fa;
+
+          // TODO: https://github.com/angular/angular/issues/12463
+          setTimeout(() => this.passwordRef.nativeElement.focus());
         },
-        error: err => {},
+        error: err => {
+          this.serverError = err.error.message;
+          this.verifyUserForm.controls.username.setErrors({ incorrect: true });
+        },
       });
   }
 

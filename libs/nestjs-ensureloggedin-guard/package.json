@@ -16,7 +16,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@types/jest": "^23.1.4",
+    "@types/jest": "^23.3.11",
     "@types/node": "^10.12.18",
     "browserify": "^16.2.3",
     "delete-empty": "^2.0.0",
@@ -30,7 +30,7 @@
     "tslint-loader": "^3.5.3",
     "typescript": "^3.2.2",
     "webpack": "^4.28.3",
-    "webpack-cli": "^3.1.2",
+    "webpack-cli": "^3.2.0",
     "webpack-node-externals": "^1.6.0"
   },
   "dependencies": {
