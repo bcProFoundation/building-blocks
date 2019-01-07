@@ -39,6 +39,8 @@ export class UserManagementService {
     if (twoFactorTempSecret) await twoFactorTempSecret.remove();
     await this.clientService.deleteClientsByUser(user.uuid);
     await this.bearerTokenService.deleteMany({ user: user.uuid });
+    user.deleted = true;
+    await user.save();
     this.informUserDeleted(uuid);
   }
 

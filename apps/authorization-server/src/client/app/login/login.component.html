@@ -1,8 +1,8 @@
-<mat-grid-list cols="1" rowHeight="30em">
-  <mat-grid-tile>
+<mat-grid-list cols="1" rowHeight="35em">
+  <mat-grid-tile [ngClass]="{'fullscreen': (isHandset$ | async)}">
       <mat-card
-        fxLayout="column" fxLayoutAlign="space-between default"
-        [ngClass]="{'fullscreen': (isHandset$ | async)}">
+        class="mat-elevation-z2"
+        fxLayout="column" fxLayoutAlign="space-between default">
         <mat-card-header>
             <mat-card-title i18n="@@signIn">Sign in</mat-card-title>
         </mat-card-header>
@@ -17,6 +17,7 @@
                 class="form-control" #username required>
                 <mat-error>{{ serverError }}</mat-error>
               </mat-form-field>
+              <div class="spacer"></div>
               <div fxLayout="row" fxLayoutAlign="space-between center">
                 <button
                   (click)="verifyUser()"
@@ -41,6 +42,7 @@
                 formControlName="password" required>
                 <mat-error>{{ serverError }}</mat-error>
               </mat-form-field>
+              <div class="spacer"></div>
               <div fxLayout="row" fxLayoutAlign="space-between center">
                 <button (click)="onSubmitPassword()"
                   mat-raised-button color="primary"
@@ -52,15 +54,18 @@
           <div class="otp" [hidden]="hideCode">
             <form [formGroup]="submitOTPForm">
               <mat-form-field class="full-width">
-                  <input matInput i18n-placeholder="@@otp" placeholder="OTP"
-                  formControlName="code" #otp autofocus required>
-                  <mat-error>{{ serverError }}</mat-error>
+                <input matInput i18n-placeholder="@@otp" placeholder="OTP"
+                formControlName="code" #otp autofocus required>
+                <mat-error>{{ serverError }}</mat-error>
               </mat-form-field>
-              <button (click)="onSubmitOTP()"
-                mat-raised-button
-                color="primary"
-                i18n="@@login">Login</button>
-              <a (click)="resendOTP()" class="left-margin-30" i18n="@@resendOTP">Resend OTP?</a>
+              <div class="spacer"></div>
+              <div fxLayout="row" fxLayoutAlign="space-between center">
+                <button (click)="onSubmitOTP()"
+                  mat-raised-button
+                  color="primary"
+                  i18n="@@login">Login</button>
+                <a (click)="resendOTP()" class="left-margin-30" i18n="@@resendOTP">Resend OTP?</a>
+              </div>
             </form>
           </div>
         </mat-card-content>
