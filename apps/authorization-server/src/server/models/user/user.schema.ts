@@ -20,6 +20,7 @@ export const schema = new mongoose.Schema(
     otpCounter: String, // uuid of auth-data
     twoFactorTempSecret: String, // uuid of auth data
     verificationCode: String, // code to complete signup via email
+    deleted: { type: Boolean, default: false },
   },
   { collection: 'user', versionKey: false },
 );

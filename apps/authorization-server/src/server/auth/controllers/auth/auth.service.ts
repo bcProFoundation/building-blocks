@@ -66,9 +66,15 @@ export class AuthService {
     const sharedSecret = await this.authDataService.findOne({
       uuid: user.sharedSecret,
     });
-    if (!user) throw new UnauthorizedException(i18n.__('Invalid User'));
-    if (user.disabled)
+
+    if (!user || (user && user.deleted)) {
+      throw new UnauthorizedException(i18n.__('Invalid User'));
+    }
+
+    if (user.disabled) {
       throw new UnauthorizedException(i18n.__('User Disabled'));
+    }
+
     const userPassword = await this.authDataService.findOne({
       uuid: user.password,
     });

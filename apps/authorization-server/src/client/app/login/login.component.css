@@ -1,9 +1,13 @@
 mat-card {
     width: 20em;
     height: 20em;
+    border-radius: 10px;
 }
 
-.fullscreen {
-    height: 100%;
-    width: 100%;
+.spacer {
+    padding: 1em;
+}
+
+mat-card-header {
+    margin: auto;
 }

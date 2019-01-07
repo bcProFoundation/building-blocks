@@ -147,7 +147,7 @@ export class UserController {
     @Query('search') search?: string,
     @Query('sort') sort?: string,
   ) {
-    const query = {};
+    const query = { deleted: { $eq: false } };
     const sortQuery = { name: sort || 'asc' };
     return this.crudService.listPaginate(
       this.userService.getModel(),
