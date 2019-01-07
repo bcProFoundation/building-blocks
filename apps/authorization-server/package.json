@@ -1,6 +1,6 @@
 {
   "name": "authorization-server",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "repository": "https://gitlab.com/castlecraft/building-blocks",
   "description": "Authorization Server",
   "author": "CEPL",
@@ -77,7 +77,7 @@
     "migrate-mongoose": "^3.2.2",
     "mongodb": "^3.1.10",
     "mongoose": "^5.4.2",
-    "nestjs-ensureloggedin-guard": "^1.1.0",
+    "nestjs-ensureloggedin-guard": "^1.1.1",
     "node-jose": "^1.1.0",
     "oauth2orize": "^1.11.0",
     "oauth2orize-openid": "^0.4.0",
