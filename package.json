@@ -7,7 +7,7 @@
   "devDependencies": {
     "@types/node": "^10.12.18",
     "jest": "^23.4.0",
-    "lerna": "^3.8.4",
+    "lerna": "^3.8.5",
     "npm-check": "^5.9.0",
     "typedoc": "^0.14.0"
   }
