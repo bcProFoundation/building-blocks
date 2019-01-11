@@ -105,7 +105,7 @@ export class LoginComponent implements OnInit {
           },
           error: err => {
             this.serverError = err.error.message;
-            this.verifyUserForm.controls.password.setErrors({
+            this.loginUserForm.controls.password.setErrors({
               incorrect: true,
             });
           },

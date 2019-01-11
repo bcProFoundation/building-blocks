@@ -75,6 +75,10 @@ export class AuthService {
       throw new UnauthorizedException(i18n.__('User Disabled'));
     }
 
+    if (!user.password) {
+      throw new UnauthorizedException(i18n.__('Unregistered User'));
+    }
+
     const userPassword = await this.authDataService.findOne({
       uuid: user.password,
     });

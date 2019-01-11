@@ -55,6 +55,7 @@ export class ClientService {
       const client = await this.findOne({ clientId });
       if (client.changedClientSecret === changedClientSecret) {
         client.clientSecret = changedClientSecret;
+        client.modified = new Date();
         await client.save();
         delete client.changedClientSecret;
         await this.clientModel.updateOne(

@@ -45,6 +45,9 @@ import { ScopeController } from './controllers/scope/scope.controller';
 import { SignupController } from './controllers/signup/signup.controller';
 import { SignupService } from './controllers/signup/signup.service';
 import { CRUDOperationService } from './controllers/common/crudoperation/crudoperation.service';
+import { OAuth2ClientStrategy } from './passport/oauth2-client.strategy';
+import { SocialLoginController } from './controllers/social-login/social-login.controller';
+import { SocialLoginManagementService } from './controllers/social-login/social-login-management.service';
 
 @Module({
   providers: [
@@ -61,6 +64,7 @@ import { CRUDOperationService } from './controllers/common/crudoperation/crudope
     IDTokenGrantService,
     OIDCKeyService,
     SignupService,
+    SocialLoginManagementService,
 
     // Passport Strategies
     CookieSerializer,
@@ -68,6 +72,7 @@ import { CRUDOperationService } from './controllers/common/crudoperation/crudope
     HttpBearerStrategy,
     ClientPasswordStrategy,
     AuthorizationCodeStrategy,
+    OAuth2ClientStrategy,
 
     // Middlewares
     OAuth2orizeSetup,
@@ -92,6 +97,7 @@ import { CRUDOperationService } from './controllers/common/crudoperation/crudope
     WellKnownController,
     ScopeController,
     SignupController,
+    SocialLoginController,
   ],
   imports: [ModelsModule, UtilitiesModule, ConfigModule, HttpModule],
 })

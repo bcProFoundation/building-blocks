@@ -108,6 +108,7 @@
     "@types/joi": "^14.0.1",
     "@types/mongoose": "^5.3.7",
     "@types/node": "^10.12.18",
+    "@types/oauth": "^0.9.1",
     "@types/passport-local": "^1.0.33",
     "@types/supertest": "^2.0.7",
     "codelyzer": "^4.5.0",
