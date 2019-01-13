@@ -1,6 +1,6 @@
 import { UnauthorizedException, createParamDecorator } from '@nestjs/common';
 import { BearerTokenModel } from '../../models/bearer-token/bearer-token.schema';
-import { BearerToken } from '../../models/interfaces/bearer-token.interface';
+import { BearerToken } from '../../models/bearer-token/bearer-token.interface';
 
 export const Token = createParamDecorator(async (data, req) => {
   // headers are Bearer token_hash and not just token_hash

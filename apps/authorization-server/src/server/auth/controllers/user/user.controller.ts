@@ -111,13 +111,11 @@ export class UserController {
     res.json(user);
   }
 
-  @Post('v1/update')
+  @Post('v1/update/:uuid')
   @Roles(ADMINISTRATOR)
   @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
-  async update(@Body() payload, @Req() req, @Res() res) {
-    const user = await this.userService.findOne({
-      uuid: payload.uuid,
-    });
+  async update(@Param() uuid, @Body() payload, @Req() req, @Res() res) {
+    const user = await this.userService.findOne({ uuid });
     user.name = payload.name;
     user.roles = payload.roles;
 

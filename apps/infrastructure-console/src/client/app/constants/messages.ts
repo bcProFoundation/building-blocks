@@ -6,3 +6,6 @@ export const CLIENT_ERROR = 'Could not create client.';
 export const CANNOT_FETCH_MODELS = 'Cannot fetch models';
 export const CANNOT_FETCH_CLIENT = 'Cannot fetch client';
 export const LOGIN_AS_ADMINISTRATOR = 'Please login as administrator';
+export const SOCIAL_LOGIN_ERROR = 'Could not create Social Login';
+export const SOCIAL_LOGIN_UPDATED = 'Social Login Updated Successfully';
+export const SOCIAL_LOGIN_CREATED = 'Social Login Added Successfully';

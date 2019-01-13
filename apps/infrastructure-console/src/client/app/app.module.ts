@@ -28,6 +28,8 @@ import { RoleService } from './role/role.service';
 import { ScopeService } from './scope/scope.service';
 import { SettingsComponent } from './settings/settings.component';
 import { SettingsService } from './settings/settings.service';
+import { SocialLoginComponent } from './social-login/social-login.component';
+import { SocialLoginService } from './social-login/social-login.service';
 
 @NgModule({
   declarations: [
@@ -41,6 +43,7 @@ import { SettingsService } from './settings/settings.service';
     ScopeComponent,
     UserComponent,
     SettingsComponent,
+    SocialLoginComponent,
   ],
   imports: [
     BrowserModule,
@@ -73,6 +76,7 @@ import { SettingsService } from './settings/settings.service';
     RoleService,
     ScopeService,
     SettingsService,
+    SocialLoginService,
   ],
   bootstrap: [AppComponent],
 })

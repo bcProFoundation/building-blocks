@@ -37,10 +37,11 @@ export class ScopeService {
   }
 
   updateScope(uuid: string, name: string, description: string) {
-    const url = `${this.storageService.getInfo(ISSUER_URL)}/scope/v1/update`;
+    const url = `${this.storageService.getInfo(
+      ISSUER_URL,
+    )}/scope/v1/update/${uuid}`;
 
     const userData: Scope = {
-      uuid,
       name,
       description,
     };

@@ -1,74 +1,90 @@
-<mat-grid-list cols="1" rowHeight="35em">
-  <mat-grid-tile [ngClass]="{'fullscreen': (isHandset$ | async)}">
-      <mat-card
-        class="mat-elevation-z2"
-        fxLayout="column" fxLayoutAlign="space-between default">
-        <mat-card-header>
-            <mat-card-title i18n="@@signIn">Sign in</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <form
-            fxLayout="column" fxLayoutAlign="space-between default" fxLayoutGap="2em"
-            [formGroup]="verifyUserForm">
-            <div class="login container" [hidden]="hideUsername">
-              <mat-form-field class="full-width">
-                <input matInput i18n-placeholder="@@usernameOrPhone"
-                placeholder="Username or phone" formControlName="username"
-                class="form-control" #username required>
-                <mat-error>{{ serverError }}</mat-error>
-              </mat-form-field>
-              <div class="spacer"></div>
-              <div fxLayout="row" fxLayoutAlign="space-between center">
-                <button
-                  (click)="verifyUser()"
-                  mat-raised-button
-                  color="primary"
-                  i18n="@@next">Next</button>
-                <a routerLink="/signup" class="left-margin-30" i18n="@@signUp">Sign Up</a>
-              </div>
-            </div>
-          </form>
-          <form [formGroup]="loginUserForm">
-            <div hidden>
-              <mat-form-field class="full-width">
-                <input matInput formControlName="username">
-              </mat-form-field>
-            </div>
-            <div class="password" [hidden]="hidePassword">
-              <mat-form-field class="full-width">
-                <input matInput i18n-placeholder="@@password"
-                placeholder="Password" type="password"
-                #password
-                formControlName="password" required>
-                <mat-error>{{ serverError }}</mat-error>
-              </mat-form-field>
-              <div class="spacer"></div>
-              <div fxLayout="row" fxLayoutAlign="space-between center">
-                <button (click)="onSubmitPassword()"
-                  mat-raised-button color="primary"
-                  i18n="@@login">Login</button>
-                <a (click)="forgotPassword()" class="left-margin-30" i18n="@@forgot">Forgot?</a>
-              </div>
-            </div>
-          </form>
-          <div class="otp" [hidden]="hideCode">
-            <form [formGroup]="submitOTPForm">
-              <mat-form-field class="full-width">
-                <input matInput i18n-placeholder="@@otp" placeholder="OTP"
-                formControlName="code" #otp autofocus required>
-                <mat-error>{{ serverError }}</mat-error>
-              </mat-form-field>
-              <div class="spacer"></div>
-              <div fxLayout="row" fxLayoutAlign="space-between center">
-                <button (click)="onSubmitOTP()"
-                  mat-raised-button
-                  color="primary"
-                  i18n="@@login">Login</button>
-                <a (click)="resendOTP()" class="left-margin-30" i18n="@@resendOTP">Resend OTP?</a>
-              </div>
-            </form>
+<div fxLayout="column" fxLayoutAlign="center center" class="login-container">
+  <mat-card
+    class="login-card mat-elevation-z2"
+    fxLayout="column" fxLayoutAlign="space-between default">
+    <mat-card-header>
+        <mat-card-title i18n="@@signIn">Sign in</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form
+        fxLayout="column" fxLayoutAlign="space-between default" fxLayoutGap="2em"
+        [formGroup]="verifyUserForm">
+        <div class="container" [hidden]="hideUsername">
+          <mat-form-field class="full-width">
+            <input matInput i18n-placeholder="@@usernameOrPhone"
+            placeholder="Username or phone" formControlName="username"
+            class="form-control" #username required>
+            <mat-error>{{ serverError }}</mat-error>
+          </mat-form-field>
+          <div class="spacer"></div>
+          <div fxLayout="row" fxLayoutAlign="space-between center">
+            <button
+              (click)="verifyUser()"
+              mat-raised-button
+              color="primary"
+              i18n="@@next">Next</button>
+            <a routerLink="/signup" class="left-margin-30" i18n="@@signUp">Sign Up</a>
           </div>
-        </mat-card-content>
-      </mat-card>
-  </mat-grid-tile>
-</mat-grid-list>
+        </div>
+      </form>
+      <form [formGroup]="loginUserForm">
+        <div hidden>
+          <mat-form-field class="full-width">
+            <input matInput formControlName="username">
+          </mat-form-field>
+        </div>
+        <div class="password" [hidden]="hidePassword">
+          <mat-form-field class="full-width">
+            <input matInput i18n-placeholder="@@password"
+            placeholder="Password" type="password"
+            #password
+            formControlName="password" required>
+            <mat-error>{{ serverError }}</mat-error>
+          </mat-form-field>
+          <div class="spacer"></div>
+          <div fxLayout="row" fxLayoutAlign="space-between center">
+            <button (click)="onSubmitPassword()"
+              mat-raised-button color="primary"
+              i18n="@@login">Login</button>
+            <a (click)="forgotPassword()" class="left-margin-30" i18n="@@forgot">Forgot?</a>
+          </div>
+        </div>
+      </form>
+      <div class="otp" [hidden]="hideCode">
+        <form [formGroup]="submitOTPForm">
+          <mat-form-field class="full-width">
+            <input matInput i18n-placeholder="@@otp" placeholder="OTP"
+            formControlName="code" #otp autofocus required>
+            <mat-error>{{ serverError }}</mat-error>
+          </mat-form-field>
+          <div class="spacer"></div>
+          <div fxLayout="row" fxLayoutAlign="space-between center">
+            <button (click)="onSubmitOTP()"
+              mat-raised-button
+              color="primary"
+              i18n="@@login">Login</button>
+            <a (click)="resendOTP()" class="left-margin-30" i18n="@@resendOTP">Resend OTP?</a>
+          </div>
+        </form>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <div class="spacer"></div>
+  <mat-card
+    *ngIf="showSocialLogins"
+    class="social-login-card mat-elevation-z2"
+    fxLayout="column">
+    <mat-card-header>
+      <mat-card-title i18n="@@socialLogin">Social Login</mat-card-title>
+    </mat-card-header>
+    <mat-card-content
+      fxLayout="column"
+      fxLayoutAlign="start default"
+      fxLayoutGap="5px">
+      <button
+        *ngFor="let login of socialLogins"
+        (click)="connectWith(login)"
+        mat-stroked-button>{{ login.name }}</button>
+    </mat-card-content>
+  </mat-card>
+</div>

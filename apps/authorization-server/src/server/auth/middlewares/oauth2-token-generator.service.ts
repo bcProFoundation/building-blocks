@@ -7,9 +7,8 @@ import {
 } from '../filters/exceptions';
 import { ClientService } from '../../models/client/client.service';
 import { UserService } from '../../models/user/user.service';
-// import { BearerToken } from '../../models/interfaces/bearer-token.interface';
-import { Client } from '../../models/interfaces/client.interface';
-import { BearerToken } from '../../models/interfaces/bearer-token.interface';
+import { Client } from '../../models/client/client.interface';
+import { BearerToken } from '../../models/bearer-token/bearer-token.interface';
 import { ConfigService } from '../../config/config.service';
 
 @Injectable()

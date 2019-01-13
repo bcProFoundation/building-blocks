@@ -1,13 +1,31 @@
 mat-card {
-    width: 20em;
-    height: 20em;
     border-radius: 10px;
 }
 
-.spacer {
-    padding: 1em;
+.login-container {
+    padding: 2em;
+}
+
+.login-card {
+    box-sizing: border-box;
+    width: 20em;
+    height: 20em;
+}
+
+.social-login-card {
+    box-sizing: border-box;
+    width: 20em;
+    height: auto;
+}
+
+.social-login-buttons {
+    overflow: auto;
 }
 
 mat-card-header {
     margin: auto;
+}
+
+.spacer {
+    margin: 2em;
 }

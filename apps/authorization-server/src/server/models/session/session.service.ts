@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { SESSION } from './session.schema';
-import { Session } from '../interfaces/session.interface';
+import { Session } from './session.interface';
 import { invalidSessionException } from '../../auth/filters/exceptions';
 
 @Injectable()

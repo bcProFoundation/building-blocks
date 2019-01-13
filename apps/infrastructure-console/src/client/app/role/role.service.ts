@@ -56,9 +56,10 @@ export class RoleService {
   }
 
   updateRole(uuid: string, roleName: string) {
-    const url = `${this.storageService.getInfo(ISSUER_URL)}/role/v1/update`;
+    const url = `${this.storageService.getInfo(
+      ISSUER_URL,
+    )}/role/v1/update/${uuid}`;
     const roleData = {
-      uuid,
       name: roleName,
     };
     return this.http.post(url, roleData, {

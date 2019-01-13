@@ -45,7 +45,9 @@ export class ClientController {
       payload.isTrusted = 0;
     }
     payload.createdBy = req.user.user;
+    payload.modifiedBy = req.user.user;
     payload.creation = new Date();
+    payload.modified = payload.creation;
     const client = await this.clientService.save(payload);
     res.json(client);
   }
@@ -63,6 +65,8 @@ export class ClientController {
       client.createdBy === req.user.user
     ) {
       Object.assign(client, payload);
+      client.modified = new Date();
+      client.modifiedBy = req.user.user;
       await client.save();
       return client;
     } else {
@@ -79,6 +83,8 @@ export class ClientController {
       client.createdBy === req.user.user
     ) {
       client.changedClientSecret = randomBytes32();
+      client.modifiedBy = req.user.user;
+      client.modified = new Date();
       await client.save();
       return client;
     } else {

@@ -27,9 +27,10 @@ import {
 import { ServerSettingsService } from './server-settings/server-settings.service';
 import { OIDCKey, OIDC_KEY } from './oidc-key/oidc-key.schema';
 import { OIDCKeyService } from './oidc-key/oidc-key.service';
-import { WellKnownService } from './well-known/well-known.service';
 import { ConfigModule } from '../config/config.module';
 import { UserManagementService } from './user/user-management.service';
+import { SocialLogin, SOCIAL_LOGIN } from './social-login/social-login.schema';
+import { SocialLoginService } from '../models/social-login/social-login.service';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { UserManagementService } from './user/user-management.service';
       { name: SERVER_SETTINGS, schema: ServerSettings },
       { name: SESSION, schema: Session },
       { name: USER, schema: User },
+      { name: SOCIAL_LOGIN, schema: SocialLogin },
     ]),
     UtilitiesModule,
     ConfigModule,
@@ -59,9 +61,9 @@ import { UserManagementService } from './user/user-management.service';
     SessionService,
     UserService,
     ServerSettingsService,
-    WellKnownService,
     OIDCKeyService,
     UserManagementService,
+    SocialLoginService,
   ],
   exports: [
     AuthDataService,
@@ -73,9 +75,9 @@ import { UserManagementService } from './user/user-management.service';
     SessionService,
     UserService,
     ServerSettingsService,
-    WellKnownService,
     OIDCKeyService,
     UserManagementService,
+    SocialLoginService,
   ],
 })
 export class ModelsModule {}

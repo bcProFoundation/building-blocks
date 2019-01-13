@@ -3,7 +3,7 @@ import { Model } from 'mongoose';
 import { settingsNotFoundException } from '../../auth/filters/exceptions';
 import { InjectModel } from '@nestjs/mongoose';
 import { SERVER_SETTINGS } from './server-settings.schema';
-import { ServerSettings } from '../interfaces/server-settings.interface';
+import { ServerSettings } from './server-settings.interface';
 import { i18n } from '../../i18n/i18n.config';
 
 @Injectable()

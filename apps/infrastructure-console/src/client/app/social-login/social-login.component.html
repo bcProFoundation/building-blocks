@@ -1,0 +1,64 @@
+<div class="card-container">
+  <form [formGroup]="socialLoginForm">
+    <mat-card>
+      <mat-card-title>{{ name || "New Social Login" }}</mat-card-title>
+      <mat-card-content fxLayout="column">
+          <mat-form-field>
+            <input matInput placeholder="Social Login Provider" formControlName="name" required>
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput placeholder="Description" formControlName="description">
+          </mat-form-field>
+          <mat-form-field *ngIf="uuid">
+            <input matInput placeholder="Redirect URL" formControlName="redirectURL" readonly>
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput placeholder="Client ID" formControlName="clientId">
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput placeholder="Client Secret" formControlName="clientSecret"
+            [type]="hideClientSecret ? 'password' : 'text'">
+            <mat-icon matSuffix (click)="hideClientSecret = !hideClientSecret">{{hideClientSecret ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput placeholder="Authorization URL" formControlName="authorizationURL">
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput placeholder="Token URL" formControlName="tokenURL">
+            <mat-checkbox formControlName="clientSecretToTokenEndpoint" matSuffix>Requires Client Secret</mat-checkbox>
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput placeholder="Introspection URL" formControlName="introspectionURL">
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput placeholder="Base URL" formControlName="baseURL">
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput placeholder="Profile URL" formControlName="profileURL">
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput placeholder="Revocation URL" formControlName="revocationURL">
+          </mat-form-field>
+          <div
+            *ngFor="let scp of socialLoginForm.get('scope')['controls']; let i = index;"
+            formArrayName="scope">
+            <div [formGroupName]="i">
+              <mat-form-field>
+                <input matInput formControlName="scope" placeholder="Scope {{i+1}}">
+                <button mat-icon-button color="accent" matSuffix (click)="removeScope(i)">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </mat-form-field>
+            </div>
+          </div>
+          <button mat-icon-button color="accent" (click)="addScope()">
+              Add Scope <mat-icon>add</mat-icon>
+          </button>
+      </mat-card-content>
+      <mat-card-actions>
+        <button (click)="createSocialLogin()" mat-flat-button color="primary" [disabled]="!socialLoginForm.valid" *ngIf="!uuid">Create</button>
+        <button (click)="updateSocialLogin()" mat-flat-button color="primary" [disabled]="!socialLoginForm.valid" *ngIf="uuid">Update</button>
+      </mat-card-actions>
+    </mat-card>
+  </form>
+</div>

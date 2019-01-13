@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { WellKnownService } from './well-known.service';
-import { ServerSettingsService } from '../server-settings/server-settings.service';
-import { OIDCKeyService } from '../oidc-key/oidc-key.service';
 import { getModelToken } from '@nestjs/mongoose';
-import { SERVER_SETTINGS } from '../server-settings/server-settings.schema';
+import { ServerSettingsService } from '../../../models/server-settings/server-settings.service';
+import { SERVER_SETTINGS } from '../../../models/server-settings/server-settings.schema';
+import { OIDCKeyService } from '../../../models/oidc-key/oidc-key.service';
 
 describe('WellKnownService', () => {
   let service: WellKnownService;

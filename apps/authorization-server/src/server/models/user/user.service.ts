@@ -12,8 +12,8 @@ import * as QRCode from 'qrcode';
 import { InjectModel } from '@nestjs/mongoose';
 import { USER } from './user.schema';
 import { AUTH_DATA } from '../auth-data/auth-data.schema';
-import { User } from '../interfaces/user.interface';
-import { AuthData } from '../interfaces/auth-data.interface';
+import { User } from './user.interface';
+import { AuthData } from '../auth-data/auth-data.interface';
 import { i18n } from '../../i18n/i18n.config';
 import { ADMINISTRATOR } from '../../constants/app-strings';
 

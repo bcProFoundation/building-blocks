@@ -6,6 +6,7 @@ export const ServerSettings = new mongoose.Schema(
     uuid: { type: String, default: uuidv4 },
     issuerUrl: String,
     communicationServerClientId: String,
+    identityProviderClientId: String,
   },
   { collection: 'server_settings', versionKey: false },
 );

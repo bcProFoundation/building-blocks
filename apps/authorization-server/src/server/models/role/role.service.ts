@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ROLE } from './role.schema';
-import { Role } from '../interfaces/role.interface';
+import { Role } from './role.interface';
 import { invalidRoleException } from '../../auth/filters/exceptions';
 import { Model } from 'mongoose';
 

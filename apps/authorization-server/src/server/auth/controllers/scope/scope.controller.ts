@@ -57,13 +57,11 @@ export class ScopeController {
     return this.scopeService.find({});
   }
 
-  @Post('v1/update')
+  @Post('v1/update/:uuid')
   @Roles(ADMINISTRATOR)
   @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
-  async update(@Body() payload, @Req() req, @Res() res) {
-    const scope = await this.scopeService.findOne({
-      uuid: payload.uuid,
-    });
+  async update(@Param() uuid, @Body() payload, @Req() req, @Res() res) {
+    const scope = await this.scopeService.findOne({ uuid });
     scope.name = payload.name;
     scope.description = payload.description;
     await scope.save();

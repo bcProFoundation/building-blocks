@@ -1,5 +1,5 @@
 import { Controller, Get, Res } from '@nestjs/common';
-import { WellKnownService } from '../../../models/well-known/well-known.service';
+import { WellKnownService } from './well-known.service';
 
 @Controller('.well-known')
 export class WellKnownController {

@@ -2,7 +2,7 @@ import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { AUTH_DATA } from './auth-data.schema';
-import { AuthData } from '../interfaces/auth-data.interface';
+import { AuthData } from './auth-data.interface';
 
 @Injectable()
 export class AuthDataService {

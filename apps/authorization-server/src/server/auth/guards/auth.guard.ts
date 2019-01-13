@@ -9,7 +9,7 @@ import * as passport from 'passport';
 interface AuthGuardOptions {
   session?: boolean;
   property?: string;
-  callback?: (err, user, info?) => any;
+  callback?: (...args) => any;
 }
 
 const defaultOptions = {

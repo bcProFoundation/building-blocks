@@ -58,5 +58,6 @@
 	"This endpoint on resource server will be informed when user is deleted": "This endpoint on resource server will be informed when user is deleted",
 	"This endpoint on resource server will be informed when token is deleted": "This endpoint on resource server will be informed when token is deleted",
 	"Allowed Scopes for Client app": "Allowed Scopes for Client app",
-	"Invalid password": "Invalid password"
+	"Invalid password": "Invalid password",
+	"Unregistered User": "Unregistered User"
 }
