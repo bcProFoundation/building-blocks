@@ -19,6 +19,7 @@ export const schema = new mongoose.Schema(
     creation: { type: Date, default: nowDate },
     modified: Date,
     scope: [String],
+    clientSecretToTokenEndpoint: { type: Boolean, default: false },
   },
   { collection: 'social_login', versionKey: false },
 );

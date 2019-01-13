@@ -8,6 +8,7 @@ import {
   Post,
   Body,
   Res,
+  Put,
 } from '@nestjs/common';
 import { callback } from '../../passport/local.strategy';
 import { AuthGuard } from '../../guards/auth.guard';
@@ -56,11 +57,11 @@ export class RoleController {
     res.json(role);
   }
 
-  @Post('v1/update')
+  @Put('v1/update/:uuid')
   @Roles(ADMINISTRATOR)
   @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
-  async update(@Body() payload, @Req() req, @Res() res) {
-    const existingRole = await this.roleService.findOne({ uuid: payload.uuid });
+  async update(@Param('uuid') uuid, @Body() payload, @Req() req, @Res() res) {
+    const existingRole = await this.roleService.findOne({ uuid });
     if (!existingRole) throw invalidRoleException;
     existingRole.name = payload.name;
     await existingRole.save();

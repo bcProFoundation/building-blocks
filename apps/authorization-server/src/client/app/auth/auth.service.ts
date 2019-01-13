@@ -89,4 +89,8 @@ export class AuthService {
       password,
     });
   }
+
+  getSocialLogins() {
+    return this.http.get(environment.routes.LIST_SOCIAL_LOGINS);
+  }
 }

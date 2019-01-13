@@ -5,11 +5,15 @@ import { AuthServerMaterialModule } from '../auth-server-material/auth-server-ma
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthService } from '../auth/auth.service';
+import { RouterTestingModule } from '@angular/router/testing';
+import { of } from 'rxjs';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
-  const authServiceStub: Partial<AuthService> = {};
+  const authServiceStub: Partial<AuthService> = {
+    getSocialLogins: (...args) => of([{}]),
+  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -25,6 +29,7 @@ describe('LoginComponent', () => {
         AuthServerMaterialModule,
         BrowserAnimationsModule,
         ReactiveFormsModule,
+        RouterTestingModule,
       ],
     }).compileComponents();
   }));

@@ -2,7 +2,7 @@ import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { AUTHORIZATION_CODE } from './authorization-code.schema';
-import { AuthorizationCode } from '../interfaces/authorization-code.interface';
+import { AuthorizationCode } from './authorization-code.interface';
 import { invalidAuthorizationCodeException } from '../../auth/filters/exceptions';
 
 @Injectable()

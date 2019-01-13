@@ -3,7 +3,7 @@ import * as jose from 'node-jose';
 import { IDTokenClaims } from '../../middlewares/interfaces';
 import { OIDCKeyService } from '../../../models/oidc-key/oidc-key.service';
 import { ServerSettingsService } from '../../../models/server-settings/server-settings.service';
-import { ServerSettings } from '../../../models/interfaces/server-settings.interface';
+import { ServerSettings } from '../../../models/server-settings/server-settings.interface';
 import { JWKSNotFound } from '../../filters/exceptions';
 import { ConfigService } from '../../../config/config.service';
 import * as crypto from 'crypto';

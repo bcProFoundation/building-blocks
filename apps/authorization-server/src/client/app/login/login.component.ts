@@ -4,6 +4,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { map } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -21,6 +22,9 @@ export class LoginComponent implements OnInit {
   hideCode: boolean = true;
   enable2fa: boolean = false;
   serverError: string;
+  socialLogins: { name: string; uuid: string }[];
+  redirect: string;
+  showSocialLogins: boolean = false;
 
   @ViewChild('password') passwordRef: ElementRef;
   @ViewChild('otp') otpRef: ElementRef;
@@ -46,10 +50,14 @@ export class LoginComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private breakpointObserver: BreakpointObserver,
+    private route: ActivatedRoute,
   ) {}
 
   ngOnInit() {
     this.usernameRef.nativeElement.focus();
+    this.redirect =
+      this.route.snapshot.queryParamMap.get('redirect') || '/account';
+    this.getSocialLogins();
   }
 
   onSubmitOTP() {
@@ -142,5 +150,27 @@ export class LoginComponent implements OnInit {
 
   resendOTP() {
     // communicationServer.sendOTP
+  }
+
+  connectWith(login) {
+    window.location.href =
+      '/social_login/callback/' +
+      login.uuid +
+      '?redirect=' +
+      encodeURIComponent(this.redirect);
+  }
+
+  getSocialLogins() {
+    return this.authService.getSocialLogins().subscribe({
+      next: (response: { name: string; uuid: string }[]) => {
+        this.socialLogins = response;
+        if (this.socialLogins.length > 0) {
+          this.showSocialLogins = true;
+        }
+      },
+      error: err => {
+        // TODO: Handle Error UI/UX
+      },
+    });
   }
 }

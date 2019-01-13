@@ -2,7 +2,7 @@ import { Model } from 'mongoose';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { BEARER_TOKEN } from './bearer-token.schema';
-import { BearerToken } from '../interfaces/bearer-token.interface';
+import { BearerToken } from './bearer-token.interface';
 import { i18n } from '../../i18n/i18n.config';
 
 @Injectable()

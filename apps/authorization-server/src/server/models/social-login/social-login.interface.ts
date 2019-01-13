@@ -17,4 +17,5 @@ export interface SocialLogin extends Document {
   creation?: Date;
   modified?: Date;
   scope?: string[];
+  clientSecretToTokenEndpoint?: boolean;
 }

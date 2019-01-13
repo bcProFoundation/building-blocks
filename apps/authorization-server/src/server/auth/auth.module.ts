@@ -48,6 +48,7 @@ import { CRUDOperationService } from './controllers/common/crudoperation/crudope
 import { OAuth2ClientStrategy } from './passport/oauth2-client.strategy';
 import { SocialLoginController } from './controllers/social-login/social-login.controller';
 import { SocialLoginManagementService } from './controllers/social-login/social-login-management.service';
+import { WellKnownService } from '../auth/controllers/well-known/well-known.service';
 
 @Module({
   providers: [
@@ -65,6 +66,7 @@ import { SocialLoginManagementService } from './controllers/social-login/social-
     OIDCKeyService,
     SignupService,
     SocialLoginManagementService,
+    WellKnownService,
 
     // Passport Strategies
     CookieSerializer,

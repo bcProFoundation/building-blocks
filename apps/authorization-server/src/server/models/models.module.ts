@@ -27,7 +27,6 @@ import {
 import { ServerSettingsService } from './server-settings/server-settings.service';
 import { OIDCKey, OIDC_KEY } from './oidc-key/oidc-key.schema';
 import { OIDCKeyService } from './oidc-key/oidc-key.service';
-import { WellKnownService } from './well-known/well-known.service';
 import { ConfigModule } from '../config/config.module';
 import { UserManagementService } from './user/user-management.service';
 import { SocialLogin, SOCIAL_LOGIN } from './social-login/social-login.schema';
@@ -62,7 +61,6 @@ import { SocialLoginService } from '../models/social-login/social-login.service'
     SessionService,
     UserService,
     ServerSettingsService,
-    WellKnownService,
     OIDCKeyService,
     UserManagementService,
     SocialLoginService,
@@ -77,7 +75,6 @@ import { SocialLoginService } from '../models/social-login/social-login.service'
     SessionService,
     UserService,
     ServerSettingsService,
-    WellKnownService,
     OIDCKeyService,
     UserManagementService,
     SocialLoginService,

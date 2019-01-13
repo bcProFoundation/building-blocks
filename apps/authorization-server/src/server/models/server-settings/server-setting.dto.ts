@@ -1,4 +1,4 @@
-import { IsUrl, IsOptional } from 'class-validator';
+import { IsUrl, IsOptional, IsUUID } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 
 export class ServerSettingDto {
@@ -11,9 +11,18 @@ export class ServerSettingDto {
   issuerUrl: string;
 
   @IsOptional()
+  @IsUUID()
   @ApiModelProperty({
     description: 'OAuth 2.0 Client ID for Communication Server',
     type: 'string',
   })
   communicationServerClientId?: string;
+
+  @IsOptional()
+  @IsUUID()
+  @ApiModelProperty({
+    description: 'OAuth 2.0 Client ID for Identity Provider',
+    type: 'string',
+  })
+  identityProviderClientId?: string;
 }

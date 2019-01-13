@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { SCOPE } from './scope.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { Scope } from '../interfaces/scope.interface';
+import { Scope } from './scope.interface';
 import { invalidScopeException } from '../../auth/filters/exceptions';
 import { Model } from 'mongoose';
 

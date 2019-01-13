@@ -21,6 +21,7 @@ import { UserService } from '../../../models/user/user.service';
 import { callback } from '../../../auth/passport/local.strategy';
 import { CRUDOperationService } from '../common/crudoperation/crudoperation.service';
 import { CreateSocialLoginDto } from './social-login-create.dto';
+import { INDEX_HTML } from '../../../constants/app-strings';
 
 @Controller('social_login')
 export class SocialLoginController {
@@ -29,6 +30,11 @@ export class SocialLoginController {
     private readonly userService: UserService,
     private readonly crudService: CRUDOperationService,
   ) {}
+
+  @Get()
+  root(@Res() res) {
+    res.sendFile(INDEX_HTML);
+  }
 
   @Post('v1/create')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
@@ -136,5 +142,22 @@ export class SocialLoginController {
     const out: any = { user: req.user.email };
     out.path = parsedState.redirect;
     res.redirect(out.path);
+  }
+
+  @Get('v1/list_logins')
+  async listLogins() {
+    const logins = await this.socialLoginService
+      .getModel()
+      .where('clientId')
+      .ne(null);
+    return logins.map(login => ({
+      name: login.name,
+      uuid: login.uuid,
+    }));
+  }
+
+  @Get('*')
+  wildcard(@Res() res) {
+    res.sendFile(INDEX_HTML);
   }
 }

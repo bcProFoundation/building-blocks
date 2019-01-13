@@ -3,7 +3,6 @@ import { SocialLoginManagementService } from './social-login-management.service'
 import { UserService } from '../../../models/user/user.service';
 import { SocialLoginService } from '../../../models/social-login/social-login.service';
 import { ServerSettingsService } from '../../../models/server-settings/server-settings.service';
-import { ConfigService } from '../../../config/config.service';
 import { HttpService } from '@nestjs/common';
 
 describe('SocialLoginManagementService', () => {
@@ -23,10 +22,6 @@ describe('SocialLoginManagementService', () => {
         },
         {
           provide: ServerSettingsService,
-          useValue: {},
-        },
-        {
-          provide: ConfigService,
           useValue: {},
         },
         {

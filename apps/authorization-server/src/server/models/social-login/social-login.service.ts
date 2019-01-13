@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { SOCIAL_LOGIN } from './social-login.schema';
 import { Model } from 'mongoose';
-import { SocialLogin } from '../interfaces/social-login.interface';
+import { SocialLogin } from './social-login.interface';
 
 @Injectable()
 export class SocialLoginService {

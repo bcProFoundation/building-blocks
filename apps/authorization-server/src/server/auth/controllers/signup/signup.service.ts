@@ -2,7 +2,7 @@ import { Injectable, HttpService } from '@nestjs/common';
 import { UserService } from '../../../models/user/user.service';
 import { AuthDataService } from '../../../models/auth-data/auth-data.service';
 import { randomBytes } from 'crypto';
-import { User } from '../../../models/interfaces/user.interface';
+import { User } from '../../../models/user/user.interface';
 import { ServerSettingsService } from '../../../models/server-settings/server-settings.service';
 import { ClientService } from '../../../models/client/client.service';
 import { invalidUserException } from '../../../auth/filters/exceptions';

@@ -9,9 +9,9 @@ import {
 import { AuthDataService } from '../../../models/auth-data/auth-data.service';
 import { CreateUserDto } from '../../../models/user/create-user.dto';
 import * as speakeasy from 'speakeasy';
-import { Role } from '../../../models/interfaces/role.interface';
-import { User } from '../../../models/interfaces/user.interface';
-import { AuthData } from '../../../models/interfaces/auth-data.interface';
+import { Role } from '../../../models/role/role.interface';
+import { User } from '../../../models/user/user.interface';
+import { AuthData } from '../../../models/auth-data/auth-data.interface';
 import { i18n } from '../../../i18n/i18n.config';
 
 @Injectable()

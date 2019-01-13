@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { i18n } from './i18n/i18n.config';
 import { INDEX_HTML } from './constants/app-strings';
 import { ServerSettingsService } from './models/server-settings/server-settings.service';
-import { ServerSettings } from './models/interfaces/server-settings.interface';
-import { ServiceMessage } from './models/interfaces/service-message.interface';
+import { ServerSettings } from './models/server-settings/server-settings.interface';
+import { ServiceMessage } from './interfaces/service-message.interface';
 
 @Injectable()
 export class AppService {

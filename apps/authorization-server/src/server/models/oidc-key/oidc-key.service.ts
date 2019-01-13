@@ -3,7 +3,7 @@ import { Model } from 'mongoose';
 import * as jose from 'node-jose';
 import { InjectModel } from '@nestjs/mongoose';
 import { OIDC_KEY } from './oidc-key.schema';
-import { OIDCKey } from '../interfaces/oidc-key.interface';
+import { OIDCKey } from './oidc-key.interface';
 
 @Injectable()
 export class OIDCKeyService {

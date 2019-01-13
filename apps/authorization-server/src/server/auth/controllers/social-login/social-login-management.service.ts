@@ -11,8 +11,8 @@ import { ServerSettingsService } from '../../../models/server-settings/server-se
 import { SocialLoginService } from '../../../models/social-login/social-login.service';
 import { stringify } from 'querystring';
 import { UserService } from '../../../models/user/user.service';
-import { ConfigService } from '../../../config/config.service';
 import { AxiosResponse } from 'axios';
+import { OAuth2TokenRequest } from './oauth2-token-request.interface';
 
 @Injectable()
 export class SocialLoginManagementService {
@@ -20,7 +20,6 @@ export class SocialLoginManagementService {
     private readonly userService: UserService,
     private readonly socialLoginService: SocialLoginService,
     private readonly settingsService: ServerSettingsService,
-    private readonly configService: ConfigService,
     private readonly http: HttpService,
   ) {}
   requestTokenAndProfile(
@@ -34,43 +33,51 @@ export class SocialLoginManagementService {
     return from(this.socialLoginService.findOne({ uuid: socialLogin })).pipe(
       switchMap(data => {
         if (!data) return done(new UnauthorizedException());
-        let confirmationURL; // TODO: Changes for OIDC
-        confirmationURL = data.authorizationURL + '?client_id=';
+        let confirmationURL = data.authorizationURL + '?client_id=';
         confirmationURL += data.clientId + '&response_type=code';
 
         // Create state with redirect Uri and
         // unique identifier and store it in request.
         const uuid = uuidv4();
-
         const stateData = JSON.stringify({ redirect, uuid });
-
         const builtState = Buffer.from(stateData).toString('base64');
+
         confirmationURL += '&state=' + builtState;
-        confirmationURL += '&scope=' + data.scope.join(' ');
+        confirmationURL += '&scope=' + data.scope.join('%20');
+
         return from(this.settingsService.find()).pipe(
           switchMap(settings => {
             const redirectURI =
               settings.issuerUrl + '/social_login/callback/' + data.uuid;
-            confirmationURL += '&redirect_uri=' + redirectURI;
+            confirmationURL +=
+              '&redirect_uri=' + encodeURIComponent(redirectURI);
             confirmationURL += '&redirect=' + encodeURIComponent(redirect);
+
             if (!code) {
+              // Redirect to confirmationURL
               return done(null, null, confirmationURL, {
                 state: builtState,
-                key: this.configService.get('SESSION_SECRET'),
               });
             } else if (code) {
+              // Check incoming state and stored state
               if (!state || !storedState) {
                 return done(new ForbiddenException());
               }
+
               const parsedStoredState = JSON.parse(
                 Buffer.from(storedState, 'base64').toString(),
               );
+
               const parsedState = JSON.parse(
                 Buffer.from(state, 'base64').toString(),
               );
-              if (parsedStoredState.uuid !== parsedState.uuid)
-                done(new ForbiddenException());
-              const payload = {
+
+              if (parsedStoredState.uuid !== parsedState.uuid) {
+                return done(new ForbiddenException());
+              }
+
+              // Create payload for token request
+              const payload: OAuth2TokenRequest = {
                 code,
                 grant_type: 'authorization_code',
                 redirect_uri:
@@ -78,6 +85,12 @@ export class SocialLoginManagementService {
                 client_id: data.clientId,
                 scope: data.scope.join(' '),
               };
+
+              // add client_secret to payload if specified
+              if (data.clientSecretToTokenEndpoint) {
+                payload.client_secret = data.clientSecret;
+              }
+
               return this.http
                 .post(data.tokenURL, stringify(payload), {
                   headers: {
@@ -87,9 +100,9 @@ export class SocialLoginManagementService {
                 .pipe(
                   switchMap((tokenResponse: AxiosResponse) => {
                     const token = tokenResponse.data;
-                    // TODO: OIDC
+                    // TODO: OIDC and read id_token
 
-                    // Check Profile
+                    // Check Profile Endpoint
                     return this.http
                       .get(data.profileURL, {
                         headers: {
@@ -100,7 +113,7 @@ export class SocialLoginManagementService {
                         switchMap((profileResponse: AxiosResponse) => {
                           const profile = profileResponse.data;
                           // Check Profile and set user.
-                          // TODO: Store Upstream sub
+                          // TODO: Store Upstream sub claim on local server
                           return from(
                             this.userService.findOne({
                               email: profile.email,

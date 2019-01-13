@@ -63,10 +63,11 @@ export class UserService {
   }
 
   updateUser(uuid: string, fullName: string, roles: string, password?: string) {
-    const url = `${this.storageService.getInfo(ISSUER_URL)}/user/v1/update`;
+    const url = `${this.storageService.getInfo(
+      ISSUER_URL,
+    )}/user/v1/update/${uuid}`;
 
     const userData: UserUpdate = {
-      uuid,
       name: fullName,
       roles,
     };

@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CLIENT } from './client.schema';
-import { Client } from '../interfaces/client.interface';
+import { Client } from './client.interface';
 import { Model } from 'mongoose';
 import { AUTHORIZATION } from '../../constants/app-strings';
 

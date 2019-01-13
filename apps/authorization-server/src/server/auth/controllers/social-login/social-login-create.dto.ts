@@ -24,12 +24,14 @@ export class CreateSocialLoginDto {
   introspectionURL: string;
 
   @IsUrl()
+  @IsOptional()
   baseURL: string;
 
   @IsUrl()
   profileURL: string;
 
   @IsUrl()
+  @IsOptional()
   revocationURL: string;
 
   @IsNotEmpty({ each: true })
