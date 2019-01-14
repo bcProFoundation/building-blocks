@@ -12,6 +12,7 @@ import {
   UsePipes,
   ValidationPipe,
   ForbiddenException,
+  Put,
 } from '@nestjs/common';
 import { CryptographerService } from '../../../utilities/cryptographer.service';
 import { UserService } from '../../../models/user/user.service';
@@ -111,10 +112,10 @@ export class UserController {
     res.json(user);
   }
 
-  @Post('v1/update/:uuid')
+  @Put('v1/update/:uuid')
   @Roles(ADMINISTRATOR)
   @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
-  async update(@Param() uuid, @Body() payload, @Req() req, @Res() res) {
+  async update(@Param('uuid') uuid, @Body() payload, @Req() req, @Res() res) {
     const user = await this.userService.findOne({ uuid });
     user.name = payload.name;
     user.roles = payload.roles;

@@ -73,7 +73,7 @@ export class UserService {
     };
 
     if (password) userData.password = password;
-    return this.http.post(url, userData);
+    return this.http.put(url, userData);
   }
 
   invokeSetup(userURL: string, savedUser: any) {

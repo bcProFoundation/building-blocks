@@ -44,4 +44,9 @@ export class SettingsController {
       }),
     );
   }
+
+  @Get('*')
+  wildcard(@Res() res) {
+    res.sendFile(INDEX_HTML);
+  }
 }
