@@ -7,7 +7,7 @@ helm install --name authorization-server-staging \
     --set NODE_ENV=staging \
     --set sessionSecret=SuperSecretString \
     --set persistence.enabled=false \
-    --set authorization-server-redis.persistence.enabled=false \
+    --set redis.master.persistence.enabled=false \
     --set mongodb.persistence.enabled=false \
     --set image.tag=edge \
     --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=letsencrypt-prod \

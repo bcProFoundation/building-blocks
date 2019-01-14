@@ -37,7 +37,7 @@ spec:
               mountPath : "/home/craft/authorization-server/files"
           env:
             - name: "BULL_QUEUE_REDIS_HOST"
-              value: {{ template "authorization-server-redis.fullname" . }}
+              value: {{ template "redis.fullname" . }}-master
             - name: "BULL_QUEUE_REDIS_PORT"
               value: "6379"
             - name: "SESSION_SECRET"

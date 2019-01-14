@@ -1,5 +1,0 @@
-apiVersion: v1
-appVersion: "4.0"
-description: An Authorization Server Redis Queue Helm chart for Kubernetes
-name: authorization-server-redis
-version: 0.1.0
