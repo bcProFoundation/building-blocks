@@ -36,13 +36,6 @@ export class AppModule implements NestModule {
       .apply((req, res, next) => {
         res.sendFile(INDEX_HTML);
       })
-      .forRoutes(
-        '/social_login*',
-        '/client*',
-        '/user*',
-        '/role*',
-        '/scope*',
-        '/settings*',
-      );
+      .forRoutes('/social_login*', '/client*', '/user*', '/role*', '/scope*');
   }
 }

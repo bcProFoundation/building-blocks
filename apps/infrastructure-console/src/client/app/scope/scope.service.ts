@@ -46,7 +46,7 @@ export class ScopeService {
       description,
     };
 
-    return this.http.post(url, userData);
+    return this.http.put(url, userData);
   }
 
   createScope(name: string, description: string) {

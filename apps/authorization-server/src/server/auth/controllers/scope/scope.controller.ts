@@ -11,6 +11,7 @@ import {
   ValidationPipe,
   Res,
   SerializeOptions,
+  Put,
 } from '@nestjs/common';
 import { ScopeService } from '../../../models/scope/scope.service';
 import { callback } from '../../passport/local.strategy';
@@ -57,10 +58,10 @@ export class ScopeController {
     return this.scopeService.find({});
   }
 
-  @Post('v1/update/:uuid')
+  @Put('v1/update/:uuid')
   @Roles(ADMINISTRATOR)
   @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
-  async update(@Param() uuid, @Body() payload, @Req() req, @Res() res) {
+  async update(@Param('uuid') uuid, @Body() payload, @Req() req, @Res() res) {
     const scope = await this.scopeService.findOne({ uuid });
     scope.name = payload.name;
     scope.description = payload.description;

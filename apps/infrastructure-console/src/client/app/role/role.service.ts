@@ -62,7 +62,7 @@ export class RoleService {
     const roleData = {
       name: roleName,
     };
-    return this.http.post(url, roleData, {
+    return this.http.put(url, roleData, {
       headers: this.authorizationHeader,
     });
   }

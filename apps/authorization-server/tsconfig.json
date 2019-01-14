@@ -12,7 +12,7 @@
     "typeRoots": [
       "node_modules/@types"
     ],
-    "noUnusedLocals":true,
+    "noUnusedLocals": true,
     "types": [
       "node"
     ],
