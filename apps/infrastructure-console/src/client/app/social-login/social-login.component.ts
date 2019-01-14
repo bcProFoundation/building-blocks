@@ -142,7 +142,7 @@ export class SocialLoginComponent implements OnInit {
         this.socialLoginForm.controls.baseURL.value,
         this.socialLoginForm.controls.profileURL.value,
         this.socialLoginForm.controls.revocationURL.value,
-        this.scope,
+        this.getScopes(),
         this.socialLoginForm.controls.clientSecretToTokenEndpoint.value,
       )
       .subscribe({

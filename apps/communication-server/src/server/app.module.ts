@@ -18,6 +18,7 @@ import { SettingsController } from './controllers/settings/settings.controller';
 import { TokenGuard } from './guards/token.guard';
 import { RoleGuard } from './guards/role.guard';
 import { ConnectController } from './controllers/microservice/connect.controller';
+import { SettingsService } from './controllers/settings/settings.service';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { ConnectController } from './controllers/microservice/connect.controller
     AuthServerVerificationGuard,
     TokenGuard,
     RoleGuard,
+    SettingsService,
   ],
 })
 export class AppModule {}

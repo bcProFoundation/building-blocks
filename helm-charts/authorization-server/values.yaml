@@ -70,8 +70,13 @@ mongodb:
     # storageClass: do-block-storage
     size: 1Gi
 
-authorization-server-redis:
-  persistence:
+redis:
+  usePassword: false
+  networkPolicy:
     enabled: true
-    size: 1Gi
-    # storageClass: do-block-storage
+    allowExternal: true
+  master:
+    persistence:
+      enabled: true
+      size: 1Gi
+      # storageClass: do-block-storage

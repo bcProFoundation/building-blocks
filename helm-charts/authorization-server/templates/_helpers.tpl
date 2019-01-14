@@ -41,6 +41,6 @@ Create mongodb host name
 {{/*
 Create redis host name
 */}}
-{{- define "authorization-server-redis.fullname" -}}
+{{- define "redis.fullname" -}}
 {{- printf "%s-%s" .Release.Name "redis" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
