@@ -31,9 +31,12 @@ ingress:
   hosts:
     - accounts.castlecraft.in
   tls:
-   - secretName: accounts-castlecraft-tls
-     hosts:
-       - accounts.castlecraft.in
+    - secretName: accounts-castlecraft-in-tls
+      hosts:
+        - accounts.castlecraft.in
+    # - secretName: accounts-castlecraft-in-staging-tls
+    #   hosts:
+    #     - staging-accounts.castlecraft.in
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
