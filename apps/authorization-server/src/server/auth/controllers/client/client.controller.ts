@@ -147,6 +147,22 @@ export class ClientController {
     return client;
   }
 
+  @Get('v1/getClientId/:clientId')
+  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  async getClientId(@Param('clientId') clientId: string, @Req() req) {
+    let client;
+    if (await this.userService.checkAdministrator(req.user.user)) {
+      client = await this.clientService.findOne({ clientId });
+    } else {
+      client = await this.clientService.findOne({
+        clientId,
+        createdBy: req.user.user,
+      });
+    }
+    if (!client) throw new ForbiddenException();
+    return client;
+  }
+
   @Delete('v1/delete/:clientId')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
   async deleteByUUID(@Param('clientId') clientId, @Req() req) {
