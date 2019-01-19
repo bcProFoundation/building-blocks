@@ -7,6 +7,7 @@ export const ServerSettings = new mongoose.Schema(
     issuerUrl: String,
     communicationServerClientId: String,
     identityProviderClientId: String,
+    infrastructureConsoleClientId: String,
   },
   { collection: 'server_settings', versionKey: false },
 );

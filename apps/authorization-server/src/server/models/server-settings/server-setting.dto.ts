@@ -25,4 +25,12 @@ export class ServerSettingDto {
     type: 'string',
   })
   identityProviderClientId?: string;
+
+  @IsOptional()
+  @IsUUID()
+  @ApiModelProperty({
+    description: 'OAuth 2.0 Client ID for Infrastructure Console',
+    type: 'string',
+  })
+  infrastructureConsoleClientId?: string;
 }

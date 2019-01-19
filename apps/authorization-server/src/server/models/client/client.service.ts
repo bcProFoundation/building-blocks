@@ -26,6 +26,10 @@ export class ClientService {
       .exec();
   }
 
+  async findAll(params?): Promise<Client[]> {
+    return await this.clientModel.find(params).exec();
+  }
+
   async clear() {
     return await this.clientModel.deleteMany({});
   }
