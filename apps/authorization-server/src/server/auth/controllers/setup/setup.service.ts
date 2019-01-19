@@ -43,9 +43,14 @@ export class SetupService {
     }
 
     await this.keyPairService.generateKeyPair();
-    await this.settingsService.save({ issuerUrl });
     await this.createUser(fullName, email, phone, adminPassword);
-    return await this.createClient(email, infrastructureConsoleUrl);
+    const client = await this.createClient(email, infrastructureConsoleUrl);
+
+    await this.settingsService.save({
+      issuerUrl,
+      infrastructureConsoleClientId: client.clientId,
+    });
+    return client;
   }
 
   /**

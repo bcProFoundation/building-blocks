@@ -4,17 +4,31 @@ import { INDEX_HTML } from './constants/app-strings';
 import { ServerSettingsService } from './models/server-settings/server-settings.service';
 import { ServerSettings } from './models/server-settings/server-settings.interface';
 import { ServiceMessage } from './interfaces/service-message.interface';
+import { ClientService } from './models/client/client.service';
 
 @Injectable()
 export class AppService {
-  constructor(private readonly serverSettings: ServerSettingsService) {}
+  constructor(
+    private readonly serverSettings: ServerSettingsService,
+    private readonly clientService: ClientService,
+  ) {}
 
   async info(req?) {
     let settings: ServerSettings;
+    const trustedClients = await this.clientService.findAll({
+      isTrusted: { $gt: 0 },
+    });
     const message: ServiceMessage = {
       service: i18n.__('Authorization Server'),
       session: req.isAuthenticated(),
       communication: false,
+      services: trustedClients.map(client => {
+        const type = this.kebabCase(client.name);
+        const parsedUrl = new URL(client.redirectUris[0]);
+        let url = `${parsedUrl.protocol}//${parsedUrl.hostname}`;
+        if (parsedUrl.port) url += `:${parsedUrl.port}`;
+        return { type, url };
+      }),
     };
     try {
       settings = await this.serverSettings.find();
@@ -33,5 +47,12 @@ export class AppService {
     } else {
       res.redirect(req.query.redirect || '/account');
     }
+  }
+
+  kebabCase(str) {
+    return str
+      .replace(/([a-z])([A-Z])/g, '$1-$2')
+      .replace(/[\s_]+/g, '-')
+      .toLowerCase();
   }
 }
