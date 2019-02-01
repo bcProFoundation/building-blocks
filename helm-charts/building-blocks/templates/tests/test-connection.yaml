@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "building-blocks.fullname" . }}-test-connection"
+  labels:
+    app.kubernetes.io/name: {{ include "building-blocks.name" . }}
+    helm.sh/chart: {{ include "building-blocks.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args:  ['{{ include "building-blocks.fullname" . }}:3000']
+  restartPolicy: Never
