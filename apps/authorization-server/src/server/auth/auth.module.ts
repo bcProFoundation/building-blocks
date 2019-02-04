@@ -49,6 +49,7 @@ import { OAuth2ClientStrategy } from './passport/oauth2-client.strategy';
 import { SocialLoginController } from './controllers/social-login/social-login.controller';
 import { SocialLoginManagementService } from './controllers/social-login/social-login-management.service';
 import { WellKnownService } from '../auth/controllers/well-known/well-known.service';
+import { UserAggregateService } from './controllers/user/user-aggregate/user-aggregate.service';
 
 @Module({
   providers: [
@@ -87,6 +88,7 @@ import { WellKnownService } from '../auth/controllers/well-known/well-known.serv
     RoleGuard,
     TokenIntrospectionGuard,
     CRUDOperationService,
+    UserAggregateService,
   ],
   controllers: [
     AuthController,
