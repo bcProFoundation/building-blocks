@@ -56,11 +56,9 @@ persistence:
   # storageClass: do-block-storage
 
 mongodb:
-  # Disable password
-  usePassword: false
-  # security options
-  security:
-    authorization: disabled
+  mongodbUsername: communication-server
+  mongodbDatabase: communication-server
+  mongodbPassword: admin
   # Enable persistent storage
   persistence:
     enabled: true

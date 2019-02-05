@@ -4,7 +4,7 @@
 helm install --name infrastructure-console-staging \
     --tiller-namespace staging \
     --set NODE_ENV=staging \
-    --namespace default \
+    --namespace staging \
     --set persistence.enabled=false \
     --set mongodb.persistence.enabled=false \
     --set image.tag=edge \

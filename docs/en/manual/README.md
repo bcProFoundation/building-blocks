@@ -1,12 +1,16 @@
-# Installation
+# Development
 
 Install Docker and Docker compose
 
-Install Portainer and letsencrypt nginx
+Start the backing services
 
-Install Authorization Server
+```sh
+docker-compose -f ./services.docker-compose.yml up -d
+```
 
-Install Infrastructure console
+# Installation
+
+Refer Kubernetes and Helm Charts
 
 # TypeScript API Documentation
 

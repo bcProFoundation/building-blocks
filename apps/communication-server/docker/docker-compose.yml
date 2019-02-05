@@ -1,12 +1,25 @@
 version: '3'
 
 services:
+  fix-mongodb-permissions:
+    image: busybox
+    user: root
+    command: chown -R 1001:1001 /bitnami
+    volumes:
+    - mongo-vol:/bitnami
+
   mongo:
-    image: mongo:latest
+    image: bitnami/mongodb:latest
+    environment:
+      - MONGODB_USERNAME=${DB_USER}
+      - MONGODB_PASSWORD=${DB_PASSWORD}
+      - MONGODB_DATABASE=${DB_NAME}
     ports:
       - "27017:27017"
     volumes:
-      - mongo-vol:/data/db
+      - mongo-vol:/bitnami
+    depends_on:
+      - fix-mongodb-permissions
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -32,6 +45,8 @@ services:
     environment:
       - DB_HOST=${DB_HOST}
       - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
       - AMQP_HOST=${AMQP_HOST}
       - AMQP_USER=${AMQP_USER}
       - AMQP_PASSWORD=${AMQP_PASS}

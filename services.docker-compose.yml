@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+  fix-mongodb-permissions:
+    image: busybox
+    user: root
+    command: chown -R 1001:1001 /bitnami
+    volumes:
+      - mongo-vol:/bitnami
+
+  mongo:
+    image: bitnami/mongodb:latest
+    environment:
+      - MONGODB_USERNAME=${DB_USER}
+      - MONGODB_PASSWORD=${DB_PASSWORD}
+      - MONGODB_DATABASE=${DB_NAME}
+      - MONGODB_ROOT_PASSWORD=${MONGODB_ROOT_PASSWORD}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-vol:/bitnami
+      - ./helm-charts/building-blocks/files/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    depends_on:
+      - fix-mongodb-permissions
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-vol:/data
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+    volumes:
+      - rabbitmq-vol:/var/lib/rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=${AMQP_USER}
+      - RABBITMQ_DEFAULT_PASS=${AMQP_PASS}
+
+volumes:
+  mongo-vol:
+  redis-vol:
+  rabbitmq-vol:

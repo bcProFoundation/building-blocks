@@ -35,6 +35,8 @@ In both setup cases start backing services before app development starts.
 ```
 DB_HOST=mongo
 DB_NAME=communication-server
+DB_USER=communication-server
+DB_PASSWORD=admin
 AMQP_HOST=localhost
 AMQP_PORT=5672
 AMQP_USER=admin

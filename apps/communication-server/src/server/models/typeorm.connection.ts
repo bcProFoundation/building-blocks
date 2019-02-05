@@ -13,6 +13,8 @@ export const TYPEORM_CONNECTION: MongoConnectionOptions = {
   name: 'default',
   host: config.get('DB_HOST'),
   database: config.get('DB_NAME'),
+  username: config.get('DB_USER'),
+  password: config.get('DB_PASSWORD'),
   logging: false,
   synchronize: true,
   entities: [EmailAccount, ServerSettings, SocialKey, TokenCache, QueueLog],

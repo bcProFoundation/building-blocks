@@ -1,9 +1,17 @@
 image: registry.gitlab.com/castlecraft/docker-craft/node-latest-headless-chrome:latest
 
 services:
-  - docker:dind
-  - mongo
-  - redis
+  - name: bitnami/mongodb:latest
+    alias: mongo
+  - name: docker:dind
+    alias: docker
+  - name: redis
+    alias: redis
+
+variables:
+  MONGODB_USERNAME: "admin"
+  MONGODB_PASSWORD: "admin"
+  MONGODB_DATABASE: "test_authorization-server"
 
 stages:
   - tests
@@ -21,7 +29,9 @@ test_authorization_server:
     TOKEN_VALIDITY: "3600"
     SESSION_NAME: "E2E_SESSION"
     DB_HOST: "mongo"
-    DB_NAME: "test-e2e-idp"
+    DB_USER: "admin"
+    DB_PASSWORD: "admin"
+    DB_NAME: "authorization-server"
     BULL_QUEUE_REDIS_HOST: redis
     BULL_QUEUE_REDIS_PORT: "6379"
   before_script:

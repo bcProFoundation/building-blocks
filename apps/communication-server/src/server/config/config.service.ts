@@ -24,6 +24,8 @@ export class ConfigService {
         .default('development'),
       DB_NAME: Joi.string().required(),
       DB_HOST: Joi.string().required(),
+      DB_USER: Joi.string().required(),
+      DB_PASSWORD: Joi.string().required(),
       AMQP_HOST: Joi.string().required(),
       AMQP_USER: Joi.string().required(),
       AMQP_PASSWORD: Joi.string().required(),

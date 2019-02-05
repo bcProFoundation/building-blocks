@@ -32,8 +32,6 @@
     "serve:prerender": "cd dist/authorization-server && http-server",
     "serve:ssr": "node dist/server",
     "start:dev": "concurrently --kill-others-on-fail \"npm run start:server\" \"npm run start:client-dev\"",
-    "add:user": "ts-node -r tsconfig-paths/register --project src/server/tsconfig.server.json src/server/cli-connector/create-user.ts",
-    "add:oauth2-client": "ts-node -r tsconfig-paths/register --project src/server/tsconfig.server.json src/server/cli-connector/create-client.ts",
     "translate": "ng xi18n --output-path i18n && xliffmerge --profile xliffmerge.json en af am ar bg bn bo bs ca cs da da-DK de el en-GB en-US es es-AR es-BO es-CL es-CO es-DO es-EC es-GT es-MX es-NI es-PE et fa fi fr fr-CA gu he hi hr hu is it ja km kn ko ku lo lt lv mk ml mr ms my nl no pl ps pt pt-BR quc ro ru rw si sk sl sq sr sr-SP sv sw ta te th tr uk ur uz vi zh zh-TW"
   },
   "dependencies": {
@@ -53,7 +51,6 @@
     "@nest-middlewares/passport": "^5.1.1",
     "@nestjs/common": "^5.6.2",
     "@nestjs/core": "^5.6.2",
-    "@nestjs/cqrs": "^5.1.1",
     "@nestjs/microservices": "^5.6.2",
     "@nestjs/mongoose": "^5.2.2",
     "@nestjs/swagger": "^2.5.1",
