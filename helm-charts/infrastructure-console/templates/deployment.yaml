@@ -39,7 +39,14 @@ spec:
             - name: "DB_HOST"
               value: {{ template "mongodb.fullname" . }}
             - name: "DB_NAME"
-              value: "infrastructure-console"
+              value: {{ .Values.mongodb.mongodbDatabase }}
+            - name: "DB_USER"
+              value: {{ .Values.mongodb.mongodbUsername }}
+            - name: "DB_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  key:  mongodbPassword
+                  name: {{ .Release.Name }}-secrets
             - name: "NODE_ENV"
               value: {{ .Values.NODE_ENV }}
           ports:

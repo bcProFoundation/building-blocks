@@ -4,6 +4,7 @@ import { UserService } from '../../../models/user/user.service';
 import { CryptographerService } from '../../../utilities/cryptographer.service';
 import { AuthDataService } from '../../../models/auth-data/auth-data.service';
 import { CRUDOperationService } from '../common/crudoperation/crudoperation.service';
+import { UserAggregateService } from './user-aggregate/user-aggregate.service';
 
 describe('User Controller', () => {
   let module: TestingModule;
@@ -25,6 +26,10 @@ describe('User Controller', () => {
         },
         {
           provide: CRUDOperationService,
+          useValue: {},
+        },
+        {
+          provide: UserAggregateService,
           useValue: {},
         },
       ],

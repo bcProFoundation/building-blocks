@@ -11,6 +11,14 @@ function checkEnv() {
     echo "DB_NAME is not set"
     exit 1
   fi
+  if [[ -z "$DB_USER" ]]; then
+    echo "DB_USER is not set"
+    exit 1
+  fi
+  if [[ -z "$DB_PASSWORD" ]]; then
+    echo "DB_PASSWORD is not set"
+    exit 1
+  fi
   if [[ -z "$AMQP_HOST" ]]; then
     echo "AMQP_HOST is not set"
     exit 1

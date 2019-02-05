@@ -47,10 +47,14 @@ export class ExpressServer {
     };
 
     if (process.env.NODE_ENV !== 'production') cookie.secure = false;
+    const url = `mongodb://${this.configService.get(
+      'DB_USER',
+    )}:${this.configService.get('DB_PASSWORD')}@${this.configService.get(
+      'DB_HOST',
+    )}/${this.configService.get('DB_NAME')}`;
+
     const store = new MongoStore({
-      url: `mongodb://${this.configService.get(
-        'DB_HOST',
-      )}/${this.configService.get('DB_NAME')}`,
+      url,
       touchAfter: 24 * 3600, // 24 hours * 3600 secs
       collection: 'session',
     });

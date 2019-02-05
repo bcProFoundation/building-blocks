@@ -56,12 +56,9 @@ persistence:
   # storageClass: do-block-storage
 
 mongodb:
-  # Disable password
-  usePassword: false
-  # security options
-  security:
-    authorization: disabled
-  # Enable persistent storage
+  mongodbUsername: identity-provider
+  mongodbDatabase: identity-provider
+  mongodbPassword: admin
   persistence:
     enabled: true
     # storageClass: do-block-storage

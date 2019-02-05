@@ -25,6 +25,7 @@ import { Roles } from '../../../auth/decorators/roles.decorator';
 import { ADMINISTRATOR } from '../../../constants/app-strings';
 import { RoleGuard } from '../../../auth/guards/role.guard';
 import { CRUDOperationService } from '../common/crudoperation/crudoperation.service';
+import { UserAggregateService } from './user-aggregate/user-aggregate.service';
 
 @Controller('user')
 export class UserController {
@@ -33,12 +34,13 @@ export class UserController {
     private readonly cryptoService: CryptographerService,
     private readonly authDataService: AuthDataService,
     private readonly crudService: CRUDOperationService,
+    private readonly userAggregate: UserAggregateService,
   ) {}
 
   @Post('v1/change_password')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
   async updatePassword(@Req() req, @Body() body, @Res() res) {
-    const authData = await this.userService.getUserSaltedHashPassword(
+    const authData = await this.userAggregate.getUserSaltedHashPassword(
       req.user.user,
     );
     const validPassword = this.cryptoService.checkPassword(
@@ -64,7 +66,7 @@ export class UserController {
   @Post('v1/initialize_2fa')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
   async initialize2fa(@Req() req, @Query('restart') restart) {
-    return await this.userService.initializeMfa(
+    return await this.userAggregate.initializeMfa(
       req.user.user,
       restart || false,
     );
@@ -73,13 +75,13 @@ export class UserController {
   @Post('v1/verify_2fa')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
   async verify2fa(@Req() req, @Body('otp') otp: string) {
-    return await this.userService.verify2fa(req.user.user, otp);
+    return await this.userAggregate.verify2fa(req.user.user, otp);
   }
 
   @Post('v1/disable_2fa')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
   async disable2fa(@Req() req) {
-    return await this.userService.disable2fa(req.user.user);
+    return await this.userAggregate.disable2fa(req.user.user);
   }
 
   @Get('v1/get_user')

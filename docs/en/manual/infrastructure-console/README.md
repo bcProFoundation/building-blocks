@@ -25,6 +25,8 @@ In both setup cases start backing services before app development starts.
 ```
 DB_HOST=mongo
 DB_NAME=infrastructure-console
+DB_USER=infrastructure-console
+DB_PASSWORD=admin
 ```
 
 Note: It is important to change the secrets and password. DO NOT USE example passwords or secrets.

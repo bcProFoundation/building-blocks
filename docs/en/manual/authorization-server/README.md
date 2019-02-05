@@ -15,7 +15,23 @@ Install redis locally using your OS specific installation for Redis.
 Run following command as docker allowed user or root to start mongodb container.
 
 ```sh
-docker run -d --name mongo -p 27017:27017 mongo
+# for development
+docker run -d --name mongo \
+  -p 27017:27017 \
+  -e MONGODB_USERNAME=admin \
+  -e MONGODB_PASSWORD=admin \
+  -e MONGODB_DATABASE=authorization-server \
+  bitnami/mongodb:latest
+```
+
+```sh
+# for e2e testing
+docker run -d --name test_mongo \
+  -p 27017:27017 \
+  -e MONGODB_USERNAME=admin \
+  -e MONGODB_PASSWORD=admin \
+  -e MONGODB_DATABASE=test_authorization-server \
+  bitnami/mongodb:latest
 ```
 
 Run following command as docker allowed user or root to start mongodb container.
@@ -38,6 +54,8 @@ SESSION_NAME=AS_SESSION
 TOKEN_VALIDITY=3600
 DB_HOST=localhost
 DB_NAME=authorization-server
+DB_USER=authorization-server
+DB_PASSWORD=admin
 BULL_QUEUE_REDIS_HOST=localhost
 BULL_QUEUE_REDIS_PORT=6379
 ```
