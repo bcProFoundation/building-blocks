@@ -10,6 +10,7 @@ services:
 
   mongo:
     image: bitnami/mongodb:latest
+    restart: unless-stopped
     environment:
       - MONGODB_USERNAME=${DB_USER}
       - MONGODB_PASSWORD=${DB_PASSWORD}
@@ -19,12 +20,13 @@ services:
       - "27017:27017"
     volumes:
       - mongo-vol:/bitnami
-      - ./helm-charts/building-blocks/files/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./files/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     depends_on:
       - fix-mongodb-permissions
 
   redis:
     image: redis:latest
+    restart: unless-stopped
     ports:
       - "6379:6379"
     volumes:
@@ -32,6 +34,7 @@ services:
 
   rabbitmq:
     image: rabbitmq:3-management
+    restart: unless-stopped
     ports:
       - "5672:5672"
     volumes:
