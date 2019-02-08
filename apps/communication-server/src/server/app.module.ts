@@ -1,51 +1,26 @@
-import { Module, HttpModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ModelsModule } from './models/models.module';
-import { TYPEORM_CONNECTION } from './models/typeorm.connection';
-import { SetupController } from './controllers/setup/setup.controller';
-import { SetupService } from './controllers/setup/setup.service';
-import { EmailService } from './controllers/email/email.service';
-import { EmailController } from './controllers/email/email.controller';
 import { ConfigModule } from './config/config.module';
-import { ServerSettingsService } from './models/server-settings/server-settings.service';
-import { SocialKeyService } from './models/social-key/social-key.service';
-import { MicroservicePatternController } from './controllers/microservice/pattern.controller';
-import { MicroservicePatternService } from './controllers/microservice/pattern.service';
-import { AuthServerVerificationGuard } from './guards/authserver-verification.guard';
-import { SettingsController } from './controllers/settings/settings.controller';
-import { TokenGuard } from './guards/token.guard';
-import { RoleGuard } from './guards/role.guard';
-import { ConnectController } from './controllers/microservice/connect.controller';
-import { SettingsService } from './controllers/settings/settings.service';
+import { SystemSettingsModule } from './system-settings/system-settings.module';
+import { AuthModule } from './auth/auth.module';
+import { EmailModule } from './email/email.module';
+import { Oauth2ClientModule } from './oauth2-client/oauth2-client.module';
+import { SmsmessageModule } from './smsmessage/smsmessage.module';
+import { TYPEORM_CONNECTION } from './constants/typeorm.connection';
 
 @Module({
   imports: [
-    ConfigModule,
     TypeOrmModule.forRoot(TYPEORM_CONNECTION),
-    ModelsModule,
-    HttpModule,
+    ConfigModule,
+    AuthModule,
+    EmailModule,
+    Oauth2ClientModule,
+    SmsmessageModule,
+    SystemSettingsModule,
   ],
-  controllers: [
-    AppController,
-    SetupController,
-    EmailController,
-    SettingsController,
-    MicroservicePatternController,
-    ConnectController,
-  ],
-  providers: [
-    AppService,
-    SetupService,
-    EmailService,
-    ServerSettingsService,
-    SocialKeyService,
-    MicroservicePatternService,
-    AuthServerVerificationGuard,
-    TokenGuard,
-    RoleGuard,
-    SettingsService,
-  ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

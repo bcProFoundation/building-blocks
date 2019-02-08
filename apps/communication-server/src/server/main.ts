@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { join } from 'path';
 import * as express from 'express';
 import { AppModule } from './app.module';
-import { CHANNEL } from './rabbitmq/rabbitmq-connection';
+import { CHANNEL } from './constants/app-strings';
 import { ConfigService } from './config/config.service';
 import { Transport } from '@nestjs/microservices';
 
