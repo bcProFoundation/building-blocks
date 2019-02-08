@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { SetupService } from './controllers/setup/setup.service';
+import { SetupService } from './system-settings/controllers/setup/setup.service';
 import { PLEASE_RUN_SETUP } from './constants/messages';
 
 @Injectable()

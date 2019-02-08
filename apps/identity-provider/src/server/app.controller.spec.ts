@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { SetupService } from './controllers/setup/setup.service';
+import { SetupService } from './system-settings/controllers/setup/setup.service';
 
 const reqResp = {
   uuid: '19421784-bb3d-4b4a-8994-dfe8f3eddf5a',

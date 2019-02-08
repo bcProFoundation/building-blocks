@@ -4,7 +4,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { TIME_ZONES } from '../constants/timezones';
 import { LOCALES } from '../constants/locale';
 import { OAuthService } from 'angular-oauth2-oidc';
-import { IDTokenClaims } from '../../../server/models/id-token-claims.interfaces';
+import { IDTokenClaims } from '../../../server/auth/entities/token-cache/id-token-claims.interfaces';
 import { ProfileService } from './profile.service';
 import { UserResponse } from '../interfaces/user-response.interface';
 import { MatDatepickerInputEvent, MatSnackBar } from '@angular/material';
