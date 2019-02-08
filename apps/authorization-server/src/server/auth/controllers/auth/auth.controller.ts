@@ -11,19 +11,12 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { callback } from '../../passport/local.strategy';
-import { CreateUserDto } from '../../../models/user/create-user.dto';
-import {
-  AuthGuard as AuthenticationGuard,
-  TestAuthGuard,
-} from '../../guards/auth.guard';
+import { callback } from '../../passport/strategies/local.strategy';
+import { AuthGuard } from '../../../auth/guards/auth.guard';
 import { ApiOperation } from '@nestjs/swagger';
-import { LoginUserDto } from '../../../models/user/login-user.dto';
 import { i18n } from '../../../i18n/i18n.config';
-
-let AuthGuard;
-if (process.env.NODE_ENV === 'test') AuthGuard = TestAuthGuard;
-else AuthGuard = AuthenticationGuard;
+import { LoginUserDto } from '../../../user-management/entities/user/login-user.dto';
+import { CreateUserDto } from '../../../user-management/entities/user/create-user.dto';
 
 @Controller('auth')
 export class AuthController {

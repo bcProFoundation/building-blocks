@@ -15,13 +15,13 @@ import {
   Delete,
   ForbiddenException,
 } from '@nestjs/common';
-import { SocialLoginService } from '../../../models/social-login/social-login.service';
-import { AuthGuard } from '../../../auth/guards/auth.guard';
-import { UserService } from '../../../models/user/user.service';
-import { callback } from '../../../auth/passport/local.strategy';
-import { CRUDOperationService } from '../common/crudoperation/crudoperation.service';
+import { callback } from '../../passport/strategies/local.strategy';
 import { CreateSocialLoginDto } from './social-login-create.dto';
 import { INDEX_HTML } from '../../../constants/app-strings';
+import { SocialLoginService } from '../../../auth/entities/social-login/social-login.service';
+import { UserService } from '../../../user-management/entities/user/user.service';
+import { CRUDOperationService } from '../../../common/services/crudoperation/crudoperation.service';
+import { AuthGuard } from '../../../auth/guards/auth.guard';
 
 @Controller('social_login')
 export class SocialLoginController {

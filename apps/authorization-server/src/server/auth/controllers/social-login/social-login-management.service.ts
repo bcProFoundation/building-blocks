@@ -7,12 +7,12 @@ import {
 import { from, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import * as uuidv4 from 'uuid/v4';
-import { ServerSettingsService } from '../../../models/server-settings/server-settings.service';
-import { SocialLoginService } from '../../../models/social-login/social-login.service';
 import { stringify } from 'querystring';
-import { UserService } from '../../../models/user/user.service';
 import { AxiosResponse } from 'axios';
 import { OAuth2TokenRequest } from './oauth2-token-request.interface';
+import { UserService } from '../../../user-management/entities/user/user.service';
+import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
+import { SocialLoginService } from '../../../auth/entities/social-login/social-login.service';
 
 @Injectable()
 export class SocialLoginManagementService {

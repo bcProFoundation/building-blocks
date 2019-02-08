@@ -4,8 +4,8 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ClientService } from '../../models/client/client.service';
-import { invalidClientException } from '../filters/exceptions';
+import { ClientService } from '../../client-management/entities/client/client.service';
+import { invalidClientException } from '../../common/filters/exceptions';
 import { i18n } from '../../i18n/i18n.config';
 
 @Injectable()

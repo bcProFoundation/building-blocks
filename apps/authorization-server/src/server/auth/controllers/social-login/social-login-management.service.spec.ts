@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SocialLoginManagementService } from './social-login-management.service';
-import { UserService } from '../../../models/user/user.service';
-import { SocialLoginService } from '../../../models/social-login/social-login.service';
-import { ServerSettingsService } from '../../../models/server-settings/server-settings.service';
+import { UserService } from '../../../user-management/entities/user/user.service';
+import { SocialLoginService } from '../../../auth/entities/social-login/social-login.service';
+import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { HttpService } from '@nestjs/common';
 
 describe('SocialLoginManagementService', () => {

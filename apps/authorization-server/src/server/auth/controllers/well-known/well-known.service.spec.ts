@@ -1,9 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { WellKnownService } from './well-known.service';
-import { getModelToken } from '@nestjs/mongoose';
-import { ServerSettingsService } from '../../../models/server-settings/server-settings.service';
-import { SERVER_SETTINGS } from '../../../models/server-settings/server-settings.schema';
-import { OIDCKeyService } from '../../../models/oidc-key/oidc-key.service';
+import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
+import { OIDCKeyService } from '../../../auth/entities/oidc-key/oidc-key.service';
 
 describe('WellKnownService', () => {
   let service: WellKnownService;
@@ -11,9 +9,8 @@ describe('WellKnownService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         WellKnownService,
-        ServerSettingsService,
         {
-          provide: getModelToken(SERVER_SETTINGS),
+          provide: ServerSettingsService,
           useValue: {}, // provide mock values
         },
         {

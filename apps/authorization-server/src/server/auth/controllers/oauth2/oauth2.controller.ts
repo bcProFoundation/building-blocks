@@ -9,13 +9,13 @@ import {
   Body,
   Res,
 } from '@nestjs/common';
-import { AuthGuard } from '../../guards/auth.guard';
+import { AuthGuard } from '../../../auth/guards/auth.guard';
 import { EnsureLoginGuard } from 'nestjs-ensureloggedin-guard';
-import { ErrorFilter } from '../../filters/errors.filter';
-import { callback } from '../../passport/local.strategy';
+import { ErrorFilter } from '../../../common/filters/errors.filter';
+import { callback } from '../../passport/strategies/local.strategy';
 import { ApiExcludeEndpoint, ApiOperation } from '@nestjs/swagger';
 import { OAuth2Service } from './oauth2.service';
-import { TokenIntrospectionGuard } from '../../guards/token-introspection.guard';
+import { TokenIntrospectionGuard } from '../../../auth/guards/token-introspection.guard';
 import { i18n } from '../../../i18n/i18n.config';
 
 @Controller('oauth2')

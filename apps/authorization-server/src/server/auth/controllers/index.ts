@@ -1,0 +1,22 @@
+import { OAuth2Controller } from './oauth2/oauth2.controller';
+import { AuthController } from './auth/auth.controller';
+import { SocialLoginController } from './social-login/social-login.controller';
+import { WellKnownController } from './well-known/well-known.controller';
+import { AuthService } from './auth/auth.service';
+import { OAuth2Service } from './oauth2/oauth2.service';
+import { SocialLoginManagementService } from './social-login/social-login-management.service';
+import { WellKnownService } from './well-known/well-known.service';
+
+export const authControllers = [
+  AuthController,
+  OAuth2Controller,
+  SocialLoginController,
+  WellKnownController,
+];
+
+export const authServices = [
+  AuthService,
+  OAuth2Service,
+  SocialLoginManagementService,
+  WellKnownService,
+];
