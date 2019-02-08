@@ -255,7 +255,7 @@ pack_production_infrastructure_console:
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console
 
 deploy_staging:
-  image: dtzar/helm-kubectl:2.11.0
+  image: dtzar/helm-kubectl:latest
   stage: deploy
   environment:
     name: staging
@@ -263,6 +263,24 @@ deploy_staging:
     - staging
   script:
     - ./helm-charts/deploy/deploy-staging.sh
+
+deploy_develop:
+  image: dtzar/helm-kubectl:latest
+  stage: deploy
+  only:
+    - staging
+  variables:
+    KUBECONFIG: /etc/deploy/config
+  before_script:
+    - mkdir -p /etc/deploy
+    - echo ${develop_kube_config} | base64 -d > ${KUBECONFIG}
+    - kubectl config use-context develop
+    - helm init --service-account develop-user --client-only
+    - helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+    - helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
+    - helm repo update
+  script:
+    - ./helm-charts/deploy/deploy-develop.sh
 
 setup_staging:
   image: python:3
