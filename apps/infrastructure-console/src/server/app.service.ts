@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { SetupService } from './controllers/setup/setup.service';
 import { PLEASE_RUN_SETUP } from './constants/messages';
+import { SetupService } from './system-settings/aggregates/setup/setup.service';
 
 @Injectable()
 export class AppService {

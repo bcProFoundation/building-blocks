@@ -1,6 +1,6 @@
 import { Controller, Post, Body, UseGuards } from '@nestjs/common';
-import { TokenCacheService } from '../../models/token-cache/token-cache.service';
-import { AuthServerVerificationGuard } from '../../guards/authserver-verification.guard';
+import { TokenCacheService } from '../../../auth/entities/token-cache/token-cache.service';
+import { AuthServerVerificationGuard } from '../../../auth/guards/authserver-verification.guard';
 
 @Controller('connect')
 export class ConnectController {

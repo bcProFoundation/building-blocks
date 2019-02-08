@@ -1,7 +1,7 @@
 import { ConfigService } from '../config/config.service';
-import { ServerSettings } from './server-settings/server-settings.entity';
 import { MongoConnectionOptions } from 'typeorm/driver/mongodb/MongoConnectionOptions';
-import { TokenCache } from './token-cache/token-cache.entity';
+import { ServerSettings } from '../system-settings/entities/server-settings/server-settings.entity';
+import { TokenCache } from '../auth/entities/token-cache/token-cache.entity';
 
 const config = new ConfigService();
 

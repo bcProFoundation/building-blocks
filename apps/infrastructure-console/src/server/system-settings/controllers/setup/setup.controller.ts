@@ -5,8 +5,8 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { SetupService } from './setup.service';
-import { ServerSettingsDto } from '../../models/server-settings/server-setting.dto';
+import { SetupService } from '../../../system-settings/aggregates/setup/setup.service';
+import { ServerSettingsDto } from '../../../system-settings/entities/server-settings/server-setting.dto';
 
 @Controller('setup')
 export class SetupController {

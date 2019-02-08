@@ -8,14 +8,14 @@ import {
   ValidationPipe,
   Body,
 } from '@nestjs/common';
-import { Roles } from '../../decorators/roles.decorator';
-import { TokenGuard } from '../../guards/token.guard';
-import { RoleGuard } from '../../guards/role.guard';
-import { ADMINISTRATOR } from '../../constants/app-strings';
-import { SettingsService } from './settings.service';
-import { INDEX_HTML } from '../../constants/filesystem';
-import { ServerSettingsDto } from '../../models/server-settings/server-setting.dto';
 import { switchMap } from 'rxjs/operators';
+import { INDEX_HTML } from '../../../constants/filesystem';
+import { Roles } from '../../../auth/decorators/roles.decorator';
+import { TokenGuard } from '../../../auth/guards/token.guard';
+import { RoleGuard } from '../../../auth/guards/role.guard';
+import { ADMINISTRATOR } from '../../../constants/app-strings';
+import { ServerSettingsDto } from '../../../system-settings/entities/server-settings/server-setting.dto';
+import { SettingsService } from '../../../system-settings/aggregates/settings/settings.service';
 
 @Controller('settings')
 export class SettingsController {

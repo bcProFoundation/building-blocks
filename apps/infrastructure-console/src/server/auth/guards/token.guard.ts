@@ -5,10 +5,10 @@ import {
   NotImplementedException,
   HttpService,
 } from '@nestjs/common';
-import { ServerSettingsService } from '../models/server-settings/server-settings.service';
-import { TokenCache } from '../models/token-cache/token-cache.entity';
-import { TokenCacheService } from '../models/token-cache/token-cache.service';
-import { TOKEN } from '../constants/app-strings';
+import { ServerSettingsService } from '../../system-settings/entities/server-settings/server-settings.service';
+import { TokenCache } from '../../auth/entities/token-cache/token-cache.entity';
+import { TokenCacheService } from '../../auth/entities/token-cache/token-cache.service';
+import { TOKEN } from '../../constants/app-strings';
 import { switchMap, retry } from 'rxjs/operators';
 import { of, from } from 'rxjs';
 import * as Express from 'express';

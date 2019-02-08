@@ -3,7 +3,7 @@ import { Test } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { AppService } from '../src/server/app.service';
 import { AppController } from '../src/server/app.controller';
-import { SetupService } from '../src/server/controllers/setup/setup.service';
+import { SetupService } from '../src/server/system-settings/aggregates/setup/setup.service';
 
 const reqResp = {
   appURL: 'http://infra.localhost:3200',

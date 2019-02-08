@@ -1,7 +1,7 @@
 import { Injectable, HttpService } from '@nestjs/common';
-import { settingsAlreadyExists } from '../../exceptions';
-import { ServerSettingsService } from '../../models/server-settings/server-settings.service';
-import { ServerSettings } from '../../models/server-settings/server-settings.entity';
+import { settingsAlreadyExists } from '../../../exceptions';
+import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
+import { ServerSettings } from '../../../system-settings/entities/server-settings/server-settings.entity';
 
 @Injectable()
 export class SetupService {

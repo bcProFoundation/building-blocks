@@ -7,28 +7,22 @@ import {
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ModelsModule } from './models/models.module';
-import { SetupController } from './controllers/setup/setup.controller';
-import { SetupService } from './controllers/setup/setup.service';
-import { TYPEORM_CONNECTION } from './models/typeorm.connection';
-import { SettingsController } from './controllers/settings/settings.controller';
-import { SettingsService } from './controllers/settings/settings.service';
-import { ConnectController } from './controllers/connect/connect.controller';
+import { TYPEORM_CONNECTION } from './constants/typeorm.connection';
 import { INDEX_HTML } from './constants/filesystem';
+import { SystemSettingsModule } from './system-settings/system-settings.module';
+import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from './config/config.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(TYPEORM_CONNECTION),
-    ModelsModule,
     HttpModule,
+    TypeOrmModule.forRoot(TYPEORM_CONNECTION),
+    ConfigModule,
+    AuthModule,
+    SystemSettingsModule,
   ],
-  controllers: [
-    AppController,
-    SetupController,
-    SettingsController,
-    ConnectController,
-  ],
-  providers: [AppService, SetupService, SettingsService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

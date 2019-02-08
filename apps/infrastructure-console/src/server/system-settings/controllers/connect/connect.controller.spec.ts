@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { TokenCacheService } from '../../models/token-cache/token-cache.service';
+import { TokenCacheService } from '../../../auth/entities/token-cache/token-cache.service';
 import { ConnectController } from './connect.controller';
-import { AuthServerVerificationGuard } from '../../guards/authserver-verification.guard';
+import { AuthServerVerificationGuard } from '../../../auth/guards/authserver-verification.guard';
 
 describe('ConnectController', () => {
   let module: TestingModule;
