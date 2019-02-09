@@ -9,19 +9,22 @@ import {
   Res,
   Put,
   Param,
-  UnauthorizedException,
   Get,
   Query,
   Delete,
   ForbiddenException,
 } from '@nestjs/common';
+import { CommandBus } from '@nestjs/cqrs';
 import { callback } from '../../passport/strategies/local.strategy';
 import { CreateSocialLoginDto } from './social-login-create.dto';
-import { INDEX_HTML } from '../../../constants/app-strings';
+import { INDEX_HTML, ADMINISTRATOR } from '../../../constants/app-strings';
 import { SocialLoginService } from '../../../auth/entities/social-login/social-login.service';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { CRUDOperationService } from '../../../common/services/crudoperation/crudoperation.service';
 import { AuthGuard } from '../../../auth/guards/auth.guard';
+import { Roles } from '../../../common/decorators/roles.decorator';
+import { RoleGuard } from '../../../auth/guards/role.guard';
+import { RemoveSocialLoginCommand } from '../../../auth/commands/remove-social-login/remove-social-login.command';
 
 @Controller('social_login')
 export class SocialLoginController {
@@ -29,6 +32,7 @@ export class SocialLoginController {
     private readonly socialLoginService: SocialLoginService,
     private readonly userService: UserService,
     private readonly crudService: CRUDOperationService,
+    private readonly commandBus: CommandBus,
   ) {}
 
   @Get()
@@ -37,13 +41,11 @@ export class SocialLoginController {
   }
 
   @Post('v1/create')
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @Roles(ADMINISTRATOR)
+  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   @UsePipes(ValidationPipe)
   async create(@Body() body: CreateSocialLoginDto, @Req() req, @Res() res) {
     const payload: any = body;
-    if (!(await this.userService.checkAdministrator(req.user.user))) {
-      payload.isTrusted = 0;
-    }
     payload.createdBy = req.user.user;
     payload.creation = new Date();
     const socialLogin = await this.socialLoginService.save(payload);
@@ -51,28 +53,23 @@ export class SocialLoginController {
   }
 
   @Put('v1/update/:uuid')
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @Roles(ADMINISTRATOR)
+  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   async update(
     @Body() payload: CreateSocialLoginDto,
     @Param('uuid') uuid: string,
     @Req() req,
   ) {
     const socialLogin = await this.socialLoginService.findOne({ uuid });
-    if (
-      (await this.userService.checkAdministrator(req.user.user)) ||
-      socialLogin.createdBy === req.user.user
-    ) {
-      Object.assign(socialLogin, payload);
-      socialLogin.modified = new Date();
-      await socialLogin.save();
-      return socialLogin;
-    } else {
-      throw new UnauthorizedException();
-    }
+    Object.assign(socialLogin, payload);
+    socialLogin.modified = new Date();
+    await socialLogin.save();
+    return socialLogin;
   }
 
   @Get('v1/list')
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @Roles(ADMINISTRATOR)
+  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   async list(
     @Req() req,
     @Query('offset') offset: number,
@@ -81,11 +78,6 @@ export class SocialLoginController {
     @Query('sort') sort?: string,
   ) {
     const query: { createdBy?: string } = {};
-
-    if (!(await this.userService.checkAdministrator(req.user.user))) {
-      query.createdBy = req.user.user;
-    }
-
     const sortQuery = { name: sort };
     return this.crudService.listPaginate(
       this.socialLoginService.getModel(),
@@ -99,7 +91,8 @@ export class SocialLoginController {
   }
 
   @Get('v1/get/:uuid')
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @Roles(ADMINISTRATOR)
+  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   async findOne(@Param('uuid') uuid: string, @Req() req) {
     let socialLogin;
     if (await this.userService.checkAdministrator(req.user.user)) {
@@ -115,17 +108,13 @@ export class SocialLoginController {
   }
 
   @Delete('v1/delete/:uuid')
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @Roles(ADMINISTRATOR)
+  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   async deleteByUUID(@Param('uuid') uuid, @Req() req) {
-    const socialLogin = await this.socialLoginService.findOne({ uuid });
-    if (
-      (await this.userService.checkAdministrator(req.user.user)) ||
-      socialLogin.createdBy === req.user.user
-    ) {
-      return await this.socialLoginService.deleteOne({ uuid });
-    } else {
-      throw new UnauthorizedException();
-    }
+    const userUuid = req.user.user;
+    return await this.commandBus.execute(
+      new RemoveSocialLoginCommand(userUuid, uuid),
+    );
   }
 
   @Get('callback/:socialLogin')

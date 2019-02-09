@@ -4,7 +4,6 @@ import { SocialLoginController } from './social-login/social-login.controller';
 import { WellKnownController } from './well-known/well-known.controller';
 import { AuthService } from './auth/auth.service';
 import { OAuth2Service } from './oauth2/oauth2.service';
-import { SocialLoginManagementService } from './social-login/social-login-management.service';
 import { WellKnownService } from './well-known/well-known.service';
 
 export const authControllers = [
@@ -14,9 +13,4 @@ export const authControllers = [
   WellKnownController,
 ];
 
-export const authServices = [
-  AuthService,
-  OAuth2Service,
-  SocialLoginManagementService,
-  WellKnownService,
-];
+export const authServices = [AuthService, OAuth2Service, WellKnownService];

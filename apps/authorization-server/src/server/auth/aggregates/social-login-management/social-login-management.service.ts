@@ -3,25 +3,30 @@ import {
   UnauthorizedException,
   ForbiddenException,
   HttpService,
+  NotFoundException,
 } from '@nestjs/common';
+import { AggregateRoot } from '@nestjs/cqrs';
 import { from, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import * as uuidv4 from 'uuid/v4';
 import { stringify } from 'querystring';
 import { AxiosResponse } from 'axios';
-import { OAuth2TokenRequest } from './oauth2-token-request.interface';
+import { OAuth2TokenRequest } from '../../controllers/social-login/oauth2-token-request.interface';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
-import { SocialLoginService } from '../../../auth/entities/social-login/social-login.service';
+import { SocialLoginService } from '../../entities/social-login/social-login.service';
+import { SocialLoginRemovedEvent } from '../../../auth/events/social-login-removed/social-login-removed.event';
 
 @Injectable()
-export class SocialLoginManagementService {
+export class SocialLoginManagementService extends AggregateRoot {
   constructor(
     private readonly userService: UserService,
     private readonly socialLoginService: SocialLoginService,
     private readonly settingsService: ServerSettingsService,
     private readonly http: HttpService,
-  ) {}
+  ) {
+    super();
+  }
   requestTokenAndProfile(
     code: string,
     state: string,
@@ -140,5 +145,15 @@ export class SocialLoginManagementService {
         );
       }),
     );
+  }
+
+  async removeSocialLogin(uuid: string, userUuid: string) {
+    const socialLogin = await this.socialLoginService.findOne({ uuid });
+    if (socialLogin) {
+      await socialLogin.remove();
+      this.apply(new SocialLoginRemovedEvent(userUuid, socialLogin));
+    } else {
+      throw new NotFoundException();
+    }
   }
 }

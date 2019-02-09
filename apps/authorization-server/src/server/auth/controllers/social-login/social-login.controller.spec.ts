@@ -3,12 +3,14 @@ import { SocialLoginController } from './social-login.controller';
 import { SocialLoginService } from '../../../auth/entities/social-login/social-login.service';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { CRUDOperationService } from '../../../common/services/crudoperation/crudoperation.service';
+import { CQRSModule } from '@nestjs/cqrs';
 
 describe('SocialLogin Controller', () => {
   let module: TestingModule;
 
   beforeAll(async () => {
     module = await Test.createTestingModule({
+      imports: [CQRSModule],
       controllers: [SocialLoginController],
       providers: [
         {

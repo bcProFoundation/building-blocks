@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from './passport.strategy';
 import { PassportOAuth2ClientStrategy } from './passport-oauth2-client.strategy';
 import { Request } from 'express';
-import { SocialLoginManagementService } from '../../controllers/social-login/social-login-management.service';
+import { SocialLoginManagementService } from '../../aggregates/social-login-management/social-login-management.service';
 import { bindCallback } from 'rxjs';
 
 @Injectable()

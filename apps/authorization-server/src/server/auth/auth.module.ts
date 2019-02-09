@@ -1,5 +1,12 @@
-import { Module, NestModule, MiddlewareConsumer, Global } from '@nestjs/common';
+import {
+  Module,
+  NestModule,
+  MiddlewareConsumer,
+  Global,
+  OnModuleInit,
+} from '@nestjs/common';
 import { PassportAuthenticateMiddleware } from '@nest-middlewares/passport';
+import { EventBus, CommandBus, CQRSModule } from '@nestjs/cqrs';
 import { OAuth2orizeSetup } from './middlewares/oauth2orize.setup';
 import { OAuth2ConfirmationMiddleware } from './middlewares/oauth2-confirmation.middleware';
 import { OAuth2AuthorizationMiddleware } from './middlewares/oauth2-authorization.middleware';
@@ -14,9 +21,14 @@ import { TokenSchedulerService } from './scheduler/token-schedule.service';
 import { authControllers, authServices } from './controllers';
 import { RoleGuard } from './guards/role.guard';
 import { TokenIntrospectionGuard } from './guards/token-introspection.guard';
+import { AuthAggregates } from './aggregates';
+import { AuthCommandHandlers } from './commands';
+import { AuthEventHandlers } from './events';
+import { ModuleRef } from '@nestjs/core';
 
 @Global()
 @Module({
+  imports: [CQRSModule, AuthEntitiesModule, OAuth2Module, PassportModule],
   providers: [
     ...authServices,
 
@@ -34,18 +46,36 @@ import { TokenIntrospectionGuard } from './guards/token-introspection.guard';
     // Guards
     RoleGuard,
     TokenIntrospectionGuard,
+
+    // CQRS
+    ...AuthAggregates,
+    ...AuthCommandHandlers,
+    ...AuthEventHandlers,
   ],
   controllers: [...authControllers],
-  imports: [AuthEntitiesModule, OAuth2Module, PassportModule],
   exports: [
     ...authServices,
+    ...AuthAggregates,
     AuthEntitiesModule,
     KeyPairGeneratorService,
     RoleGuard,
     TokenIntrospectionGuard,
   ],
 })
-export class AuthModule implements NestModule {
+export class AuthModule implements NestModule, OnModuleInit {
+  constructor(
+    private readonly moduleRef: ModuleRef,
+    private readonly eventBus: EventBus,
+    private readonly commandBus: CommandBus,
+  ) {}
+
+  onModuleInit() {
+    this.eventBus.setModuleRef(this.moduleRef);
+    this.commandBus.setModuleRef(this.moduleRef);
+    this.eventBus.register(AuthEventHandlers);
+    this.commandBus.register(AuthCommandHandlers);
+    // TODO: Setup Saga
+  }
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(OAuth2ConfirmationMiddleware)
