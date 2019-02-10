@@ -29,6 +29,8 @@ import { RoleGuard } from '../../../auth/guards/role.guard';
 import { CRUDOperationService } from '../../../common/services/crudoperation/crudoperation.service';
 import { UserAggregateService } from '../../../user-management/aggregates/user-aggregate/user-aggregate.service';
 import { RemoveUserAccountCommand } from '../../../user-management/commands/remove-user-account/remove-user-account.command';
+import { GenerateForgottenPasswordCommand } from '../../../user-management/commands/generate-forgotten-password/generate-forgotten-password.command';
+import { VerifyEmailDto } from '../../../user-management/entities/user/verify-email.dto';
 
 @Controller('user')
 export class UserController {
@@ -189,5 +191,22 @@ export class UserController {
     }
     if (!user) throw new ForbiddenException();
     return user;
+  }
+
+  @Post('v1/forgot_password')
+  async forgotPassword(@Body('emailOrPhone') emailOrPhone: string) {
+    return await this.commandBus.execute(
+      new GenerateForgottenPasswordCommand(emailOrPhone),
+    );
+  }
+
+  @Post('v1/generate_password')
+  @UsePipes(ValidationPipe)
+  async verifyEmail(@Body() payload: VerifyEmailDto, @Res() res) {
+    const verifyEmailResponse = await this.userAggregate.verifyEmail(
+      payload,
+      res,
+    );
+    res.json(verifyEmailResponse);
   }
 }

@@ -1,12 +1,9 @@
 import { Injectable, HttpService } from '@nestjs/common';
 import { UserService } from '../../../user-management/entities/user/user.service';
-import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
 import { randomBytes } from 'crypto';
 import { User } from '../../../user-management/entities/user/user.interface';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
-import { invalidUserException } from '../../../common/filters/exceptions';
-import { CryptographerService } from '../../../common/cryptographer.service';
 
 @Injectable()
 export class SignupService {
@@ -15,8 +12,6 @@ export class SignupService {
     private readonly userService: UserService,
     private readonly serverSettingsService: ServerSettingsService,
     private readonly clientService: ClientService,
-    private readonly cryptoService: CryptographerService,
-    private readonly authDataService: AuthDataService,
   ) {}
 
   async initSignup(payload, res) {
@@ -72,20 +67,5 @@ export class SignupService {
           await unverifiedUser.remove();
         },
       });
-  }
-
-  async verifyEmail(payload, res) {
-    const verifiedUser = await this.userService.findOne({
-      verificationCode: payload.verificationCode,
-    });
-    if (!verifiedUser) throw invalidUserException;
-    const userPassword = new (this.authDataService.getModel())();
-    userPassword.password = this.cryptoService.hashPassword(payload.password);
-    await userPassword.save();
-    verifiedUser.password = userPassword.uuid;
-    verifiedUser.disabled = false;
-    verifiedUser.verificationCode = undefined;
-    verifiedUser.save();
-    return { message: res.__('Password set successfully') };
   }
 }

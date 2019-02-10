@@ -4,7 +4,7 @@ import { AccountComponent } from './account/account.component';
 import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
 import { AuthGuardService } from './auth/auth-guard.service';
-import { VerifySignupComponent } from './verify-signup/verify-signup.component';
+import { VerifyGeneratePasswordComponent } from './verify-generate-password/verify--generate-password.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'account', pathMatch: 'full' },
@@ -15,7 +15,8 @@ const routes: Routes = [
     canActivate: [AuthGuardService],
   },
   { path: 'signup', component: SignupComponent },
-  { path: 'signup/:code', component: VerifySignupComponent },
+  { path: 'signup/:code', component: VerifyGeneratePasswordComponent },
+  { path: 'forgot/:code', component: VerifyGeneratePasswordComponent },
 ];
 
 @NgModule({

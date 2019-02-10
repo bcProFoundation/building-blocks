@@ -5,6 +5,12 @@ import { Observable } from 'rxjs';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { map } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
+import { MatSnackBar } from '@angular/material';
+import {
+  PLEASE_CHECK_EMAIL,
+  CLOSE,
+  PLEASE_CHECK_USERNAME,
+} from '../../constants/app-strings';
 
 @Component({
   selector: 'app-login',
@@ -51,6 +57,7 @@ export class LoginComponent implements OnInit {
     private authService: AuthService,
     private breakpointObserver: BreakpointObserver,
     private route: ActivatedRoute,
+    private snackBar: MatSnackBar,
   ) {}
 
   ngOnInit() {
@@ -145,7 +152,16 @@ export class LoginComponent implements OnInit {
   }
 
   forgotPassword() {
-    // communicationServer.recoveryEmail
+    this.authService
+      .forgotPassword(this.loginUserForm.controls.username.value)
+      .subscribe({
+        next: success => {
+          this.snackBar.open(PLEASE_CHECK_EMAIL, CLOSE, { duration: 2000 });
+          window.location.href = '/login';
+        },
+        error: error =>
+          this.snackBar.open(PLEASE_CHECK_USERNAME, CLOSE, { duration: 2000 }),
+      });
   }
 
   resendOTP() {

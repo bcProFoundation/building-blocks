@@ -12,7 +12,7 @@ import { SignupComponent } from './signup/signup.component';
 import { AccountComponent } from './account/account.component';
 import { AuthService } from './auth/auth.service';
 import { APP_ID, AVAILABLE_TRANSLATIONS } from '../constants/app-strings';
-import { VerifySignupComponent } from './verify-signup/verify-signup.component';
+import { VerifyGeneratePasswordComponent } from './verify-generate-password/verify--generate-password.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
 let lang = navigator.language;
@@ -26,7 +26,7 @@ if (!AVAILABLE_TRANSLATIONS.includes(lang)) {
     LoginComponent,
     SignupComponent,
     AccountComponent,
-    VerifySignupComponent,
+    VerifyGeneratePasswordComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: APP_ID }),

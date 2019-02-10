@@ -10,6 +10,8 @@ import { UserAggregateService } from './aggregates/user-aggregate/user-aggregate
 import { UserManagementEventHandlers } from './events';
 import { UserManagementCommandHandlers } from './commands';
 import { UserManagementSagas } from './sagas';
+import { EmailRequestService } from './aggregates/email-request/email-request.service';
+import { SignupController } from './controllers/signup/signup.controller';
 
 @Global()
 @Module({
@@ -23,8 +25,9 @@ import { UserManagementSagas } from './sagas';
     ...UserManagementEventHandlers,
     ...UserManagementCommandHandlers,
     ...UserManagementSagas,
+    EmailRequestService,
   ],
-  controllers: [UserController, RoleController],
+  controllers: [UserController, RoleController, SignupController],
   exports: [
     UserManagementEntitiesModule,
     UserManagementService,

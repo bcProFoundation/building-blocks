@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 
-import { VerifySignupService } from './verify-signup.service';
+import { VerifyGeneratePasswordService } from './verify-generate-password.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-describe('VerifySignupService', () => {
+describe('VerifyGeneratePasswordService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
@@ -11,7 +11,9 @@ describe('VerifySignupService', () => {
   );
 
   it('should be created', () => {
-    const service: VerifySignupService = TestBed.get(VerifySignupService);
+    const service: VerifyGeneratePasswordService = TestBed.get(
+      VerifyGeneratePasswordService,
+    );
     expect(service).toBeTruthy();
   });
 });

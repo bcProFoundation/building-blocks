@@ -11,8 +11,10 @@ import {
   twoFactorEnabledException,
   twoFactorNotEnabledException,
   invalidOTPException,
+  invalidUserException,
 } from '../../../common/filters/exceptions';
 import { i18n } from '../../../i18n/i18n.config';
+import { CryptographerService } from '../../../common/cryptographer.service';
 
 @Injectable()
 export class UserAggregateService {
@@ -20,6 +22,7 @@ export class UserAggregateService {
     private readonly user: UserService,
     private readonly authData: AuthDataService,
     private readonly settings: ServerSettingsService,
+    private readonly crypto: CryptographerService,
   ) {}
 
   async initializeMfa(uuid: string, restart: boolean = false) {
@@ -133,5 +136,20 @@ export class UserAggregateService {
     user.sharedSecret = null;
     await user.save();
     return { message: i18n.__('2FA Disabled') };
+  }
+
+  async verifyEmail(payload, res) {
+    const verifiedUser = await this.user.findOne({
+      verificationCode: payload.verificationCode,
+    });
+    if (!verifiedUser) throw invalidUserException;
+    const userPassword = new (this.authData.getModel())();
+    userPassword.password = this.crypto.hashPassword(payload.password);
+    await userPassword.save();
+    verifiedUser.password = userPassword.uuid;
+    verifiedUser.disabled = false;
+    verifiedUser.verificationCode = undefined;
+    verifiedUser.save();
+    return { message: res.__('Password set successfully') };
   }
 }

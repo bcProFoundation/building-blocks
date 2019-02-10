@@ -3,6 +3,7 @@ import { UserAggregateService } from './user-aggregate.service';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
+import { CryptographerService } from '../../../common/cryptographer.service';
 
 describe('UserAggregateService', () => {
   let service: UserAggregateService;
@@ -21,6 +22,10 @@ describe('UserAggregateService', () => {
         },
         {
           provide: AuthDataService,
+          useValue: {},
+        },
+        {
+          provide: CryptographerService,
           useValue: {},
         },
       ],
