@@ -16,6 +16,7 @@ import {
   Delete,
   Put,
 } from '@nestjs/common';
+import { CommandBus } from '@nestjs/cqrs';
 import { ClientService } from '../../../client-management/entities/client/client.service';
 import { callback } from '../../../auth/passport/strategies/local.strategy';
 import { AuthGuard } from '../../../auth/guards/auth.guard';
@@ -26,6 +27,7 @@ import { RoleGuard } from '../../../auth/guards/role.guard';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { CRUDOperationService } from '../../../common/services/crudoperation/crudoperation.service';
 import { randomBytes32 } from '../../../client-management/entities/client/client.schema';
+import { RemoveOAuth2ClientCommand } from '../../../client-management/commands/remove-oauth2client/remove-oauth2client.command';
 
 @Controller('client')
 @SerializeOptions({ excludePrefixes: ['_'] })
@@ -34,6 +36,7 @@ export class ClientController {
     private readonly clientService: ClientService,
     private readonly userService: UserService,
     private readonly crudService: CRUDOperationService,
+    private readonly commandBus: CommandBus,
   ) {}
 
   @Post('v1/create')
@@ -166,14 +169,9 @@ export class ClientController {
   @Delete('v1/delete/:clientId')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
   async deleteByUUID(@Param('clientId') clientId, @Req() req) {
-    const client = await this.clientService.findOne({ clientId });
-    if (
-      (await this.userService.checkAdministrator(req.user.user)) ||
-      client.createdBy === req.user.user
-    ) {
-      return await this.clientService.deleteByClientId(clientId);
-    } else {
-      throw new UnauthorizedException();
-    }
+    const actorUserUuid = req.user.user;
+    return await this.commandBus.execute(
+      new RemoveOAuth2ClientCommand(actorUserUuid, clientId),
+    );
   }
 }

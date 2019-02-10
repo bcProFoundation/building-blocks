@@ -3,6 +3,7 @@ import { ClientController } from './client.controller';
 import { ClientService } from '../../../client-management/entities/client/client.service';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { CRUDOperationService } from '../../../common/services/crudoperation/crudoperation.service';
+import { CommandBus } from '@nestjs/cqrs';
 
 describe('ClientController', () => {
   let module: TestingModule;
@@ -21,6 +22,10 @@ describe('ClientController', () => {
         {
           provide: CRUDOperationService,
           useValue: {}, // provide mock values
+        },
+        {
+          provide: CommandBus,
+          useFactory: () => jest.fn(),
         },
       ],
     }).compile();
