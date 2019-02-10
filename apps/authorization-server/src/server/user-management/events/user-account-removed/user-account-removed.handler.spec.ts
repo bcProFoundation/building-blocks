@@ -5,7 +5,7 @@ import { UserAccountRemovedHandler } from './user-account-removed.handler';
 import { User } from '../../../user-management/entities/user/user.interface';
 import { UserAccountRemovedEvent } from './user-account-removed';
 
-describe('Command: RemoveSocialLoginHandler', () => {
+describe('Event: UserAccountRemovedHandler', () => {
   let eventBus$: EventBus;
   let manager: UserDeleteRequestService;
   let eventHandler: UserAccountRemovedHandler;
@@ -55,7 +55,7 @@ describe('Command: RemoveSocialLoginHandler', () => {
     expect(eventHandler).toBeDefined();
   });
 
-  it('should remove the User using the EmailService', async () => {
+  it('should inform client the User is deleted using the UserDeleteRequestService', async () => {
     manager.informClients = jest.fn(() => Promise.resolve());
     eventBus$.publish = jest.fn(() => {});
     await eventHandler.handle(

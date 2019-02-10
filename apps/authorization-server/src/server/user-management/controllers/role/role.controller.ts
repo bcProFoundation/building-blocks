@@ -9,7 +9,9 @@ import {
   Body,
   Res,
   Put,
+  Delete,
 } from '@nestjs/common';
+import { CommandBus } from '@nestjs/cqrs';
 import { ADMINISTRATOR } from '../../../constants/app-strings';
 import { RoleService } from '../../../user-management/entities/role/role.service';
 import { CRUDOperationService } from '../../../common/services/crudoperation/crudoperation.service';
@@ -18,12 +20,14 @@ import { AuthGuard } from '../../../auth/guards/auth.guard';
 import { RoleGuard } from '../../../auth/guards/role.guard';
 import { Roles } from '../../../common/decorators/roles.decorator';
 import { invalidRoleException } from '../../../common/filters/exceptions';
+import { RemoveUserRoleCommand } from '../../../user-management/commands/remove-user-role/remove-user-role.command';
 
 @Controller('role')
 export class RoleController {
   constructor(
     private readonly roleService: RoleService,
     private readonly crudService: CRUDOperationService,
+    private readonly commandBus: CommandBus,
   ) {}
 
   @Get('v1/list')
@@ -83,5 +87,15 @@ export class RoleController {
   @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   async findOne(@Param('uuid') uuid: string, @Req() req) {
     return await this.roleService.findOne({ uuid });
+  }
+
+  @Delete('v1/delete/:roleName')
+  @Roles(ADMINISTRATOR)
+  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  async deleteRole(@Param('roleName') roleName: string, @Req() req) {
+    const actorUserUuid = req.user.user;
+    return await this.commandBus.execute(
+      new RemoveUserRoleCommand(actorUserUuid, roleName),
+    );
   }
 }

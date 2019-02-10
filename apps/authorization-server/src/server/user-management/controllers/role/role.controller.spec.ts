@@ -3,6 +3,7 @@ import { RoleController } from './role.controller';
 import { RoleService } from '../../../user-management/entities/role/role.service';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { CRUDOperationService } from '../../../common/services/crudoperation/crudoperation.service';
+import { CommandBus } from '@nestjs/cqrs';
 
 describe('RoleController', () => {
   let module: TestingModule;
@@ -21,6 +22,10 @@ describe('RoleController', () => {
         {
           provide: CRUDOperationService,
           useValue: {},
+        },
+        {
+          provide: CommandBus,
+          useFactory: () => jest.fn(),
         },
       ],
     }).compile();
