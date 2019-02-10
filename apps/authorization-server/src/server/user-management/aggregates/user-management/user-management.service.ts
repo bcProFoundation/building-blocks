@@ -2,6 +2,7 @@ import {
   Injectable,
   ForbiddenException,
   BadRequestException,
+  NotFoundException,
 } from '@nestjs/common';
 import { AggregateRoot } from '@nestjs/cqrs';
 import { UserService } from '../../entities/user/user.service';
@@ -16,6 +17,8 @@ import { UserAccountRemovedEvent } from '../../../user-management/events/user-ac
 import { RoleService } from '../../../user-management/entities/role/role.service';
 import { UserRoleRemovedEvent } from '../../../user-management/events/user-role-removed/user-role-removed.event';
 import { ADMINISTRATOR } from '../../../constants/app-strings';
+import { randomBytes } from 'crypto';
+import { ForgottenPasswordGeneratedEvent } from '../../../user-management/events/forgotten-password-generated/forgotten-password-generated.event';
 
 @Injectable()
 export class UserManagementService extends AggregateRoot {
@@ -95,5 +98,14 @@ export class UserManagementService extends AggregateRoot {
       await role.remove();
       this.apply(new UserRoleRemovedEvent(role, actorUuid));
     }
+  }
+
+  async generateForgottenPassword(emailOrPhone: string) {
+    const user = await this.userService.findUserByEmailOrPhone(emailOrPhone);
+    if (!user) throw new NotFoundException({ user });
+    user.verificationCode = randomBytes(32).toString('hex');
+    user.modified = new Date();
+    await user.save();
+    this.apply(new ForgottenPasswordGeneratedEvent(user));
   }
 }

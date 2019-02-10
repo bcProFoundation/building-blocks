@@ -1,4 +1,9 @@
-import { Module, HttpModule } from '@nestjs/common';
+import {
+  Module,
+  HttpModule,
+  NestModule,
+  MiddlewareConsumer,
+} from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -9,6 +14,7 @@ import { ConfigService } from './config/config.service';
 import { UserManagementModule } from './user-management/user-management.module';
 import { ClientManagementModule } from './client-management/client-management.module';
 import { SystemSettingsModule } from './system-settings/system-settings.module';
+import { INDEX_HTML } from './constants/app-strings';
 
 @Module({
   imports: [
@@ -36,4 +42,12 @@ import { SystemSettingsModule } from './system-settings/system-settings.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply((req, res, next) => {
+        res.sendFile(INDEX_HTML);
+      })
+      .forRoutes('/forgot*');
+  }
+}

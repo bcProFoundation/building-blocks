@@ -1,19 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { VerifySignupService } from './verify-signup.service';
+import { VerifyGeneratePasswordService } from './verify-generate-password.service';
 
 @Component({
-  selector: 'app-verify-signup',
-  templateUrl: './verify-signup.component.html',
-  styleUrls: ['./verify-signup.component.css'],
+  selector: 'app-verify-generate-password',
+  templateUrl: './verify-generate-password.component.html',
+  styleUrls: ['./verify-generate-password.component.css'],
 })
-export class VerifySignupComponent implements OnInit {
+export class VerifyGeneratePasswordComponent implements OnInit {
   verificationCode: string;
   newPassword: string;
   repeatPassword: string;
   constructor(
     private route: ActivatedRoute,
-    private verifySignup: VerifySignupService,
+    private verifyGeneratePassword: VerifyGeneratePasswordService,
   ) {
     this.verificationCode = this.route.snapshot.params.code;
   }
@@ -22,7 +22,7 @@ export class VerifySignupComponent implements OnInit {
 
   onSubmit() {
     if (this.newPassword === this.repeatPassword) {
-      this.verifySignup
+      this.verifyGeneratePassword
         .updateUser(this.verificationCode, this.newPassword)
         .subscribe({
           next: response => {

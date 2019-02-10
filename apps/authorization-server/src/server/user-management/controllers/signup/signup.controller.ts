@@ -8,7 +8,6 @@ import {
 } from '@nestjs/common';
 import { SignupService } from './signup.service';
 import { SignupViaEmailDto } from '../../../user-management/entities/user/signup-via-email.dto';
-import { VerifyEmailDto } from '../../../user-management/entities/user/verify-email.dto';
 
 @Controller('signup')
 export class SignupController {
@@ -19,15 +18,5 @@ export class SignupController {
   signupViaEmail(@Body() payload: SignupViaEmailDto, @Res() res) {
     payload.email = payload.email.trim().toLocaleLowerCase();
     return this.signupService.initSignup(payload, res);
-  }
-
-  @Post('v1/verify')
-  @UsePipes(ValidationPipe)
-  async verifyEmail(@Body() payload: VerifyEmailDto, @Res() res) {
-    const verifyEmailResponse = await this.signupService.verifyEmail(
-      payload,
-      res,
-    );
-    res.json(verifyEmailResponse);
   }
 }

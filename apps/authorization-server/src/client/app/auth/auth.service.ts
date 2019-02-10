@@ -93,4 +93,8 @@ export class AuthService {
   getSocialLogins() {
     return this.http.get(environment.routes.LIST_SOCIAL_LOGINS);
   }
+
+  forgotPassword(emailOrPhone: string) {
+    return this.http.post(environment.routes.FORGOT_PASSWORD, { emailOrPhone });
+  }
 }
