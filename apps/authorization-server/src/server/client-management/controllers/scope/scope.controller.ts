@@ -12,6 +12,7 @@ import {
   Res,
   SerializeOptions,
   Put,
+  Delete,
 } from '@nestjs/common';
 import { ScopeService } from '../../../client-management/entities/scope/scope.service';
 import { Roles } from '../../../common/decorators/roles.decorator';
@@ -21,6 +22,8 @@ import { callback } from '../../../auth/passport/strategies/local.strategy';
 import { RoleGuard } from '../../../auth/guards/role.guard';
 import { AuthGuard } from '../../../auth/guards/auth.guard';
 import { CreateScopeDto } from '../../../user-management/entities/user/create-scope.dto';
+import { RemoveOAuth2ScopeCommand } from '../../../client-management/commands/remove-oauth2scope/remove-oauth2scope.command';
+import { CommandBus } from '@nestjs/cqrs';
 
 @Controller('scope')
 @SerializeOptions({ excludePrefixes: ['_'] })
@@ -28,6 +31,7 @@ export class ScopeController {
   constructor(
     private readonly scopeService: ScopeService,
     private readonly crudService: CRUDOperationService,
+    private readonly commandBus: CommandBus,
   ) {}
 
   @Get('v1/list')
@@ -85,5 +89,15 @@ export class ScopeController {
   @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   async findOne(@Param('uuid') uuid: string, @Req() req) {
     return await this.scopeService.findOne({ uuid });
+  }
+
+  @Delete('v1/delete/:scopeName')
+  @Roles(ADMINISTRATOR)
+  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  async deleteScope(@Param('scopeName') scopeName, @Req() req) {
+    const actorUserUuid = req.user.user;
+    return await this.commandBus.execute(
+      new RemoveOAuth2ScopeCommand(actorUserUuid, scopeName),
+    );
   }
 }

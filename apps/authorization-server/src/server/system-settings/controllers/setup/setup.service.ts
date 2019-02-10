@@ -9,7 +9,12 @@ import { ServerSettingsService } from '../../../system-settings/entities/server-
 import { Scope } from '../../../client-management/entities/scope/scope.interface';
 import { Client } from '../../../client-management/entities/client/client.interface';
 import { i18n } from '../../../i18n/i18n.config';
-import { ADMINISTRATOR } from '../../../constants/app-strings';
+import {
+  ADMINISTRATOR,
+  SCOPE_OPENID,
+  SCOPE_ROLES,
+  SCOPE_EMAIL,
+} from '../../../constants/app-strings';
 import { KeyPairGeneratorService } from '../../../auth/scheduler/keypair-generator.service';
 
 @Injectable()
@@ -72,9 +77,9 @@ export class SetupService {
 
     const ScopeModel = this.scopeService.getModel();
     const scope: Scope[] = await ScopeModel.insertMany([
-      { name: 'openid' },
-      { name: 'roles' },
-      { name: 'email' },
+      { name: SCOPE_OPENID },
+      { name: SCOPE_ROLES },
+      { name: SCOPE_EMAIL },
     ]);
     const createdBy = await this.userService.findOne({ email });
     const allowedScopes: string[] = scope.map(r => r.name);
