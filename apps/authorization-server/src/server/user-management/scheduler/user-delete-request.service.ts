@@ -28,7 +28,6 @@ export class UserDeleteRequestService implements OnModuleInit {
 
   async onModuleInit() {
     await this.defineQueueProcess();
-    await this.informClients('123');
   }
 
   async defineQueueProcess() {
@@ -65,6 +64,10 @@ export class UserDeleteRequestService implements OnModuleInit {
     });
   }
 
+  /**
+   * Informs Clients on the shared endpoint
+   * @param uuid of user deleted
+   */
   async informClients(uuid) {
     const { id, data } = await this.queue.add(USER_DELETE_REQUEST, {
       message: USER_DELETE_REQUEST,

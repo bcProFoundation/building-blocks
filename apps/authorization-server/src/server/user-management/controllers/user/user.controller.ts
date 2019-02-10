@@ -13,7 +13,9 @@ import {
   ValidationPipe,
   ForbiddenException,
   Put,
+  Delete,
 } from '@nestjs/common';
+import { CommandBus } from '@nestjs/cqrs';
 import { CryptographerService } from '../../../common/cryptographer.service';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { AuthGuard } from '../../../auth/guards/auth.guard';
@@ -26,6 +28,7 @@ import { ADMINISTRATOR } from '../../../constants/app-strings';
 import { RoleGuard } from '../../../auth/guards/role.guard';
 import { CRUDOperationService } from '../../../common/services/crudoperation/crudoperation.service';
 import { UserAggregateService } from '../../../user-management/aggregates/user-aggregate/user-aggregate.service';
+import { RemoveUserAccountCommand } from '../../../user-management/commands/remove-user-account/remove-user-account.command';
 
 @Controller('user')
 export class UserController {
@@ -35,6 +38,7 @@ export class UserController {
     private readonly authDataService: AuthDataService,
     private readonly crudService: CRUDOperationService,
     private readonly userAggregate: UserAggregateService,
+    private readonly commandBus: CommandBus,
   ) {}
 
   @Post('v1/change_password')
@@ -136,6 +140,19 @@ export class UserController {
     await user.save();
     user._id, (user.password = undefined);
     res.json(user);
+  }
+
+  @Delete('v1/delete/:userUuidToBeDeleted')
+  @Roles(ADMINISTRATOR)
+  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  async deleteUser(
+    @Param('userUuidToBeDeleted') userUuidToBeDeleted,
+    @Req() req,
+  ) {
+    const actorUserUuid = req.user.user;
+    return await this.commandBus.execute(
+      new RemoveUserAccountCommand(actorUserUuid, userUuidToBeDeleted),
+    );
   }
 
   @Get('v1/list')

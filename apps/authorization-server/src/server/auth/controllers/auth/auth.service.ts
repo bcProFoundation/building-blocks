@@ -67,7 +67,7 @@ export class AuthService {
       uuid: user.sharedSecret,
     });
 
-    if (!user || (user && user.deleted)) {
+    if (!user) {
       throw new UnauthorizedException(i18n.__('Invalid User'));
     }
 

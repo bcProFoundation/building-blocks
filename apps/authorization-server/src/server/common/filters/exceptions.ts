@@ -60,3 +60,8 @@ export const invalidSessionException = new HttpException(
   i18n.__('Invalid Session'),
   HttpStatus.BAD_REQUEST,
 );
+
+export const cannotDeleteAdministratorException = new HttpException(
+  i18n.__('Cannot Delete Administrators'),
+  HttpStatus.FORBIDDEN,
+);

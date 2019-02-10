@@ -54,7 +54,7 @@ describe('Command: RemoveSocialLoginHandler', () => {
     expect(commandHandler).toBeDefined();
   });
 
-  it('should send the email using the EmailService', async () => {
+  it('should remove SocialLogin using the SocialLoginManagementService', async () => {
     manager.removeSocialLogin = jest.fn(() => Promise.resolve());
     commandBus$.execute = jest.fn(() => {});
     publisher.mergeObjectContext = jest.fn(aggregate => ({

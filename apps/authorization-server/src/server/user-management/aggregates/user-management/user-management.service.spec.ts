@@ -4,7 +4,6 @@ import { UserService } from '../../entities/user/user.service';
 import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
 import { BearerTokenService } from '../../../auth/entities/bearer-token/bearer-token.service';
-import { UserDeleteRequestService } from '../../../user-management/scheduler/user-delete-request.service';
 
 describe('UserManagementService', () => {
   let service: UserManagementService;
@@ -25,15 +24,14 @@ describe('UserManagementService', () => {
           useValue: {},
         },
         {
-          provide: UserDeleteRequestService,
-          useValue: {},
-        },
-        {
           provide: BearerTokenService,
           useValue: {},
         },
       ],
-    }).compile();
+    })
+      .overrideProvider(UserManagementService)
+      .useFactory({ factory: () => jest.fn() })
+      .compile();
     service = module.get<UserManagementService>(UserManagementService);
   });
   it('should be defined', () => {

@@ -35,7 +35,7 @@ export class ClientService {
   }
 
   async deleteClientsByUser(uuid) {
-    return await this.clientModel.deleteMany({ createdBy: uuid });
+    return await this.clientModel.deleteMany({ createdBy: uuid, isTrusted: 0 });
   }
 
   async deleteByUUID(uuid) {
