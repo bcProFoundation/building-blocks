@@ -1,18 +1,18 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { UserService } from '../../../models/user/user.service';
-import { CryptographerService } from '../../../utilities/cryptographer.service';
+import * as speakeasy from 'speakeasy';
 import {
   userAlreadyExistsException,
   invalidOTPException,
   invalidUserException,
-} from '../../filters/exceptions';
-import { AuthDataService } from '../../../models/auth-data/auth-data.service';
-import { CreateUserDto } from '../../../models/user/create-user.dto';
-import * as speakeasy from 'speakeasy';
-import { Role } from '../../../models/role/role.interface';
-import { User } from '../../../models/user/user.interface';
-import { AuthData } from '../../../models/auth-data/auth-data.interface';
+} from '../../../common/filters/exceptions';
 import { i18n } from '../../../i18n/i18n.config';
+import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
+import { UserService } from '../../../user-management/entities/user/user.service';
+import { CryptographerService } from '../../../common/cryptographer.service';
+import { CreateUserDto } from '../../../user-management/entities/user/create-user.dto';
+import { Role } from '../../../user-management/entities/role/role.interface';
+import { User } from '../../../user-management/entities/user/user.interface';
+import { AuthData } from '../../../user-management/entities/auth-data/auth-data.interface';
 
 @Injectable()
 export class AuthService {
@@ -67,7 +67,7 @@ export class AuthService {
       uuid: user.sharedSecret,
     });
 
-    if (!user || (user && user.deleted)) {
+    if (!user) {
       throw new UnauthorizedException(i18n.__('Invalid User'));
     }
 

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { ServerSettingsService } from '../../../models/server-settings/server-settings.service';
-import { OIDCKeyService } from '../../../models/oidc-key/oidc-key.service';
 import { JWK } from '../../middlewares/interfaces';
-import { OIDCKey } from '../../../models/oidc-key/oidc-key.interface';
+import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
+import { OIDCKeyService } from '../../../auth/entities/oidc-key/oidc-key.service';
+import { OIDCKey } from '../../../auth/entities/oidc-key/oidc-key.interface';
 
 @Injectable()
 export class WellKnownService {

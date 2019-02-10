@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { PLEASE_RUN_SETUP } from './constants/messages';
-import { SetupService } from './controllers/setup/setup.service';
+import { SetupService } from './system-settings/aggregates/setup.service';
 
 @Injectable()
 export class AppService {
-  constructor(private readonly idpSetupService: SetupService) {}
+  constructor(private readonly setupService: SetupService) {}
   async info() {
-    const info = (await this.idpSetupService.getInfo()) || {
+    const info = (await this.setupService.getInfo()) || {
       message: PLEASE_RUN_SETUP,
     };
     return info;

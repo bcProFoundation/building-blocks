@@ -1,15 +1,18 @@
-import { Module } from '@nestjs/common';
+import { Module, HttpModule } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { ModelsModule } from './models/models.module';
-import { SchedulerModule } from './scheduler/scheduler.module';
 import { ConfigModule } from './config/config.module';
+import { CommonModule } from './common/common.module';
 import { ConfigService } from './config/config.service';
+import { UserManagementModule } from './user-management/user-management.module';
+import { ClientManagementModule } from './client-management/client-management.module';
+import { SystemSettingsModule } from './system-settings/system-settings.module';
 
 @Module({
   imports: [
+    HttpModule,
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (config: ConfigService) => {
@@ -23,9 +26,12 @@ import { ConfigService } from './config/config.service';
       },
       inject: [ConfigService],
     }),
-    ModelsModule,
-    SchedulerModule,
+    ConfigModule,
+    CommonModule,
     AuthModule,
+    UserManagementModule,
+    ClientManagementModule,
+    SystemSettingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

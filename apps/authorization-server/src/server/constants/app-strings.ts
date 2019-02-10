@@ -15,3 +15,6 @@ export const ADMINISTRATOR_NAME = 'Administrator';
 export const ADMIN_EMAIL = 'Administrator';
 export const ROLES = 'roles';
 export const AUTHORIZATION = 'authorization';
+export const SCOPE_OPENID = 'openid';
+export const SCOPE_EMAIL = 'email';
+export const SCOPE_ROLES = 'roles';

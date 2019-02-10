@@ -5,16 +5,16 @@ import {
 } from '@nestjs/common';
 import * as oauth2orize from 'oauth2orize';
 import * as oauth2orize_ext from 'oauth2orize-openid';
-import { ClientService } from '../../models/client/client.service';
-import { BearerTokenService } from '../../models/bearer-token/bearer-token.service';
-import { invalidClientException } from '../filters/exceptions';
-import { CodeGrantService } from '../oauth2-services/code-grant/code-grant.service';
-import { TokenGrantService } from '../oauth2-services/token-grant/token-grant.service';
-import { CodeExchangeService } from '../oauth2-services/code-exchange/code-exchange.service';
-import { PasswordExchangeService } from '../oauth2-services/password-exchange/password-exchange.service';
-import { ClientCredentialExchangeService } from '../oauth2-services/client-credential-exchange/client-credential-exchange.service';
-import { RefreshTokenExchangeService } from '../oauth2-services/refresh-token-exchange/refresh-token-exchange.service';
-import { IDTokenGrantService } from '../oauth2-services/id-token-grant/id-token-grant.service';
+import { ClientService } from '../../client-management/entities/client/client.service';
+import { BearerTokenService } from '../entities/bearer-token/bearer-token.service';
+import { invalidClientException } from '../../common/filters/exceptions';
+import { TokenGrantService } from '../oauth2/token-grant/token-grant.service';
+import { CodeExchangeService } from '../oauth2/code-exchange/code-exchange.service';
+import { PasswordExchangeService } from '../oauth2/password-exchange/password-exchange.service';
+import { ClientCredentialExchangeService } from '../oauth2/client-credential-exchange/client-credential-exchange.service';
+import { RefreshTokenExchangeService } from '../oauth2/refresh-token-exchange/refresh-token-exchange.service';
+import { IDTokenGrantService } from '../oauth2/id-token-grant/id-token-grant.service';
+import { CodeGrantService } from '../oauth2/code-grant/code-grant.service';
 
 @Injectable()
 export class OAuth2orizeSetup implements OnModuleInit, OnApplicationBootstrap {

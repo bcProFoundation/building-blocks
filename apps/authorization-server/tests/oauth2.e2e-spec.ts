@@ -4,16 +4,15 @@ import { INestApplication } from '@nestjs/common';
 import { AppModule } from '../src/server/app.module';
 import { ExpressServer } from '../src/server/express-server';
 import { getParameterByName, OIDCKey } from './e2e-helpers';
-import { SetupService } from '../src/server/auth/controllers/setup/setup.service';
-import { ScopeService } from '../src/server/models/scope/scope.service';
-import { UserService } from '../src/server/models/user/user.service';
-import { ClientService } from '../src/server/models/client/client.service';
-import { SessionService } from '../src/server/models/session/session.service';
-import { AuthorizationCodeService } from '../src/server/models/authorization-code/authorization-code.service';
-import { BearerTokenService } from '../src/server/models/bearer-token/bearer-token.service';
-import { RoleService } from '../src/server/models/role/role.service';
-import { ServerSettingsService } from '../src/server/models/server-settings/server-settings.service';
-import { OIDCKeyService } from '../src/server/models/oidc-key/oidc-key.service';
+import { SetupService } from '../src/server/system-settings/controllers/setup/setup.service';
+import { ScopeService } from '../src/server/client-management/entities/scope/scope.service';
+import { UserService } from '../src/server/user-management/entities/user/user.service';
+import { ClientService } from '../src/server/client-management/entities/client/client.service';
+import { AuthorizationCodeService } from '../src/server/auth/entities/authorization-code/authorization-code.service';
+import { BearerTokenService } from '../src/server/auth/entities/bearer-token/bearer-token.service';
+import { RoleService } from '../src/server/user-management/entities/role/role.service';
+import { ServerSettingsService } from '../src/server/system-settings/entities/server-settings/server-settings.service';
+import { OIDCKeyService } from '../src/server/auth/entities/oidc-key/oidc-key.service';
 import 'jest';
 import { ConfigService } from '../src/server/config/config.service';
 jest.setTimeout(30000);
@@ -47,7 +46,6 @@ describe('OAuth2Controller (e2e)', () => {
     const authCodeService = moduleFixture.get(AuthorizationCodeService);
     const roleService = moduleFixture.get(RoleService);
     const clientService = moduleFixture.get(ClientService);
-    const sessionService = moduleFixture.get(SessionService);
     const scopeService = moduleFixture.get(ScopeService);
     const serverSettingsService = moduleFixture.get(ServerSettingsService);
     const oidcKeyService = moduleFixture.get(OIDCKeyService);
@@ -58,7 +56,6 @@ describe('OAuth2Controller (e2e)', () => {
     await authCodeService.clear();
     await roleService.clear();
 
-    await sessionService.clear();
     await scopeService.clear();
     await clientService.clear();
 

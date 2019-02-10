@@ -1,12 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
-import { getModelToken } from '@nestjs/mongoose';
 import { AuthService } from './auth.service';
-import { CryptographerService } from '../../../utilities/cryptographer.service';
-import { UserService } from '../../../models/user/user.service';
-import { AuthDataService } from '../../../models/auth-data/auth-data.service';
-import { USER } from '../../../models/user/user.schema';
-import { AUTH_DATA } from '../../../models/auth-data/auth-data.schema';
+import { CryptographerService } from '../../../common/cryptographer.service';
+import { UserService } from '../../../user-management/entities/user/user.service';
+import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
 
 describe('Auth Controller', () => {
   let module: TestingModule;
@@ -15,28 +12,20 @@ describe('Auth Controller', () => {
       controllers: [AuthController],
       providers: [
         {
-          provide: 'AuthService',
-          useClass: AuthService,
+          provide: AuthService,
+          useValue: {},
         },
         {
-          provide: 'CryptographerService',
-          useClass: CryptographerService,
+          provide: CryptographerService,
+          useValue: {},
         },
         {
-          provide: 'UserService',
-          useClass: UserService,
+          provide: UserService,
+          useValue: {},
         },
         {
-          provide: 'AuthDataService',
-          useClass: AuthDataService,
-        },
-        {
-          provide: getModelToken(USER),
-          useValue: {}, // provide mock values
-        },
-        {
-          provide: getModelToken(AUTH_DATA),
-          useValue: {}, // provide mock values
+          provide: AuthDataService,
+          useValue: {},
         },
       ],
     }).compile();

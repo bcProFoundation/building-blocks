@@ -1,10 +1,10 @@
 import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
-import { BearerTokenService } from '../../../models/bearer-token/bearer-token.service';
 import { i18n } from '../../../i18n/i18n.config';
 import { ROLES } from '../../../constants/app-strings';
-import { UserService } from '../../../models/user/user.service';
 import { from, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { BearerTokenService } from '../../../auth/entities/bearer-token/bearer-token.service';
+import { UserService } from '../../../user-management/entities/user/user.service';
 
 @Injectable()
 export class OAuth2Service {

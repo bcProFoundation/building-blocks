@@ -1,29 +1,23 @@
 import { Module, HttpModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ModelsModule } from './models/models.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TYPEORM_CONNECTION } from './models/typeorm.connection';
-import { SetupService } from './controllers/setup/setup.service';
-import { SetupController } from './controllers/setup/setup.controller';
-import { ProfileController } from './controllers/profile/profile.controller';
-import { SettingsController } from './controllers/settings/settings.controller';
-import { ConnectController } from './controllers/connect/connect.controller';
-import { SettingsService } from './controllers/settings/settings.service';
+import { TYPEORM_CONNECTION } from './constants/typeorm.connection';
+import { AuthModule } from './auth/auth.module';
+import { SystemSettingsModule } from './system-settings/system-settings.module';
+import { ProfileManagementModule } from './profile-management/profile-management.module';
+import { ConfigModule } from './config/config.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(TYPEORM_CONNECTION),
-    ModelsModule,
     HttpModule,
+    TypeOrmModule.forRoot(TYPEORM_CONNECTION),
+    ConfigModule,
+    AuthModule,
+    SystemSettingsModule,
+    ProfileManagementModule,
   ],
-  controllers: [
-    AppController,
-    SetupController,
-    ProfileController,
-    SettingsController,
-    ConnectController,
-  ],
-  providers: [AppService, SetupService, SettingsService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

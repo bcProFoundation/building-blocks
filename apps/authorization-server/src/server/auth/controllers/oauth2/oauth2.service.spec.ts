@@ -1,11 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { OAuth2Service } from './oauth2.service';
-import { BearerTokenService } from '../../../models/bearer-token/bearer-token.service';
-import { getModelToken } from '@nestjs/mongoose';
-import { BEARER_TOKEN } from '../../../models/bearer-token/bearer-token.schema';
-import { AUTH_DATA } from '../../../models/auth-data/auth-data.schema';
-import { UserService } from '../../../models/user/user.service';
-import { USER } from '../../../models/user/user.schema';
+import { UserService } from '../../../user-management/entities/user/user.service';
+import { BearerTokenService } from '../../../auth/entities/bearer-token/bearer-token.service';
 
 describe('OAuth2Service', () => {
   let service: OAuth2Service;
@@ -13,18 +9,12 @@ describe('OAuth2Service', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         OAuth2Service,
-        BearerTokenService,
-        UserService,
         {
-          provide: getModelToken(BEARER_TOKEN),
+          provide: BearerTokenService,
           useValue: {}, // provide mock values
         },
         {
-          provide: getModelToken(AUTH_DATA),
-          useValue: {}, // provide mock values
-        },
-        {
-          provide: getModelToken(USER),
+          provide: UserService,
           useValue: {}, // provide mock values
         },
       ],

@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { EnsureLoginGuard } from 'nestjs-ensureloggedin-guard';
-import { ErrorFilter } from './auth/filters/errors.filter';
+import { ErrorFilter } from './common/filters/errors.filter';
 import { ApiOperation, ApiExcludeEndpoint } from '@nestjs/swagger';
 import { i18n } from './i18n/i18n.config';
 import { INDEX_HTML } from './constants/app-strings';

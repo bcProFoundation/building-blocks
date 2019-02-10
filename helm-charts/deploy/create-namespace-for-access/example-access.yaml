@@ -17,7 +17,7 @@ metadata:
   name: example-user-full-access
   namespace: example
 rules:
-- apiGroups: ["", "extensions", "apps"]
+- apiGroups: ["", "extensions", "apps", "networking.k8s.io", "rbac.authorization.k8s.io"]
   resources: ["*"]
   verbs: ["*"]
 - apiGroups: ["batch"]

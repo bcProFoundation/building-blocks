@@ -1,0 +1,15 @@
+import { Module, Global } from '@nestjs/common';
+import { SystemSettingsEntitiesModule } from './entities/entities.module';
+import { SettingsController } from './controllers/settings/settings.controller';
+import { SetupController } from './controllers/setup/setup.controller';
+import { SettingsService } from './aggregates/settings.service';
+import { SetupService } from './aggregates/setup.service';
+
+@Global()
+@Module({
+  imports: [SystemSettingsEntitiesModule],
+  controllers: [SettingsController, SetupController],
+  providers: [SettingsService, SetupService],
+  exports: [SystemSettingsEntitiesModule, SetupService],
+})
+export class SystemSettingsModule {}
