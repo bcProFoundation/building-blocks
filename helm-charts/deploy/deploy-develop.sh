@@ -14,6 +14,7 @@ then
         --tiller-namespace develop \
         --namespace develop \
         --reuse-values \
+        --recreate-pods \
         --set mongodb.image.repository=registry.gitlab.com/castlecraft/docker-craft/bitnami-mongodb-config \
         --set mongodb.image.tag=latest \
         --set authorization-server.image.tag=edge \
