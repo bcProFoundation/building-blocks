@@ -1,5 +1,6 @@
 #!/bin/bash
 
+cd /tmp
 # Clone building blocks configuration
 git clone https://github.com/castlecraft/helm-charts
 
