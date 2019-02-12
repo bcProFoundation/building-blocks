@@ -11,7 +11,7 @@ import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
 import { AccountComponent } from './account/account.component';
 import { AuthService } from './auth/auth.service';
-import { APP_ID, AVAILABLE_TRANSLATIONS } from '../constants/app-strings';
+import { AVAILABLE_TRANSLATIONS } from '../constants/app-strings';
 import { VerifyGeneratePasswordComponent } from './verify-generate-password/verify--generate-password.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
@@ -29,7 +29,7 @@ if (!AVAILABLE_TRANSLATIONS.includes(lang)) {
     VerifyGeneratePasswordComponent,
   ],
   imports: [
-    BrowserModule.withServerTransition({ appId: APP_ID }),
+    BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
