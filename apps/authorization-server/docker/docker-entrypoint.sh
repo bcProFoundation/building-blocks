@@ -87,10 +87,6 @@ if [ "$1" = 'start' ]; then
   checkConnection
   # Configure server
   su craft -c "bash -c configureServer"
-  # Run Migrations
-  echo "Run migrations"
-  su craft -c "./node_modules/.bin/migrate up -d mongodb://$DB_HOST:27017/$DB_NAME"
-
   su craft -c "node dist/out-tsc/main.js"
 fi
 

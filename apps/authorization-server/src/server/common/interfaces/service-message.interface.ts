@@ -4,5 +4,5 @@ export interface ServiceMessage {
   service: string;
   session: boolean;
   communication: boolean;
-  services: ConnectedService[];
+  services?: ConnectedService[];
 }
