@@ -3,12 +3,13 @@ import * as cookieParser from 'cookie-parser';
 import * as expressSession from 'express-session';
 import * as passport from 'passport';
 import * as helmet from 'helmet';
-import * as rateLimit from 'express-rate-limit';
 import * as connectMongoDBSession from 'connect-mongo';
 import { ConfigService } from './config/config.service';
 import { join } from 'path';
 import { INestApplication } from '@nestjs/common';
 import { i18n } from './i18n/i18n.config';
+// import * as rateLimit from 'express-rate-limit';
+
 const MongoStore = connectMongoDBSession(expressSession);
 
 export class ExpressServer {
@@ -23,12 +24,13 @@ export class ExpressServer {
     this.server.use(helmet());
 
     // Rate-limit
-    this.server.use(
-      rateLimit({
-        windowMs: 15 * 60 * 1000, // 15 minutes
-        max: 1000, // limit each IP to 100 requests per windowMs
-      }),
-    );
+    // TODO: Multiple Services need to ping Auth Server
+    // this.server.use(
+    //   rateLimit({
+    //     windowMs: 15 * 60 * 1000, // 15 minutes
+    //     max: 1000, // limit each IP to 100 requests per windowMs
+    //   }),
+    // );
   }
 
   setupAssetDir() {
