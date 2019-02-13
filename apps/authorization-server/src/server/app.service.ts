@@ -14,7 +14,7 @@ export class AppService {
   ) {}
 
   async info(req?) {
-    let settings: ServerSettings;
+    let settings: ServerSettings, services;
     const trustedClients = await this.clientService.findAll({
       isTrusted: { $gt: 0 },
     });
@@ -22,14 +22,20 @@ export class AppService {
       service: i18n.__('Authorization Server'),
       session: req.isAuthenticated(),
       communication: false,
-      services: trustedClients.map(client => {
+    };
+    try {
+      services = trustedClients.map(client => {
         const type = this.kebabCase(client.name);
         const parsedUrl = new URL(client.redirectUris[0]);
         let url = `${parsedUrl.protocol}//${parsedUrl.hostname}`;
         if (parsedUrl.port) url += `:${parsedUrl.port}`;
         return { type, url };
-      }),
-    };
+      });
+      message.services = services;
+    } catch (error) {
+      message.services = [];
+    }
+
     try {
       settings = await this.serverSettings.find();
       if (settings.communicationServerClientId) {
