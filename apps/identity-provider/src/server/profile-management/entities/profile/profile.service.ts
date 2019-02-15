@@ -33,7 +33,9 @@ export class ProfileService {
   }
 
   public async uploadAndSetAvatar(file, profileUuid) {
-    const profile: Profile = await this.findOne({ uuid: profileUuid });
+    let profile: Profile =
+      (await this.findOne({ uuid: profileUuid })) || new Profile();
+    if (!profile.uuid) profile = await this.save({ uuid: profileUuid });
     if (profile && profile.picture) {
       const oldPicture = profile.picture.split('/')[2];
       this.deleteAvatarFile(oldPicture);

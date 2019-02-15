@@ -30,8 +30,7 @@ RUN chown -R craft:craft /home/craft
 WORKDIR /home/craft/identity-provider
 
 # Mount volume for files
-RUN mkdir -p /home/craft/identity-provider/files/public \
-    /home/craft/identity-provider/files/private
+RUN mkdir -p /home/craft/identity-provider/files
 
 # Mount volume
 VOLUME ["/home/craft/identity-provider/files"]
