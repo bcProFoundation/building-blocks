@@ -40,24 +40,20 @@ export class ProfileController {
     @Req() req,
     @Res() res,
   ) {
-    if (req.token.active) {
-      let updatedProfile: Profile;
-      if (profile.uuid && profile.uuid === req.token.sub) {
-        updatedProfile = await this.profileService.findOne({
-          uuid: profile.uuid,
-        });
+    let updatedProfile: Profile;
+    if (profile.uuid && profile.uuid === req.token.sub) {
+      updatedProfile = await this.profileService.findOne({
+        uuid: profile.uuid,
+      });
 
-        if (!updatedProfile) updatedProfile = new Profile();
-        Object.assign(updatedProfile, profile);
-        await updatedProfile.save();
-      } else {
-        if (req.token.sub) profile.uuid = req.token.sub;
-        updatedProfile = await this.profileService.save(profile);
-      }
-      res.json(updatedProfile);
+      if (!updatedProfile) updatedProfile = new Profile();
+      Object.assign(updatedProfile, profile);
+      await updatedProfile.save();
     } else {
-      res.json({ message: 'Token Expired' });
+      if (req.token.sub) profile.uuid = req.token.sub;
+      updatedProfile = await this.profileService.save(profile);
     }
+    res.json(updatedProfile);
   }
 
   @Post('v1/update_personal_details')
@@ -121,16 +117,14 @@ export class ProfileController {
 
   @Delete('v1/delete_avatar')
   @UseGuards(TokenGuard)
-  async deleteAvatar(@Req() req, @Res() res) {
-    if (req.token.active) {
-      const profile = await this.profileService.findOne({
-        uuid: req.token.sub,
-      });
-      if (profile.picture) {
-        this.profileService.deleteAvatarFile(profile.picture.split('/')[2]);
-        profile.picture = undefined;
-        await profile.save();
-      }
+  async deleteAvatar(@Req() req) {
+    const profile = await this.profileService.findOne({
+      uuid: req.token.sub,
+    });
+    if (profile.picture) {
+      this.profileService.deleteAvatarFile(profile.picture.split('/')[2]);
+      profile.picture = undefined;
+      return await profile.save();
     }
   }
 }
