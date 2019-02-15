@@ -30,8 +30,7 @@ RUN chown -R craft:craft /home/craft
 WORKDIR /home/craft/communication-server
 
 # Mount volume for files
-RUN mkdir -p /home/craft/communication-server/files/public \
-    /home/craft/communication-server/files/private
+RUN mkdir -p /home/craft/communication-server/files
 
 # Mount volume
 VOLUME ["/home/craft/communication-server/files"]

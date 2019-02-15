@@ -30,8 +30,7 @@ RUN chown -R craft:craft /home/craft
 WORKDIR /home/craft/infrastructure-console
 
 # Mount volume for files
-RUN mkdir -p /home/craft/infrastructure-console/files/public \
-    /home/craft/infrastructure-console/files/private
+RUN mkdir -p /home/craft/infrastructure-console/files
 
 # Mount volume
 VOLUME ["/home/craft/infrastructure-console/files"]

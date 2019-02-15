@@ -25,9 +25,8 @@ WORKDIR /home/craft/authorization-server
 COPY --from=0 /home/craft/authorization-server .
 RUN chown -R craft:craft /home/craft
 
-# Create volume directory and sub directories
-RUN mkdir -p /home/craft/authorization-server/files/public \
-    /home/craft/authorization-server/files/private
+# Create volume directory
+RUN mkdir -p /home/craft/authorization-server/files
 
 # Mount volume
 VOLUME ["/home/craft/authorization-server/files"]

@@ -10,7 +10,9 @@ export const multerAvatarConnection: MulterOptions = {
     },
     filename: (req, file, cb) => {
       if (['image/png', 'image/jpeg', 'image/gif'].includes(file.mimetype)) {
-        const name = `${Date.now()}.${file.mimetype.split('/')[1]}`;
+        const name = `${req.token.sub}-${Date.now()}.${
+          file.mimetype.split('/')[1]
+        }`;
         cb(null, name);
       } else {
         cb(new BadRequestException());

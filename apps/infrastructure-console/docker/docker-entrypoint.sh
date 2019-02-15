@@ -2,6 +2,10 @@
 
 chown -R craft:craft /home/craft/infrastructure-console/files
 
+# Create volume directory and sub directories
+su craft -c "mkdir -p /home/craft/infrastructure-console/files/public"
+su craft -c "mkdir -p /home/craft/infrastructure-console/files/private"
+
 function checkEnv() {
   if [[ -z "$DB_HOST" ]]; then
     echo "DB_HOST is not set"
