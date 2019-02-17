@@ -9,10 +9,7 @@
     <mat-toolbar color="primary">Connect</mat-toolbar>
     <mat-nav-list *ngIf="tokenIsValid">
       <a mat-list-item routerLink="/email/list">Email Accounts</a>
-      <a mat-list-item routerLink="/webhook/list">Webhooks</a>
-      <a mat-list-item routerLink="/social-keys/list">Social Keys</a>
-      <a mat-list-item routerLink="/settings">Settings</a>
-
+      <a mat-list-item routerLink="/storage/list">Cloud Storage</a>
     </mat-nav-list>
     <mat-nav-list>
         <a mat-list-item (click)="login()" *ngIf="!loggedIn">Login</a>

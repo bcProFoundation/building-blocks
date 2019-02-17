@@ -1,14 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { EmailController } from './email.controller';
 import { EmailService } from './email.service';
-import { EmailAccountService } from '../../../email/entities/email-account/email-account.service';
-import { EmailAccount } from '../../../email/entities/email-account/email-account.entity';
-import { ConfigService } from '../../../config/config.service';
-import { AuthServerVerificationGuard } from '../../../auth/guards/authserver-verification.guard';
-import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
-import { TokenCacheService } from '../../../auth/entities/token-cache/token-cache.service';
 import { TokenGuard } from '../../../auth/guards/token.guard';
+import { AuthServerVerificationGuard } from '../../../auth/guards/authserver-verification.guard';
+import { EmailAccountService } from '../../../email/entities/email-account/email-account.service';
 
 describe('EmailController', () => {
   let module: TestingModule;
@@ -16,41 +11,19 @@ describe('EmailController', () => {
     module = await Test.createTestingModule({
       controllers: [EmailController],
       providers: [
-        EmailService,
-        EmailAccountService,
         {
-          provide: AuthServerVerificationGuard,
-          useValue: {},
+          provide: EmailService,
+          useFactory: (...args) => jest.fn(),
         },
         {
-          provide: ServerSettingsService,
-          useValue: {},
-        },
-        {
-          provide: TokenCacheService,
-          useValue: {},
-        },
-        {
-          provide: getRepositoryToken(EmailAccount),
-          useValue: {},
-        },
-        {
-          provide: ConfigService,
-          useValue: {
-            get(env) {
-              switch (env) {
-                case 'AMQP_HOST':
-                  return 'localhost';
-              }
-            },
-            getRabbitMQConfig() {
-              return '';
-            },
-          },
+          provide: EmailAccountService,
+          useFactory: (...args) => jest.fn(),
         },
       ],
     })
       .overrideGuard(TokenGuard)
+      .useValue({})
+      .overrideGuard(AuthServerVerificationGuard)
       .useValue({})
       .compile();
   });
