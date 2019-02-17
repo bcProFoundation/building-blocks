@@ -2,7 +2,7 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { ScopeService } from '../../../client-management/entities/scope/scope.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
 import { AuthService } from '../../../auth/controllers/auth/auth.service';
-import { CreateUserDto } from '../../../user-management/entities/user/create-user.dto';
+import { CreateUserDto } from '../../../user-management/policies';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { RoleService } from '../../../user-management/entities/role/role.service';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';

@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpService } from '@nestjs/common';
-import { ConfigService } from '../../config/config.service';
+import { ConfigService } from '../../../config/config.service';
 import { UserDeleteRequestService } from './user-delete-request.service';
-import { ClientService } from '../../client-management/entities/client/client.service';
+import { ClientService } from '../../../client-management/entities/client/client.service';
 
 describe('UserDeleteRequestService', () => {
   let service: UserDeleteRequestService;

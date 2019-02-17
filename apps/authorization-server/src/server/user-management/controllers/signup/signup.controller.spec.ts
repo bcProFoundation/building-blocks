@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SignupController } from './signup.controller';
-import { SignupService } from './signup.service';
+import { SignupService } from '../../aggregates/signup/signup.service';
 
 describe('RoleController', () => {
   let module: TestingModule;

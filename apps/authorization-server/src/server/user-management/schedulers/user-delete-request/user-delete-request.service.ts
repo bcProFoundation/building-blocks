@@ -1,8 +1,8 @@
 import { Injectable, OnModuleInit, HttpService } from '@nestjs/common';
 import * as Bull from 'bull';
-import { BullOptions } from '../../constants/bull-queue.options';
-import { ConfigService } from '../../config/config.service';
-import { ClientService } from '../../client-management/entities/client/client.service';
+import { BullOptions } from '../../../constants/bull-queue.options';
+import { ConfigService } from '../../../config/config.service';
+import { ClientService } from '../../../client-management/entities/client/client.service';
 import { retry } from 'rxjs/operators';
 
 export const USER_DELETE_REQUEST = 'user_delete_request';

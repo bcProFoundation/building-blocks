@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
 import { CQRSModule, EventBus } from '@nestjs/cqrs';
-import { UserDeleteRequestService } from '../../../user-management/scheduler/user-delete-request.service';
+import { UserDeleteRequestService } from '../../schedulers/user-delete-request/user-delete-request.service';
 import { UserAccountRemovedHandler } from './user-account-removed.handler';
 import { User } from '../../../user-management/entities/user/user.interface';
 import { UserAccountRemovedEvent } from './user-account-removed';

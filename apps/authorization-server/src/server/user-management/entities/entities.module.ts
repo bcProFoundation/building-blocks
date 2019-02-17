@@ -5,7 +5,7 @@ import { UserService } from './user/user.service';
 import { ROLE, Role } from './role/role.schema';
 import { AUTH_DATA, AuthData } from './auth-data/auth-data.schema';
 import { RoleService } from './role/role.service';
-import { SignupService } from '../controllers/signup/signup.service';
+import { SignupService } from '../aggregates/signup/signup.service';
 import { AuthDataService } from './auth-data/auth-data.service';
 
 @Module({

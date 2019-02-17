@@ -9,7 +9,7 @@ import { i18n } from '../../../i18n/i18n.config';
 import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { CryptographerService } from '../../../common/cryptographer.service';
-import { CreateUserDto } from '../../../user-management/entities/user/create-user.dto';
+import { CreateUserDto } from '../../../user-management/policies';
 import { Role } from '../../../user-management/entities/role/role.interface';
 import { User } from '../../../user-management/entities/user/user.interface';
 import { AuthData } from '../../../user-management/entities/auth-data/auth-data.interface';

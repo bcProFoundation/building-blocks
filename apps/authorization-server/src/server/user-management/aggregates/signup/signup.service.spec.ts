@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SignupService } from './signup.service';
 import { HttpService } from '@nestjs/common';
-import { UserService } from '../../../user-management/entities/user/user.service';
+import { UserService } from '../../entities/user/user.service';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
 import { CryptographerService } from '../../../common/cryptographer.service';
-import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
+import { AuthDataService } from '../../entities/auth-data/auth-data.service';
 
 describe('SignupService', () => {
   let service: SignupService;

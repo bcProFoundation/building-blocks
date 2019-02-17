@@ -1,6 +1,6 @@
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { UserAccountRemovedEvent } from './user-account-removed';
-import { UserDeleteRequestService } from '../../../user-management/scheduler/user-delete-request.service';
+import { UserDeleteRequestService } from '../../schedulers/user-delete-request/user-delete-request.service';
 import { from } from 'rxjs';
 
 @EventsHandler(UserAccountRemovedEvent)

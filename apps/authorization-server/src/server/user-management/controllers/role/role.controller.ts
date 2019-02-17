@@ -79,7 +79,7 @@ export class RoleController {
   @Roles(ADMINISTRATOR)
   @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   async findAll() {
-    return await this.roleService.find({});
+    return await this.roleService.find();
   }
 
   @Get('v1/:uuid')

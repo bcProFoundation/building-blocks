@@ -108,4 +108,12 @@ export class UserManagementService extends AggregateRoot {
     await user.save();
     this.apply(new ForgottenPasswordGeneratedEvent(user));
   }
+
+  async backupAllUserData() {
+    return {
+      roles: await this.roleService.find(),
+      users: await this.userService.find(),
+      authData: await this.authDataService.find(),
+    };
+  }
 }

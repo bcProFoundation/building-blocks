@@ -21,7 +21,7 @@ import { CRUDOperationService } from '../../../common/services/crudoperation/cru
 import { callback } from '../../../auth/passport/strategies/local.strategy';
 import { RoleGuard } from '../../../auth/guards/role.guard';
 import { AuthGuard } from '../../../auth/guards/auth.guard';
-import { CreateScopeDto } from '../../../user-management/entities/user/create-scope.dto';
+import { CreateScopeDto } from '../../../user-management/policies';
 import { RemoveOAuth2ScopeCommand } from '../../../client-management/commands/remove-oauth2scope/remove-oauth2scope.command';
 import { CommandBus } from '@nestjs/cqrs';
 

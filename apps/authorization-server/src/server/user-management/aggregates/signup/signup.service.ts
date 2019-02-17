@@ -1,7 +1,7 @@
 import { Injectable, HttpService } from '@nestjs/common';
-import { UserService } from '../../../user-management/entities/user/user.service';
+import { UserService } from '../../entities/user/user.service';
 import { randomBytes } from 'crypto';
-import { User } from '../../../user-management/entities/user/user.interface';
+import { User } from '../../entities/user/user.interface';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
 
