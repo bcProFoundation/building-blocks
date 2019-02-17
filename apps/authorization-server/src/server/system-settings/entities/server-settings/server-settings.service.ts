@@ -44,4 +44,8 @@ export class ServerSettingsService {
   async count() {
     return await this.settingsModel.estimatedDocumentCount();
   }
+
+  getModel() {
+    return this.settingsModel;
+  }
 }

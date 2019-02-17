@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ServerSettingsController } from './server-settings.controller';
-import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
+import { SystemSettingsManagementService } from '../../../system-settings/aggregates';
 import { RoleGuard } from '../../../auth/guards/role.guard';
 
 describe('ServerSettingsController', () => {
@@ -10,7 +10,7 @@ describe('ServerSettingsController', () => {
       controllers: [ServerSettingsController],
       providers: [
         {
-          provide: ServerSettingsService,
+          provide: SystemSettingsManagementService,
           useValue: {},
         },
       ],

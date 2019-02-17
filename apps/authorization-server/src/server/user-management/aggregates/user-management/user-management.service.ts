@@ -34,7 +34,7 @@ export class UserManagementService extends AggregateRoot {
 
   async deleteUser(uuid, actorUuid) {
     const user = await this.userService.findOne({ uuid });
-    if (!user) invalidUserException;
+    if (!user) throw invalidUserException;
 
     if (await this.userService.checkAdministrator(uuid)) {
       throw cannotDeleteAdministratorException;
