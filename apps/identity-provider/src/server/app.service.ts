@@ -6,9 +6,14 @@ import { PLEASE_RUN_SETUP } from './constants/messages';
 export class AppService {
   constructor(private readonly idpSetupService: SetupService) {}
   async info() {
-    const info = (await this.idpSetupService.getInfo()) || {
-      message: PLEASE_RUN_SETUP,
-    };
+    let info;
+    try {
+      info = await this.idpSetupService.getInfo();
+    } catch (error) {
+      info = {
+        message: PLEASE_RUN_SETUP,
+      };
+    }
     return info;
   }
 }
