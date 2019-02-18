@@ -23,22 +23,6 @@ function checkEnv() {
     echo "DB_PASSWORD is not set"
     exit 1
   fi
-  if [[ -z "$AMQP_HOST" ]]; then
-    echo "AMQP_HOST is not set"
-    exit 1
-  fi
-  if [[ -z "$AMQP_USER" ]]; then
-    echo "AMQP_USER is not set"
-    exit 1
-  fi
-  if [[ -z "$AMQP_PASSWORD" ]]; then
-    echo "AMQP_PASSWORD is not set"
-    exit 1
-  fi
-  if [[ -z "$AMQP_PORT" ]]; then
-    echo "AMQP_PORT is not set"
-    exit 1
-  fi
   if [[ -z "$NODE_ENV" ]]; then
     echo "NODE_ENV is not set"
     exit 1
@@ -48,9 +32,6 @@ function checkEnv() {
 function checkConnection() {
   # Wait for mongodb
   dockerize -wait tcp://$DB_HOST:27017 -timeout 30s
-
-  # Wait for rabbitmq
-  dockerize -wait tcp://$AMQP_HOST:$AMQP_PORT -timeout 30s
 }
 
 function configureServer() {

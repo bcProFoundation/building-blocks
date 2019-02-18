@@ -21,16 +21,6 @@ services:
     depends_on:
       - fix-mongodb-permissions
 
-  rabbitmq:
-    image: rabbitmq:3-management
-    ports:
-      - "5672:5672"
-    volumes:
-      - rabbitmq-vol:/var/lib/rabbitmq
-    environment:
-      - RABBITMQ_DEFAULT_USER=${AMQP_USER}
-      - RABBITMQ_DEFAULT_PASS=${AMQP_PASS}
-
   communication-server:
     # image: registry.gitlab.com/castlecraft/building-blocks/communication-server:latest
     image: communication-server:latest
@@ -47,15 +37,10 @@ services:
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
-      - AMQP_HOST=${AMQP_HOST}
-      - AMQP_USER=${AMQP_USER}
-      - AMQP_PASSWORD=${AMQP_PASS}
-      - AMQP_PORT=${AMQP_PORT}
       - NODE_ENV=${NODE_ENV}
     volumes:
       - communication-server-vol:/home/craft/communication-server/files
 
 volumes:
-  rabbitmq-vol:
   mongo-vol:
   communication-server-vol:

@@ -36,20 +36,6 @@ spec:
             - name : {{ .Release.Name }}-data
               mountPath : "/home/craft/communication-server/files"
           env:
-            - name: "AMQP_HOST"
-              value: {{ template "rabbitmq.fullname" . }}
-            - name: "AMQP_PORT"
-              value: "5672"
-            - name: "AMQP_USER"
-              valueFrom:
-                secretKeyRef:
-                  key:  user
-                  name: {{ .Release.Name }}-secrets
-            - name: "AMQP_PASSWORD"
-              valueFrom:
-                secretKeyRef:
-                  key:  password
-                  name: {{ .Release.Name }}-secrets
             - name: "DB_HOST"
               value: {{ template "mongodb.fullname" . }}
             - name: "DB_NAME"

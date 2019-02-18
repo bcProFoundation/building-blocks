@@ -64,12 +64,3 @@ mongodb:
     enabled: true
     # storageClass: do-block-storage
     size: 1Gi
-
-rabbitmq:
-  rabbitmq:
-    username: admin
-    password: admin
-  persistence:
-    enabled: true
-    # storageClass: do-block-storage
-    size: 1Gi
