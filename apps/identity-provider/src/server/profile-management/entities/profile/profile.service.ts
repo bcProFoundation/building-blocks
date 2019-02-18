@@ -33,9 +33,7 @@ export class ProfileService {
   }
 
   public async uploadAndSetAvatar(file, profileUuid) {
-    let profile: Profile =
-      (await this.findOne({ uuid: profileUuid })) || new Profile();
-    if (!profile.uuid) profile = await this.save({ uuid: profileUuid });
+    let profile: Profile = await this.findOne({ uuid: profileUuid });
     if (profile && profile.picture) {
       const oldPicture = profile.picture.split('/')[2];
       this.deleteAvatarFile(oldPicture);
@@ -44,6 +42,8 @@ export class ProfileService {
       await profile.save();
       return profile;
     } else {
+      profile = new Profile();
+      profile.uuid = profileUuid;
       profile.picture = AVATAR_ROUTE_PREFIX + file.filename;
       await profile.save();
       return profile;

@@ -36,9 +36,6 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - NODE_ENV=${NODE_ENV}
-    volumes:
-      - identity-provider-vol:/home/craft/identity-provider/files
 
 volumes:
   mongo-vol:
-  identity-provider-vol:

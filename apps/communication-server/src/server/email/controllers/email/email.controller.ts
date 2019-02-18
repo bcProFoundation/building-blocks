@@ -34,12 +34,7 @@ export class EmailController {
   @UseGuards(AuthServerVerificationGuard)
   @UsePipes(ValidationPipe)
   async sendSystemEmail(@Body() payload: EmailMessageAuthServerDto) {
-    return await this.emailService.sendSystemMessage(
-      payload.emailTo,
-      payload.subject,
-      payload.text,
-      payload.html,
-    );
+    return await this.emailService.sendSystemMessage(payload);
   }
 
   @Post('v1/create')

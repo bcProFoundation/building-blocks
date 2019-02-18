@@ -5,4 +5,5 @@ export interface ServerSettings extends Document {
   issuerUrl?: string;
   communicationServerClientId?: string;
   infrastructureConsoleClientId?: string;
+  backupBucket?: string;
 }

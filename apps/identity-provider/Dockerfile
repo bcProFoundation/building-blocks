@@ -29,12 +29,6 @@ RUN chown -R craft:craft /home/craft
 # set project directory
 WORKDIR /home/craft/identity-provider
 
-# Mount volume for files
-RUN mkdir -p /home/craft/identity-provider/files
-
-# Mount volume
-VOLUME ["/home/craft/identity-provider/files"]
-
 # Expose port
 EXPOSE 3200
 

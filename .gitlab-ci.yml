@@ -262,7 +262,7 @@ deploy_staging:
   only:
     - staging
   script:
-    - ./helm-charts/deploy/deploy-staging.sh
+    - ./kubernetes/deploy/deploy-staging.sh
 
 deploy_develop:
   image: dtzar/helm-kubectl:latest
@@ -280,7 +280,7 @@ deploy_develop:
     - helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
     - helm repo update
   script:
-    - ./helm-charts/deploy/deploy-develop.sh
+    - ./kubernetes/deploy/deploy-develop.sh
 
 setup_staging:
   image: python:3

@@ -1,11 +1,5 @@
 #!/bin/bash
 
-chown -R craft:craft /home/craft/authorization-server/files
-
-# Create volume directory and sub directories
-su craft -c "mkdir -p /home/craft/authorization-server/files/public"
-su craft -c "mkdir -p /home/craft/authorization-server/files/private"
-
 function checkEnv() {
   if [[ -z "$SESSION_SECRET" ]]; then
     echo "SESSION_SECRET is not set"

@@ -25,8 +25,8 @@ export class RoleService {
     return await this.roleModel.deleteMany({});
   }
 
-  async find(params) {
-    return await this.roleModel.find(params);
+  async find() {
+    return await this.roleModel.find().exec();
   }
 
   getModel() {
