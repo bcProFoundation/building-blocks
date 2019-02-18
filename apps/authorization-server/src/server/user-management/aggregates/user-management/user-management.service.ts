@@ -34,7 +34,7 @@ export class UserManagementService extends AggregateRoot {
 
   async deleteUser(uuid, actorUuid) {
     const user = await this.userService.findOne({ uuid });
-    if (!user) invalidUserException;
+    if (!user) throw invalidUserException;
 
     if (await this.userService.checkAdministrator(uuid)) {
       throw cannotDeleteAdministratorException;
@@ -107,5 +107,13 @@ export class UserManagementService extends AggregateRoot {
     user.modified = new Date();
     await user.save();
     this.apply(new ForgottenPasswordGeneratedEvent(user));
+  }
+
+  async backupAllUserData() {
+    return {
+      roles: await this.roleService.find(),
+      users: await this.userService.find(),
+      authData: await this.authDataService.find(),
+    };
   }
 }

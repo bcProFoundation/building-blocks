@@ -20,7 +20,7 @@ import { CryptographerService } from '../../../common/cryptographer.service';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { AuthGuard } from '../../../auth/guards/auth.guard';
 import { callback } from '../../../auth/passport/strategies/local.strategy';
-import { CreateUserDto } from '../../../user-management/entities/user/create-user.dto';
+import { CreateUserDto } from '../../policies/create-user/create-user.dto';
 import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
 import { i18n } from '../../../i18n/i18n.config';
 import { Roles } from '../../../common/decorators/roles.decorator';
@@ -30,7 +30,7 @@ import { CRUDOperationService } from '../../../common/services/crudoperation/cru
 import { UserAggregateService } from '../../../user-management/aggregates/user-aggregate/user-aggregate.service';
 import { RemoveUserAccountCommand } from '../../../user-management/commands/remove-user-account/remove-user-account.command';
 import { GenerateForgottenPasswordCommand } from '../../../user-management/commands/generate-forgotten-password/generate-forgotten-password.command';
-import { VerifyEmailDto } from '../../../user-management/entities/user/verify-email.dto';
+import { VerifyEmailDto } from '../../policies';
 
 @Controller('user')
 export class UserController {

@@ -52,10 +52,7 @@ services:
       - BULL_QUEUE_REDIS_HOST=${BULL_QUEUE_REDIS_HOST}
       - BULL_QUEUE_REDIS_PORT=${BULL_QUEUE_REDIS_PORT}
       - NODE_ENV=${NODE_ENV}
-    volumes:
-      - authorization-server-vol:/home/craft/authorization-server/files
 
 volumes:
   redis-vol:
   mongo-vol:
-  authorization-server-vol:

@@ -2,36 +2,32 @@ import { Module, Global, OnModuleInit } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { CommandBus, EventBus, CQRSModule } from '@nestjs/cqrs';
 import { UserManagementEntitiesModule } from './entities/entities.module';
-import { UserManagementService } from './aggregates/user-management/user-management.service';
-import { UserController } from './controllers/user/user.controller';
-import { RoleController } from './controllers/role/role.controller';
-import { UserDeleteRequestService } from './scheduler/user-delete-request.service';
-import { UserAggregateService } from './aggregates/user-aggregate/user-aggregate.service';
 import { UserManagementEventHandlers } from './events';
 import { UserManagementCommandHandlers } from './commands';
 import { UserManagementSagas } from './sagas';
-import { EmailRequestService } from './aggregates/email-request/email-request.service';
-import { SignupController } from './controllers/signup/signup.controller';
+import { UserManagementAggregates } from './aggregates';
+import { UserManagementControllers } from './controllers';
+import { UserManagementSchedulers } from './schedulers';
 
 @Global()
 @Module({
-  imports: [UserManagementEntitiesModule, CQRSModule],
-  providers: [
-    UserManagementService,
-    UserDeleteRequestService,
-    UserAggregateService,
-
-    // CQRS
-    ...UserManagementEventHandlers,
-    ...UserManagementCommandHandlers,
-    ...UserManagementSagas,
-    EmailRequestService,
+  imports: [
+    CQRSModule,
+    // Entities
+    UserManagementEntitiesModule,
   ],
-  controllers: [UserController, RoleController, SignupController],
+  providers: [
+    ...UserManagementAggregates,
+    ...UserManagementCommandHandlers,
+    ...UserManagementEventHandlers,
+    ...UserManagementSagas,
+    ...UserManagementSchedulers,
+  ],
+  controllers: [...UserManagementControllers],
   exports: [
     UserManagementEntitiesModule,
-    UserManagementService,
-    UserAggregateService,
+    ...UserManagementAggregates,
+    ...UserManagementSchedulers,
   ],
 })
 export class UserManagementModule implements OnModuleInit {

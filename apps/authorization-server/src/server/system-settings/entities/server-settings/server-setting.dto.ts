@@ -33,4 +33,12 @@ export class ServerSettingDto {
     type: 'string',
   })
   infrastructureConsoleClientId?: string;
+
+  @IsOptional()
+  @IsUUID()
+  @ApiModelProperty({
+    description: 'Cloud Storage Bucket',
+    type: 'string',
+  })
+  backupBucket?: string;
 }

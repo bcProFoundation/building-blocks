@@ -7,6 +7,7 @@ import { SocialToken } from '../oauth2-client/entities/social-token/social-token
 import { SMSGateway } from '../smsmessage/entities/sms-gateway/sms-gateway.entity';
 import { ServerSettings } from '../system-settings/entities/server-settings/server-settings.entity';
 import { QueueLog } from '../system-settings/entities/queue-log/queue-log.entity';
+import { Storage } from '../cloud-storage/entities/storage/storage.entity';
 
 const config = new ConfigService();
 
@@ -27,6 +28,7 @@ export const TYPEORM_CONNECTION: MongoConnectionOptions = {
     SMSGateway,
     ServerSettings,
     QueueLog,
+    Storage,
   ],
   useNewUrlParser: true,
 };

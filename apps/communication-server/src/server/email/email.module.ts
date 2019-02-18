@@ -1,15 +1,36 @@
-import { Module, Global } from '@nestjs/common';
+import { Module, Global, OnModuleInit } from '@nestjs/common';
+import { ModuleRef } from '@nestjs/core';
+import { CommandBus, EventBus, CQRSModule } from '@nestjs/cqrs';
 import { EmailEntitiesModule } from './entities/entities.module';
 import { EmailController } from './controllers/email/email.controller';
 import { EmailService } from './controllers/email/email.service';
-import { SendEmailService } from './aggregates/send-email/send-email.service';
-import { SendEmailController } from './aggregates/send-email/send-email.controller';
+import { EmailAggregates } from './aggregates';
+import { EmailEventHandlers } from './events';
+import { EmailCommandHandlers } from './commands';
 
 @Global()
 @Module({
-  imports: [EmailEntitiesModule],
-  providers: [EmailService, SendEmailService],
-  controllers: [EmailController, SendEmailController],
+  imports: [CQRSModule, EmailEntitiesModule],
+  providers: [
+    EmailService,
+    ...EmailAggregates,
+    ...EmailCommandHandlers,
+    ...EmailEventHandlers,
+  ],
+  controllers: [EmailController],
   exports: [EmailEntitiesModule],
 })
-export class EmailModule {}
+export class EmailModule implements OnModuleInit {
+  constructor(
+    private readonly moduleRef: ModuleRef,
+    private readonly commandBus: CommandBus,
+    private readonly eventBus: EventBus,
+  ) {}
+
+  onModuleInit() {
+    this.commandBus.setModuleRef(this.moduleRef);
+    this.eventBus.setModuleRef(this.moduleRef);
+    this.commandBus.register(EmailCommandHandlers);
+    this.eventBus.register(EmailEventHandlers);
+  }
+}

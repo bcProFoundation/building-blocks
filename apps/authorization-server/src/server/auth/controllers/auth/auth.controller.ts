@@ -15,8 +15,7 @@ import { callback } from '../../passport/strategies/local.strategy';
 import { AuthGuard } from '../../../auth/guards/auth.guard';
 import { ApiOperation } from '@nestjs/swagger';
 import { i18n } from '../../../i18n/i18n.config';
-import { LoginUserDto } from '../../../user-management/entities/user/login-user.dto';
-import { CreateUserDto } from '../../../user-management/entities/user/create-user.dto';
+import { LoginUserDto, CreateUserDto } from '../../../user-management/policies';
 
 @Controller('auth')
 export class AuthController {

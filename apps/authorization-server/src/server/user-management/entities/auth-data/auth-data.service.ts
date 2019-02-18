@@ -19,6 +19,10 @@ export class AuthDataService {
     return await this.authDataModel.findOne(params);
   }
 
+  async find() {
+    return await this.authDataModel.find().exec();
+  }
+
   getModel() {
     return this.authDataModel;
   }

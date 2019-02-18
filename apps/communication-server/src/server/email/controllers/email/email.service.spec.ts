@@ -1,10 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { CommandBus } from '@nestjs/cqrs';
 import { EmailService } from './email.service';
 import { EmailAccountService } from '../../../email/entities/email-account/email-account.service';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { EmailAccount } from '../../../email/entities/email-account/email-account.entity';
-import { ConfigService } from '../../../config/config.service';
-import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 
 describe('EmailService', () => {
   let service: EmailService;
@@ -12,28 +9,13 @@ describe('EmailService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         EmailService,
-        EmailAccountService,
         {
-          provide: getRepositoryToken(EmailAccount),
+          provide: EmailAccountService,
           useValue: {},
         },
         {
-          provide: ServerSettingsService,
-          useValue: {},
-        },
-        {
-          provide: ConfigService,
-          useValue: {
-            get(env) {
-              switch (env) {
-                case 'AMQP_HOST':
-                  return 'localhost';
-              }
-            },
-            getRabbitMQConfig() {
-              return '';
-            },
-          },
+          provide: CommandBus,
+          useFactory: (...args) => jest.fn(),
         },
       ],
     }).compile();
