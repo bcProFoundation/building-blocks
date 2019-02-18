@@ -29,12 +29,6 @@ RUN chown -R craft:craft /home/craft
 # set project directory
 WORKDIR /home/craft/communication-server
 
-# Mount volume for files
-RUN mkdir -p /home/craft/communication-server/files
-
-# Mount volume
-VOLUME ["/home/craft/communication-server/files"]
-
 # Expose port
 EXPOSE 4100
 

@@ -29,12 +29,6 @@ RUN chown -R craft:craft /home/craft
 # set project directory
 WORKDIR /home/craft/infrastructure-console
 
-# Mount volume for files
-RUN mkdir -p /home/craft/infrastructure-console/files
-
-# Mount volume
-VOLUME ["/home/craft/infrastructure-console/files"]
-
 # Expose port
 EXPOSE 5000
 
