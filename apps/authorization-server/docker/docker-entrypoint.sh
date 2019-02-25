@@ -45,6 +45,10 @@ function checkEnv() {
     echo "BULL_QUEUE_REDIS_HOST is not set"
     exit 1
   fi
+  if [[ -z "$BULL_QUEUE_REDIS_PASSWORD" ]]; then
+    echo "BULL_QUEUE_REDIS_PASSWORD is not set"
+    exit 1
+  fi
   if [[ -z "$NODE_ENV" ]]; then
     echo "NODE_ENV is not set"
     exit 1

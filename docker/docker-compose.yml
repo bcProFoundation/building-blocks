@@ -25,25 +25,15 @@ services:
       - fix-mongodb-permissions
 
   redis:
-    image: redis:latest
+    image: bitnami/redis:latest
     restart: unless-stopped
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
     ports:
       - "6379:6379"
     volumes:
       - redis-vol:/data
 
-  rabbitmq:
-    image: rabbitmq:3-management
-    restart: unless-stopped
-    ports:
-      - "5672:5672"
-    volumes:
-      - rabbitmq-vol:/var/lib/rabbitmq
-    environment:
-      - RABBITMQ_DEFAULT_USER=${AMQP_USER}
-      - RABBITMQ_DEFAULT_PASS=${AMQP_PASS}
-
 volumes:
   mongo-vol:
   redis-vol:
-  rabbitmq-vol:
