@@ -5,13 +5,14 @@ services:
     alias: mongo
   - name: docker:dind
     alias: docker
-  - name: redis
+  - name: bitnami/redis:latest
     alias: redis
 
 variables:
   MONGODB_USERNAME: "admin"
   MONGODB_PASSWORD: "admin"
   MONGODB_DATABASE: "test_authorization-server"
+  REDIS_PASSWORD: "secret"
 
 stages:
   - tests
@@ -34,6 +35,7 @@ test_authorization_server:
     DB_NAME: "authorization-server"
     BULL_QUEUE_REDIS_HOST: redis
     BULL_QUEUE_REDIS_PORT: "6379"
+    BULL_QUEUE_REDIS_PASSWORD: "secret"
   before_script:
     - cd apps/authorization-server
     - npm install
