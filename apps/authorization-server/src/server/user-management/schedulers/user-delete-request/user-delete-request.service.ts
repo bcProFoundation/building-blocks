@@ -20,6 +20,7 @@ export class UserDeleteRequestService implements OnModuleInit {
       redis: {
         host: this.configService.get('BULL_QUEUE_REDIS_HOST'),
         port: Number(this.configService.get('BULL_QUEUE_REDIS_PORT')),
+        password: this.configService.get('BULL_QUEUE_REDIS_PASSWORD'),
       },
     };
     configService.get('BULL_QUEUE_REDIS_PORT');

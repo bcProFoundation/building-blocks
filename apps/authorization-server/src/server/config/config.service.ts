@@ -33,6 +33,7 @@ export class ConfigService {
       DB_PASSWORD: Joi.string().required(),
       BULL_QUEUE_REDIS_HOST: Joi.string().required(),
       BULL_QUEUE_REDIS_PORT: Joi.number().required(),
+      BULL_QUEUE_REDIS_PASSWORD: Joi.string().required(),
     });
 
     const { error, value: validatedEnvConfig } = Joi.validate(
