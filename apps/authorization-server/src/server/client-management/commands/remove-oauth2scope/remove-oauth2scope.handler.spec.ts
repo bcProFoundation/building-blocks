@@ -50,10 +50,10 @@ describe('Command: RemoveOAuth2ScopeHandler', () => {
 
   it('should remove scope using the ClientManagementAggregateService', async () => {
     manager.removeScope = jest.fn(() => Promise.resolve());
-    commandBus$.execute = jest.fn(() => {});
-    publisher.mergeObjectContext = jest.fn(aggregate => ({
-      commit: () => {},
-    }));
+    commandBus$.execute = jest.fn();
+    publisher.mergeObjectContext = jest
+      .fn()
+      .mockImplementation((...args) => ({ commit: () => {} }));
     await commandHandler.execute(
       new RemoveOAuth2ScopeCommand(
         'add0d2e8-fc16-4671-8893-88254b321840',

@@ -15,7 +15,9 @@ describe('AppController', () => {
         AppService,
         {
           provide: SetupService,
-          useValue: {},
+          useValue: {
+            getInfo: (...args) => ({}),
+          },
         },
         {
           provide: ServerSettingsService,
