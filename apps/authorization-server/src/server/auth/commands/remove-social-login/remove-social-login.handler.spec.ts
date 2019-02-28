@@ -5,8 +5,6 @@ import { RemoveSocialLoginHandler } from './remove-social-login.handler';
 import { RemoveSocialLoginCommand } from './remove-social-login.command';
 import { SocialLogin } from '../../../auth/entities/social-login/social-login.interface';
 
-jest.mock('@nestjs/common/services/logger.service');
-
 describe('Command: RemoveSocialLoginHandler', () => {
   let commandBus$: CommandBus;
   let manager: SocialLoginManagementService;
@@ -56,10 +54,10 @@ describe('Command: RemoveSocialLoginHandler', () => {
 
   it('should remove SocialLogin using the SocialLoginManagementService', async () => {
     manager.removeSocialLogin = jest.fn(() => Promise.resolve());
-    commandBus$.execute = jest.fn(() => {});
-    publisher.mergeObjectContext = jest.fn(aggregate => ({
-      commit: () => {},
-    }));
+    commandBus$.execute = jest.fn(() => Promise.resolve());
+    publisher.mergeObjectContext = jest
+      .fn()
+      .mockImplementation((...args) => ({ commit: () => {} }));
     await commandHandler.execute(
       new RemoveSocialLoginCommand(
         mockSocialLogin.createdBy,

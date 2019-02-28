@@ -79,7 +79,6 @@ if [ "$1" = 'rollback' ]; then
   su craft -c "bash -c configureServer"
   # Rollback Migrations
   echo "Rollback migrations"
-  su craft -c "./node_modules/.bin/migrate down updateRoleScopeUuid -d mongodb://$DB_HOST:27017/$DB_NAME"
 fi
 
 if [ "$1" = 'start' ]; then
