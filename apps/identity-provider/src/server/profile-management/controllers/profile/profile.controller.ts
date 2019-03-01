@@ -105,11 +105,11 @@ export class ProfileController {
   @Post('v1/upload_avatar')
   @UseGuards(TokenGuard)
   @UseInterceptors(FileInterceptor('file', multerAvatarConnection))
-  async uploadFile(@Req() req, @Res() res, @UploadedFile() file) {
+  async uploadFile(@Req() req, @Res() res, @UploadedFile('file') file) {
     if (req.token.active) {
       const uploadResponse = await this.profileService.uploadAndSetAvatar(
         file,
-        req.token.sub,
+        req,
       );
       res.json(uploadResponse);
     }

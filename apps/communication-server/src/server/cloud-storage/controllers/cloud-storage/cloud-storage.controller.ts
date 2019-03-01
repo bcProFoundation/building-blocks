@@ -10,6 +10,11 @@ import {
   Delete,
   Query,
   Get,
+  Body,
+  FileInterceptor,
+  UseInterceptors,
+  UploadedFile,
+  BadRequestException,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { TokenGuard } from '../../../auth/guards/token.guard';
@@ -22,6 +27,8 @@ import { StorageValidationDto } from '../../../cloud-storage/policies';
 import { AddCloudStorageCommand } from '../../../cloud-storage/commands/add-cloud-storage/add-cloud-storage.command';
 import { ModifyCloudStorageCommand } from '../../../cloud-storage/commands/modify-cloud-storage/modify-cloud-storage.command';
 import { RemoveCloudStorageCommand } from '../../../cloud-storage/commands/remove-cloud-storage/remove-cloud-storage.command';
+import { ModifyStorageDto } from '../../policies/modify-cloud-storage-dto/modify-cloud-storage-dto';
+import { UploadFilesCloudBucketCommand } from '../../commands/upload-files-cloud-bucket/upload-files-cloud-bucket.command';
 
 @Controller('storage')
 export class CloudStorageController {
@@ -40,7 +47,7 @@ export class CloudStorageController {
     return emailAccounts;
   }
 
-  @Get('v1/retrieve/:uuid')
+  @Get('v1/getOne/:uuid')
   @Roles(ADMINISTRATOR)
   @UseGuards(TokenGuard, RoleGuard)
   async findOne(@Param('uuid') uuid: string) {
@@ -51,25 +58,17 @@ export class CloudStorageController {
   @UsePipes(ValidationPipe)
   @Roles(ADMINISTRATOR)
   @UseGuards(TokenGuard, RoleGuard)
-  async addStorage(payload: StorageValidationDto, @Req() req) {
-    const actorUuid = req.user.user;
-    return this.commandBus.execute(
-      new AddCloudStorageCommand(actorUuid, payload),
-    );
+  async addStorage(@Body() payload: StorageValidationDto, @Req() req) {
+    return this.commandBus.execute(new AddCloudStorageCommand(payload));
   }
 
   @Put('v1/modify/:uuid')
   @UsePipes(ValidationPipe)
   @Roles(ADMINISTRATOR)
   @UseGuards(TokenGuard, RoleGuard)
-  async modifyStorage(
-    payload: StorageValidationDto,
-    @Param('uuid') uuid,
-    @Req() req,
-  ) {
-    const actorUuid = req.user.user;
+  async modifyStorage(@Body() payload: ModifyStorageDto, @Param('uuid') uuid) {
     return this.commandBus.execute(
-      new ModifyCloudStorageCommand(actorUuid, uuid, payload),
+      new ModifyCloudStorageCommand(uuid, payload),
     );
   }
 
@@ -81,6 +80,30 @@ export class CloudStorageController {
     const actorUuid = req.user.user;
     return this.commandBus.execute(
       new RemoveCloudStorageCommand(actorUuid, uuid),
+    );
+  }
+
+  @Post('cloud/uploadFile/:uuid')
+  @UseInterceptors(FileInterceptor('file'))
+  async testing(
+    @UploadedFile('file') file,
+    @Req() req,
+    @Body('permission') permission,
+    @Param('uuid') storageUuid,
+  ) {
+    const cloudStorageSettings = await this.storage.findOne({
+      uuid: storageUuid,
+    });
+    if (!file || !cloudStorageSettings) {
+      throw new BadRequestException('Invalid Request bad file or uuid');
+    }
+    return this.commandBus.execute(
+      new UploadFilesCloudBucketCommand(
+        file,
+        cloudStorageSettings,
+        req,
+        permission,
+      ),
     );
   }
 }

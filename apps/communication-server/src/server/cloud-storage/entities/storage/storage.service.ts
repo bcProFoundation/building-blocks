@@ -13,9 +13,7 @@ export class StorageService {
   ) {}
 
   public async save(params: Storage | StorageValidationDto) {
-    const storage = new Storage();
-    Object.assign(storage, params);
-    return await this.storageRepository.save(storage);
+    return await this.storageRepository.save(params);
   }
 
   async findAll(): Promise<Storage[]> {
@@ -35,6 +33,10 @@ export class StorageService {
   public async list(skip, take) {
     const storage = await this.storageRepository.find({ skip, take });
     return storage;
+  }
+
+  public async updateOne(uuid, updateQuery) {
+    return await this.storageRepository.updateOne(uuid, updateQuery);
   }
 
   public async find(params) {

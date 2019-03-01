@@ -5,4 +5,5 @@ export interface IdpServerSettings {
   clientSecret: string;
   communicationServerSystemEmailAccount: string;
   emailAccounts: string;
+  cloudStorageSettings: string;
 }

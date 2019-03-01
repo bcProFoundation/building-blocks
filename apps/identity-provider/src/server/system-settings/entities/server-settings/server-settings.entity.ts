@@ -43,6 +43,9 @@ export class ServerSettings extends BaseEntity {
   @Column()
   service: string = SERVICE;
 
+  @Column()
+  cloudStorageSettings: any;
+
   constructor() {
     super();
     if (!this.uuid) this.uuid = uuidv4();
