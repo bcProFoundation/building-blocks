@@ -2,18 +2,20 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MongoRepository } from 'typeorm';
 import { Profile } from './profile.entity';
-import {
-  AVATAR_ROUTE_PREFIX,
-  AVATAR_IMAGE_FOLDER,
-} from '../../../constants/filesystem';
+import { AVATAR_IMAGE_FOLDER } from '../../../constants/filesystem';
 import { unlink } from 'fs';
 import { from } from 'rxjs';
+import { HttpHeaders } from '@angular/common/http';
+import { CommandBus } from '@nestjs/cqrs';
+import { UploadNewAvatarCommand } from '../../../profile-management/commands/upload-new-avatar/upload-new-avatar.command';
 
 @Injectable()
 export class ProfileService {
+  authorizationHeader: HttpHeaders;
   constructor(
     @InjectRepository(Profile)
     private readonly profileRepository: MongoRepository<Profile>,
+    private readonly commandBus: CommandBus,
   ) {}
 
   public async save(profile) {
@@ -32,22 +34,10 @@ export class ProfileService {
     return await this.profileRepository.find();
   }
 
-  public async uploadAndSetAvatar(file, profileUuid) {
-    let profile: Profile = await this.findOne({ uuid: profileUuid });
-    if (profile && profile.picture) {
-      const oldPicture = profile.picture.split('/')[2];
-      this.deleteAvatarFile(oldPicture);
-
-      profile.picture = AVATAR_ROUTE_PREFIX + file.filename;
-      await profile.save();
-      return profile;
-    } else {
-      profile = new Profile();
-      profile.uuid = profileUuid;
-      profile.picture = AVATAR_ROUTE_PREFIX + file.filename;
-      await profile.save();
-      return profile;
-    }
+  public async uploadAndSetAvatar(file, clientHttpRequest) {
+    return this.commandBus.execute(
+      new UploadNewAvatarCommand(file, clientHttpRequest),
+    );
   }
 
   public deleteAvatarFile(pictureFile) {

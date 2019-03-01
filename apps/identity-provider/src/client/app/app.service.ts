@@ -13,7 +13,9 @@ import {
   LOGIN_URL,
   ISSUER_URL,
   APP_URL,
+  COMMUNICATION_SERVER,
 } from './constants/storage';
+import { COMMUNICATION_SERVER_URL } from 'server/constants/app-strings';
 
 @Injectable()
 export class AppService {
@@ -32,6 +34,7 @@ export class AppService {
         catchError(this.handleError('getMessage', { message: 'disconnected' })),
       );
   }
+
   setInfoLocalStorage(response) {
     localStorage.setItem(CLIENT_ID, response.clientId);
     localStorage.setItem(REDIRECT_URI, response.callbackURLs[0]);
@@ -39,5 +42,18 @@ export class AppService {
     localStorage.setItem(LOGIN_URL, response.authorizationURL);
     localStorage.setItem(ISSUER_URL, response.authServerURL);
     localStorage.setItem(APP_URL, response.appURL);
+
+    this.http.get(response.authServerURL + '/info').subscribe({
+      next: (data: any) => {
+        data.services.forEach(element => {
+          if (element.type === COMMUNICATION_SERVER) {
+            localStorage.setItem(COMMUNICATION_SERVER_URL, element.url);
+          }
+        });
+      },
+      error: err => {
+        err;
+      },
+    });
   }
 }
