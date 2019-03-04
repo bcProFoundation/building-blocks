@@ -284,17 +284,6 @@ deploy_develop:
   script:
     - ./kubernetes/deploy/deploy-develop.sh
 
-setup_staging:
-  image: python:3
-  stage: setup
-  only:
-    - staging
-  before_script:
-    - pip install -q requests
-  script:
-    - ./scripts/setupwiz.py setup-as https://staging-accounts.castlecraft.in Administrator admin@example.com admin +919876543210 https://staging-admin.castlecraft.in
-    - ./scripts/setupwiz.py add-client admin@example.com admin https://staging-admin.castlecraft.in "Identity Provider" https://staging-myaccount.castlecraft.in
-
 pages:
   stage: docs
   only:
