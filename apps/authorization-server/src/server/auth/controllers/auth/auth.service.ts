@@ -18,6 +18,7 @@ import { Role } from '../../../user-management/entities/role/role.interface';
 import { User } from '../../../user-management/entities/user/user.interface';
 import { AuthData } from '../../../user-management/entities/auth-data/auth-data.interface';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
+import { PasswordPolicyService } from '../../../user-management/policies/password-policy/password-policy.service';
 
 @Injectable()
 export class AuthService {
@@ -26,6 +27,7 @@ export class AuthService {
     private readonly authDataService: AuthDataService,
     private readonly cryptoService: CryptographerService,
     private readonly settings: ServerSettingsService,
+    private readonly passwordPolicy: PasswordPolicyService,
   ) {}
 
   /**
@@ -41,6 +43,13 @@ export class AuthService {
     if (settings.length === 1 && settings[0].communicationServerClientId) {
       throw new BadRequestException({
         communicationEnabled: true,
+        message: 'SIGNUP_VIA_EMAIL_OR_PHONE',
+      });
+    }
+    const result = this.passwordPolicy.validatePassword(user.password);
+    if (result.errors.length > 0) {
+      throw new BadRequestException({
+        errors: result.errors,
         message: 'SIGNUP_VIA_EMAIL_OR_PHONE',
       });
     }

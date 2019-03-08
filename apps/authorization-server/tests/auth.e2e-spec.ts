@@ -30,7 +30,7 @@ describe('AuthController (e2e)', () => {
       .send({
         email: 'test@user.org',
         phone: '+919876543211', // admin@user.org is +919876543210
-        password: 'secret',
+        password: '14CharP@ssword',
         name: 'Test User',
       })
       .expect(200);

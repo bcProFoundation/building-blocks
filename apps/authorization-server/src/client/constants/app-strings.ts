@@ -85,3 +85,4 @@ export const AVAILABLE_TRANSLATIONS = [
   'zh',
   'zh-TW',
 ];
+export const INVALID_VERIFICATION_CODE = 'Invalid Verification Code';

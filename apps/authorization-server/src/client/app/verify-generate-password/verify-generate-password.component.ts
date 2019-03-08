@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { VerifyGeneratePasswordService } from './verify-generate-password.service';
+import { MatSnackBar } from '@angular/material';
+import { CLOSE, INVALID_VERIFICATION_CODE } from '../../constants/app-strings';
 
 @Component({
   selector: 'app-verify-generate-password',
@@ -14,6 +16,7 @@ export class VerifyGeneratePasswordComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private verifyGeneratePassword: VerifyGeneratePasswordService,
+    private snackBar: MatSnackBar,
   ) {
     this.verificationCode = this.route.snapshot.params.code;
   }
@@ -27,6 +30,13 @@ export class VerifyGeneratePasswordComponent implements OnInit {
         .subscribe({
           next: response => {
             window.location.href = '/login';
+          },
+          error: error => {
+            let message = INVALID_VERIFICATION_CODE;
+            if (error.error.length > 0) {
+              message = error.error[0];
+            }
+            this.snackBar.open(message, CLOSE, { duration: 2000 });
           },
         });
     }
