@@ -4,6 +4,7 @@ import { ServerSettingsService } from '../../../system-settings/entities/server-
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
 import { CryptographerService } from '../../../common/cryptographer.service';
+import { PasswordPolicyService } from '../../../user-management/policies/password-policy/password-policy.service';
 
 describe('UserAggregateService', () => {
   let service: UserAggregateService;
@@ -28,8 +29,15 @@ describe('UserAggregateService', () => {
           provide: CryptographerService,
           useValue: {},
         },
+        {
+          provide: PasswordPolicyService,
+          useValue: {},
+        },
       ],
-    }).compile();
+    })
+      .overrideProvider(UserAggregateService)
+      .useFactory({ factory: () => jest.fn() })
+      .compile();
 
     service = module.get<UserAggregateService>(UserAggregateService);
   });

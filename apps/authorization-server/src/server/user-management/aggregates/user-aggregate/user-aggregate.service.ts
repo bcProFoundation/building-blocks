@@ -1,12 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import * as speakeasy from 'speakeasy';
 import * as QRCode from 'qrcode';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
-import { UserService } from '../../../user-management/entities/user/user.service';
-import { User } from '../../../user-management/entities/user/user.interface';
+import { UserService } from '../../entities/user/user.service';
+import { User } from '../../entities/user/user.interface';
 import { ADMINISTRATOR } from '../../../constants/app-strings';
-import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
-import { AuthData } from '../../../user-management/entities/auth-data/auth-data.interface';
+import { AuthDataService } from '../../entities/auth-data/auth-data.service';
+import { AuthData } from '../..//entities/auth-data/auth-data.interface';
 import {
   twoFactorEnabledException,
   twoFactorNotEnabledException,
@@ -15,15 +15,23 @@ import {
 } from '../../../common/filters/exceptions';
 import { i18n } from '../../../i18n/i18n.config';
 import { CryptographerService } from '../../../common/cryptographer.service';
+import { AggregateRoot } from '@nestjs/cqrs';
+import { ChangePasswordDto, VerifyEmailDto } from '../../policies';
+import { PasswordChangedEvent } from '../../events/password-changed/password-changed.event';
+import { PasswordPolicyService } from '../../policies/password-policy/password-policy.service';
+import { EmailVerifiedAndPasswordSetEvent } from '../../events/email-verified-and-password-set/email-verified-and-password-set.event';
 
 @Injectable()
-export class UserAggregateService {
+export class UserAggregateService extends AggregateRoot {
   constructor(
     private readonly user: UserService,
     private readonly authData: AuthDataService,
     private readonly settings: ServerSettingsService,
     private readonly crypto: CryptographerService,
-  ) {}
+    private readonly passwordPolicy: PasswordPolicyService,
+  ) {
+    super();
+  }
 
   async initializeMfa(uuid: string, restart: boolean = false) {
     const user: User = await this.user.findOne({ uuid });
@@ -138,18 +146,42 @@ export class UserAggregateService {
     return { message: i18n.__('2FA Disabled') };
   }
 
-  async verifyEmail(payload, res) {
+  async verifyEmail(payload: VerifyEmailDto) {
+    const result = this.passwordPolicy.validatePassword(payload.password);
+    if (result.errors.length > 0) {
+      throw new BadRequestException(result.errors);
+    }
+
     const verifiedUser = await this.user.findOne({
       verificationCode: payload.verificationCode,
     });
     if (!verifiedUser) throw invalidUserException;
     const userPassword = new (this.authData.getModel())();
     userPassword.password = this.crypto.hashPassword(payload.password);
-    await userPassword.save();
     verifiedUser.password = userPassword.uuid;
     verifiedUser.disabled = false;
     verifiedUser.verificationCode = undefined;
-    verifiedUser.save();
-    return { message: res.__('Password set successfully') };
+    this.apply(
+      new EmailVerifiedAndPasswordSetEvent(verifiedUser, userPassword),
+    );
+  }
+
+  async validatePassword(userUuid: string, passwordPayload: ChangePasswordDto) {
+    const authData = await this.getUserSaltedHashPassword(userUuid);
+    const validPassword = this.crypto.checkPassword(
+      authData.password,
+      passwordPayload.currentPassword,
+    );
+    const result = this.passwordPolicy.validatePassword(
+      passwordPayload.newPassword,
+    );
+    if (validPassword && result.errors.length === 0) {
+      authData.password = this.crypto.hashPassword(passwordPayload.newPassword);
+      this.apply(new PasswordChangedEvent(authData));
+    } else {
+      const errors =
+        result.errors.length > 0 ? result.errors : 'Invalid Password';
+      throw new BadRequestException(errors);
+    }
   }
 }

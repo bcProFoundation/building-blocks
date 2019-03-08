@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { VerifyGeneratePasswordComponent } from './verify--generate-password.component';
+import { VerifyGeneratePasswordComponent } from './verify-generate-password.component';
 import { AuthServerMaterialModule } from '../auth-server-material/auth-server-material.module';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FormsModule } from '@angular/forms';

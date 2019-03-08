@@ -7,7 +7,6 @@ import {
   Query,
   Get,
   Res,
-  UnauthorizedException,
   Param,
   UsePipes,
   ValidationPipe,
@@ -17,20 +16,24 @@ import {
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { CryptographerService } from '../../../common/cryptographer.service';
-import { UserService } from '../../../user-management/entities/user/user.service';
+import { UserService } from '../../entities/user/user.service';
 import { AuthGuard } from '../../../auth/guards/auth.guard';
 import { callback } from '../../../auth/passport/strategies/local.strategy';
-import { CreateUserDto } from '../../policies/create-user/create-user.dto';
-import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
-import { i18n } from '../../../i18n/i18n.config';
+import { AuthDataService } from '../../entities/auth-data/auth-data.service';
 import { Roles } from '../../../common/decorators/roles.decorator';
 import { ADMINISTRATOR } from '../../../constants/app-strings';
 import { RoleGuard } from '../../../auth/guards/role.guard';
 import { CRUDOperationService } from '../../../common/services/crudoperation/crudoperation.service';
-import { UserAggregateService } from '../../../user-management/aggregates/user-aggregate/user-aggregate.service';
-import { RemoveUserAccountCommand } from '../../../user-management/commands/remove-user-account/remove-user-account.command';
-import { GenerateForgottenPasswordCommand } from '../../../user-management/commands/generate-forgotten-password/generate-forgotten-password.command';
-import { VerifyEmailDto } from '../../policies';
+import { UserAggregateService } from '../../aggregates/user-aggregate/user-aggregate.service';
+import { RemoveUserAccountCommand } from '../../commands/remove-user-account/remove-user-account.command';
+import { GenerateForgottenPasswordCommand } from '../../commands/generate-forgotten-password/generate-forgotten-password.command';
+import {
+  VerifyEmailDto,
+  ChangePasswordDto,
+  CreateUserDto,
+} from '../../policies';
+import { ChangePasswordCommand } from '../../commands/change-password/change-password.command';
+import { VerifyEmailAndSetPasswordCommand } from '../../commands/verify-email-and-set-passsword/verify-email-and-set-password.command';
 
 @Controller('user')
 export class UserController {
@@ -45,19 +48,12 @@ export class UserController {
 
   @Post('v1/change_password')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
-  async updatePassword(@Req() req, @Body() body, @Res() res) {
-    const authData = await this.userAggregate.getUserSaltedHashPassword(
-      req.user.user,
+  @UsePipes(ValidationPipe)
+  async updatePassword(@Req() req, @Body() passwordPayload: ChangePasswordDto) {
+    const userUuid = req.user.user;
+    return await this.commandBus.execute(
+      new ChangePasswordCommand(userUuid, passwordPayload),
     );
-    const validPassword = this.cryptoService.checkPassword(
-      authData.password,
-      body.currentPassword,
-    );
-    if (validPassword) {
-      authData.password = this.cryptoService.hashPassword(body.newPassword);
-      await authData.save();
-      res.json({ message: 'updated' });
-    } else throw new UnauthorizedException(i18n.__('Invalid Password'));
   }
 
   @Post('v1/update_full_name')
@@ -202,11 +198,9 @@ export class UserController {
 
   @Post('v1/generate_password')
   @UsePipes(ValidationPipe)
-  async verifyEmail(@Body() payload: VerifyEmailDto, @Res() res) {
-    const verifyEmailResponse = await this.userAggregate.verifyEmail(
-      payload,
-      res,
+  async verifyEmail(@Body() payload: VerifyEmailDto) {
+    return await this.commandBus.execute(
+      new VerifyEmailAndSetPasswordCommand(payload),
     );
-    res.json(verifyEmailResponse);
   }
 }

@@ -64,7 +64,7 @@ describe('OAuth2Controller (e2e)', () => {
       'Administrator',
       'admin@user.org',
       '+919876543210',
-      'secret',
+      '14CharP@ssword',
     );
     const client = await setupService.createClient(
       'admin@user.org',
@@ -97,7 +97,7 @@ describe('OAuth2Controller (e2e)', () => {
       .post('/auth/login')
       .send({
         username: 'admin@user.org',
-        password: 'secret',
+        password: '14CharP@ssword',
         redirect: '/account',
       })
       .expect(200);
@@ -175,7 +175,7 @@ describe('OAuth2Controller (e2e)', () => {
         grant_type: 'password',
         username: 'admin@user.org',
         redirect_uri: redirectUris[0],
-        password: 'secret',
+        password: '14CharP@ssword',
         scope: allowedScopes.toString(),
         client_id: clientId,
       })

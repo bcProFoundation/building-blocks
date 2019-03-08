@@ -12,7 +12,7 @@ import { SignupComponent } from './signup/signup.component';
 import { AccountComponent } from './account/account.component';
 import { AuthService } from './auth/auth.service';
 import { AVAILABLE_TRANSLATIONS } from '../constants/app-strings';
-import { VerifyGeneratePasswordComponent } from './verify-generate-password/verify--generate-password.component';
+import { VerifyGeneratePasswordComponent } from './verify-generate-password/verify-generate-password.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
 let lang = navigator.language;
