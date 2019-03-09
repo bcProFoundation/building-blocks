@@ -14,8 +14,8 @@ import {
   ISSUER_URL,
   APP_URL,
   COMMUNICATION_SERVER,
+  COMMUNICATION_SERVER_URL,
 } from './constants/storage';
-import { COMMUNICATION_SERVER_URL } from 'server/constants/app-strings';
 
 @Injectable()
 export class AppService {
@@ -23,13 +23,13 @@ export class AppService {
   private handleError: HandleError;
 
   constructor(private http: HttpClient, httpErrorHandler: HttpErrorHandler) {
-    this.handleError = httpErrorHandler.createHandleError('HeroesService');
+    this.handleError = httpErrorHandler.createHandleError('AppService');
   }
 
   /** GET message from the server */
   getMessage(): Observable<any> {
     return this.http
-      .get<string>(this.messageUrl)
+      .get<any>(this.messageUrl)
       .pipe(
         catchError(this.handleError('getMessage', { message: 'disconnected' })),
       );
@@ -43,17 +43,15 @@ export class AppService {
     localStorage.setItem(ISSUER_URL, response.authServerURL);
     localStorage.setItem(APP_URL, response.appURL);
 
-    this.http.get(response.authServerURL + '/info').subscribe({
-      next: (data: any) => {
+    this.http.get<any>(response.authServerURL + '/info').subscribe({
+      next: data => {
         data.services.forEach(element => {
           if (element.type === COMMUNICATION_SERVER) {
             localStorage.setItem(COMMUNICATION_SERVER_URL, element.url);
           }
         });
       },
-      error: err => {
-        err;
-      },
+      error: err => {},
     });
   }
 }
