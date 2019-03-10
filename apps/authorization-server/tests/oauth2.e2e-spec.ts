@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import * as session from 'supertest-session';
+import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { AppModule } from '../src/server/app.module';
 import { ExpressServer } from '../src/server/express-server';
@@ -24,7 +24,7 @@ describe('OAuth2Controller (e2e)', () => {
   let clientSecret: string;
   let redirectUris: string[];
   let allowedScopes: string[];
-  let sessionRequest;
+  let Cookies;
   let code: string;
   let clientAccessToken: string;
   let refreshToken: string;
@@ -40,7 +40,6 @@ describe('OAuth2Controller (e2e)', () => {
     app = moduleFixture.createNestApplication(authServer.server);
     authServer.setupSession(app);
     await app.init();
-
     userService = moduleFixture.get(UserService);
     const setupService = moduleFixture.get(SetupService);
     const authCodeService = moduleFixture.get(AuthorizationCodeService);
@@ -81,30 +80,37 @@ describe('OAuth2Controller (e2e)', () => {
       appURL: 'http://localhost:3000',
     };
     await serverSettingsService.save(serverSettings);
-
-    sessionRequest = session(app.getHttpServer());
   });
 
-  it('/GET /oauth2/profile (Invalid Token Use)', () => {
-    return session(app.getHttpServer())
+  it('/GET /oauth2/profile (Invalid Token Use)', done => {
+    return request(app.getHttpServer())
       .get('/oauth2/profile')
       .set('Authorization', 'Bearer ' + 'fakeToken')
-      .expect(401);
+      .expect(401)
+      .end(function(err, res) {
+        if (err) return done(err);
+        done();
+      });
   });
 
-  it('/POST /auth/login', () => {
-    return sessionRequest
+  it('/POST /auth/login', done => {
+    return request(app.getHttpServer())
       .post('/auth/login')
       .send({
         username: 'admin@user.org',
         password: '14CharP@ssword',
         redirect: '/account',
       })
-      .expect(200);
+      .expect(200)
+      .end(function(err, res) {
+        if (err) return done(err);
+        Cookies = res.header['set-cookie'].pop().split(';')[0];
+        done();
+      });
   });
 
   it('/POST /oauth2/token (Client Credentials)', done => {
-    return session(app.getHttpServer())
+    return request(app.getHttpServer())
       .post('/oauth2/token')
       .send({
         grant_type: 'client_credentials',
@@ -125,25 +131,29 @@ describe('OAuth2Controller (e2e)', () => {
     const clientCredentials = Buffer.from(
       clientId + ':' + clientSecret,
     ).toString('base64');
-    return session(app.getHttpServer())
+    return request(app.getHttpServer())
       .post('/oauth2/introspection')
       .send({
         token: clientAccessToken,
       })
       .set('Authorization', 'Basic ' + clientCredentials)
       .expect(200)
-      .then(res => {
+      .end((err, res) => {
+        if (err) return done(err);
         done();
       });
   });
 
   it('/GET /oauth2/confirmation (Authorization Code Grant)', done => {
-    const request = `/oauth2/confirmation?scope=${allowedScopes.toString()}&response_type=code&client_id=${clientId}&redirect_uri=${
+    const authRequest = `/oauth2/confirmation?scope=${allowedScopes.toString()}&response_type=code&client_id=${clientId}&redirect_uri=${
       redirectUris[0]
     }&state=420`;
-    return sessionRequest.get(request).then(response => {
-      code = getParameterByName(response.headers.location, 'code');
-      const state = getParameterByName(response.headers.location, 'state');
+    const req = request(app.getHttpServer()).get(authRequest);
+    req.cookies = Cookies;
+    return req.end((err, response) => {
+      if (err) return done(err);
+      code = getParameterByName(response.header.location, 'code');
+      const state = getParameterByName(response.header.location, 'state');
       expect(state).toEqual('420');
       done();
     });
@@ -157,7 +167,7 @@ describe('OAuth2Controller (e2e)', () => {
       client_id: clientId,
       scope: allowedScopes.toString(),
     };
-    return session(app.getHttpServer())
+    return request(app.getHttpServer())
       .post('/oauth2/token')
       .send(req)
       .expect(200)
@@ -169,7 +179,7 @@ describe('OAuth2Controller (e2e)', () => {
   });
 
   it('/POST /oauth2/token (Request Owner Password Credentials)', done => {
-    return session(app.getHttpServer())
+    return request(app.getHttpServer())
       .post('/oauth2/token')
       .send({
         grant_type: 'password',
@@ -187,18 +197,21 @@ describe('OAuth2Controller (e2e)', () => {
   });
 
   it('/GET /oauth2/confirmation (Implicit Grant)', done => {
-    const request = `/oauth2/confirmation?scope=${allowedScopes.toString()}&response_type=token&client_id=${clientId}&redirect_uri=${
+    const authRequest = `/oauth2/confirmation?scope=${allowedScopes.toString()}&response_type=token&client_id=${clientId}&redirect_uri=${
       redirectUris[0]
     }&state=420`;
-    return sessionRequest.get(request).then(response => {
-      const state = getParameterByName(response.headers.location, 'state');
+    const req = request(app.getHttpServer()).get(authRequest);
+    req.cookies = Cookies;
+    return req.end((err, response) => {
+      if (err) return done(err);
+      const state = getParameterByName(response.header.location, 'state');
       expect(state).toEqual('420');
       done();
     });
   });
 
   it('/POST /oauth2/token (Refresh Token Exchange)', done => {
-    return sessionRequest
+    return request(app.getHttpServer())
       .post('/oauth2/token')
       .send({
         grant_type: 'refresh_token',
@@ -215,15 +228,18 @@ describe('OAuth2Controller (e2e)', () => {
   });
 
   it('/GET /oauth2/confirmation (OIDC IDToken Grant)', done => {
-    const request = `/oauth2/confirmation?scope=openid&response_type=id_token&client_id=${clientId}&redirect_uri=${
+    const authRequest = `/oauth2/confirmation?scope=openid&response_type=id_token&client_id=${clientId}&redirect_uri=${
       redirectUris[0]
     }&state=420&nonce=tHc_Cbd`;
-    return sessionRequest.get(request).then(response => {
+    const req = request(app.getHttpServer()).get(authRequest);
+    req.cookies = Cookies;
+    return req.end((err, response) => {
+      if (err) return done(err);
       const oidcIDToken = getParameterByName(
-        response.headers.location,
+        response.header.location,
         'id_token',
       );
-      const state = getParameterByName(response.headers.location, 'state');
+      const state = getParameterByName(response.header.location, 'state');
       expect(state).toEqual('420');
       expect(oidcIDToken).not.toBeNull();
       done();
@@ -231,95 +247,95 @@ describe('OAuth2Controller (e2e)', () => {
   });
 
   it('/GET /oauth2/confirmation (OIDC IDToken Token Grant)', done => {
-    const request = `/oauth2/confirmation?scope=openid&response_type=id_token%20token&client_id=${clientId}&redirect_uri=${
+    const authRequest = `/oauth2/confirmation?scope=openid&response_type=id_token%20token&client_id=${clientId}&redirect_uri=${
       redirectUris[0]
     }&state=420&nonce=tHc_Cbd`;
-    return sessionRequest
-      .get(request)
-      .expect(302)
-      .then(response => {
-        const oidcIDToken = getParameterByName(
-          response.headers.location,
-          'id_token',
-        );
-        const oidcToken = getParameterByName(
-          response.headers.location,
-          'access_token',
-        );
-        const state = getParameterByName(response.headers.location, 'state');
-        expect(state).toEqual('420');
-        expect(oidcIDToken).not.toBeNull();
-        expect(oidcToken).not.toBeNull();
-        done();
-      });
+    const req = request(app.getHttpServer()).get(authRequest);
+    req.cookies = Cookies;
+    return req.expect(302).end((err, response) => {
+      if (err) return done(err);
+      const oidcIDToken = getParameterByName(
+        response.header.location,
+        'id_token',
+      );
+      const oidcToken = getParameterByName(
+        response.header.location,
+        'access_token',
+      );
+      const state = getParameterByName(response.header.location, 'state');
+      expect(state).toEqual('420');
+      expect(oidcIDToken).not.toBeNull();
+      expect(oidcToken).not.toBeNull();
+      done();
+    });
   });
 
   it('/GET /oauth2/confirmation (OIDC Code IDToken Grant)', done => {
-    const request = `/oauth2/confirmation?scope=openid&response_type=code%20id_token&client_id=${clientId}&redirect_uri=${
+    const authRequest = `/oauth2/confirmation?scope=openid&response_type=code%20id_token&client_id=${clientId}&redirect_uri=${
       redirectUris[0]
     }&state=420&nonce=tHc_Cbd`;
-    return sessionRequest
-      .get(request)
-      .expect(302)
-      .then(response => {
-        const oidcIDToken = getParameterByName(
-          response.headers.location,
-          'id_token',
-        );
-        const oidcCode = getParameterByName(response.headers.location, 'code');
-        const state = getParameterByName(response.headers.location, 'state');
-        expect(state).toEqual('420');
-        expect(oidcIDToken).not.toBeNull();
-        expect(oidcCode).not.toBeNull();
-        done();
-      });
+    const req = request(app.getHttpServer()).get(authRequest);
+    req.cookies = Cookies;
+    return req.expect(302).end((err, response) => {
+      if (err) return done(err);
+      const oidcIDToken = getParameterByName(
+        response.header.location,
+        'id_token',
+      );
+      const oidcCode = getParameterByName(response.header.location, 'code');
+      const state = getParameterByName(response.header.location, 'state');
+      expect(state).toEqual('420');
+      expect(oidcIDToken).not.toBeNull();
+      expect(oidcCode).not.toBeNull();
+      done();
+    });
   });
 
   it('/GET /oauth2/confirmation (OIDC Code Token Grant)', done => {
-    const request = `/oauth2/confirmation?scope=openid&response_type=code%20token&client_id=${clientId}&redirect_uri=${
+    const authRequest = `/oauth2/confirmation?scope=openid&response_type=code%20token&client_id=${clientId}&redirect_uri=${
       redirectUris[0]
     }&state=420&nonce=tHc_Cbd`;
-    return sessionRequest
-      .get(request)
-      .expect(302)
-      .then(response => {
-        const oidcToken = getParameterByName(
-          response.headers.location,
-          'access_token',
-        );
-        const oidcCode = getParameterByName(response.headers.location, 'code');
-        const state = getParameterByName(response.headers.location, 'state');
-        expect(state).toEqual('420');
-        expect(oidcToken).not.toBeNull();
-        expect(oidcCode).not.toBeNull();
-        done();
-      });
+    const req = request(app.getHttpServer()).get(authRequest);
+    req.cookies = Cookies;
+    return req.expect(302).end((err, response) => {
+      if (err) return done(err);
+      const oidcToken = getParameterByName(
+        response.header.location,
+        'access_token',
+      );
+      const oidcCode = getParameterByName(response.header.location, 'code');
+      const state = getParameterByName(response.header.location, 'state');
+      expect(state).toEqual('420');
+      expect(oidcToken).not.toBeNull();
+      expect(oidcCode).not.toBeNull();
+      done();
+    });
   });
 
   it('/GET /oauth2/confirmation (OIDC Code IDToken Token Grant)', done => {
-    const request = `/oauth2/confirmation?scope=openid&response_type=code%20id_token%20token&client_id=${clientId}&redirect_uri=${
+    const authRequest = `/oauth2/confirmation?scope=openid&response_type=code%20id_token%20token&client_id=${clientId}&redirect_uri=${
       redirectUris[0]
     }&state=420&nonce=tHc_Cbd`;
-    return sessionRequest
-      .get(request)
-      .expect(302)
-      .then(response => {
-        const oidcToken = getParameterByName(
-          response.headers.location,
-          'access_token',
-        );
-        const oidcCode = getParameterByName(response.headers.location, 'code');
-        const oidcIDToken = getParameterByName(
-          response.headers.location,
-          'id_token',
-        );
-        const state = getParameterByName(response.headers.location, 'state');
-        expect(state).toEqual('420');
-        expect(oidcIDToken).not.toBeNull();
-        expect(oidcToken).not.toBeNull();
-        expect(oidcCode).not.toBeNull();
-        done();
-      });
+    const req = request(app.getHttpServer()).get(authRequest);
+    req.cookies = Cookies;
+    return req.expect(302).end((err, response) => {
+      if (err) return done(err);
+      const oidcToken = getParameterByName(
+        response.header.location,
+        'access_token',
+      );
+      const oidcCode = getParameterByName(response.header.location, 'code');
+      const oidcIDToken = getParameterByName(
+        response.header.location,
+        'id_token',
+      );
+      const state = getParameterByName(response.header.location, 'state');
+      expect(state).toEqual('420');
+      expect(oidcIDToken).not.toBeNull();
+      expect(oidcToken).not.toBeNull();
+      expect(oidcCode).not.toBeNull();
+      done();
+    });
   });
 
   afterAll(async () => {

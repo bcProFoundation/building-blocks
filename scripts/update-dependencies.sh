@@ -16,9 +16,3 @@
 
 # Infrastructure Console
 ./node_modules/.bin/npm-check --update apps/infrastructure-console
-
-# NestJS EnsureLoggedInGuard
-./node_modules/.bin/npm-check --update libs/nestjs-ensureloggedin-guard
-
-# NestJS Session Store
-./node_modules/.bin/npm-check --update libs/nestjs-session-store

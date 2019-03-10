@@ -1,18 +1,9 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "module": "commonjs",
     "target": "es6",
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "types": [
-      "jest"
-    ],
-    "lib": [
-      "es2017",
-      "dom"
-    ]
+    "module": "commonjs",
+    "moduleResolution": "node"
   },
   "include": [
     "**/*"
