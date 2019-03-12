@@ -65,3 +65,8 @@ export const cannotDeleteAdministratorException = new HttpException(
   i18n.__('Cannot Delete Administrators'),
   HttpStatus.FORBIDDEN,
 );
+
+export const invalidCodeChallengeException = new HttpException(
+  i18n.__('Invalid Code Challenge'),
+  HttpStatus.BAD_REQUEST,
+);
