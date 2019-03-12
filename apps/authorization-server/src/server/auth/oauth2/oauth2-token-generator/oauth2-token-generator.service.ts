@@ -66,13 +66,6 @@ export class OAuth2TokenGeneratorService {
 
     await this.bearerTokenService.save(bearerToken);
 
-    /**
-     * OIDC scope: openid profile >
-     * add name, family_name, given_name, middle_name, nickname,
-     * preferred_username, profile, picture, website, gender,
-     * birthdate, zoneinfo, locale, updated_at
-     */
-
     return [bearerToken, extraParams];
   }
 

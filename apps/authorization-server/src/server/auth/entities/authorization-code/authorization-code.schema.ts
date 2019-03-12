@@ -7,6 +7,9 @@ export const schema = new mongoose.Schema(
     client: String,
     user: String,
     scope: [String],
+    nonce: String,
+    codeChallenge: String,
+    codeChallengeMethod: String,
   },
   { collection: 'authorization_code', versionKey: false },
 );

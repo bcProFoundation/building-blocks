@@ -1,12 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { OAuth2TokenGeneratorService } from '../oauth2-token-generator/oauth2-token-generator.service';
-import { CryptographerService } from '../../../common/cryptographer.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
-import { BearerTokenService } from '../../../auth/entities/bearer-token/bearer-token.service';
 import { AuthorizationCodeService } from '../../../auth/entities/authorization-code/authorization-code.service';
 import { CodeExchangeService } from './code-exchange.service';
-import { ConfigService } from '../../../config/config.service';
+import { IDTokenGrantService } from '../id-token-grant/id-token-grant.service';
 
 describe('CodeExchangeService', () => {
   let service: CodeExchangeService;
@@ -24,11 +22,11 @@ describe('CodeExchangeService', () => {
           useValue: {},
         },
         {
-          provide: CryptographerService,
+          provide: IDTokenGrantService,
           useValue: {},
         },
         {
-          provide: BearerTokenService,
+          provide: UserService,
           useValue: {},
         },
         {
@@ -38,17 +36,6 @@ describe('CodeExchangeService', () => {
         {
           provide: UserService,
           useValue: {},
-        },
-        {
-          provide: ConfigService,
-          useValue: {
-            get(env) {
-              switch (env) {
-                case 'TOKEN_VALIDITY':
-                  return 3600;
-              }
-            },
-          },
         },
       ],
     }).compile();

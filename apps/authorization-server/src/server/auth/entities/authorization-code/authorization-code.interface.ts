@@ -6,4 +6,7 @@ export interface AuthorizationCode extends Document {
   client?: string;
   user?: string;
   scope?: string[];
+  nonce?: string;
+  codeChallenge?: string;
+  codeChallengeMethod?: string;
 }
