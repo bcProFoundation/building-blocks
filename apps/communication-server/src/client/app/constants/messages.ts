@@ -8,3 +8,5 @@ export const CANNOT_FETCH_CLIENT = 'Cannot fetch client';
 export const LOGIN_AS_ADMINISTRATOR = 'Please login as administrator';
 export const HOME_TITLE = 'Home';
 export const UPDATE_BUTTON = 'Update';
+export const UPDATED_SUCCESSFUL = 'Update successful';
+export const CLOSE = 'Close';

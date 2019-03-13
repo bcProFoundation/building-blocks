@@ -67,12 +67,18 @@ export class ListingComponent implements OnInit, AfterViewInit {
         startWith({}),
         switchMap(() => {
           this._isLoadingResults = true;
-          return this.listingService.getModels(
-            this.paginator.pageIndex,
-            this.paginator.pageSize,
-            this.search.value,
-            this.model,
-          );
+          return this.listingService
+            .getModels(
+              this.paginator.pageIndex,
+              this.paginator.pageSize,
+              this.search.value,
+              this.model,
+            )
+            .pipe(
+              map(data => {
+                return data;
+              }),
+            );
         }),
         map((data: any) => {
           this._isLoadingResults = false;
