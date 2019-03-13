@@ -51,25 +51,26 @@ add `127.0.0.1 connect.localhost` in `/etc/hosts` file or hosts file of your ope
 
 ### Setup server with POST request
 
-Add Client using Infrastructure console to obtain clientId, clientSecret. Use these to setup the server.
+`communication-server` needs to have first client (app), i.e `communication-server` for administration dashboard for all apps, users, roles, scopes and general settings.
 
-If a POST request with no body is sent to `http://connect.localhost:4100/setup` error response will specify required fields.
+If a POST request with a body is sent to `http://accounts.localhost:3000/setup` response with required fields would be sent to url `http://accounts.localhost:4100` as per defined inside `./scripts/setupwiz.py`
 
-Use `clientId` and `clientSecret` from response of `authorization-server` setup.
-
-```
-curl -d "appURL=http://connect.localhost:4100" \
-    -d "authServerURL=http://accounts.localhost:3000" \
-    -d "clientId=d318d6cb-2b60-4afa-bd1c-9b9f9fa068a2" \
-    -d "clientSecret=472188a19a11e6702c9aec54d86e42113b305f966d683147329fbba111454826" \
-    -X POST http://connect.localhost:4100/setup \
-    -H "Content-Type: application/x-www-form-urlencoded"
-```
-
-Sample response
+- Run the script
 
 ```
-Response 201
+./scripts/setupwiz.py add-client your@email.com secret http://admin.localhost:3000 "Communication Server" http://myaccount.localhost:4100
+```
+Above script would store the `clientId` and `clientSecret` from response to setup infrastructure console.
+
+- sample
+```
+./scripts/setupwiz.py add-client prafful@mntechnique.com secret http://admin.localhost:3000 "Communication Server" http://myaccount.localhost:4100
+```
+
+- Expected response
+
+```
+<Response [201]>
 ```
 
 Use Communication Server to setup personal and system Email Accounts.

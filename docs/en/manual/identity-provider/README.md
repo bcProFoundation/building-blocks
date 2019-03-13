@@ -37,25 +37,25 @@ add `127.0.0.1 myaccount.localhost` in `/etc/hosts` file or hosts file of your o
 
 ### Setup server with POST request
 
-Add Client using Infrastructure console to obtain clientId, clientSecret. Use these to setup the server.
+`identity-provider` needs to have first client (app), i.e `identity-provider` for administration dashboard for all apps, users, roles, scopes and general settings.
 
-If a POST request with no body is sent to `http://myaccount.localhost:3200/setup` error response will specify required fields.
+If a POST request with a body is sent to `http://accounts.localhost:3000/setup` response with required fields would be sent to url `http://accounts.localhost:3200` as per defined inside `./scripts/setupwiz.py`
 
-Use `clientId` and `clientSecret` from response of `authorization-server` setup.
-
-```
-curl -d "appURL=http://myaccount.localhost:3200" \
-    -d "authServerURL=http://accounts.localhost:3000" \
-    -d "clientId=6ff7dc34-2501-4281-bf8c-31929ed0f19c" \
-    -d "clientSecret=05f966d683147329fbba11145482472188a19a11e6702c9aec54d86e42113b36" \
-    -X POST http://myaccount.localhost:3200/setup \
-    -H "Content-Type: application/x-www-form-urlencoded"
-```
-
-Sample response
+- Run the script
 
 ```
-Response 201
+./scripts/setupwiz.py add-client your@email.com secret http://admin.localhost:3000 "Identity Provider" http://myaccount.localhost:3200
+```
+Above script would store the `clientId` and `clientSecret` from response to setup infrastructure console.
+
+- sample
+```
+./scripts/setupwiz.py add-client prafful@mntechnique.com secret http://admin.localhost:3000 "Identity Provider" http://myaccount.localhost:3200
 ```
 
+- Expected response
+
+```
+<Response [201]>
+```
 Login to Identity Provider to manage the user profile.
