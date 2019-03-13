@@ -6,6 +6,7 @@ import { AppsComponent } from './apps/apps.component';
 import { ListingComponent } from './listing/listing.component';
 import { EmailComponent } from './email/email.component';
 import { SettingsComponent } from './settings/settings.component';
+import { CloudStorageComponent } from './cloud-storage/cloud-storage.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -13,11 +14,16 @@ const routes: Routes = [
 
   { path: 'email/list', component: ListingComponent, canActivate: [AuthGuard] },
   {
+    path: 'storage/:uuid',
+    component: CloudStorageComponent,
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'email/:uuid',
     component: EmailComponent,
     canActivateChild: [AuthGuard],
   },
-
+  { path: 'storage', component: ListingComponent, canActivate: [AuthGuard] },
   { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard] },
 
   { path: '', redirectTo: 'home', pathMatch: 'full' },

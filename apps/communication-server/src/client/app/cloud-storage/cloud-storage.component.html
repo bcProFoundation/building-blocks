@@ -1,0 +1,44 @@
+<div class="card-container">
+  <form [formGroup]="cloudForm">
+    <mat-card>
+      <mat-card-title >{{ uuid || new}} - Cloud Storage   </mat-card-title>
+      <mat-card-content fxLayout="column">
+        <mat-form-field *ngIf="uuid">
+          <input matInput placeholder="UUID" formControlName="uuid" >
+        </mat-form-field>
+        <mat-form-field >
+            <input matInput placeholder="Cloud Storage Name" formControlName="name" required>
+        </mat-form-field>
+        <mat-form-field >
+            <input matInput placeholder="Version" formControlName="version" required>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="Region" formControlName="region" required>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="Endpoint" formControlName="endpoint" required>
+        </mat-form-field>
+        <mat-form-field >
+          <input matInput placeholder="AccessKey" formControlName="accessKey"
+          [type]="hideClientSecret ? 'password' : 'text'"
+         required>
+         <mat-icon matSuffix (click)="hideClientSecret = !hideClientSecret">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
+        </mat-form-field>
+        <mat-form-field >
+          <input matInput placeholder="SecretKey" formControlName="secretKey" password
+          [type]="hideClientSecret ? 'password' : 'text'" required>
+          <mat-icon matSuffix (click)="hideClientSecret = !hideClientSecret">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="Bucket" formControlName="bucket" required>
+        </mat-form-field>
+
+      </mat-card-content>
+      <mat-card-actions>
+        <button (click)="createCloudStorage()" mat-flat-button color="primary" [disabled]="!cloudForm.valid" *ngIf="!uuid">Create</button>
+        <button (click)="updateCloudStorage()" mat-flat-button color="primary" [disabled]="!cloudForm.valid" *ngIf="uuid">Update</button>
+        <!-- <button style="float: right;" (click)="deleteAccount()" mat-flat-button color="primary" [disabled]="!accountForm.valid" *ngIf="accountNumber">delete</button> -->
+       </mat-card-actions>
+      </mat-card>
+  </form>
+</div>
