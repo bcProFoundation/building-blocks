@@ -1,6 +1,6 @@
 # Summary
 
-* [Installation](README.md)
+* [About](README.md)
 
 * Authorization Server
     * [Development](authorization-server/README.md)

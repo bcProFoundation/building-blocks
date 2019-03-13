@@ -1,41 +1,69 @@
-# Developer Setup
+# Development Installation
 
-### Have these installed
-- Node JS latest is recommended for developers, it ensures future proof development.
-- Database as per the app
-- docker to build app images and to swap backing services while development
-- lerna to bootstrap development setup
-- gitbook for documentation
-- `yarn` for package manager
-- `angular-cli` for Angular development
-
-#### Clone the monorepo develop branch
+- Install Docker and Docker compose
+- Clone Building Blocks Repository and Start the backing services
 
 ```sh
-git clone https://gitlab.com/castlecraft/building-blocks --branch develop
+git clone https://gitlab.com/castlecraft/building-blocks
+cd building-blocks/docker
+nano .env # setup required environment variables mentioned below
+docker-compose -f docker-compose.yml up -d
 ```
 
-more about branches in [codebase](/development/01-codebase.md) section.
+Required environment variables in `.env` file:
 
-#### Install root dependencies
-
-change to building-blocks directory and run yarn
-
-```sh
-cd building-blocks
-yarn
+```
+DB_USER=admin
+DB_PASSWORD=admin
+DB_NAME=test_authorization-server
+MONGODB_ROOT_PASSWORD=admin
+REDIS_PASSWORD=admin
 ```
 
-This will install jest, lerna, typedoc as monorepo's dev dependencies.
+Install NodeJS global commands
 
-#### Install app dependencies
+```
+npm i lerna @angular/cli @nestjs/cli -g
+```
 
-Run lerna bootstrap to download and install app dependencies 
+Bootstrap dependencies
 
-```sh
+```
+cd building-blocks # change directory to repo root
+npm i
 lerna bootstrap
 ```
 
-It will take time to download dependencies for each project and setup the enviroment. Libraries from the monorepo are not downloaded, they are used from local directory for easy development.
+All apps dependencies and services are up and downloaded. Refer App's development documentation for further development.
 
-Rest of the development depends on app, Use any choice of IDE for development.
+# Commands for testing
+
+```
+# NestJS unit tests
+npm run test:server
+
+# Drop databases for auth-server e2e
+mongo admin -u root -p admin --authenticationDatabase admin
+> use test_authorization-server
+> db.dropDatabase()
+> exit
+
+# NestJS e2e/integration
+npm run test:e2e
+
+# Angular unit tests
+npm run test:client --watch=false --browsers ChromeHeadless
+
+# Angular e2e
+npm run e2e
+
+# Format Code and lint
+npm run format && npm run lint --fix
+```
+
+# TypeScript API Documentation
+
+* [Authorization Server]({{ book.docUrl }}/api/authorization-server/)
+* [Infrastructure Console]({{ book.docUrl }}/api/infrastructure-console/)
+* [Identity Provider]({{ book.docUrl }}/api/identity-provider/)
+* [Communication Server]({{ book.docUrl }}/api/communication-server/)

@@ -24,16 +24,6 @@ docker run -d --name mongo \
   bitnami/mongodb:latest
 ```
 
-```sh
-# for e2e testing
-docker run -d --name test_mongo \
-  -p 27017:27017 \
-  -e MONGODB_USERNAME=admin \
-  -e MONGODB_PASSWORD=admin \
-  -e MONGODB_DATABASE=test_authorization-server \
-  bitnami/mongodb:latest
-```
-
 Run following command as docker allowed user or root to start mongodb container.
 
 ```sh
@@ -70,32 +60,20 @@ add `127.0.0.1 accounts.localhost` in `/etc/hosts` file or hosts file of your op
 
 `authorization-server` needs to have first client (app), i.e `infrastructure-console` for administration dashboard for all apps, users, roles, scopes and general settings.
 
-If a POST request with no body is sent to `http://accounts.localhost:3000/setup` error response will specify required fields.
+If a POST request with a body is sent to `http://accounts.localhost:3000/setup` using
+`./scripts/setupwiz.py`
+
+- Run the script
 
 ```
-curl -d "fullName=Administrator" \
-    -d "email=admin@example.com" \
-    -d "phone=%2B919876543210" \
-    -d "infrastructureConsoleUrl=http://admin.localhost:5000" \
-    -d "issuerUrl=http://accounts.localhost:3000" \
-    -d "adminPassword=secret" \
-    -X POST http://accounts.localhost:3000/setup \
-    -H "Content-Type: application/x-www-form-urlencoded"
+./scripts/setupwiz.py setup-as http://accounts.localhost:3000 "USER NAME" your@email.com secret +919876543210 http://admin.localhost:5000
 ```
 
-Store the `clientId` and `clientSecret` from response to setup infrastructure console.
+Above script would store the `clientId` and `clientSecret` from response to setup Authorization Server.
 
-sample response
+- Expected response
+```
+<Response [201]>
+```
 
-```
-{
-  "redirectUris": [
-    "http://admin.localhost:5000/index.html",
-    "http://admin.localhost:5000/silent-refresh.html"
-  ],
-  "allowedScopes": ["openid","roles","email"],
-  "uuid":"9308ecc8-0d17-45de-9b85-2352edff74cc",
-  "clientId":"67e506ca-7da3-43c1-9045-3f5d42711362","clientSecret":"188a19a11e05f966d683147329fbba111454824726702c9aec54d86e42113b36","name":"Infrastructure Console",
-  "isTrusted":1
-}
-```
+This sets up Authorization Server as well as Infrastructure Console
