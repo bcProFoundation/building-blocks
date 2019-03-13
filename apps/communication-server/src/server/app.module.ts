@@ -9,6 +9,7 @@ import { EmailModule } from './email/email.module';
 import { Oauth2ClientModule } from './oauth2-client/oauth2-client.module';
 import { SmsmessageModule } from './smsmessage/smsmessage.module';
 import { TYPEORM_CONNECTION } from './constants/typeorm.connection';
+import { CloudStorageModule } from './cloud-storage/cloud-storage.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { TYPEORM_CONNECTION } from './constants/typeorm.connection';
     Oauth2ClientModule,
     SmsmessageModule,
     SystemSettingsModule,
+    CloudStorageModule,
   ],
   controllers: [AppController],
   providers: [AppService],

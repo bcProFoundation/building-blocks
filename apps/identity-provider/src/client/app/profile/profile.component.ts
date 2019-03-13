@@ -159,9 +159,10 @@ export class ProfileComponent implements OnInit {
     this.profileService.uploadAvatar(this.selectedFile).subscribe({
       next: (profile: any) => {
         this.hideAvatar = false;
-        this.picture = profile.picture;
-        this.profileForm.controls.picture.setValue(profile.picture);
+        this.profileForm.controls.picture.setValue('');
+        this.profileForm.controls.picture.setValue(this.picture);
       },
+      error: err => {},
     });
   }
 

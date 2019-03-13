@@ -4,7 +4,8 @@ import {
   OnApplicationBootstrap,
 } from '@nestjs/common';
 import * as oauth2orize from 'oauth2orize';
-import * as oauth2orize_ext from 'oauth2orize-openid';
+import * as openidConnect from 'oauth2orize-openid';
+import * as pkce from 'oauth2orize-pkce';
 import { ClientService } from '../../client-management/entities/client/client.service';
 import { BearerTokenService } from '../entities/bearer-token/bearer-token.service';
 import { invalidClientException } from '../../common/filters/exceptions';
@@ -15,6 +16,7 @@ import { ClientCredentialExchangeService } from '../oauth2/client-credential-exc
 import { RefreshTokenExchangeService } from '../oauth2/refresh-token-exchange/refresh-token-exchange.service';
 import { IDTokenGrantService } from '../oauth2/id-token-grant/id-token-grant.service';
 import { CodeGrantService } from '../oauth2/code-grant/code-grant.service';
+import { codeNonceExtension } from '../oauth2/custom-extensions/code-nonce';
 
 @Injectable()
 export class OAuth2orizeSetup implements OnModuleInit, OnApplicationBootstrap {
@@ -54,6 +56,12 @@ export class OAuth2orizeSetup implements OnModuleInit, OnApplicationBootstrap {
   }
 
   setupServer() {
+    // Setup PKCE
+    this.setupPKCE();
+
+    // Setup nonce for code grant
+    this.setupCodeGrantNonce();
+
     // Setup Authorization Code Grant
     this.setupCodeGrant();
 
@@ -78,6 +86,14 @@ export class OAuth2orizeSetup implements OnModuleInit, OnApplicationBootstrap {
     this.setupCodeIDTokenGrant();
     this.setupCodeTokenGrant();
     this.setupCodeIdTokenTokenGrant();
+  }
+
+  setupPKCE() {
+    this.server.grant(pkce.extensions());
+  }
+
+  setupCodeGrantNonce() {
+    this.server.grant(codeNonceExtension());
   }
 
   setupCodeGrant() {
@@ -221,7 +237,7 @@ export class OAuth2orizeSetup implements OnModuleInit, OnApplicationBootstrap {
 
   setupIDTokenGrant() {
     this.server.grant(
-      oauth2orize_ext.grant.idToken(async (client, user, req, done) => {
+      openidConnect.grant.idToken(async (client, user, req, done) => {
         await this.idTokenGrantService.grantIDToken(client, user, req, done);
       }),
     );
@@ -229,7 +245,7 @@ export class OAuth2orizeSetup implements OnModuleInit, OnApplicationBootstrap {
 
   setupIDTokenTokenGrant() {
     this.server.grant(
-      oauth2orize_ext.grant.idTokenToken(
+      openidConnect.grant.idTokenToken(
         async (client, user, res, req, done) => {
           await this.tokenGrantService.grantToken(client, user, res, req, done);
         },
@@ -248,7 +264,7 @@ export class OAuth2orizeSetup implements OnModuleInit, OnApplicationBootstrap {
 
   setupCodeIDTokenGrant() {
     this.server.grant(
-      oauth2orize_ext.grant.codeIDToken(
+      openidConnect.grant.codeIDToken(
         async (client, redirectUri, user, res, req, done) => {
           await this.codeGrantService.grantCode(
             client,
@@ -268,7 +284,7 @@ export class OAuth2orizeSetup implements OnModuleInit, OnApplicationBootstrap {
 
   setupCodeTokenGrant() {
     this.server.grant(
-      oauth2orize_ext.grant.codeToken(
+      openidConnect.grant.codeToken(
         async (client, user, res, req, done) => {
           await this.tokenGrantService.grantToken(client, user, res, req, done);
         },
@@ -288,7 +304,7 @@ export class OAuth2orizeSetup implements OnModuleInit, OnApplicationBootstrap {
 
   setupCodeIdTokenTokenGrant() {
     this.server.grant(
-      oauth2orize_ext.grant.codeIDTokenToken(
+      openidConnect.grant.codeIDTokenToken(
         async (client, user, res, req, done) => {
           await this.tokenGrantService.grantToken(client, user, res, req, done);
         },

@@ -56,7 +56,9 @@ describe('Event: UserAccountRemovedHandler', () => {
   });
 
   it('should inform client the User is deleted using the UserDeleteRequestService', async () => {
-    manager.informClients = jest.fn(() => Promise.resolve());
+    manager.informClients = jest.fn(() =>
+      Promise.resolve({ id: 420, data: {} }),
+    );
     eventBus$.publish = jest.fn(() => {});
     await eventHandler.handle(
       new UserAccountRemovedEvent(mockUser, mockUser.uuid),

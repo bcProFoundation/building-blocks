@@ -13,6 +13,8 @@ import {
   LOGIN_URL,
   ISSUER_URL,
   APP_URL,
+  COMMUNICATION_SERVER,
+  COMMUNICATION_SERVER_URL,
 } from './constants/storage';
 
 @Injectable()
@@ -21,17 +23,18 @@ export class AppService {
   private handleError: HandleError;
 
   constructor(private http: HttpClient, httpErrorHandler: HttpErrorHandler) {
-    this.handleError = httpErrorHandler.createHandleError('HeroesService');
+    this.handleError = httpErrorHandler.createHandleError('AppService');
   }
 
   /** GET message from the server */
   getMessage(): Observable<any> {
     return this.http
-      .get<string>(this.messageUrl)
+      .get<any>(this.messageUrl)
       .pipe(
         catchError(this.handleError('getMessage', { message: 'disconnected' })),
       );
   }
+
   setInfoLocalStorage(response) {
     localStorage.setItem(CLIENT_ID, response.clientId);
     localStorage.setItem(REDIRECT_URI, response.callbackURLs[0]);
@@ -39,5 +42,16 @@ export class AppService {
     localStorage.setItem(LOGIN_URL, response.authorizationURL);
     localStorage.setItem(ISSUER_URL, response.authServerURL);
     localStorage.setItem(APP_URL, response.appURL);
+
+    this.http.get<any>(response.authServerURL + '/info').subscribe({
+      next: data => {
+        data.services.forEach(element => {
+          if (element.type === COMMUNICATION_SERVER) {
+            localStorage.setItem(COMMUNICATION_SERVER_URL, element.url);
+          }
+        });
+      },
+      error: err => {},
+    });
   }
 }

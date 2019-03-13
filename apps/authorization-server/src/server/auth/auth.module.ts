@@ -21,6 +21,7 @@ import { TokenSchedulerService } from './scheduler/token-schedule.service';
 import { authControllers, authServices } from './controllers';
 import { RoleGuard } from './guards/role.guard';
 import { TokenIntrospectionGuard } from './guards/token-introspection.guard';
+import { EnsureLoginGuard } from './guards/ensure-login.guard';
 import { AuthAggregates } from './aggregates';
 import { AuthCommandHandlers } from './commands';
 import { AuthEventHandlers } from './events';
@@ -46,6 +47,7 @@ import { ModuleRef } from '@nestjs/core';
     // Guards
     RoleGuard,
     TokenIntrospectionGuard,
+    EnsureLoginGuard,
 
     // CQRS
     ...AuthAggregates,

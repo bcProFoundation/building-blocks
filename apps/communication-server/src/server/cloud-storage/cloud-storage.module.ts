@@ -1,15 +1,22 @@
-import { Module, OnModuleInit } from '@nestjs/common';
-import { CommandBus, EventBus, CQRSModule } from '@nestjs/cqrs';
+import { Module, OnModuleInit, Global } from '@nestjs/common';
+import { CommandBus, CQRSModule, EventBus } from '@nestjs/cqrs';
 import { ModuleRef } from '@nestjs/core';
 import { CloudStorageEntitiesModule } from './entities/entities.module';
 import { CloudStorageAggregates } from './aggregates';
 import { CloudStorageControllers } from './controllers';
 import { CloudStorageCommands } from './commands';
 import { CloudStorageEvents } from './events';
+import { ModifyCloudStorageAggregateService } from './aggregates/modify-cloud-storage-aggregate/modify-cloud-storage-aggregate.service';
 
+@Global()
 @Module({
   imports: [CloudStorageEntitiesModule, CQRSModule],
-  providers: [...CloudStorageAggregates],
+  providers: [
+    ...CloudStorageAggregates,
+    ...CloudStorageCommands,
+    ...CloudStorageEvents,
+    ModifyCloudStorageAggregateService,
+  ],
   controllers: [...CloudStorageControllers],
   exports: [CloudStorageEntitiesModule, ...CloudStorageAggregates],
 })

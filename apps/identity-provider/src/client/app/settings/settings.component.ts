@@ -15,8 +15,11 @@ export class SettingsComponent implements OnInit {
   clientSecret: string;
   emailAccounts: any[];
   hide: boolean = true;
+  cloudStorageSettings: any;
+  bucketOptions: any[];
 
   authSettingsForm = new FormGroup({
+    cloudStorageSettings: new FormControl(this.cloudStorageSettings),
     appURL: new FormControl(this.appURL),
     authServerURL: new FormControl(this.authServerURL),
     clientId: new FormControl(this.clientId),
@@ -32,11 +35,21 @@ export class SettingsComponent implements OnInit {
         this.authServerURL = response.authServerURL;
         this.clientId = response.clientId;
         this.clientSecret = response.clientSecret;
+        this.cloudStorageSettings = response.cloudStorageSettings;
       },
     });
     this.settingsService.getSettings().subscribe({
       next: (response: any[]) => {
         this.populateForm(response);
+      },
+    });
+
+    this.settingsService.getBucketOptions().subscribe({
+      next: (response: any) => {
+        this.bucketOptions = response;
+      },
+      error: err => {
+        err;
       },
     });
   }
@@ -48,6 +61,10 @@ export class SettingsComponent implements OnInit {
     );
     this.authSettingsForm.controls.clientId.setValue(response.clientId);
     this.authSettingsForm.controls.clientSecret.setValue(response.clientSecret);
+    this.cloudStorageSettings = response.cloudStorageSettings;
+    this.authSettingsForm.controls.cloudStorageSettings.setValue(
+      response.cloudStorageSettings,
+    );
   }
 
   updateAuthSettings() {
@@ -56,6 +73,7 @@ export class SettingsComponent implements OnInit {
       this.authSettingsForm.controls.authServerURL.value,
       this.authSettingsForm.controls.clientId.value,
       this.authSettingsForm.controls.clientSecret.value,
+      this.authSettingsForm.controls.cloudStorageSettings.value,
     );
   }
 }

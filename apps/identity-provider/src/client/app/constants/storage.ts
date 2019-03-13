@@ -5,3 +5,5 @@ export const LOGIN_URL = 'login_url';
 export const ISSUER_URL = 'issuer_url';
 export const APP_URL = 'app_url';
 export const USER_UUID = 'user_uuid';
+export const COMMUNICATION_SERVER = 'communication-server';
+export const COMMUNICATION_SERVER_URL = 'communication-server-url';

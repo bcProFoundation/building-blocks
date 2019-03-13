@@ -7,7 +7,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { AppService } from './app.service';
-import { EnsureLoginGuard } from 'nestjs-ensureloggedin-guard';
+import { EnsureLoginGuard } from './auth/guards/ensure-login.guard';
 import { ErrorFilter } from './common/filters/errors.filter';
 import { ApiOperation, ApiExcludeEndpoint } from '@nestjs/swagger';
 import { i18n } from './i18n/i18n.config';

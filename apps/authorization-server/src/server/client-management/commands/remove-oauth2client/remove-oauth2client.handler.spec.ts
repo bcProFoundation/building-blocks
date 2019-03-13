@@ -60,10 +60,10 @@ describe('Command: RemoveOAuth2ClientHandler', () => {
 
   it('should remove client using the ClientManagementAggregateService', async () => {
     manager.removeClient = jest.fn(() => Promise.resolve());
-    commandBus$.execute = jest.fn(() => {});
-    publisher.mergeObjectContext = jest.fn(aggregate => ({
-      commit: () => {},
-    }));
+    commandBus$.execute = jest.fn();
+    publisher.mergeObjectContext = jest
+      .fn()
+      .mockImplementation((...args) => ({ commit: () => {} }));
     await commandHandler.execute(
       new RemoveOAuth2ClientCommand(
         'add0d2e8-fc16-4671-8893-88254b321840',

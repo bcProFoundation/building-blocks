@@ -46,10 +46,10 @@ describe('Command: RemoveUserRoleHandler', () => {
 
   it('should remove role using the UserManagementService', async () => {
     manager.deleteRole = jest.fn(() => Promise.resolve());
-    commandBus$.execute = jest.fn(() => {});
-    publisher.mergeObjectContext = jest.fn(aggregate => ({
-      commit: () => {},
-    }));
+    commandBus$.execute = jest.fn();
+    publisher.mergeObjectContext = jest
+      .fn()
+      .mockImplementation((...args) => ({ commit: () => {} }));
     await commandHandler.execute(
       new RemoveUserRoleCommand(
         'e2dfbffb-df50-406d-bb80-a554a9afedec',

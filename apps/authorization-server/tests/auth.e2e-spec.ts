@@ -30,13 +30,13 @@ describe('AuthController (e2e)', () => {
       .send({
         email: 'test@user.org',
         phone: '+919876543211', // admin@user.org is +919876543210
-        password: 'secret',
+        password: '14CharP@ssword',
         name: 'Test User',
       })
       .expect(200);
   });
 
-  it('/POST /auth/signup (invalid email)', () => {
+  it('/POST /auth/signup (invalid email)', done => {
     return request(app.getHttpServer())
       .post('/auth/signup')
       .send({
@@ -45,25 +45,37 @@ describe('AuthController (e2e)', () => {
         phone: '+910987654321',
         name: 'Test User',
       })
-      .expect(400);
+      .expect(400)
+      .end(function(err, res) {
+        if (err) return done(err);
+        done();
+      });
   });
 
-  it('/POST /auth/signup (blank password)', () => {
+  it('/POST /auth/signup (blank password)', done => {
     return request(app.getHttpServer())
       .post('/auth/signup')
       .send({
         email: 'testuser.org',
         password: '',
-        phone: '+910987654321',
+        phone: '+91987654444',
         name: 'Test User',
       })
-      .expect(400);
+      .expect(400)
+      .end(function(err, res) {
+        if (err) return done(err);
+        done();
+      });
   });
 
-  it('/POST /auth/logout', () => {
+  it('/POST /auth/logout', done => {
     return request(app.getHttpServer())
       .get('/auth/logout')
-      .expect(302);
+      .expect(302)
+      .end(function(err, res) {
+        if (err) return done(err);
+        done();
+      });
   });
 
   afterAll(async () => {

@@ -8,6 +8,7 @@ import { UserManagementSagas } from './sagas';
 import { UserManagementAggregates } from './aggregates';
 import { UserManagementControllers } from './controllers';
 import { UserManagementSchedulers } from './schedulers';
+import { UserManagementPolicies } from './policies';
 
 @Global()
 @Module({
@@ -22,12 +23,14 @@ import { UserManagementSchedulers } from './schedulers';
     ...UserManagementEventHandlers,
     ...UserManagementSagas,
     ...UserManagementSchedulers,
+    ...UserManagementPolicies,
   ],
   controllers: [...UserManagementControllers],
   exports: [
     UserManagementEntitiesModule,
     ...UserManagementAggregates,
     ...UserManagementSchedulers,
+    ...UserManagementPolicies,
   ],
 })
 export class UserManagementModule implements OnModuleInit {

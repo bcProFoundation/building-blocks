@@ -4,6 +4,8 @@ import { OAuth2TokenGeneratorService } from '../oauth2-token-generator/oauth2-to
 import { AuthorizationCodeService } from '../../../auth/entities/authorization-code/authorization-code.service';
 import { CryptographerService } from '../../../common/cryptographer.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
+import { AuthorizationCode } from '../../../auth/entities/authorization-code/authorization-code.interface';
+import { invalidCodeChallengeException } from '../../../common/filters/exceptions';
 
 @Injectable()
 export class CodeGrantService {
@@ -28,13 +30,35 @@ export class CodeGrantService {
         localClient,
         areq.scope,
       );
-      await this.authorizationCodeService.save({
+
+      const codePayload = {
         code,
         client: localClient.clientId,
         redirectUri,
         user: localUser.uuid,
         scope,
-      });
+      } as AuthorizationCode;
+
+      if (areq.codeChallenge) {
+        if (!areq.codeChallengeMethod) {
+          codePayload.codeChallengeMethod = 'plain';
+        } else {
+          codePayload.codeChallengeMethod = areq.codeChallengeMethod.toLowerCase();
+        }
+
+        if (
+          !['plain', 's256'].includes(
+            codePayload.codeChallengeMethod.toLowerCase(),
+          )
+        ) {
+          done(invalidCodeChallengeException, null);
+        }
+        codePayload.codeChallenge = areq.codeChallenge;
+      }
+
+      if (areq && areq.nonce) codePayload.nonce = areq.nonce;
+
+      await this.authorizationCodeService.save(codePayload);
       done(null, code);
     } catch (error) {
       done(error, null);

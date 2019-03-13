@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { OAuthService } from 'angular-oauth2-oidc';
-import { APP_URL } from '../constants/storage';
+import { APP_URL, COMMUNICATION_SERVER_URL } from '../constants/storage';
 import { OpenIDConfiguration } from '../interfaces/openid-configuration.interface';
 
 @Injectable({
@@ -20,7 +20,13 @@ export class SettingsService {
     return this.http.get(requestUrl, { headers: this.headers });
   }
 
-  update(appURL, authServerURL, clientId, clientSecret) {
+  getBucketOptions() {
+    const requestUrl =
+      localStorage.getItem(COMMUNICATION_SERVER_URL) + '/storage/v1/list';
+    return this.http.get(requestUrl, { headers: this.headers });
+  }
+
+  update(appURL, authServerURL, clientId, clientSecret, storageUuid) {
     const requestUrl = localStorage.getItem(APP_URL) + '/settings/v1/update';
     this.http
       .get(authServerURL + '/.well-known/openid-configuration')
@@ -34,6 +40,7 @@ export class SettingsService {
                 authServerURL,
                 clientId,
                 clientSecret,
+                cloudStorageSettings: storageUuid,
                 authorizationURL: response.authorization_endpoint,
                 callbackURLs: [
                   appURL + '/index.html',
@@ -47,7 +54,10 @@ export class SettingsService {
               { headers: this.headers },
             )
             .subscribe({
-              next: success => {},
+              next: success => {
+                return success;
+              },
+              error: err => {},
             });
         },
       });

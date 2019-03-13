@@ -22,6 +22,8 @@ import { EmailComponent } from './email/email.component';
 import { EmailService } from './email/email.service';
 import { SettingsComponent } from './settings/settings.component';
 import { WebhookComponent } from './webhook/webhook.component';
+import { CloudStorageComponent } from './cloud-storage/cloud-storage.component';
+import { CloudStorageService } from './cloud-storage/cloud-storage.service';
 
 @NgModule({
   declarations: [
@@ -33,6 +35,7 @@ import { WebhookComponent } from './webhook/webhook.component';
     EmailComponent,
     SettingsComponent,
     WebhookComponent,
+    CloudStorageComponent,
   ],
   imports: [
     BrowserModule,
@@ -53,6 +56,7 @@ import { WebhookComponent } from './webhook/webhook.component';
     Title,
     ListingService,
     EmailService,
+    CloudStorageService,
     { provide: OAuthStorage, useValue: localStorage },
   ],
   bootstrap: [AppComponent],

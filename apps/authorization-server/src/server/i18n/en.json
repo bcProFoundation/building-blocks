@@ -61,5 +61,6 @@
 	"Invalid password": "Invalid password",
 	"Unregistered User": "Unregistered User",
 	"2FA Disabled": "2FA Disabled",
-	"Cannot Delete Administrators": "Cannot Delete Administrators"
+	"Cannot Delete Administrators": "Cannot Delete Administrators",
+	"Invalid Code Challenge": "Invalid Code Challenge"
 }

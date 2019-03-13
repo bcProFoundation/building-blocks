@@ -6,7 +6,12 @@ describe('CloudStorageAggregateService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CloudStorageAggregateService],
+      providers: [
+        {
+          provide: CloudStorageAggregateService,
+          useFactory: (...args) => jest.fn(),
+        },
+      ],
     }).compile();
 
     service = module.get<CloudStorageAggregateService>(

@@ -15,11 +15,5 @@ then
         --namespace $KUBE_NAMESPACE \
         --reuse-values \
         --recreate-pods \
-        --set mongodb.image.repository=registry.gitlab.com/castlecraft/docker-craft/bitnami-mongodb-config \
-        --set mongodb.image.tag=latest \
-        --set authorization-server.image.tag=edge \
-        --set communication-server.image.tag=edge \
-        --set identity-provider.image.tag=edge \
-        --set infrastructure-console.image.tag=edge \
         helm-charts/building-blocks
 fi
