@@ -1,7 +1,6 @@
 import { ICommandHandler, CommandHandler, EventPublisher } from '@nestjs/cqrs';
 import { GenerateForgottenPasswordCommand } from './generate-forgotten-password.command';
 import { UserManagementService } from '../../../user-management/aggregates/user-management/user-management.service';
-import { from } from 'rxjs';
 
 @CommandHandler(GenerateForgottenPasswordCommand)
 export class GenerateForgottenPasswordHandler
@@ -11,16 +10,11 @@ export class GenerateForgottenPasswordHandler
     private readonly publisher: EventPublisher,
   ) {}
 
-  async execute(
-    command: GenerateForgottenPasswordCommand,
-    resolve: (value?) => void,
-  ) {
+  async execute(command: GenerateForgottenPasswordCommand) {
     const { userEmailOrPhone } = command;
-    const aggregate = this.publisher.mergeObjectContext(this.manager);
 
-    from(this.manager.generateForgottenPassword(userEmailOrPhone)).subscribe({
-      next: success => resolve(aggregate.commit()),
-      error: error => resolve(Promise.reject(error)),
-    });
+    const aggregate = this.publisher.mergeObjectContext(this.manager);
+    await this.manager.generateForgottenPassword(userEmailOrPhone);
+    aggregate.commit();
   }
 }

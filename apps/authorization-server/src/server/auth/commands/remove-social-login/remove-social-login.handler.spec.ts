@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { CommandBus, CQRSModule, EventPublisher } from '@nestjs/cqrs';
+import { CommandBus, CqrsModule, EventPublisher } from '@nestjs/cqrs';
 import { SocialLoginManagementService } from '../../../auth/aggregates/social-login-management/social-login-management.service';
 import { RemoveSocialLoginHandler } from './remove-social-login.handler';
 import { RemoveSocialLoginCommand } from './remove-social-login.command';
@@ -22,7 +22,7 @@ describe('Command: RemoveSocialLoginHandler', () => {
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
-      imports: [CQRSModule],
+      imports: [CqrsModule],
       providers: [
         RemoveSocialLoginHandler,
         {
@@ -63,7 +63,6 @@ describe('Command: RemoveSocialLoginHandler', () => {
         mockSocialLogin.createdBy,
         mockSocialLogin.uuid,
       ),
-      (...args) => {},
     );
     expect(manager.removeSocialLogin).toHaveBeenCalledTimes(1);
   });

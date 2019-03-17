@@ -1,9 +1,12 @@
+import { HttpService } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { EmailController } from './email.controller';
 import { EmailService } from './email.service';
 import { TokenGuard } from '../../../auth/guards/token.guard';
 import { AuthServerVerificationGuard } from '../../../auth/guards/authserver-verification.guard';
 import { EmailAccountService } from '../../../email/entities/email-account/email-account.service';
+import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
+import { TokenCacheService } from '../../../auth/entities/token-cache/token-cache.service';
 
 describe('EmailController', () => {
   let module: TestingModule;
@@ -17,6 +20,22 @@ describe('EmailController', () => {
         },
         {
           provide: EmailAccountService,
+          useFactory: (...args) => jest.fn(),
+        },
+        {
+          provide: AuthServerVerificationGuard,
+          useValue: {},
+        },
+        {
+          provide: TokenCacheService,
+          useValue: {},
+        },
+        {
+          provide: ServerSettingsService,
+          useValue: {},
+        },
+        {
+          provide: HttpService,
           useFactory: (...args) => jest.fn(),
         },
       ],

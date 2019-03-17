@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { CQRSModule, EventBus } from '@nestjs/cqrs';
+import { CqrsModule, EventBus } from '@nestjs/cqrs';
 import { User } from '../../entities/user/user.interface';
 import { EmailVerifiedAndPasswordSetHandler } from './email-verified-and-password-set.handler';
 import { UserAggregateService } from '../../aggregates/user-aggregate/user-aggregate.service';
@@ -34,7 +34,7 @@ describe('Event: EmailVerifiedAndPasswordSetHandler', () => {
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
-      imports: [CQRSModule],
+      imports: [CqrsModule],
       providers: [
         EmailVerifiedAndPasswordSetHandler,
         {

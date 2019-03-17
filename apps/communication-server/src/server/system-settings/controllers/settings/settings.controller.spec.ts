@@ -1,9 +1,10 @@
 import { TestingModule, Test } from '@nestjs/testing';
+import { HttpModule } from '@nestjs/common';
 import { SettingsController } from './settings.controller';
 import { TokenCacheService } from '../../../auth/entities/token-cache/token-cache.service';
 import { TokenGuard } from '../../../auth/guards/token.guard';
-import { HttpModule } from '@nestjs/common';
 import { SettingsService } from '../../aggregates/settings.service';
+import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 
 describe('SettingsController', () => {
   let module: TestingModule;
@@ -18,6 +19,14 @@ describe('SettingsController', () => {
         },
         {
           provide: TokenCacheService,
+          useValue: {},
+        },
+        {
+          provide: ServerSettingsService,
+          useValue: {},
+        },
+        {
+          provide: TokenGuard,
           useValue: {},
         },
       ],

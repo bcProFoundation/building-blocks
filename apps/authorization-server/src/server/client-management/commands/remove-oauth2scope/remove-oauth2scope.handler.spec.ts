@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { CommandBus, CQRSModule, EventPublisher } from '@nestjs/cqrs';
+import { CommandBus, CqrsModule, EventPublisher } from '@nestjs/cqrs';
 import { ClientManagementAggregateService } from '../../aggregates';
 import { RemoveOAuth2ScopeHandler } from './remove-oauth2scope.handler';
 import { RemoveOAuth2ScopeCommand } from './remove-oauth2scope.command';
@@ -18,7 +18,7 @@ describe('Command: RemoveOAuth2ScopeHandler', () => {
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
-      imports: [CQRSModule],
+      imports: [CqrsModule],
       providers: [
         RemoveOAuth2ScopeHandler,
         {
@@ -59,7 +59,6 @@ describe('Command: RemoveOAuth2ScopeHandler', () => {
         'add0d2e8-fc16-4671-8893-88254b321840',
         mockScope.name,
       ),
-      (...args) => {},
     );
     expect(manager.removeScope).toHaveBeenCalledTimes(1);
   });

@@ -45,17 +45,11 @@ export class OAuth2Controller {
   async authorize() {}
 
   @Post('token')
-  @UseGuards(
-    AuthGuard(['oauth2-code', 'oauth2-client-password'], {
-      session: false,
-      callback,
-    }),
-  )
   @ApiOperation({
     title: i18n.__('Token'),
     description: i18n.__('OAuth2.0 flow: Return a bearer token'),
   })
-  async token() {}
+  token() {}
 
   @Get('profile')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))

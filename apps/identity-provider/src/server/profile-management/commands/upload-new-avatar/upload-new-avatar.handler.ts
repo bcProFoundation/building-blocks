@@ -10,13 +10,13 @@ export class UploadNewAvatarHandler
     private readonly publisher: EventPublisher,
   ) {}
 
-  execute(command: UploadNewAvatarCommand, resolve: (value?) => void) {
+  async execute(command: UploadNewAvatarCommand) {
     const { avatarFile, clientHttpRequest: clientHttpRequest } = command;
 
     const aggregate = this.publisher.mergeObjectContext(this.manager);
-    this.manager.uploadNewAvatar(avatarFile, clientHttpRequest).subscribe({
-      next: success => resolve(aggregate.commit()),
-      error: error => resolve(Promise.reject(error)),
-    });
+    await this.manager
+      .uploadNewAvatar(avatarFile, clientHttpRequest)
+      .toPromise();
+    aggregate.commit();
   }
 }

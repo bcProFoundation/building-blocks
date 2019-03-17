@@ -3,6 +3,7 @@ import { TokenCacheService } from '../../../auth/entities/token-cache/token-cach
 import { ConnectController } from './connect.controller';
 import { ProfileService } from '../../../profile-management/entities/profile/profile.service';
 import { AuthServerVerificationGuard } from '../../../auth/guards/authserver-verification.guard';
+import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 
 describe('ConnectController', () => {
   let module: TestingModule;
@@ -16,6 +17,14 @@ describe('ConnectController', () => {
         },
         {
           provide: ProfileService,
+          useValue: {},
+        },
+        {
+          provide: ServerSettingsService,
+          useValue: {},
+        },
+        {
+          provide: AuthServerVerificationGuard,
           useValue: {},
         },
       ],

@@ -1,6 +1,7 @@
 import { Test } from '@nestjs/testing';
 import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
+import { ExpressAdapter } from '@nestjs/platform-express';
 import { AppModule } from '../src/server/app.module';
 import { ExpressServer } from '../src/server/express-server';
 import 'jest';
@@ -17,7 +18,9 @@ describe('AuthController (e2e)', () => {
     const moduleFixture = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
-    app = moduleFixture.createNestApplication(authServer.server);
+    app = moduleFixture.createNestApplication(
+      new ExpressAdapter(authServer.server),
+    );
     authServer.setupSession(app);
     await app.init();
 
