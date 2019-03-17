@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { CommandBus, CQRSModule, EventPublisher } from '@nestjs/cqrs';
+import { CommandBus, CqrsModule, EventPublisher } from '@nestjs/cqrs';
 import { UserManagementService } from '../../../user-management/aggregates/user-management/user-management.service';
 import { RemoveUserRoleHandler } from './remove-user-role.handler';
 import { Role } from '../../../user-management/entities/role/role.interface';
@@ -18,7 +18,7 @@ describe('Command: RemoveUserRoleHandler', () => {
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
-      imports: [CQRSModule],
+      imports: [CqrsModule],
       providers: [
         RemoveUserRoleHandler,
         {
@@ -55,7 +55,6 @@ describe('Command: RemoveUserRoleHandler', () => {
         'e2dfbffb-df50-406d-bb80-a554a9afedec',
         mockRole.name,
       ),
-      (...args) => {},
     );
     expect(manager.deleteRole).toHaveBeenCalledTimes(1);
   });

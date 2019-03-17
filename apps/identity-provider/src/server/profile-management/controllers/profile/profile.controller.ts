@@ -11,10 +11,10 @@ import {
   Req,
   UnauthorizedException,
   UseInterceptors,
-  FileInterceptor,
   UploadedFile,
   Delete,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ProfileService } from '../../../profile-management/entities/profile/profile.service';
 import { PersonalDetailsDTO } from './personal-details-dto';
 import { Profile } from '../../../profile-management/entities/profile/profile.entity';

@@ -1,18 +1,12 @@
-import {
-  Module,
-  NestModule,
-  MiddlewareConsumer,
-  Global,
-  OnModuleInit,
-} from '@nestjs/common';
-import { PassportAuthenticateMiddleware } from '@nest-middlewares/passport';
-import { EventBus, CommandBus, CQRSModule } from '@nestjs/cqrs';
+import { Module, NestModule, MiddlewareConsumer, Global } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
 import { OAuth2orizeSetup } from './middlewares/oauth2orize.setup';
 import { OAuth2ConfirmationMiddleware } from './middlewares/oauth2-confirmation.middleware';
 import { OAuth2AuthorizationMiddleware } from './middlewares/oauth2-authorization.middleware';
 import { OAuth2TokenMiddleware } from './middlewares/oauth2-token.middleware';
 import { OAuth2ErrorHandlerMiddleware } from './middlewares/oauth2-errorhandler.middleware';
 import { OAuth2DecisionMiddleware } from './middlewares/oauth2-decision.middleware';
+import { PassportAuthenticateMiddleware } from './middlewares/passport-authenticate.middleware';
 import { AuthEntitiesModule } from './entities/entities.module';
 import { OAuth2Module } from './oauth2/oauth2.module';
 import { PassportModule } from './passport/passport.module';
@@ -25,11 +19,10 @@ import { EnsureLoginGuard } from './guards/ensure-login.guard';
 import { AuthAggregates } from './aggregates';
 import { AuthCommandHandlers } from './commands';
 import { AuthEventHandlers } from './events';
-import { ModuleRef } from '@nestjs/core';
 
 @Global()
 @Module({
-  imports: [CQRSModule, AuthEntitiesModule, OAuth2Module, PassportModule],
+  imports: [CqrsModule, AuthEntitiesModule, OAuth2Module, PassportModule],
   providers: [
     ...authServices,
 
@@ -64,20 +57,7 @@ import { ModuleRef } from '@nestjs/core';
     TokenIntrospectionGuard,
   ],
 })
-export class AuthModule implements NestModule, OnModuleInit {
-  constructor(
-    private readonly moduleRef: ModuleRef,
-    private readonly eventBus: EventBus,
-    private readonly commandBus: CommandBus,
-  ) {}
-
-  onModuleInit() {
-    this.eventBus.setModuleRef(this.moduleRef);
-    this.commandBus.setModuleRef(this.moduleRef);
-    this.eventBus.register(AuthEventHandlers);
-    this.commandBus.register(AuthCommandHandlers);
-    // TODO: Setup Saga
-  }
+export class AuthModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(OAuth2ConfirmationMiddleware)
@@ -89,7 +69,6 @@ export class AuthModule implements NestModule, OnModuleInit {
         OAuth2TokenMiddleware,
         OAuth2ErrorHandlerMiddleware,
       )
-      .with(['oauth2-code', 'oauth2-client-password'], { session: false })
       .forRoutes('/oauth2/token');
   }
 }

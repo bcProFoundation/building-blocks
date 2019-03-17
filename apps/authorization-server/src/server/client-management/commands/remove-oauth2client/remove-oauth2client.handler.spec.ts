@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { CommandBus, CQRSModule, EventPublisher } from '@nestjs/cqrs';
+import { CommandBus, CqrsModule, EventPublisher } from '@nestjs/cqrs';
 import { ClientManagementAggregateService } from '../../../client-management/aggregates';
 import { RemoveOAuth2ClientHandler } from './remove-oauth2client.handler';
 import { Client } from '../../../client-management/entities/client/client.interface';
@@ -28,7 +28,7 @@ describe('Command: RemoveOAuth2ClientHandler', () => {
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
-      imports: [CQRSModule],
+      imports: [CqrsModule],
       providers: [
         RemoveOAuth2ClientHandler,
         {
@@ -69,7 +69,6 @@ describe('Command: RemoveOAuth2ClientHandler', () => {
         'add0d2e8-fc16-4671-8893-88254b321840',
         mockClient.clientId,
       ),
-      (...args) => {},
     );
     expect(manager.removeClient).toHaveBeenCalledTimes(1);
   });

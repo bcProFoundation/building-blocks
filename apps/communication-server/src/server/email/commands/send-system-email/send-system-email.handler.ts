@@ -1,6 +1,5 @@
 import { CommandHandler, ICommandHandler, EventPublisher } from '@nestjs/cqrs';
 import { SendSystemEmailCommand } from './send-system-email.command';
-import { from } from 'rxjs';
 import { SendEmailService } from '../../../email/aggregates/send-email/send-email.service';
 
 @CommandHandler(SendSystemEmailCommand)
@@ -11,13 +10,11 @@ export class SendSystemEmailHandler
     private readonly publisher: EventPublisher,
   ) {}
 
-  async execute(command: SendSystemEmailCommand, resolve: (value?) => void) {
+  async execute(command: SendSystemEmailCommand) {
     const { payload } = command;
-    const aggregate = this.publisher.mergeObjectContext(this.manager);
 
-    from(this.manager.sendEmail(payload)).subscribe({
-      next: success => resolve(aggregate.commit()),
-      error: error => resolve(Promise.reject(error)),
-    });
+    const aggregate = this.publisher.mergeObjectContext(this.manager);
+    await this.manager.sendEmail(payload);
+    aggregate.commit();
   }
 }

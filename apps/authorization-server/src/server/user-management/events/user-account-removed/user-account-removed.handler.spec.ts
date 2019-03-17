@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { CQRSModule, EventBus } from '@nestjs/cqrs';
+import { CqrsModule, EventBus } from '@nestjs/cqrs';
 import { UserDeleteRequestService } from '../../schedulers/user-delete-request/user-delete-request.service';
 import { UserAccountRemovedHandler } from './user-account-removed.handler';
 import { User } from '../../../user-management/entities/user/user.interface';
@@ -28,7 +28,7 @@ describe('Event: UserAccountRemovedHandler', () => {
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
-      imports: [CQRSModule],
+      imports: [CqrsModule],
       providers: [
         UserAccountRemovedHandler,
         {

@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import * as express from 'express';
+import { ExpressAdapter } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
 import {
   FOLDER_DIST_BROWSER,
@@ -8,7 +9,7 @@ import {
 } from './constants/filesystem';
 
 async function bootstrap() {
-  const server = express();
+  const server = new ExpressAdapter(express());
   server.use(express.static(FOLDER_DIST_BROWSER));
   server.use(AVATAR_ROUTE_PREFIX, express.static(AVATAR_IMAGE_FOLDER));
   const app = await NestFactory.create(AppModule, server);

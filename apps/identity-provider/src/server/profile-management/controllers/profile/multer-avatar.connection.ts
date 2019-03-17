@@ -1,4 +1,4 @@
-import { MulterOptions } from '@nestjs/common/interfaces/external/multer-options.interface';
+import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
 import { BadRequestException } from '@nestjs/common';
 
 export const multerAvatarConnection: MulterOptions = {
