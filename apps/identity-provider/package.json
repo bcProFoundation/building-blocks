@@ -10,6 +10,7 @@
     "build": "ng build",
     "lint": "./node_modules/.bin/tslint -c tslint.json 'src/**/*.ts'",
     "start:server": "nodemon",
+    "start:debug": "nodemon --config nodemon-debug.json",
     "start:client": "ng build --aot --watch=true",
     "start:dev": "concurrently --kill-others-on-fail \"npm run start:server\" \"npm run start:client\"",
     "prestart:prod": "rm -rf dist && ng build --prod --aot && tsc -p src/server/tsconfig.server.json",
