@@ -15,6 +15,7 @@
     "format": "prettier --write \"**/*.ts\"",
     "format:check": "prettier-check \"**/*.ts\"",
     "start:server": "nodemon",
+    "start:debug": "nodemon --config nodemon-debug.json",
     "start:hmr": "node dist/server",
     "prestart:prod": "rm -rf dist && ng build --prod --aot=false --build-optimizer=false && tsc -p src/server/tsconfig.server.json",
     "start:prod": "export NODE_ENV=production && node dist/out-tsc/main.js",
