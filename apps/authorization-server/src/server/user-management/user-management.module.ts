@@ -1,6 +1,5 @@
-import { Module, Global, OnModuleInit } from '@nestjs/common';
-import { ModuleRef } from '@nestjs/core';
-import { CommandBus, EventBus, CQRSModule } from '@nestjs/cqrs';
+import { Module, Global } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
 import { UserManagementEntitiesModule } from './entities/entities.module';
 import { UserManagementEventHandlers } from './events';
 import { UserManagementCommandHandlers } from './commands';
@@ -13,7 +12,7 @@ import { UserManagementPolicies } from './policies';
 @Global()
 @Module({
   imports: [
-    CQRSModule,
+    CqrsModule,
     // Entities
     UserManagementEntitiesModule,
   ],
@@ -33,18 +32,4 @@ import { UserManagementPolicies } from './policies';
     ...UserManagementPolicies,
   ],
 })
-export class UserManagementModule implements OnModuleInit {
-  constructor(
-    private readonly moduleRef: ModuleRef,
-    private readonly commandBus: CommandBus,
-    private readonly eventsBus: EventBus,
-  ) {}
-
-  onModuleInit() {
-    this.eventsBus.setModuleRef(this.moduleRef);
-    this.commandBus.setModuleRef(this.moduleRef);
-
-    this.eventsBus.register(UserManagementEventHandlers);
-    this.commandBus.register(UserManagementCommandHandlers);
-  }
-}
+export class UserManagementModule {}

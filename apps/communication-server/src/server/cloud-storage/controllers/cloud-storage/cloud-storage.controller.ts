@@ -11,11 +11,11 @@ import {
   Query,
   Get,
   Body,
-  FileInterceptor,
   UseInterceptors,
   UploadedFile,
   BadRequestException,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { CommandBus } from '@nestjs/cqrs';
 import { TokenGuard } from '../../../auth/guards/token.guard';
 import { Roles } from '../../../auth/decorators/roles.decorator';

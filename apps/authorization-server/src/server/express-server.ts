@@ -8,6 +8,10 @@ import { ConfigService } from './config/config.service';
 import { join } from 'path';
 import { INestApplication } from '@nestjs/common';
 import { i18n } from './i18n/i18n.config';
+import * as fs from 'fs';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { VIEWS_DIR } from './constants/app-strings';
+
 // import * as rateLimit from 'express-rate-limit';
 
 const MongoStore = connectMongoDBSession(expressSession);
@@ -22,6 +26,10 @@ export class ExpressServer {
   setupSecurity() {
     // Helmet
     this.server.use(helmet());
+
+    // Enable Trust Proxy for session to work
+    // https://github.com/expressjs/session/issues/281
+    this.server.set('trust proxy', 1);
 
     // Rate-limit
     // TODO: Multiple Services need to ping Auth Server
@@ -78,5 +86,24 @@ export class ExpressServer {
 
   setupI18n() {
     this.server.use(i18n.init);
+  }
+
+  setupSwagger(app) {
+    const version = JSON.parse(
+      fs.readFileSync(join(process.cwd(), 'package.json'), 'utf-8'),
+    ).version;
+
+    // Swagger
+    const options = new DocumentBuilder()
+      .setTitle(i18n.__('Authorization Server'))
+      .setDescription(i18n.__('OAuth 2.0 OpenID Connect Authorization Server'))
+      .setVersion(version)
+      .build();
+    const document = SwaggerModule.createDocument(app, options);
+    SwaggerModule.setup('api', app, document);
+
+    // Handlebars View engine
+    app.setBaseViewsDir(VIEWS_DIR);
+    app.setViewEngine('hbs');
   }
 }

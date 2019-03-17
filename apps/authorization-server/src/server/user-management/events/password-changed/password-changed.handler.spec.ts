@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { CQRSModule, EventBus } from '@nestjs/cqrs';
+import { CqrsModule, EventBus } from '@nestjs/cqrs';
 import { AuthData } from '../../entities/auth-data/auth-data.interface';
 import { PasswordChangedHandler } from './password-changed.handler';
 import { PasswordChangedEvent } from './password-changed.event';
@@ -15,7 +15,7 @@ describe('Event: PasswordChangedHandler', () => {
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
-      imports: [CQRSModule],
+      imports: [CqrsModule],
       providers: [
         PasswordChangedHandler,
         {

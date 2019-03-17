@@ -5,6 +5,7 @@ import { ScopeService } from '../../../client-management/entities/scope/scope.se
 import { CRUDOperationService } from '../../../common/services/crudoperation/crudoperation.service';
 import { AuthGuard } from '../../../auth/guards/auth.guard';
 import { RoleGuard } from '../../../auth/guards/role.guard';
+import { UserService } from '../../../user-management/entities/user/user.service';
 
 describe('ScopeController', () => {
   let module: TestingModule;
@@ -23,6 +24,10 @@ describe('ScopeController', () => {
         {
           provide: CommandBus,
           useFactory: () => jest.fn(),
+        },
+        {
+          provide: UserService,
+          useValue: {},
         },
       ],
     })

@@ -5,8 +5,8 @@
     "docs": "./scripts/build-docs.sh"
   },
   "devDependencies": {
-    "@types/node": "^11.11.0",
-    "jest": "^24.3.1",
+    "@types/node": "^11.11.3",
+    "jest": "^24.5.0",
     "lerna": "^3.13.1",
     "npm-check": "^5.9.0",
     "typedoc": "^0.14.2"

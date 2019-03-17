@@ -1,5 +1,4 @@
 import { CommandHandler, ICommandHandler, EventPublisher } from '@nestjs/cqrs';
-import { from } from 'rxjs';
 import { ChangePasswordCommand } from './change-password.command';
 import { UserAggregateService } from '../../../user-management/aggregates/user-aggregate/user-aggregate.service';
 
@@ -11,13 +10,11 @@ export class ChangePasswordHandler
     private readonly publisher: EventPublisher,
   ) {}
 
-  execute(command: ChangePasswordCommand, resolve: (value?: any) => void) {
+  async execute(command: ChangePasswordCommand) {
     const { userUuid, passwordPayload } = command;
     const aggregate = this.publisher.mergeObjectContext(this.manager);
 
-    from(this.manager.validatePassword(userUuid, passwordPayload)).subscribe({
-      next: success => resolve(aggregate.commit()),
-      error: error => resolve(Promise.reject(error)),
-    });
+    await this.manager.validatePassword(userUuid, passwordPayload);
+    aggregate.commit();
   }
 }
