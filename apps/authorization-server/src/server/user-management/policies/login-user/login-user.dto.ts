@@ -9,7 +9,7 @@ export class LoginUserDto {
   @ApiModelProperty({
     description: i18n.__('Identifies a user uniquely'),
     required: true,
-    example: i18n.__('luke.skywalker@twosuns.com'),
+    example: i18n.__('luke.skywalker@twosuns.com or +919876543210'),
   })
   readonly username: string;
 

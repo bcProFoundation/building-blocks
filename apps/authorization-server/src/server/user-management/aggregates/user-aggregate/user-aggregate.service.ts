@@ -1,12 +1,13 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import * as speakeasy from 'speakeasy';
 import * as QRCode from 'qrcode';
+import * as uuidv4 from 'uuid/v4';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { UserService } from '../../entities/user/user.service';
 import { User } from '../../entities/user/user.interface';
 import { ADMINISTRATOR } from '../../../constants/app-strings';
 import { AuthDataService } from '../../entities/auth-data/auth-data.service';
-import { AuthData } from '../..//entities/auth-data/auth-data.interface';
+import { AuthData } from '../../entities/auth-data/auth-data.interface';
 import {
   twoFactorEnabledException,
   twoFactorNotEnabledException,
@@ -16,10 +17,16 @@ import {
 import { i18n } from '../../../i18n/i18n.config';
 import { CryptographerService } from '../../../common/cryptographer.service';
 import { AggregateRoot } from '@nestjs/cqrs';
-import { ChangePasswordDto, VerifyEmailDto } from '../../policies';
+import {
+  ChangePasswordDto,
+  VerifyEmailDto,
+  UserAccountDto,
+} from '../../policies';
 import { PasswordChangedEvent } from '../../events/password-changed/password-changed.event';
 import { PasswordPolicyService } from '../../policies/password-policy/password-policy.service';
 import { EmailVerifiedAndPasswordSetEvent } from '../../events/email-verified-and-password-set/email-verified-and-password-set.event';
+import { UserAccountAddedEvent } from '../../events/user-account-added/user-account-added.event';
+import { UserAccountModifiedEvent } from '../../events/user-account-modified/user-account-modified.event';
 
 @Injectable()
 export class UserAggregateService extends AggregateRoot {
@@ -183,5 +190,75 @@ export class UserAggregateService extends AggregateRoot {
         result.errors.length > 0 ? result.errors : 'Invalid Password';
       throw new BadRequestException(errors);
     }
+  }
+
+  async addUserAccount(userData: UserAccountDto, createdBy?: string) {
+    const result = this.passwordPolicy.validatePassword(userData.password);
+    if (result.errors.length > 0) {
+      throw new BadRequestException({
+        errors: result.errors,
+        message: i18n.__('Password not secure'),
+      });
+    }
+    const user = new (this.user.getModel())();
+    user.email = userData.email;
+    user.name = userData.name;
+    user.phone = userData.phone;
+    user.roles = userData.roles;
+
+    // create Password
+    const authData = new (this.authData.getModel())();
+    authData.password = this.crypto.hashPassword(userData.password);
+
+    // link password with user
+    user.password = authData.uuid;
+    user.createdBy = createdBy;
+    user.creation = new Date();
+
+    // delete mongodb _id
+    user._id = undefined;
+    this.apply(new UserAccountAddedEvent(user, authData));
+    return user;
+  }
+
+  async updateUserAccount(
+    uuid: string,
+    payload: UserAccountDto,
+    modifiedBy?: string,
+  ) {
+    const user = await this.user.findOne({ uuid });
+    user.roles = payload.roles;
+    user.name = payload.name;
+
+    // Set modification details
+    user.modifiedBy = modifiedBy;
+    user.modified = new Date();
+
+    // Set password if exists
+    if (payload.password) {
+      const result = this.passwordPolicy.validatePassword(payload.password);
+      if (result.errors.length > 0) {
+        throw new BadRequestException({
+          errors: result.errors,
+          message: i18n.__('Password not secure'),
+        });
+      }
+
+      let authData = await this.authData.findOne({
+        uuid: user.password,
+      });
+
+      if (!authData) {
+        authData = new (this.authData.getModel())();
+        authData.uuid = uuidv4();
+      }
+
+      authData.password = this.crypto.hashPassword(payload.password);
+      user.password = authData.uuid;
+      this.apply(new PasswordChangedEvent(authData));
+    }
+
+    this.apply(new UserAccountModifiedEvent(user));
+    return user;
   }
 }
