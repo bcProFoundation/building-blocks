@@ -158,7 +158,6 @@ export class SocialLoginManagementService extends AggregateRoot {
   async removeSocialLogin(uuid: string, userUuid: string) {
     const socialLogin = await this.socialLoginService.findOne({ uuid });
     if (socialLogin) {
-      await socialLogin.remove();
       this.apply(new SocialLoginRemovedEvent(userUuid, socialLogin));
     } else {
       throw new NotFoundException();

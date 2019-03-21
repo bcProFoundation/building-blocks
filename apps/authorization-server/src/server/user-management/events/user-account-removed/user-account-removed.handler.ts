@@ -10,6 +10,10 @@ export class UserAccountRemovedHandler
 
   handle(event: UserAccountRemovedEvent) {
     const { deletedUser } = event;
+    from(deletedUser.remove()).subscribe({
+      next: success => {},
+      error: error => {},
+    });
     from(this.requestUserDelete.informClients(deletedUser.uuid)).subscribe({
       next: success => {},
       error: error => {},

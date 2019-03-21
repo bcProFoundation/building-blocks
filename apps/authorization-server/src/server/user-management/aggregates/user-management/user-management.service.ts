@@ -67,7 +67,6 @@ export class UserManagementService extends AggregateRoot {
     await this.clientService.deleteClientsByUser(user.uuid);
     await this.bearerTokenService.deleteMany({ user: user.uuid });
     user.deleted = true;
-    await user.remove();
     this.apply(new UserAccountRemovedEvent(user, actorUuid));
   }
 
@@ -77,6 +76,7 @@ export class UserManagementService extends AggregateRoot {
 
   async deleteRole(roleName: string, actorUuid: string) {
     const role = await this.roleService.findOne({ name: roleName });
+    if (!role) throw new NotFoundException({ invalidRole: roleName });
     const UserModel = this.userService.getModel();
     const usersWithRole = await UserModel.find({ roles: role.name }).exec();
 
@@ -95,8 +95,6 @@ export class UserManagementService extends AggregateRoot {
         })),
       });
     } else {
-      // TODO: Move remove() to Event
-      await role.remove();
       this.apply(new UserRoleRemovedEvent(role, actorUuid));
     }
   }
@@ -106,7 +104,6 @@ export class UserManagementService extends AggregateRoot {
     if (!user) throw new NotFoundException({ user });
     user.verificationCode = randomBytes(32).toString('hex');
     user.modified = new Date();
-    await user.save();
     this.apply(new ForgottenPasswordGeneratedEvent(user));
   }
 

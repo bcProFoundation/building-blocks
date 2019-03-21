@@ -59,6 +59,7 @@ describe('Event: UserAccountRemovedHandler', () => {
     manager.informClients = jest.fn(() =>
       Promise.resolve({ id: 420, data: {} }),
     );
+    mockUser.remove = jest.fn(() => Promise.resolve(mockUser));
     eventBus$.publish = jest.fn(() => {});
     await eventHandler.handle(
       new UserAccountRemovedEvent(mockUser, mockUser.uuid),

@@ -36,7 +36,6 @@ export class ClientManagementAggregateService extends AggregateRoot {
         client.createdBy === actorUuid ||
         (await this.user.checkAdministrator(actorUuid))
       ) {
-        await client.remove();
         await this.bearerToken.deleteMany({ clientId: client.clientId });
         this.apply(new OAuth2ClientRemovedEvent(client, actorUuid));
       } else {
@@ -68,7 +67,6 @@ export class ClientManagementAggregateService extends AggregateRoot {
       });
     }
 
-    await scope.remove();
     this.apply(new OAuth2ScopeRemovedEvent(scope, actorUuid));
   }
 }

@@ -4,6 +4,7 @@ import { ForgottenPasswordGeneratedHandler } from './forgotten-password-generate
 import { PasswordChangedHandler } from './password-changed/password-changed.handler';
 import { UserAccountAddedHandler } from './user-account-added/user-account-added.handler';
 import { UserAccountModifiedHandler } from './user-account-modified/user-account-modified.handler';
+import { EmailVerifiedAndPasswordSetHandler } from './email-verified-and-password-set/email-verified-and-password-set.handler';
 
 export const UserManagementEventHandlers = [
   UserAccountRemovedHandler,
@@ -12,4 +13,5 @@ export const UserManagementEventHandlers = [
   PasswordChangedHandler,
   UserAccountAddedHandler,
   UserAccountModifiedHandler,
+  EmailVerifiedAndPasswordSetHandler,
 ];
