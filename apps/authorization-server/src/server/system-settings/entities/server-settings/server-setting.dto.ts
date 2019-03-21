@@ -1,4 +1,4 @@
-import { IsUrl, IsOptional, IsUUID } from 'class-validator';
+import { IsUrl, IsOptional, IsUUID, IsBoolean } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 
 export class ServerSettingDto {
@@ -41,4 +41,8 @@ export class ServerSettingDto {
     type: 'string',
   })
   backupBucket?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  disableSignup?: boolean;
 }

@@ -19,7 +19,10 @@ describe('SystemSettingsManagementService', () => {
           useValue: {},
         },
       ],
-    }).compile();
+    })
+      .overrideProvider(SystemSettingsManagementService)
+      .useValue({})
+      .compile();
 
     service = module.get<SystemSettingsManagementService>(
       SystemSettingsManagementService,
