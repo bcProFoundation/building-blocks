@@ -165,7 +165,13 @@ export class UserAggregateService extends AggregateRoot {
       verificationCode: payload.verificationCode,
     });
     if (!verifiedUser) throw invalidUserException;
-    const userPassword = new (this.authData.getModel())();
+
+    let userPassword = await this.authData.findOne({
+      uuid: verifiedUser.password,
+    });
+    if (!userPassword) {
+      userPassword = new (this.authData.getModel())();
+    }
     userPassword.password = this.crypto.hashPassword(payload.password);
     verifiedUser.password = userPassword.uuid;
     verifiedUser.disabled = false;
