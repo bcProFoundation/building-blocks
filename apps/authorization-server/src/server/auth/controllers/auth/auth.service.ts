@@ -40,7 +40,10 @@ export class AuthService {
       .getModel()
       .find()
       .exec();
-    if (settings.length === 1 && settings[0].communicationServerClientId) {
+    if (
+      (settings.length === 1 && settings[0].communicationServerClientId) ||
+      process.env.NODE_ENV === 'production'
+    ) {
       throw new BadRequestException({
         communicationEnabled: true,
         message: 'SIGNUP_VIA_EMAIL_OR_PHONE',
