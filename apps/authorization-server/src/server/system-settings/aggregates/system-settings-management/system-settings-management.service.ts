@@ -1,38 +1,37 @@
 import { Injectable } from '@nestjs/common';
-import { from, throwError } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { from } from 'rxjs';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
 import { invalidClientException } from '../../../common/filters/exceptions';
+import { AggregateRoot } from '@nestjs/cqrs';
+import { SystemSettingsChangedEvent } from '../../events/server-settings-changed/server-settings-changed.event';
+import { ServerSettingDto } from '../../entities/server-settings/server-setting.dto';
 
 @Injectable()
-export class SystemSettingsManagementService {
+export class SystemSettingsManagementService extends AggregateRoot {
   constructor(
     private readonly settingsService: ServerSettingsService,
     private readonly clientService: ClientService,
-  ) {}
+  ) {
+    super();
+  }
 
-  updateSettings(payload) {
-    return from(this.settingsService.find()).pipe(
-      switchMap(settings => {
-        settings.issuerUrl = payload.issuerUrl;
-        if (['production', 'development'].includes(process.env.NODE_ENV)) {
-          return from(
-            this.clientService.findOne({
-              clientId: payload.communicationServerClientId,
-            }),
-          ).pipe(
-            switchMap(client => {
-              if (!client) return throwError(invalidClientException);
-              settings.communicationServerClientId =
-                payload.communicationServerClientId;
-              return from(settings.save());
-            }),
-          );
-        }
-        return from(settings.save());
-      }),
-    );
+  async updateSettings(actorUserUuid: string, payload: ServerSettingDto) {
+    const settings = await this.settingsService.find();
+    if (payload.issuerUrl) settings.issuerUrl = payload.issuerUrl;
+    if (payload.disableSignup) settings.disableSignup = payload.disableSignup;
+    if (
+      payload.communicationServerClientId &&
+      ['production', 'development'].includes(process.env.NODE_ENV)
+    ) {
+      const client = await this.clientService.findOne({
+        clientId: payload.communicationServerClientId,
+      });
+      if (!client) throw invalidClientException;
+      settings.communicationServerClientId =
+        payload.communicationServerClientId;
+    }
+    this.apply(new SystemSettingsChangedEvent(actorUserUuid, settings));
   }
 
   getSettings() {

@@ -16,6 +16,7 @@ export class SignupController {
   @Post('v1/email')
   @UsePipes(ValidationPipe)
   async signupViaEmail(@Body() payload: SignupViaEmailDto, @Res() res) {
+    await this.signupService.validateSignupEnabled();
     payload.email = payload.email.trim().toLocaleLowerCase();
     res.json(await this.signupService.initSignup(payload, res));
   }

@@ -1,9 +1,10 @@
-import { Injectable, HttpService } from '@nestjs/common';
+import { Injectable, HttpService, BadRequestException } from '@nestjs/common';
 import { UserService } from '../../entities/user/user.service';
 import { randomBytes } from 'crypto';
 import { User } from '../../entities/user/user.interface';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
+import { i18n } from '../../../i18n/i18n.config';
 
 @Injectable()
 export class SignupService {
@@ -67,5 +68,14 @@ export class SignupService {
           await unverifiedUser.remove();
         },
       });
+  }
+
+  async validateSignupEnabled() {
+    const settings = await this.serverSettingsService.find();
+    if (!settings.disableSignup) {
+      throw new BadRequestException({
+        message: i18n.__('Signup Disabled'),
+      });
+    }
   }
 }

@@ -9,6 +9,7 @@ export const ServerSettings = new mongoose.Schema(
     identityProviderClientId: String,
     infrastructureConsoleClientId: String,
     backupBucket: String,
+    disableSignup: Boolean,
   },
   { collection: 'server_settings', versionKey: false },
 );
