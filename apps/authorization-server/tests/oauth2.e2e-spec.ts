@@ -41,7 +41,7 @@ describe('OAuth2Controller (e2e)', () => {
     app = moduleFixture.createNestApplication(
       new ExpressAdapter(authServer.server),
     );
-    authServer.setupSession(app);
+    authServer.setupSession();
     await app.init();
     userService = moduleFixture.get(UserService);
     const setupService = moduleFixture.get(SetupService);

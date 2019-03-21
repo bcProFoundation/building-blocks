@@ -13,7 +13,7 @@ import { i18n } from '../../../i18n/i18n.config';
 import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { CryptographerService } from '../../../common/cryptographer.service';
-import { CreateUserDto } from '../../../user-management/policies';
+import { UserAccountDto } from '../../../user-management/policies';
 import { Role } from '../../../user-management/entities/role/role.interface';
 import { User } from '../../../user-management/entities/user/user.interface';
 import { AuthData } from '../../../user-management/entities/auth-data/auth-data.interface';
@@ -35,7 +35,7 @@ export class AuthService {
    * @param user
    * @param roles
    */
-  public async signUp(user: CreateUserDto, roles?: Role[]) {
+  public async signUp(user: UserAccountDto, roles?: Role[]) {
     const settings = await this.settings
       .getModel()
       .find()
@@ -50,7 +50,7 @@ export class AuthService {
     if (result.errors.length > 0) {
       throw new BadRequestException({
         errors: result.errors,
-        message: 'SIGNUP_VIA_EMAIL_OR_PHONE',
+        message: i18n.__('Password not secure'),
       });
     }
     const UserModel = this.userService.getModel();

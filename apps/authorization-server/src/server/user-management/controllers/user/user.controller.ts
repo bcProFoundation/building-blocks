@@ -15,11 +15,9 @@ import {
   Delete,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { CryptographerService } from '../../../common/cryptographer.service';
 import { UserService } from '../../entities/user/user.service';
 import { AuthGuard } from '../../../auth/guards/auth.guard';
 import { callback } from '../../../auth/passport/strategies/local.strategy';
-import { AuthDataService } from '../../entities/auth-data/auth-data.service';
 import { Roles } from '../../../common/decorators/roles.decorator';
 import { ADMINISTRATOR } from '../../../constants/app-strings';
 import { RoleGuard } from '../../../auth/guards/role.guard';
@@ -30,17 +28,17 @@ import { GenerateForgottenPasswordCommand } from '../../commands/generate-forgot
 import {
   VerifyEmailDto,
   ChangePasswordDto,
-  CreateUserDto,
+  UserAccountDto,
 } from '../../policies';
 import { ChangePasswordCommand } from '../../commands/change-password/change-password.command';
 import { VerifyEmailAndSetPasswordCommand } from '../../commands/verify-email-and-set-passsword/verify-email-and-set-password.command';
+import { AddUserAccountCommand } from '../../commands/add-user-account/add-user-account.command';
+import { ModifyUserAccountCommand } from '../../commands/modify-user-account/modify-user-account.command';
 
 @Controller('user')
 export class UserController {
   constructor(
     private readonly userService: UserService,
-    private readonly cryptoService: CryptographerService,
-    private readonly authDataService: AuthDataService,
     private readonly crudService: CRUDOperationService,
     private readonly userAggregate: UserAggregateService,
     private readonly commandBus: CommandBus,
@@ -97,47 +95,29 @@ export class UserController {
   @UsePipes(ValidationPipe)
   @Roles(ADMINISTRATOR)
   @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
-  async create(@Body() body: CreateUserDto, @Req() req, @Res() res) {
-    const user = await this.userService.save(body);
-
-    // create Password
-    const authData = new (this.authDataService.getModel())();
-    authData.password = this.cryptoService.hashPassword(body.password);
-    await authData.save();
-
-    // link password with user
-    user.password = authData.uuid;
-    user.createdBy = req.user.user;
-    user.creation = new Date();
-    await user.save();
-
-    // delete mongodb _id
-    user._id = undefined;
-    res.json(user);
+  async create(@Body() payload: UserAccountDto, @Req() req) {
+    const createdBy = req.user.user;
+    return await this.commandBus.execute(
+      new AddUserAccountCommand(createdBy, payload),
+    );
   }
 
-  @Put('v1/update/:uuid')
+  @Put('v1/update/:userUuidToBeModified')
   @Roles(ADMINISTRATOR)
   @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
-  async update(@Param('uuid') uuid, @Body() payload, @Req() req, @Res() res) {
-    const user = await this.userService.findOne({ uuid });
-    user.name = payload.name;
-    user.roles = payload.roles;
-
-    // Set password if exists
-    if (payload.password) {
-      const authData = await this.authDataService.findOne({
-        uuid: user.password,
-      });
-      authData.password = this.cryptoService.hashPassword(payload.password);
-      await authData.save();
-    }
-
-    user.modifiedBy = req.user.user;
-    user.modified = new Date();
-    await user.save();
-    user._id, (user.password = undefined);
-    res.json(user);
+  async update(
+    @Param('userUuidToBeModified') userUuidToBeModified,
+    @Body() payload: UserAccountDto,
+    @Req() req,
+  ) {
+    const actorUserUuid = req.user.user;
+    return await this.commandBus.execute(
+      new ModifyUserAccountCommand(
+        actorUserUuid,
+        userUuidToBeModified,
+        payload,
+      ),
+    );
   }
 
   @Delete('v1/delete/:userUuidToBeDeleted')

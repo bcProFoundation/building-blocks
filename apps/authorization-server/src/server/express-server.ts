@@ -47,8 +47,8 @@ export class ExpressServer {
     );
   }
 
-  setupSession(app: INestApplication) {
-    app.use(cookieParser(this.configService.get('SESSION_SECRET')));
+  setupSession() {
+    this.server.use(cookieParser(this.configService.get('SESSION_SECRET')));
 
     const cookie = {
       maxAge: Number(this.configService.get('COOKIE_MAX_AGE')),
@@ -79,21 +79,19 @@ export class ExpressServer {
       // unset: 'destroy'
     };
 
-    app.use(expressSession(sessionConfig));
-    app.use(passport.initialize());
-    app.use(passport.session());
+    this.server.use(expressSession(sessionConfig));
+    this.server.use(passport.initialize());
+    this.server.use(passport.session());
   }
 
   setupI18n() {
     this.server.use(i18n.init);
   }
 
-  setupSwagger(app) {
+  static setupSwagger(app) {
     const version = JSON.parse(
       fs.readFileSync(join(process.cwd(), 'package.json'), 'utf-8'),
     ).version;
-
-    // Swagger
     const options = new DocumentBuilder()
       .setTitle(i18n.__('Authorization Server'))
       .setDescription(i18n.__('OAuth 2.0 OpenID Connect Authorization Server'))
@@ -101,9 +99,10 @@ export class ExpressServer {
       .build();
     const document = SwaggerModule.createDocument(app, options);
     SwaggerModule.setup('api', app, document);
+  }
 
-    // Handlebars View engine
-    app.setBaseViewsDir(VIEWS_DIR);
-    app.setViewEngine('hbs');
+  static setupViewEngine(app: INestApplication) {
+    app.getHttpAdapter().setBaseViewsDir(VIEWS_DIR);
+    app.getHttpAdapter().setViewEngine('hbs');
   }
 }

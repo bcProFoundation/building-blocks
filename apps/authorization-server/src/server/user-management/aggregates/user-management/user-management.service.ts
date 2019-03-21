@@ -95,6 +95,7 @@ export class UserManagementService extends AggregateRoot {
         })),
       });
     } else {
+      // TODO: Move remove() to Event
       await role.remove();
       this.apply(new UserRoleRemovedEvent(role, actorUuid));
     }

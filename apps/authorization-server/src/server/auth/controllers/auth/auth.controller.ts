@@ -15,7 +15,10 @@ import { callback } from '../../passport/strategies/local.strategy';
 import { AuthGuard } from '../../../auth/guards/auth.guard';
 import { ApiOperation } from '@nestjs/swagger';
 import { i18n } from '../../../i18n/i18n.config';
-import { LoginUserDto, CreateUserDto } from '../../../user-management/policies';
+import {
+  LoginUserDto,
+  UserAccountDto,
+} from '../../../user-management/policies';
 
 @Controller('auth')
 export class AuthController {
@@ -44,7 +47,7 @@ export class AuthController {
     title: i18n.__('Signup'),
     description: i18n.__('Sign up a new user'),
   })
-  async signup(@Body() body: CreateUserDto, @Res() res) {
+  async signup(@Body() body: UserAccountDto, @Res() res) {
     await this.authService.signUp(body);
     res.json({
       user: body.email,

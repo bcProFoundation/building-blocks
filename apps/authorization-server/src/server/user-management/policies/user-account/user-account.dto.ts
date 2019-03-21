@@ -1,9 +1,9 @@
-import { IsString, IsEmail, IsNotEmpty } from 'class-validator';
+import { IsString, IsEmail, IsNotEmpty, IsOptional } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 import { IsMobileE164 } from '../../../common/decorators/is-mobile-e164.decorator';
 import { i18n } from '../../../i18n/i18n.config';
 
-export class CreateUserDto {
+export class UserAccountDto {
   @IsEmail()
   @IsNotEmpty()
   @ApiModelProperty({
@@ -40,4 +40,13 @@ export class CreateUserDto {
     message: i18n.__('Mobile format must be E.164'),
   })
   phone: string;
+
+  @ApiModelProperty({
+    description: i18n.__('User Roles'),
+    type: 'string',
+    required: true,
+  })
+  @IsOptional()
+  @IsString({ each: true })
+  roles?: string[];
 }

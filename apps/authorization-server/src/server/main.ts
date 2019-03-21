@@ -20,10 +20,13 @@ async function bootstrap() {
   app.enableCors();
 
   // Setup Swagger
-  authServer.setupSwagger(app);
+  ExpressServer.setupSwagger(app);
+
+  // Handlebars View engine
+  ExpressServer.setupViewEngine(app);
 
   // Setup Session
-  authServer.setupSession(app);
+  authServer.setupSession();
   await app.listen(3000);
 }
 
