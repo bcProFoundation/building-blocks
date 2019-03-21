@@ -27,6 +27,7 @@ import { PasswordPolicyService } from '../../policies/password-policy/password-p
 import { EmailVerifiedAndPasswordSetEvent } from '../../events/email-verified-and-password-set/email-verified-and-password-set.event';
 import { UserAccountAddedEvent } from '../../events/user-account-added/user-account-added.event';
 import { UserAccountModifiedEvent } from '../../events/user-account-modified/user-account-modified.event';
+import { RoleValidationPolicyService } from '../../policies/role-validation-policy/role-validation-policy.service';
 
 @Injectable()
 export class UserAggregateService extends AggregateRoot {
@@ -36,6 +37,7 @@ export class UserAggregateService extends AggregateRoot {
     private readonly settings: ServerSettingsService,
     private readonly crypto: CryptographerService,
     private readonly passwordPolicy: PasswordPolicyService,
+    private readonly roleValidationPolicy: RoleValidationPolicyService,
   ) {
     super();
   }
@@ -204,6 +206,9 @@ export class UserAggregateService extends AggregateRoot {
     user.email = userData.email;
     user.name = userData.name;
     user.phone = userData.phone;
+
+    await this.validateRoles(userData.roles);
+
     user.roles = userData.roles;
 
     // create Password
@@ -227,6 +232,9 @@ export class UserAggregateService extends AggregateRoot {
     modifiedBy?: string,
   ) {
     const user = await this.user.findOne({ uuid });
+
+    await this.validateRoles(payload.roles);
+
     user.roles = payload.roles;
     user.name = payload.name;
 
@@ -260,5 +268,17 @@ export class UserAggregateService extends AggregateRoot {
 
     this.apply(new UserAccountModifiedEvent(user));
     return user;
+  }
+
+  async validateRoles(roles: string[]) {
+    // Validate Roles
+    const result = await this.roleValidationPolicy.validateRoles(roles);
+    if (!result) {
+      const validRoles = await this.roleValidationPolicy.getValidRoles(roles);
+      throw new BadRequestException({
+        message: i18n.__('Invalid Roles'),
+        validRoles,
+      });
+    }
   }
 }
