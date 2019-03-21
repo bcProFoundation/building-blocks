@@ -9,11 +9,47 @@ export class UserAccountRemovedHandler
   constructor(private readonly requestUserDelete: UserDeleteRequestService) {}
 
   handle(event: UserAccountRemovedEvent) {
-    const { deletedUser } = event;
+    const {
+      deletedUser,
+      password,
+      sharedSecret,
+      otpCounter,
+      twoFactorTempSecret,
+    } = event;
+
+    if (password) {
+      from(password.remove()).subscribe({
+        next: success => {},
+        error: error => {},
+      });
+    }
+
+    if (sharedSecret) {
+      from(sharedSecret.remove()).subscribe({
+        next: success => {},
+        error: error => {},
+      });
+    }
+
+    if (otpCounter) {
+      from(otpCounter.remove()).subscribe({
+        next: success => {},
+        error: error => {},
+      });
+    }
+
+    if (twoFactorTempSecret) {
+      from(twoFactorTempSecret.remove()).subscribe({
+        next: success => {},
+        error: error => {},
+      });
+    }
+
     from(deletedUser.remove()).subscribe({
       next: success => {},
       error: error => {},
     });
+
     from(this.requestUserDelete.informClients(deletedUser.uuid)).subscribe({
       next: success => {},
       error: error => {},

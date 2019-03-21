@@ -72,7 +72,7 @@ export class SignupService {
 
   async validateSignupEnabled() {
     const settings = await this.serverSettingsService.find();
-    if (!settings.disableSignup) {
+    if (settings.disableSignup) {
       throw new BadRequestException({
         message: i18n.__('Signup Disabled'),
       });

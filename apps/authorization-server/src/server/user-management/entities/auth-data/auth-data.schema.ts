@@ -4,7 +4,7 @@ import * as uuidv4 from 'uuid/v4';
 export const AuthData = new mongoose.Schema(
   {
     uuid: { type: String, default: uuidv4 },
-    password: String,
+    password: mongoose.Schema.Types.Mixed,
   },
   { collection: 'auth_data', versionKey: false },
 );

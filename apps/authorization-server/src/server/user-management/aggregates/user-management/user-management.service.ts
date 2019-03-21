@@ -51,23 +51,29 @@ export class UserManagementService extends AggregateRoot {
     const password = await this.authDataService.findOne({
       uuid: user.password,
     });
-    if (password) await password.remove();
     const sharedSecret = await this.authDataService.findOne({
       uuid: user.sharedSecret,
     });
-    if (sharedSecret) await sharedSecret.remove();
     const otpCounter = await this.authDataService.findOne({
       uuid: user.otpCounter,
     });
-    if (otpCounter) await otpCounter.remove();
     const twoFactorTempSecret = await this.authDataService.findOne({
       uuid: user.twoFactorTempSecret,
     });
-    if (twoFactorTempSecret) await twoFactorTempSecret.remove();
+
     await this.clientService.deleteClientsByUser(user.uuid);
     await this.bearerTokenService.deleteMany({ user: user.uuid });
     user.deleted = true;
-    this.apply(new UserAccountRemovedEvent(user, actorUuid));
+    this.apply(
+      new UserAccountRemovedEvent(
+        actorUuid,
+        user,
+        password,
+        sharedSecret,
+        otpCounter,
+        twoFactorTempSecret,
+      ),
+    );
   }
 
   async backupUser(uuid) {
