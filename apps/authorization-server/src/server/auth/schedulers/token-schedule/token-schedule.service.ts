@@ -1,10 +1,10 @@
 import { Injectable, HttpService } from '@nestjs/common';
 import { OnModuleInit } from '@nestjs/common';
-import { BearerTokenService } from '../../auth/entities/bearer-token/bearer-token.service';
+import { BearerTokenService } from '../../entities/bearer-token/bearer-token.service';
 import * as Bull from 'bull';
-import { BullOptions } from '../../constants/bull-queue.options';
-import { ConfigService } from '../../config/config.service';
-import { ClientService } from '../../client-management/entities/client/client.service';
+import { BullOptions } from '../../../constants/bull-queue.options';
+import { ConfigService } from '../../../config/config.service';
+import { ClientService } from '../../../client-management/entities/client/client.service';
 import { retry } from 'rxjs/operators';
 
 export const TOKEN_DELETE_QUEUE = 'token_delete';

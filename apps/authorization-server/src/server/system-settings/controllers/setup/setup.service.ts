@@ -15,7 +15,7 @@ import {
   SCOPE_ROLES,
   SCOPE_EMAIL,
 } from '../../../constants/app-strings';
-import { KeyPairGeneratorService } from '../../../auth/scheduler/keypair-generator.service';
+import { KeyPairGeneratorService } from '../../../auth/schedulers';
 
 @Injectable()
 export class SetupService {

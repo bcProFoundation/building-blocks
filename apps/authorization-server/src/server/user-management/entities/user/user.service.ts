@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ForbiddenException } from '@nestjs/common';
 import { Model } from 'mongoose';
 import {
   invalidUserException,
@@ -66,6 +66,45 @@ export class UserService {
       return true;
     }
     return false;
+  }
+
+  async getAuthorizedUser(userUuid, actorUserUuid) {
+    let user;
+    if (await this.checkAdministrator(actorUserUuid)) {
+      user = await this.findOne({ uuid: userUuid });
+    } else {
+      user = await this.findOne({
+        uuid: userUuid,
+        createdBy: actorUserUuid,
+      });
+    }
+    if (!user) throw new ForbiddenException();
+
+    user = this.getUserWithoutSecrets(user);
+    return user;
+  }
+
+  getUserWithoutSecrets(user: User) {
+    user.password = undefined;
+    user.sharedSecret = undefined;
+    user.twoFactorTempSecret = undefined;
+    user.otpPeriod = undefined;
+    return user;
+  }
+
+  getUserWithoutIdentity(user: User) {
+    user.name = undefined;
+    user.email = undefined;
+    user.phone = undefined;
+    return user;
+  }
+
+  getUserWithoutMetaData(user: User) {
+    user.deleted = undefined;
+    user.uuid = undefined;
+    user.creation = undefined;
+    user.modified = undefined;
+    return user;
   }
 
   getModel() {

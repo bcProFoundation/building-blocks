@@ -19,4 +19,5 @@ export interface User extends Document {
   twoFactorTempSecret?: string;
   verificationCode?: string;
   deleted?: boolean;
+  enablePasswordLess?: boolean;
 }

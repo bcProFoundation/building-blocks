@@ -1,12 +1,12 @@
 import { CommandHandler, ICommandHandler, EventPublisher } from '@nestjs/cqrs';
 import { ModifyUserAccountCommand } from './modify-user-account.command';
-import { UserAggregateService } from '../../aggregates/user-aggregate/user-aggregate.service';
+import { UserManagementService } from '../../aggregates/user-management/user-management.service';
 
 @CommandHandler(ModifyUserAccountCommand)
 export class ModifyUserAccountHandler
   implements ICommandHandler<ModifyUserAccountCommand> {
   constructor(
-    private readonly manager: UserAggregateService,
+    private readonly manager: UserManagementService,
     private readonly publisher: EventPublisher,
   ) {}
 

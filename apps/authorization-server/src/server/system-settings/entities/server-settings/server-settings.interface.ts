@@ -7,4 +7,5 @@ export interface ServerSettings extends Document {
   infrastructureConsoleClientId?: string;
   backupBucket?: string;
   disableSignup?: boolean;
+  otpExpiry?: number;
 }

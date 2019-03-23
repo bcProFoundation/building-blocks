@@ -10,8 +10,6 @@ import { PassportAuthenticateMiddleware } from './middlewares/passport-authentic
 import { AuthEntitiesModule } from './entities/entities.module';
 import { OAuth2Module } from './oauth2/oauth2.module';
 import { PassportModule } from './passport/passport.module';
-import { KeyPairGeneratorService } from './scheduler/keypair-generator.service';
-import { TokenSchedulerService } from './scheduler/token-schedule.service';
 import { authControllers, authServices } from './controllers';
 import { RoleGuard } from './guards/role.guard';
 import { TokenIntrospectionGuard } from './guards/token-introspection.guard';
@@ -19,6 +17,7 @@ import { EnsureLoginGuard } from './guards/ensure-login.guard';
 import { AuthAggregates } from './aggregates';
 import { AuthCommandHandlers } from './commands';
 import { AuthEventHandlers } from './events';
+import { AuthSchedulers } from './schedulers';
 
 @Global()
 @Module({
@@ -34,8 +33,7 @@ import { AuthEventHandlers } from './events';
     OAuth2ErrorHandlerMiddleware,
 
     // Scheduled Services
-    KeyPairGeneratorService,
-    TokenSchedulerService,
+    ...AuthSchedulers,
 
     // Guards
     RoleGuard,
@@ -51,8 +49,8 @@ import { AuthEventHandlers } from './events';
   exports: [
     ...authServices,
     ...AuthAggregates,
+    ...AuthSchedulers,
     AuthEntitiesModule,
-    KeyPairGeneratorService,
     RoleGuard,
     TokenIntrospectionGuard,
   ],

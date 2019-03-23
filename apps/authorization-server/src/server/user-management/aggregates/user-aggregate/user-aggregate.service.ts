@@ -1,33 +1,29 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import * as speakeasy from 'speakeasy';
 import * as QRCode from 'qrcode';
-import * as uuidv4 from 'uuid/v4';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { UserService } from '../../entities/user/user.service';
 import { User } from '../../entities/user/user.interface';
 import { ADMINISTRATOR } from '../../../constants/app-strings';
 import { AuthDataService } from '../../entities/auth-data/auth-data.service';
-import { AuthData } from '../../entities/auth-data/auth-data.interface';
+import { AuthDataType } from '../../entities/auth-data/auth-data.interface';
 import {
   twoFactorEnabledException,
   twoFactorNotEnabledException,
   invalidOTPException,
   invalidUserException,
+  passwordLessLoginAlreadyEnabledException,
+  passwordLessLoginNotEnabledException,
 } from '../../../common/filters/exceptions';
-import { i18n } from '../../../i18n/i18n.config';
 import { CryptographerService } from '../../../common/cryptographer.service';
 import { AggregateRoot } from '@nestjs/cqrs';
-import {
-  ChangePasswordDto,
-  VerifyEmailDto,
-  UserAccountDto,
-} from '../../policies';
+import { ChangePasswordDto, VerifyEmailDto } from '../../policies';
 import { PasswordChangedEvent } from '../../events/password-changed/password-changed.event';
 import { PasswordPolicyService } from '../../policies/password-policy/password-policy.service';
 import { EmailVerifiedAndPasswordSetEvent } from '../../events/email-verified-and-password-set/email-verified-and-password-set.event';
-import { UserAccountAddedEvent } from '../../events/user-account-added/user-account-added.event';
 import { UserAccountModifiedEvent } from '../../events/user-account-modified/user-account-modified.event';
-import { RoleValidationPolicyService } from '../../policies/role-validation-policy/role-validation-policy.service';
+import { USER } from '../../entities/user/user.schema';
+import { AuthDataRemovedEvent } from '../../events/auth-data-removed/auth-data-removed.event';
 
 @Injectable()
 export class UserAggregateService extends AggregateRoot {
@@ -37,7 +33,6 @@ export class UserAggregateService extends AggregateRoot {
     private readonly settings: ServerSettingsService,
     private readonly crypto: CryptographerService,
     private readonly passwordPolicy: PasswordPolicyService,
-    private readonly roleValidationPolicy: RoleValidationPolicyService,
   ) {
     super();
   }
@@ -55,22 +50,27 @@ export class UserAggregateService extends AggregateRoot {
 
     if (restart || !user.enable2fa) {
       const settings = await this.settings.find();
-      const secret = speakeasy.generateSecret({ name: user.email });
-      // Save secret on AuthData
 
-      if (user.twoFactorTempSecret) {
-        const twoFactorTempSecret = await this.authData.getModel().findOne({
-          uuid: user.twoFactorTempSecret,
-        });
-        if (twoFactorTempSecret) await twoFactorTempSecret.remove();
-        user.twoFactorTempSecret = null;
+      // Save secret on AuthData
+      const secret = speakeasy.generateSecret({ name: user.email });
+
+      // Find existing AuthData or create new
+      let twoFactorTempSecret = await this.checkLocalAuthData(
+        user.uuid,
+        AuthDataType.TwoFactorTempSecret,
+      );
+      if (!twoFactorTempSecret) {
+        twoFactorTempSecret = await this.getNewAuthData(
+          user.uuid,
+          AuthDataType.TwoFactorTempSecret,
+        );
+        user.twoFactorTempSecret = twoFactorTempSecret.uuid;
       }
 
-      const authData: AuthData = new (this.authData.getModel())();
-      authData.password = secret.base32;
-      await authData.save();
-      user.twoFactorTempSecret = authData.uuid;
-      await user.save();
+      // Save generated base32 secret
+      twoFactorTempSecret.password = secret.base32;
+      this.apply(new PasswordChangedEvent(twoFactorTempSecret));
+      this.apply(new UserAccountModifiedEvent(user));
 
       const issuerUrl = new URL(settings.issuerUrl).host;
       const otpAuthUrl = speakeasy.otpauthURL({
@@ -84,7 +84,7 @@ export class UserAggregateService extends AggregateRoot {
       return {
         qrImage,
         // shared key from AuthData
-        key: authData.password,
+        key: twoFactorTempSecret.password,
       };
     } else {
       throw twoFactorEnabledException;
@@ -101,26 +101,32 @@ export class UserAggregateService extends AggregateRoot {
     const user = await this.user.findOne({ uuid });
     if (!otp) throw invalidOTPException;
     if (user.twoFactorTempSecret) {
-      const twoFactorTempSecret = await this.authData.findOne({
-        uuid: user.twoFactorTempSecret,
-      });
+      const twoFactorTempSecret = await this.checkLocalAuthData(
+        user.uuid,
+        AuthDataType.TwoFactorTempSecret,
+      );
       const base32secret = twoFactorTempSecret.password;
-      const verified = speakeasy.totp({
+      const verified = speakeasy.totp.verify({
         secret: base32secret,
         encoding: 'base32',
+        token: otp,
+        window: 2,
       });
-      if (verified === otp) {
-        const sharedSecret: AuthData = new (this.authData.getModel())();
-        sharedSecret.password = twoFactorTempSecret.password;
-        await sharedSecret.save();
+      if (verified) {
+        const sharedSecret = await this.checkLocalAuthData(
+          user.uuid,
+          AuthDataType.SharedSecret,
+        );
+        if (sharedSecret) {
+          this.apply(new AuthDataRemovedEvent(sharedSecret));
+        }
 
-        user.sharedSecret = sharedSecret.uuid;
+        user.sharedSecret = twoFactorTempSecret.uuid;
+        twoFactorTempSecret.authDataType = AuthDataType.SharedSecret;
         user.enable2fa = true;
-
-        user.twoFactorTempSecret = null;
-        await twoFactorTempSecret.remove();
-
-        await user.save();
+        user.twoFactorTempSecret = undefined;
+        this.apply(new PasswordChangedEvent(twoFactorTempSecret));
+        this.apply(new UserAccountModifiedEvent(user));
 
         return {
           user: {
@@ -138,21 +144,27 @@ export class UserAggregateService extends AggregateRoot {
     if (!user.enable2fa) throw twoFactorNotEnabledException;
 
     user.enable2fa = false;
+    user.enablePasswordLess = false;
 
-    const twoFactorTempSecret = await this.authData.findOne({
-      uuid: user.twoFactorTempSecret,
-    });
-    if (twoFactorTempSecret) await twoFactorTempSecret.remove();
+    const sharedSecret = await this.checkLocalAuthData(
+      user.uuid,
+      AuthDataType.SharedSecret,
+    );
+    if (sharedSecret) {
+      this.apply(new AuthDataRemovedEvent(sharedSecret));
+    }
 
-    const sharedSecret = await this.authData.findOne({
-      uuid: user.sharedSecret,
-    });
-    if (sharedSecret) await sharedSecret.remove();
+    const twoFactorTempSecret = await this.checkLocalAuthData(
+      user.uuid,
+      AuthDataType.SharedSecret,
+    );
+    if (twoFactorTempSecret) {
+      this.apply(new AuthDataRemovedEvent(sharedSecret));
+    }
 
-    user.twoFactorTempSecret = null;
-    user.sharedSecret = null;
-    await user.save();
-    return { message: i18n.__('2FA Disabled') };
+    user.twoFactorTempSecret = undefined;
+    user.sharedSecret = undefined;
+    this.apply(new UserAccountModifiedEvent(user));
   }
 
   async verifyEmail(payload: VerifyEmailDto) {
@@ -200,91 +212,38 @@ export class UserAggregateService extends AggregateRoot {
     }
   }
 
-  async addUserAccount(userData: UserAccountDto, createdBy?: string) {
-    const result = this.passwordPolicy.validatePassword(userData.password);
-    if (result.errors.length > 0) {
-      throw new BadRequestException({
-        errors: result.errors,
-        message: i18n.__('Password not secure'),
-      });
-    }
-    const user = new (this.user.getModel())();
-    user.email = userData.email;
-    user.name = userData.name;
-    user.phone = userData.phone;
-
-    await this.validateRoles(userData.roles);
-
-    user.roles = userData.roles;
-
-    // create Password
-    const authData = new (this.authData.getModel())();
-    authData.password = this.crypto.hashPassword(userData.password);
-
-    // link password with user
-    user.password = authData.uuid;
-    user.createdBy = createdBy;
-    user.creation = new Date();
-
-    // delete mongodb _id
-    user._id = undefined;
-    this.apply(new UserAccountAddedEvent(user, authData));
-    return user;
-  }
-
-  async updateUserAccount(
-    uuid: string,
-    payload: UserAccountDto,
-    modifiedBy?: string,
-  ) {
-    const user = await this.user.findOne({ uuid });
-
-    await this.validateRoles(payload.roles);
-
-    user.roles = payload.roles;
-    user.name = payload.name;
-
-    // Set modification details
-    user.modifiedBy = modifiedBy;
-    user.modified = new Date();
-
-    // Set password if exists
-    if (payload.password) {
-      const result = this.passwordPolicy.validatePassword(payload.password);
-      if (result.errors.length > 0) {
-        throw new BadRequestException({
-          errors: result.errors,
-          message: i18n.__('Password not secure'),
-        });
-      }
-
-      let authData = await this.authData.findOne({
-        uuid: user.password,
-      });
-
-      if (!authData) {
-        authData = new (this.authData.getModel())();
-        authData.uuid = uuidv4();
-      }
-
-      authData.password = this.crypto.hashPassword(payload.password);
-      user.password = authData.uuid;
-      this.apply(new PasswordChangedEvent(authData));
-    }
-
+  async enablePasswordLessLogin(userUuid: string) {
+    const user = await this.user.findOne({ uuid: userUuid });
+    if (!user) throw invalidUserException;
+    if (user.enablePasswordLess) throw passwordLessLoginAlreadyEnabledException;
+    user.enablePasswordLess = true;
     this.apply(new UserAccountModifiedEvent(user));
     return user;
   }
 
-  async validateRoles(roles: string[]) {
-    // Validate Roles
-    const result = await this.roleValidationPolicy.validateRoles(roles);
-    if (!result) {
-      const validRoles = await this.roleValidationPolicy.getValidRoles(roles);
-      throw new BadRequestException({
-        message: i18n.__('Invalid Roles'),
-        validRoles,
-      });
-    }
+  async disablePasswordLessLogin(userUuid: string) {
+    const user = await this.user.findOne({ uuid: userUuid });
+    if (!user) throw invalidUserException;
+    if (!user.enablePasswordLess) throw passwordLessLoginNotEnabledException;
+    user.enablePasswordLess = false;
+    this.apply(new UserAccountModifiedEvent(user));
+    return user;
+  }
+
+  async checkLocalAuthData(userEntityUuid: string, authDataType: AuthDataType) {
+    return await this.authData.findOne({
+      entity: USER,
+      entityUuid: userEntityUuid,
+      authDataType,
+    });
+  }
+
+  async getNewAuthData(userEntityUuid: string, authDataType: AuthDataType) {
+    const AuthDataModel = this.authData.getModel();
+    const authData = new AuthDataModel();
+    authData.entityUuid = userEntityUuid;
+    authData.entity = USER;
+    authData.authDataType = authDataType;
+    return authData;
   }
 }
