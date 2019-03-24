@@ -215,6 +215,7 @@ export class UserAggregateService extends AggregateRoot {
   async enablePasswordLessLogin(userUuid: string) {
     const user = await this.user.findOne({ uuid: userUuid });
     if (!user) throw invalidUserException;
+    if (!user.enable2fa) throw twoFactorNotEnabledException;
     if (user.enablePasswordLess) throw passwordLessLoginAlreadyEnabledException;
     user.enablePasswordLess = true;
     this.apply(new UserAccountModifiedEvent(user));
