@@ -246,8 +246,10 @@ export class AuthService {
     });
     const verified = this.isUserTOTPValid(sharedSecret, payload.code);
     if (verified) {
+      return user;
+    } else {
       const htop = await this.getUserHOTP(user, sharedSecret);
-      if (htop !== payload.code) {
+      if (htop === payload.code) {
         const code = await this.authDataService.findOne({
           entity: USER,
           entityUuid: user.uuid,
@@ -257,10 +259,12 @@ export class AuthService {
         if (code.expiry <= new Date()) {
           await code.remove();
           throw invalidOTPException;
+        } else {
+          await code.remove();
+          return user;
         }
       }
+      throw invalidOTPException;
     }
-
-    return user;
   }
 }

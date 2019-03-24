@@ -11,6 +11,7 @@ import {
   CLOSE,
   PLEASE_CHECK_USERNAME,
 } from '../../constants/app-strings';
+import { LoginChoice } from './login-choice';
 
 @Component({
   selector: 'app-login',
@@ -31,10 +32,15 @@ export class LoginComponent implements OnInit {
   socialLogins: { name: string; uuid: string }[];
   redirect: string;
   showSocialLogins: boolean = false;
+  enablePasswordLess: boolean = false;
+  loginChoice: LoginChoice = LoginChoice.Standard;
+  disableLoginChoice: boolean = false;
+  disableResendOTP: boolean = false;
 
   @ViewChild('password') passwordRef: ElementRef;
   @ViewChild('otp') otpRef: ElementRef;
   @ViewChild('username') usernameRef: ElementRef;
+  @ViewChild('reSendOTP') reSendOTPRef: ElementRef;
 
   verifyUserForm = new FormGroup({
     username: new FormControl(this.username),
@@ -68,10 +74,36 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmitOTP() {
+    if (this.loginChoice === LoginChoice.PasswordLess) {
+      this.sendPasswordLessOTP();
+    } else {
+      this.sendStandardOTP();
+    }
+  }
+
+  sendStandardOTP() {
     this.authService
       .logIn(
         this.verifyUserForm.controls.username.value,
         this.loginUserForm.controls.password.value,
+        this.submitOTPForm.controls.code.value,
+      )
+      .subscribe({
+        next: (response: any) => {
+          this.submitOTPForm.controls.code.setErrors(null);
+          window.location.href = response.path;
+        },
+        error: err => {
+          this.serverError = err.error.message;
+          this.submitOTPForm.controls.code.setErrors({ incorrect: true });
+        },
+      });
+  }
+
+  sendPasswordLessOTP() {
+    this.authService
+      .passwordLessLogin(
+        this.verifyUserForm.controls.username.value,
         this.submitOTPForm.controls.code.value,
       )
       .subscribe({
@@ -140,6 +172,7 @@ export class LoginComponent implements OnInit {
           this.hideUsername = true;
           this.hidePassword = false;
           this.enable2fa = response.user.enable2fa;
+          this.enablePasswordLess = response.user.enablePasswordLess;
 
           // TODO: https://github.com/angular/angular/issues/12463
           setTimeout(() => this.passwordRef.nativeElement.focus());
@@ -165,7 +198,13 @@ export class LoginComponent implements OnInit {
   }
 
   resendOTP() {
-    // communicationServer.sendOTP
+    this.disableResendOTP = true;
+    this.authService
+      .sendOTP(this.loginUserForm.controls.username.value)
+      .subscribe({
+        next: success => (this.disableResendOTP = false),
+        error: error => {},
+      });
   }
 
   connectWith(login) {
@@ -188,5 +227,13 @@ export class LoginComponent implements OnInit {
         // TODO: Handle Error UI/UX
       },
     });
+  }
+
+  showPasswordLessLogin() {
+    this.disableLoginChoice = true;
+    this.loginChoice = LoginChoice.PasswordLess;
+    this.hidePassword = true;
+    this.hideCode = false;
+    this.resendOTP();
   }
 }

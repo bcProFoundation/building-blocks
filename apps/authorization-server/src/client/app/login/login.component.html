@@ -63,28 +63,39 @@
               mat-raised-button
               color="primary"
               i18n="@@login">Login</button>
-            <a (click)="resendOTP()" class="left-margin-30" i18n="@@resendOTP">Resend OTP?</a>
+            <button (click)="resendOTP()"
+              [disabled]="disableResendOTP"
+              mat-button
+              #reSendOTP
+              class="left-margin-30"
+              i18n="@@resendOTP">Resend OTP?</button>
           </div>
         </form>
       </div>
     </mat-card-content>
   </mat-card>
-  <div class="spacer"></div>
-  <mat-card
-    *ngIf="showSocialLogins"
-    class="social-login-card mat-elevation-z2"
-    fxLayout="column">
-    <mat-card-header>
-      <mat-card-title i18n="@@socialLogin">Social Login</mat-card-title>
-    </mat-card-header>
-    <mat-card-content
-      fxLayout="column"
-      fxLayoutAlign="start default"
-      fxLayoutGap="5px">
-      <button
-        *ngFor="let login of socialLogins"
-        (click)="connectWith(login)"
-        mat-stroked-button>{{ login.name }}</button>
-    </mat-card-content>
-  </mat-card>
+  <div class="spacer" [hidden]="!enablePasswordLess">
+    <mat-button-toggle-group>
+      <mat-button-toggle  [disabled]="disableLoginChoice" (click)="showPasswordLessLogin()">Password-less Login</mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+  <div class="spacer" [hidden]="enablePasswordLess">
+    <mat-card
+      *ngIf="showSocialLogins"
+      class="social-login-card mat-elevation-z2"
+      fxLayout="column">
+      <mat-card-header>
+        <mat-card-title i18n="@@socialLogin">Social Login</mat-card-title>
+      </mat-card-header>
+      <mat-card-content
+        fxLayout="column"
+        fxLayoutAlign="start default"
+        fxLayoutGap="5px">
+        <button
+          *ngFor="let login of socialLogins"
+          (click)="connectWith(login)"
+          mat-stroked-button>{{ login.name }}</button>
+      </mat-card-content>
+    </mat-card>
+  </div>
 </div>

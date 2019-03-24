@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, delay } from 'rxjs/operators';
 
 interface InfoResponse {
   session?: false;
@@ -44,6 +44,14 @@ export class AuthService {
     return this.http.post(environment.routes.LOGIN, {
       username,
       password,
+      code,
+      redirect: this.redirectTo,
+    });
+  }
+
+  passwordLessLogin(username: string, code: string) {
+    return this.http.post(environment.routes.LOGIN_PASSWORDLESS, {
+      username,
       code,
       redirect: this.redirectTo,
     });
@@ -96,5 +104,11 @@ export class AuthService {
 
   forgotPassword(emailOrPhone: string) {
     return this.http.post(environment.routes.FORGOT_PASSWORD, { emailOrPhone });
+  }
+
+  sendOTP(emailOrPhone: string) {
+    return this.http
+      .post(environment.routes.SEND_LOGIN_OTP, { emailOrPhone })
+      .pipe(delay(10000));
   }
 }

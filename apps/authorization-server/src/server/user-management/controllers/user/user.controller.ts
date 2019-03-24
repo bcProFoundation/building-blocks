@@ -188,8 +188,8 @@ export class UserController {
   }
 
   @Post('v1/send_login_otp')
-  async sendOTP(@Body('username') username) {
-    const user = await this.userService.findUserByEmailOrPhone(username);
+  async sendOTP(@Body('emailOrPhone') emailOrPhone) {
+    const user = await this.userService.findUserByEmailOrPhone(emailOrPhone);
     await this.commandBus.execute(new SendLoginOTPCommand(user));
   }
 
