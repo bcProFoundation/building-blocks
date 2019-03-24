@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TokenSchedulerService } from './token-schedule.service';
-import { ConfigService } from '../../config/config.service';
-import { BearerTokenService } from '../../auth/entities/bearer-token/bearer-token.service';
-import { ClientService } from '../../client-management/entities/client/client.service';
+import { ConfigService } from '../../../config/config.service';
+import { BearerTokenService } from '../../entities/bearer-token/bearer-token.service';
+import { ClientService } from '../../../client-management/entities/client/client.service';
 import { HttpService } from '@nestjs/common';
 
 describe('TokenSchedulerService', () => {

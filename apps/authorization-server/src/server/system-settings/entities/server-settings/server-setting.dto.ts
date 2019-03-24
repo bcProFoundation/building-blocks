@@ -1,4 +1,10 @@
-import { IsUrl, IsOptional, IsUUID, IsBoolean } from 'class-validator';
+import {
+  IsUrl,
+  IsOptional,
+  IsUUID,
+  IsBoolean,
+  IsNumber,
+} from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 
 export class ServerSettingDto {
@@ -45,4 +51,8 @@ export class ServerSettingDto {
   @IsOptional()
   @IsBoolean()
   disableSignup?: boolean;
+
+  @IsOptional()
+  @IsNumber()
+  otpExpiry?: number;
 }

@@ -18,6 +18,7 @@ export class CookieSerializer {
       phone: user.phone,
       disabled: user.disabled,
       enable2fa: user.enable2fa,
+      enablePasswordLess: user.enablePasswordLess,
       roles: user.roles,
     });
   }

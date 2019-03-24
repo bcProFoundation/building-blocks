@@ -70,3 +70,13 @@ export const invalidCodeChallengeException = new HttpException(
   i18n.__('Invalid Code Challenge'),
   HttpStatus.BAD_REQUEST,
 );
+
+export const passwordLessLoginNotEnabledException = new HttpException(
+  i18n.__('Password less login is not enabled'),
+  HttpStatus.BAD_REQUEST,
+);
+
+export const passwordLessLoginAlreadyEnabledException = new HttpException(
+  i18n.__('Password less login is already enabled'),
+  HttpStatus.BAD_REQUEST,
+);

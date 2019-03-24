@@ -10,7 +10,6 @@ import {
   Param,
   UsePipes,
   ValidationPipe,
-  ForbiddenException,
   Put,
   Delete,
 } from '@nestjs/common';
@@ -22,7 +21,6 @@ import { Roles } from '../../../common/decorators/roles.decorator';
 import { ADMINISTRATOR } from '../../../constants/app-strings';
 import { RoleGuard } from '../../../auth/guards/role.guard';
 import { CRUDOperationService } from '../../../common/services/crudoperation/crudoperation.service';
-import { UserAggregateService } from '../../aggregates/user-aggregate/user-aggregate.service';
 import { RemoveUserAccountCommand } from '../../commands/remove-user-account/remove-user-account.command';
 import { GenerateForgottenPasswordCommand } from '../../commands/generate-forgotten-password/generate-forgotten-password.command';
 import {
@@ -34,13 +32,20 @@ import { ChangePasswordCommand } from '../../commands/change-password/change-pas
 import { VerifyEmailAndSetPasswordCommand } from '../../commands/verify-email-and-set-passsword/verify-email-and-set-password.command';
 import { AddUserAccountCommand } from '../../commands/add-user-account/add-user-account.command';
 import { ModifyUserAccountCommand } from '../../commands/modify-user-account/modify-user-account.command';
+import { SendLoginOTPCommand } from '../../../auth/commands/send-login-otp/send-login-otp.command';
+import {
+  TogglePasswordLessLoginCommand,
+  TogglePasswordLessLogin,
+} from '../../commands/toggle-password-less-login/toggle-password-less-login.command';
+import { Initialize2FACommand } from '../../commands/initialize-2fa/initialize-2fa.command';
+import { Verify2FACommand } from '../../commands/verify-2fa/verify-2fa.command';
+import { Disable2FACommand } from '../../commands/disable-2fa/disable-2fa.command';
 
 @Controller('user')
 export class UserController {
   constructor(
     private readonly userService: UserService,
     private readonly crudService: CRUDOperationService,
-    private readonly userAggregate: UserAggregateService,
     private readonly commandBus: CommandBus,
   ) {}
 
@@ -66,29 +71,33 @@ export class UserController {
   @Post('v1/initialize_2fa')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
   async initialize2fa(@Req() req, @Query('restart') restart) {
-    return await this.userAggregate.initializeMfa(
-      req.user.user,
-      restart || false,
+    return await this.commandBus.execute(
+      new Initialize2FACommand(req.user.user, restart || false),
     );
   }
 
   @Post('v1/verify_2fa')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
   async verify2fa(@Req() req, @Body('otp') otp: string) {
-    return await this.userAggregate.verify2fa(req.user.user, otp);
+    return await this.commandBus.execute(
+      new Verify2FACommand(req.user.user, otp),
+    );
   }
 
   @Post('v1/disable_2fa')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
   async disable2fa(@Req() req) {
-    return await this.userAggregate.disable2fa(req.user.user);
+    return await this.commandBus.execute(new Disable2FACommand(req.user.user));
   }
 
   @Get('v1/get_user')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
-  async getUser(@Req() req, @Res() res) {
-    const user = await this.userService.findOne({ uuid: req.user.user });
-    res.json(user);
+  async getUser(@Req() req) {
+    const actorUserUuid = req.user.user;
+    return await this.userService.getAuthorizedUser(
+      actorUserUuid,
+      actorUserUuid,
+    );
   }
 
   @Post('v1/create')
@@ -156,17 +165,11 @@ export class UserController {
     );
   }
 
-  @Get('v1/:uuid')
+  @Get('v1/get/:uuid')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
   async findOne(@Param('uuid') uuid: number, @Req() req) {
-    let user;
-    if (await this.userService.checkAdministrator(req.user.user)) {
-      user = await this.userService.findOne({ uuid });
-    } else {
-      user = await this.userService.findOne({ uuid, createdBy: req.user.user });
-    }
-    if (!user) throw new ForbiddenException();
-    return user;
+    const actorUserUuid = req.user.user;
+    return await this.userService.getAuthorizedUser(uuid, actorUserUuid);
   }
 
   @Post('v1/forgot_password')
@@ -181,6 +184,36 @@ export class UserController {
   async verifyEmail(@Body() payload: VerifyEmailDto) {
     return await this.commandBus.execute(
       new VerifyEmailAndSetPasswordCommand(payload),
+    );
+  }
+
+  @Post('v1/send_login_otp')
+  async sendOTP(@Body('emailOrPhone') emailOrPhone) {
+    const user = await this.userService.findUserByEmailOrPhone(emailOrPhone);
+    await this.commandBus.execute(new SendLoginOTPCommand(user));
+  }
+
+  @Post('v1/enable_password_less_login')
+  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  async enablePasswordLess(@Req() req) {
+    const actorUserUuid = req.user.user;
+    await this.commandBus.execute(
+      new TogglePasswordLessLoginCommand(
+        actorUserUuid,
+        TogglePasswordLessLogin.Enable,
+      ),
+    );
+  }
+
+  @Post('v1/disable_password_less_login')
+  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  async disablePasswordLess(@Req() req) {
+    const actorUserUuid = req.user.user;
+    await this.commandBus.execute(
+      new TogglePasswordLessLoginCommand(
+        actorUserUuid,
+        TogglePasswordLessLogin.Disable,
+      ),
     );
   }
 }

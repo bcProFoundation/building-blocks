@@ -8,7 +8,7 @@ import { CryptographerService } from '../../../common/cryptographer.service';
 import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
 import { RoleService } from '../../../user-management/entities/role/role.service';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
-import { KeyPairGeneratorService } from '../../../auth/scheduler/keypair-generator.service';
+import { KeyPairGeneratorService } from '../../../auth/schedulers';
 
 describe('SetupService', () => {
   let service: SetupService;

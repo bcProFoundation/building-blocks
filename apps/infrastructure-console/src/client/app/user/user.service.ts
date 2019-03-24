@@ -29,7 +29,9 @@ export class UserService {
   }
 
   getUser(userID: string): Observable<any> {
-    const url = `${this.storageService.getInfo(ISSUER_URL)}/user/v1/${userID}`;
+    const url = `${this.storageService.getInfo(
+      ISSUER_URL,
+    )}/user/v1/get/${userID}`;
     return this.http
       .get<string>(url)
       .pipe(
