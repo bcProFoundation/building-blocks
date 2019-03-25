@@ -8,14 +8,17 @@ import {
   ValidationPipe,
   UsePipes,
   Get,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { callback } from '../../passport/strategies/local.strategy';
 import { AuthGuard } from '../../../auth/guards/auth.guard';
 import { ApiOperation } from '@nestjs/swagger';
 import { i18n } from '../../../i18n/i18n.config';
-import { LoginUserDto, CreateUserDto } from '../../../user-management/policies';
+import {
+  LoginUserDto,
+  UserAccountDto,
+} from '../../../user-management/policies';
+import { PasswordLessDto } from '../../policies/password-less/password-less.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -44,7 +47,7 @@ export class AuthController {
     title: i18n.__('Signup'),
     description: i18n.__('Sign up a new user'),
   })
-  async signup(@Body() body: CreateUserDto, @Res() res) {
+  async signup(@Body() body: UserAccountDto, @Res() res) {
     await this.authService.signUp(body);
     res.json({
       user: body.email,
@@ -72,26 +75,27 @@ export class AuthController {
     description: i18n.__('Check whether the user exists and retrieve a record'),
   })
   async verifyUser(
-    @Res() res,
     @Body('username') username: string,
     @Body('password') password?: string,
   ) {
-    username = username.trim().toLocaleLowerCase();
-    let user = await this.authService.findUserByEmailOrPhone(username);
-
-    if (password) {
-      user = await this.authService.logIn(username, password);
-      if (!user) throw new UnauthorizedException(i18n.__('Invalid password'));
-    }
-
-    delete user._id, user.password;
-    res.json({ user });
+    return await this.authService.verifyUser(username, password);
   }
 
   @Post('verify_password')
   async verifyPassword(@Body('username') username, @Body('password') password) {
     return {
       verified: await this.authService.verifyPassword(username, password),
+    };
+  }
+
+  @Post('password_less')
+  @UsePipes(ValidationPipe)
+  async passwordLess(@Body() payload: PasswordLessDto, @Req() req) {
+    const user = await this.authService.passwordLessLogin(payload);
+    req.logIn(user, () => {});
+    return {
+      user: user.email,
+      path: payload.redirect,
     };
   }
 }

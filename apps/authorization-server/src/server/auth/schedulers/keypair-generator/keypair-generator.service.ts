@@ -1,8 +1,8 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import * as Bull from 'bull';
-import { BullOptions } from '../../constants/bull-queue.options';
-import { ConfigService } from '../../config/config.service';
-import { OIDCKeyService } from '../../auth/entities/oidc-key/oidc-key.service';
+import { BullOptions } from '../../../constants/bull-queue.options';
+import { ConfigService } from '../../../config/config.service';
+import { OIDCKeyService } from '../../entities/oidc-key/oidc-key.service';
 
 export const KEYGEN_QUEUE = 'keygen_queue';
 export const NUMBER_OF_KEYPAIRS = 2;

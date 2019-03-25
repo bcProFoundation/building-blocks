@@ -3,6 +3,7 @@ import { ServerSettingsController } from './server-settings.controller';
 import { SystemSettingsManagementService } from '../../../system-settings/aggregates';
 import { RoleGuard } from '../../../auth/guards/role.guard';
 import { UserService } from '../../../user-management/entities/user/user.service';
+import { CommandBus } from '@nestjs/cqrs';
 
 describe('ServerSettingsController', () => {
   let module: TestingModule;
@@ -17,6 +18,10 @@ describe('ServerSettingsController', () => {
         {
           provide: UserService,
           useValue: {},
+        },
+        {
+          provide: CommandBus,
+          useFactory: () => jest.fn(),
         },
       ],
     })

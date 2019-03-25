@@ -2,7 +2,7 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { ScopeService } from '../../../client-management/entities/scope/scope.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
 import { AuthService } from '../../../auth/controllers/auth/auth.service';
-import { CreateUserDto } from '../../../user-management/policies';
+import { UserAccountDto } from '../../../user-management/policies';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { RoleService } from '../../../user-management/entities/role/role.service';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
@@ -15,7 +15,7 @@ import {
   SCOPE_ROLES,
   SCOPE_EMAIL,
 } from '../../../constants/app-strings';
-import { KeyPairGeneratorService } from '../../../auth/scheduler/keypair-generator.service';
+import { KeyPairGeneratorService } from '../../../auth/schedulers';
 
 @Injectable()
 export class SetupService {
@@ -117,7 +117,7 @@ export class SetupService {
     let adminRole = await this.roleService.findOne({ name: ADMINISTRATOR });
     if (!adminRole)
       adminRole = await this.roleService.save({ name: ADMINISTRATOR });
-    const user: CreateUserDto = {
+    const user: UserAccountDto = {
       name: fullName,
       email,
       password: adminPassword,

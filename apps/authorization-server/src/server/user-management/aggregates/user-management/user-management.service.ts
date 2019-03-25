@@ -5,6 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { AggregateRoot } from '@nestjs/cqrs';
+import * as uuidv4 from 'uuid/v4';
 import { UserService } from '../../entities/user/user.service';
 import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
@@ -19,6 +20,14 @@ import { UserRoleRemovedEvent } from '../../../user-management/events/user-role-
 import { ADMINISTRATOR } from '../../../constants/app-strings';
 import { randomBytes } from 'crypto';
 import { ForgottenPasswordGeneratedEvent } from '../../../user-management/events/forgotten-password-generated/forgotten-password-generated.event';
+import { UserAccountDto } from '../../policies';
+import { i18n } from '../../../i18n/i18n.config';
+import { CryptographerService } from '../../../common/cryptographer.service';
+import { PasswordChangedEvent } from '../../events/password-changed/password-changed.event';
+import { UserAccountModifiedEvent } from '../../events/user-account-modified/user-account-modified.event';
+import { UserAccountAddedEvent } from '../../events/user-account-added/user-account-added.event';
+import { PasswordPolicyService } from '../../policies/password-policy/password-policy.service';
+import { RoleValidationPolicyService } from '../../policies/role-validation-policy/role-validation-policy.service';
 
 @Injectable()
 export class UserManagementService extends AggregateRoot {
@@ -28,6 +37,9 @@ export class UserManagementService extends AggregateRoot {
     private readonly clientService: ClientService,
     private readonly bearerTokenService: BearerTokenService,
     private readonly roleService: RoleService,
+    private readonly crypto: CryptographerService,
+    private readonly passwordPolicy: PasswordPolicyService,
+    private readonly roleValidationPolicy: RoleValidationPolicyService,
   ) {
     super();
   }
@@ -51,24 +63,29 @@ export class UserManagementService extends AggregateRoot {
     const password = await this.authDataService.findOne({
       uuid: user.password,
     });
-    if (password) await password.remove();
     const sharedSecret = await this.authDataService.findOne({
       uuid: user.sharedSecret,
     });
-    if (sharedSecret) await sharedSecret.remove();
     const otpCounter = await this.authDataService.findOne({
       uuid: user.otpCounter,
     });
-    if (otpCounter) await otpCounter.remove();
     const twoFactorTempSecret = await this.authDataService.findOne({
       uuid: user.twoFactorTempSecret,
     });
-    if (twoFactorTempSecret) await twoFactorTempSecret.remove();
+
     await this.clientService.deleteClientsByUser(user.uuid);
     await this.bearerTokenService.deleteMany({ user: user.uuid });
     user.deleted = true;
-    await user.remove();
-    this.apply(new UserAccountRemovedEvent(user, actorUuid));
+    this.apply(
+      new UserAccountRemovedEvent(
+        actorUuid,
+        user,
+        password,
+        sharedSecret,
+        otpCounter,
+        twoFactorTempSecret,
+      ),
+    );
   }
 
   async backupUser(uuid) {
@@ -77,6 +94,7 @@ export class UserManagementService extends AggregateRoot {
 
   async deleteRole(roleName: string, actorUuid: string) {
     const role = await this.roleService.findOne({ name: roleName });
+    if (!role) throw new NotFoundException({ invalidRole: roleName });
     const UserModel = this.userService.getModel();
     const usersWithRole = await UserModel.find({ roles: role.name }).exec();
 
@@ -95,7 +113,6 @@ export class UserManagementService extends AggregateRoot {
         })),
       });
     } else {
-      await role.remove();
       this.apply(new UserRoleRemovedEvent(role, actorUuid));
     }
   }
@@ -105,15 +122,94 @@ export class UserManagementService extends AggregateRoot {
     if (!user) throw new NotFoundException({ user });
     user.verificationCode = randomBytes(32).toString('hex');
     user.modified = new Date();
-    await user.save();
     this.apply(new ForgottenPasswordGeneratedEvent(user));
   }
 
-  async backupAllUserData() {
-    return {
-      roles: await this.roleService.find(),
-      users: await this.userService.find(),
-      authData: await this.authDataService.find(),
-    };
+  async addUserAccount(userData: UserAccountDto, createdBy?: string) {
+    const result = this.passwordPolicy.validatePassword(userData.password);
+    if (result.errors.length > 0) {
+      throw new BadRequestException({
+        errors: result.errors,
+        message: i18n.__('Password not secure'),
+      });
+    }
+    const user = new (this.userService.getModel())();
+    user.email = userData.email;
+    user.name = userData.name;
+    user.phone = userData.phone;
+
+    await this.validateRoles(userData.roles);
+
+    user.roles = userData.roles;
+
+    // create Password
+    const authData = new (this.authDataService.getModel())();
+    authData.password = this.crypto.hashPassword(userData.password);
+
+    // link password with user
+    user.password = authData.uuid;
+    user.createdBy = createdBy;
+    user.creation = new Date();
+
+    // delete mongodb _id
+    user._id = undefined;
+    this.apply(new UserAccountAddedEvent(user, authData));
+    return user;
+  }
+
+  async updateUserAccount(
+    uuid: string,
+    payload: UserAccountDto,
+    modifiedBy?: string,
+  ) {
+    const user = await this.userService.findOne({ uuid });
+
+    await this.validateRoles(payload.roles);
+
+    user.roles = payload.roles;
+    user.name = payload.name;
+
+    // Set modification details
+    user.modifiedBy = modifiedBy;
+    user.modified = new Date();
+
+    // Set password if exists
+    if (payload.password) {
+      const result = this.passwordPolicy.validatePassword(payload.password);
+      if (result.errors.length > 0) {
+        throw new BadRequestException({
+          errors: result.errors,
+          message: i18n.__('Password not secure'),
+        });
+      }
+
+      let authData = await this.authDataService.findOne({
+        uuid: user.password,
+      });
+
+      if (!authData) {
+        authData = new (this.authDataService.getModel())();
+        authData.uuid = uuidv4();
+      }
+
+      authData.password = this.crypto.hashPassword(payload.password);
+      user.password = authData.uuid;
+      this.apply(new PasswordChangedEvent(authData));
+    }
+
+    this.apply(new UserAccountModifiedEvent(user));
+    return user;
+  }
+
+  async validateRoles(roles: string[]) {
+    // Validate Roles
+    const result = await this.roleValidationPolicy.validateRoles(roles);
+    if (!result) {
+      const validRoles = await this.roleValidationPolicy.getValidRoles(roles);
+      throw new BadRequestException({
+        message: i18n.__('Invalid Roles'),
+        validRoles,
+      });
+    }
   }
 }

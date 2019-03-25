@@ -39,7 +39,7 @@ export class UserComponent implements OnInit {
     private readonly userService: UserService,
     private readonly roleService: RoleService,
     private route: ActivatedRoute,
-    private snackbar: MatSnackBar,
+    private snackBar: MatSnackBar,
   ) {
     this.uuid =
       this.route.snapshot.params.id === NEW_ID
@@ -90,10 +90,10 @@ export class UserComponent implements OnInit {
           this.fullName = response.name;
           this.userPassword = response.userPassword;
           this.uuid = response.uuid;
-          this.snackbar.open(CLIENT_CREATED, 'Close', { duration: 2500 });
+          this.snackBar.open(CLIENT_CREATED, 'Close', { duration: 2500 });
         },
         error: error => {
-          this.snackbar.open(CLIENT_ERROR, 'Close', { duration: 2500 });
+          this.snackBar.open(CLIENT_ERROR, 'Close', { duration: 2500 });
         },
       });
   }
@@ -109,6 +109,9 @@ export class UserComponent implements OnInit {
       .subscribe({
         next: (response: { name: string }) => {
           this.fullName = response.name;
+        },
+        error: error => {
+          this.snackBar.open(error.error.message, 'Close', { duration: 2500 });
         },
       });
   }

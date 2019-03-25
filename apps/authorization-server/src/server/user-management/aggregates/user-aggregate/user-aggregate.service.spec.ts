@@ -1,10 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserAggregateService } from './user-aggregate.service';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
-import { UserService } from '../../../user-management/entities/user/user.service';
-import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
+import { UserService } from '../../entities/user/user.service';
+import { AuthDataService } from '../../entities/auth-data/auth-data.service';
 import { CryptographerService } from '../../../common/cryptographer.service';
-import { PasswordPolicyService } from '../../../user-management/policies/password-policy/password-policy.service';
+import { PasswordPolicyService } from '../../policies/password-policy/password-policy.service';
+import { RoleValidationPolicyService } from '../../policies/role-validation-policy/role-validation-policy.service';
 
 describe('UserAggregateService', () => {
   let service: UserAggregateService;
@@ -31,6 +32,10 @@ describe('UserAggregateService', () => {
         },
         {
           provide: PasswordPolicyService,
+          useValue: {},
+        },
+        {
+          provide: RoleValidationPolicyService,
           useValue: {},
         },
       ],

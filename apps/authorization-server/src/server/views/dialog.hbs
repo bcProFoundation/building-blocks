@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Account</title>
+    <title>Grant Access</title>
   </head>
   <body>
     <div class="container flex-grid flex-grid-center">
@@ -12,11 +12,11 @@
         <p><b>{{ client.name }}</b> is requesting access to your account.</p>
         <p>Do you approve?</p>
         <br/>
-        <form action="{{ action }}" method="post" onsubmit="disableButton(this)" >
+        <form action="{{ action }}" method="post">
           <input name="transaction_id" type="hidden" value="{{ transactionId }}" />
           <div class="flex-grid flex-grid-buttons">
-              <input type="submit" value="Allow" id="allow" class="craft-mat-btn allow" name="allow"/>
-              <input type="submit" value="Deny" id="deny" class="craft-mat-btn deny" name="cancel"/>
+            <input type="submit" value="Allow" id="allow" class="craft-mat-btn allow" name="allow" onclick="hideButtons()"/>
+            <input type="submit" value="Deny" id="deny" class="craft-mat-btn deny" name="cancel" onclick="hideButtons()"/>
           </div>
         </form>
       </div>
@@ -89,9 +89,9 @@
       }
     </style>
     <script>
-      function disableButton(formObj){
-        formObj.allow.disabled = true;
-        formObj.cancel.disabled = true;
+      function hideButtons() {
+        document.getElementById("allow").style.visibility = "hidden";
+        document.getElementById("deny").style.visibility = "hidden";
       }
     </script>
   </body>

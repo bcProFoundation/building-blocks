@@ -1,9 +1,11 @@
-import { Injectable, HttpService } from '@nestjs/common';
-import { UserService } from '../../entities/user/user.service';
+import { Injectable, HttpService, BadRequestException } from '@nestjs/common';
 import { randomBytes } from 'crypto';
+import { handlebars } from 'hbs';
+import { UserService } from '../../entities/user/user.service';
 import { User } from '../../entities/user/user.interface';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
+import { i18n } from '../../../i18n/i18n.config';
 
 @Injectable()
 export class SignupService {
@@ -28,21 +30,24 @@ export class SignupService {
   async emailRequest(unverifiedUser: User, res) {
     // Send Email
     const settings = await this.serverSettingsService.find();
+
     const communicationClient = await this.clientService.findOne({
       clientId: settings.communicationServerClientId,
     });
-    const baseEncodedCred = Buffer.from(
-      communicationClient.clientId + ':' + communicationClient.clientSecret,
-    ).toString('base64');
 
     const requestUrl =
       new URL(communicationClient.redirectUris[0]).origin + '/email/v1/system';
 
     const verificationUrl =
       settings.issuerUrl + '/signup/' + unverifiedUser.verificationCode;
+
     const txtMessage =
       'Visit the following link to complete signup\n' + verificationUrl;
-    const htmlMessage = `To complete signup <a href='${verificationUrl}'>click here</a>`;
+    const htmlMessage = this.getSignupHTML(
+      `To complete signup <a href='{{ verificationUrl }}'>click here</a>`,
+      verificationUrl,
+    );
+
     this.http
       .post(
         requestUrl,
@@ -54,8 +59,9 @@ export class SignupService {
           html: htmlMessage,
         },
         {
-          headers: {
-            authorization: 'Basic ' + baseEncodedCred,
+          auth: {
+            username: communicationClient.clientId,
+            password: communicationClient.clientSecret,
           },
         },
       )
@@ -67,5 +73,19 @@ export class SignupService {
           await unverifiedUser.remove();
         },
       });
+  }
+
+  async validateSignupEnabled() {
+    const settings = await this.serverSettingsService.find();
+    if (settings.disableSignup) {
+      throw new BadRequestException({
+        message: i18n.__('Signup Disabled'),
+      });
+    }
+  }
+
+  getSignupHTML(template: string, verificationUrl: string) {
+    const renderer = handlebars.compile(template);
+    return renderer({ verificationUrl });
   }
 }

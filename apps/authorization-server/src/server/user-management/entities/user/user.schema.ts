@@ -21,6 +21,7 @@ export const schema = new mongoose.Schema(
     twoFactorTempSecret: String, // uuid of auth data
     verificationCode: String, // code to complete signup via email
     deleted: { type: Boolean, default: false },
+    enablePasswordLess: { type: Boolean, default: false },
   },
   { collection: 'user', versionKey: false },
 );

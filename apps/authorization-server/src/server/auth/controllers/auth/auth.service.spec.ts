@@ -6,6 +6,7 @@ import { AuthDataService } from '../../../user-management/entities/auth-data/aut
 import { AuthGuard } from '../../../auth/guards/auth.guard';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { PasswordPolicyService } from '../../../user-management/policies/password-policy/password-policy.service';
+import { CommandBus } from '@nestjs/cqrs';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -32,6 +33,10 @@ describe('AuthService', () => {
         {
           provide: PasswordPolicyService,
           useValue: {},
+        },
+        {
+          provide: CommandBus,
+          useFactory: () => jest.fn(),
         },
       ],
     })

@@ -16,6 +16,7 @@ import { UserService } from '../../../user-management/entities/user/user.service
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { SocialLoginService } from '../../entities/social-login/social-login.service';
 import { SocialLoginRemovedEvent } from '../../../auth/events/social-login-removed/social-login-removed.event';
+import { i18n } from '../../../i18n/i18n.config';
 
 @Injectable()
 export class SocialLoginManagementService extends AggregateRoot {
@@ -52,6 +53,13 @@ export class SocialLoginManagementService extends AggregateRoot {
 
         return from(this.settingsService.find()).pipe(
           switchMap(settings => {
+            if (settings.disableSignup) {
+              return done(
+                new UnauthorizedException({
+                  message: i18n.__('Signup Disabled'),
+                }),
+              );
+            }
             const redirectURI =
               settings.issuerUrl + '/social_login/callback/' + data.uuid;
             confirmationURL +=
@@ -150,7 +158,6 @@ export class SocialLoginManagementService extends AggregateRoot {
   async removeSocialLogin(uuid: string, userUuid: string) {
     const socialLogin = await this.socialLoginService.findOne({ uuid });
     if (socialLogin) {
-      await socialLogin.remove();
       this.apply(new SocialLoginRemovedEvent(userUuid, socialLogin));
     } else {
       throw new NotFoundException();

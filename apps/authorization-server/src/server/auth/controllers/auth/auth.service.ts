@@ -3,22 +3,30 @@ import {
   UnauthorizedException,
   BadRequestException,
 } from '@nestjs/common';
+import { CommandBus } from '@nestjs/cqrs';
 import * as speakeasy from 'speakeasy';
 import {
   userAlreadyExistsException,
   invalidOTPException,
   invalidUserException,
+  passwordLessLoginNotEnabledException,
 } from '../../../common/filters/exceptions';
 import { i18n } from '../../../i18n/i18n.config';
 import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { CryptographerService } from '../../../common/cryptographer.service';
-import { CreateUserDto } from '../../../user-management/policies';
+import { UserAccountDto } from '../../../user-management/policies';
 import { Role } from '../../../user-management/entities/role/role.interface';
 import { User } from '../../../user-management/entities/user/user.interface';
-import { AuthData } from '../../../user-management/entities/auth-data/auth-data.interface';
+import {
+  AuthData,
+  AuthDataType,
+} from '../../../user-management/entities/auth-data/auth-data.interface';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { PasswordPolicyService } from '../../../user-management/policies/password-policy/password-policy.service';
+import { SendLoginOTPCommand } from '../../commands/send-login-otp/send-login-otp.command';
+import { USER } from '../../../user-management/entities/user/user.schema';
+import { PasswordLessDto } from '../../policies/password-less/password-less.dto';
 
 @Injectable()
 export class AuthService {
@@ -28,6 +36,7 @@ export class AuthService {
     private readonly cryptoService: CryptographerService,
     private readonly settings: ServerSettingsService,
     private readonly passwordPolicy: PasswordPolicyService,
+    private readonly commandBus: CommandBus,
   ) {}
 
   /**
@@ -35,12 +44,15 @@ export class AuthService {
    * @param user
    * @param roles
    */
-  public async signUp(user: CreateUserDto, roles?: Role[]) {
+  public async signUp(user: UserAccountDto, roles?: Role[]) {
     const settings = await this.settings
       .getModel()
       .find()
       .exec();
-    if (settings.length === 1 && settings[0].communicationServerClientId) {
+    if (
+      (settings.length === 1 && settings[0].communicationServerClientId) ||
+      process.env.NODE_ENV === 'production'
+    ) {
       throw new BadRequestException({
         communicationEnabled: true,
         message: 'SIGNUP_VIA_EMAIL_OR_PHONE',
@@ -50,7 +62,7 @@ export class AuthService {
     if (result.errors.length > 0) {
       throw new BadRequestException({
         errors: result.errors,
-        message: 'SIGNUP_VIA_EMAIL_OR_PHONE',
+        message: i18n.__('Password not secure'),
       });
     }
     const UserModel = this.userService.getModel();
@@ -119,26 +131,12 @@ export class AuthService {
     if (user.enable2fa) {
       if (!code) throw invalidOTPException;
 
-      const totp = speakeasy.totp({
-        secret: sharedSecret.password,
-        encoding: 'base32',
-        window: 6,
-      });
+      const verified = this.isUserTOTPValid(sharedSecret, code);
 
-      if (totp === code) {
+      if (verified) {
         return user;
-      } else if (totp !== code) {
-        const otpCounter = await this.authDataService.findOne({
-          uuid: user.otpCounter,
-        });
-
-        if (!otpCounter) throw invalidOTPException;
-
-        const hotp = speakeasy.hotp({
-          secret: sharedSecret.password,
-          encoding: 'base32',
-          counter: otpCounter.password,
-        });
+      } else {
+        const hotp = await this.getUserHOTP(user, sharedSecret);
         if (hotp === code) return user;
         else if (hotp !== code) throw invalidOTPException;
       }
@@ -174,12 +172,8 @@ export class AuthService {
     return await this.userService.findOne({ email });
   }
 
-  async findUserByEmailOrPhone(emailOrPhone: string) {
-    return await this.userService.findUserByEmailOrPhone(emailOrPhone);
-  }
-
   async verifyPassword(emailOrPhone: string, password: string) {
-    const user = await this.findUserByEmailOrPhone(emailOrPhone);
+    const user = await this.userService.findUserByEmailOrPhone(emailOrPhone);
     const passwordData = await this.authDataService.findOne({
       uuid: user.password,
     });
@@ -190,6 +184,87 @@ export class AuthService {
     );
     if (!checkPassword)
       throw new UnauthorizedException(i18n.__('Invalid password'));
+
+    if (user.enable2fa) {
+      await this.commandBus.execute(new SendLoginOTPCommand(user));
+    }
+
     return checkPassword;
+  }
+
+  async verifyUser(username: string, password?: string) {
+    username = username.trim().toLocaleLowerCase();
+    let user: User = await this.userService.findUserByEmailOrPhone(username);
+
+    if (password) {
+      user = await this.logIn(username, password);
+      if (!user) throw new UnauthorizedException(i18n.__('Invalid password'));
+    }
+
+    user = this.userService.getUserWithoutSecrets(user);
+    user = this.userService.getUserWithoutIdentity(user);
+    user = this.userService.getUserWithoutMetaData(user);
+
+    return { user };
+  }
+
+  async getUserHOTP(user: User, sharedSecret: AuthData) {
+    const otpCounter = await this.authDataService.findOne({
+      entity: USER,
+      entityUuid: user.uuid,
+      authDataType: AuthDataType.LoginOTP,
+    });
+
+    if (!otpCounter) throw invalidOTPException;
+
+    return speakeasy.hotp({
+      secret: sharedSecret.password,
+      encoding: 'base32',
+      counter: otpCounter.password,
+    });
+  }
+
+  isUserTOTPValid(sharedSecret: AuthData, code: string) {
+    return speakeasy.totp.verify({
+      secret: sharedSecret.password,
+      encoding: 'base32',
+      token: code,
+      window: 2,
+    });
+  }
+
+  async passwordLessLogin(payload: PasswordLessDto) {
+    const user = await this.userService.findUserByEmailOrPhone(
+      payload.username,
+    );
+
+    if (!user) throw invalidUserException;
+    if (!user.enablePasswordLess) throw passwordLessLoginNotEnabledException;
+
+    const sharedSecret = await this.authDataService.findOne({
+      uuid: user.sharedSecret,
+    });
+    const verified = this.isUserTOTPValid(sharedSecret, payload.code);
+    if (verified) {
+      return user;
+    } else {
+      const htop = await this.getUserHOTP(user, sharedSecret);
+      if (htop === payload.code) {
+        const code = await this.authDataService.findOne({
+          entity: USER,
+          entityUuid: user.uuid,
+          authDataType: AuthDataType.LoginOTP,
+        });
+        if (!code) throw invalidOTPException;
+        if (code.expiry <= new Date()) {
+          await code.remove();
+          throw invalidOTPException;
+        } else {
+          await code.remove();
+          return user;
+        }
+      }
+      throw invalidOTPException;
+    }
   }
 }
