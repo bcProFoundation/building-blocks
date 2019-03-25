@@ -84,7 +84,7 @@ export class SignupService {
     }
   }
 
-  async getSignupHTML(template: string, verificationUrl: string) {
+  getSignupHTML(template: string, verificationUrl: string) {
     const renderer = handlebars.compile(template);
     return renderer({ verificationUrl });
   }
