@@ -50,6 +50,7 @@
     "class-validator": "^0.9.1",
     "core-js": "^2.6.5",
     "craft-account-manager": "^1.0.0",
+    "express": "^4.16.4",
     "fastify-formbody": "^3.1.0",
     "hammerjs": "^2.0.8",
     "joi": "^14.3.1",
