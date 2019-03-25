@@ -8,6 +8,6 @@ export class TogglePasswordLessLoginCommand implements ICommand {
 }
 
 export enum TogglePasswordLessLogin {
-  Enable,
-  Disable,
+  Enable = 'Enable',
+  Disable = 'Disable',
 }
