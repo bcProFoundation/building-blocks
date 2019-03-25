@@ -1,4 +1,4 @@
 export enum LoginChoice {
-  Standard,
-  PasswordLess,
+  Standard = 'Standard',
+  PasswordLess = 'PasswordLess',
 }

@@ -8,7 +8,7 @@ export const AuthData = new mongoose.Schema(
     entity: String, // Linked Schema
     entityUuid: String, // Linked instance's uuid
     expiry: Date,
-    authDataType: Number, // enum AuthDataType
+    authDataType: String, // enum AuthDataType
   },
   { collection: 'auth_data', versionKey: false },
 );

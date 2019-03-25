@@ -31,6 +31,7 @@ export class OTPAggregateService {
     const communicationClient = await this.clientService.findOne({
       clientId: this.settings.communicationServerClientId,
     });
+    if (!communicationClient) return Promise.resolve();
 
     const requestUrl =
       new URL(communicationClient.redirectUris[0]).origin + '/email/v1/system';
