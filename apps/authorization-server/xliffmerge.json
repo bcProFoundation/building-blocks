@@ -1,6 +1,0 @@
-{
-  "xliffmergeOptions": {
-    "srcDir": "src/client/i18n",
-    "genDir": "src/client/i18n"
-  }
-}

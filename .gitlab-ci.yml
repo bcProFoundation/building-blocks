@@ -51,10 +51,24 @@ test_authorization_server:
     - export NODE_ENV=test
     # Test backend e2e
     - npm run test:e2e
+  tags:
+    - docker
+
+test_authorization_client:
+  stage: tests
+  before_script:
+    - cd frontends/authorization-client
+    - npm install
+  script:
+    # Check Code Quality
+    - npm run lint
+    - npm run format:check
+    # set env variable for test
+    - export NODE_ENV=test
     # Test frontend
     - export DISPLAY=:99
     - Xvfb :0 -ac -screen 0 1024x768x24 &
-    - npm run test:client
+    - npm run test
     - npm run e2e
   tags:
     - docker
@@ -142,6 +156,20 @@ pack_staging_authorization_server:
     - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:edge
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server
 
+pack_staging_authorization_client:
+  image: docker
+  stage: pack
+  environment: staging
+  only:
+    - staging
+  before_script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+  script:
+    # Authorization Client
+    - docker build -t authorization-client frontends/authorization-client
+    - docker tag authorization-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-client:edge
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-client
+
 pack_staging_communication_server:
   image: docker
   stage: pack
@@ -201,6 +229,24 @@ pack_production_authorization_server:
     - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:$VERSION
     - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server
+
+pack_production_authorization_client:
+  image: docker
+  stage: pack
+  environment: production
+  only:
+    - master
+  before_script:
+    - apk add git
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+  script:
+    # get latest tag for app in master branch
+    # Authorization Client
+    - export VERSION=$(git tag --list "authorization-client@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
+    - docker build -t authorization-client apps/authorization-client
+    - docker tag authorization-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-client:$VERSION
+    - docker tag authorization-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-client:latest
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-client
 
 pack_production_communication_server:
   image: docker
