@@ -1,6 +1,6 @@
 export function getParameterByName(url, name) {
   name = name.replace(/[\[\]]/g, '\\$&');
-  var regex = new RegExp('[?&#]' + name + '(=([^&#]*)|&|#|$)'),
+  const regex = new RegExp('[?&#]' + name + '(=([^&#]*)|&|#|$)'),
     results = regex.exec(url);
   if (!results) return null;
   if (!results[2]) return '';
@@ -8,10 +8,11 @@ export function getParameterByName(url, name) {
 }
 
 export function extractToken(hash) {
-  var match = hash.match(/access_token=(\w+)/);
+  const match = hash.match(/access_token=(\w+)/);
   return !!match && match[1];
 }
 
+/* tslint:disable */
 export const OIDCKey = {
   keyPair: {
     kty: 'RSA',
@@ -33,3 +34,4 @@ export const OIDCKey = {
       'EUrS_kW5fAzZRVYQKoqUaXAa43Oa7lINkRdR7QBfvAMhzBMQVw4L-M-oqwPRyNcXJzOcHFH5XHukTvAwSHWXfa0zng2nQDkszF5nqDQmBPYQ7_YfU1GAw0aElMxlnHak9qKLpg_HrlHMD8SYOPOh-MOT3dkpDv4qRjdIjWes6J4',
   },
 };
+/* tslint:enable */

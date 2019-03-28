@@ -2,20 +2,20 @@ import { Test } from '@nestjs/testing';
 import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { ExpressAdapter } from '@nestjs/platform-express';
-import { AppModule } from '../src/server/app.module';
-import { ExpressServer } from '../src/server/express-server';
+import { AppModule } from '../src/app.module';
+import { ExpressServer } from '../src/express-server';
 import { getParameterByName, OIDCKey } from './e2e-helpers';
-import { SetupService } from '../src/server/system-settings/controllers/setup/setup.service';
-import { ScopeService } from '../src/server/client-management/entities/scope/scope.service';
-import { UserService } from '../src/server/user-management/entities/user/user.service';
-import { ClientService } from '../src/server/client-management/entities/client/client.service';
-import { AuthorizationCodeService } from '../src/server/auth/entities/authorization-code/authorization-code.service';
-import { BearerTokenService } from '../src/server/auth/entities/bearer-token/bearer-token.service';
-import { RoleService } from '../src/server/user-management/entities/role/role.service';
-import { ServerSettingsService } from '../src/server/system-settings/entities/server-settings/server-settings.service';
-import { OIDCKeyService } from '../src/server/auth/entities/oidc-key/oidc-key.service';
+import { SetupService } from '../src/system-settings/controllers/setup/setup.service';
+import { ScopeService } from '../src/client-management/entities/scope/scope.service';
+import { UserService } from '../src/user-management/entities/user/user.service';
+import { ClientService } from '../src/client-management/entities/client/client.service';
+import { AuthorizationCodeService } from '../src/auth/entities/authorization-code/authorization-code.service';
+import { BearerTokenService } from '../src/auth/entities/bearer-token/bearer-token.service';
+import { RoleService } from '../src/user-management/entities/role/role.service';
+import { ServerSettingsService } from '../src/system-settings/entities/server-settings/server-settings.service';
+import { OIDCKeyService } from '../src/auth/entities/oidc-key/oidc-key.service';
 import 'jest';
-import { ConfigService } from '../src/server/config/config.service';
+import { ConfigService } from '../src/config/config.service';
 jest.setTimeout(30000);
 
 describe('OAuth2Controller (e2e)', () => {
@@ -90,7 +90,7 @@ describe('OAuth2Controller (e2e)', () => {
       .get('/oauth2/profile')
       .set('Authorization', 'Bearer ' + 'fakeToken')
       .expect(401)
-      .end(function(err, res) {
+      .end((err, res) => {
         if (err) return done(err);
         done();
       });
@@ -105,7 +105,7 @@ describe('OAuth2Controller (e2e)', () => {
         redirect: '/account',
       })
       .expect(200)
-      .end(function(err, res) {
+      .end((err, res) => {
         if (err) return done(err);
         Cookies = res.header['set-cookie'].pop().split(';')[0];
         done();
@@ -165,7 +165,7 @@ describe('OAuth2Controller (e2e)', () => {
   it('/POST /oauth2/token (Code Exchange)', done => {
     const req: any = {
       grant_type: 'authorization_code',
-      code: code,
+      code,
       redirect_uri: redirectUris[0],
       client_id: clientId,
       scope: allowedScopes.toString(),
