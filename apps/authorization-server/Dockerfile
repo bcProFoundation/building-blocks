@@ -4,7 +4,7 @@ COPY . /home/craft/authorization-server
 WORKDIR /home/craft/
 RUN cd authorization-server \
     && npm install \
-    && npm run prestart:prod \
+    && npm run build \
     && rm -fr node_modules \
     && npm install --only=production
 

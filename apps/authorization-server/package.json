@@ -12,7 +12,7 @@
     "format:check": "prettier-check \"./src/**/*.ts\" \"./tests/**/*.ts\"",
     "start:server": "nodemon",
     "start:debug": "nodemon --config nodemon-debug.json",
-    "prestart:prod": "rm -rf dist && tsc -p src/tsconfig.build.json",
+    "build": "rm -rf dist && tsc -p src/tsconfig.build.json",
     "start:prod": "export NODE_ENV=production && node dist/out-tsc/main.js",
     "start": "ts-node -r tsconfig-paths/register src/main.ts",
     "test:server": "export NODE_ENV=test && jest",

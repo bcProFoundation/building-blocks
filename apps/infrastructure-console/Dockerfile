@@ -4,7 +4,7 @@ COPY . /home/craft/infrastructure-console
 WORKDIR /home/craft/
 RUN cd infrastructure-console \
     && npm install \
-    && npm run prestart:prod \
+    && npm run build \
     && rm -fr node_modules \
     && npm install --only=production
 
