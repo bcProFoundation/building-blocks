@@ -111,10 +111,24 @@ test_identity_provider:
     - npm run test:server
     # Test backend e2e
     - npm run test:e2e
+  tags:
+    - docker
+
+test_identity_client:
+  stage: tests
+  before_script:
+    - cd frontends/identity-client
+    - npm install
+  script:
+    # set env variable for test
+    - export NODE_ENV=test
+    # Check Code Quality
+    - npm run lint
+    - npm run format:check
     # Test frontend
     - export DISPLAY=:99
     - Xvfb :0 -ac -screen 0 1024x768x24 &
-    - npm run test:client
+    - npm run test
     - npm run e2e
   tags:
     - docker
@@ -212,6 +226,20 @@ pack_staging_identity_provider:
     - docker tag identity-provider $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:edge
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider
 
+pack_staging_identity_client:
+  image: docker
+  stage: pack
+  environment: staging
+  only:
+    - staging
+  before_script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+  script:
+    # Identity Client
+    - docker build -t identity-client frontends/identity-client
+    - docker tag identity-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-client:edge
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-client
+
 pack_staging_infrastructure_console:
   image: docker
   stage: pack
@@ -271,7 +299,7 @@ pack_production_authorization_client:
     # get latest tag for app in master branch
     # Authorization Client
     - export VERSION=$(git tag --list "authorization-client@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
-    - docker build -t authorization-client apps/authorization-client
+    - docker build -t authorization-client frontends/authorization-client
     - docker tag authorization-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-client:$VERSION
     - docker tag authorization-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-client:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-client
@@ -311,6 +339,24 @@ pack_production_identity_provider:
     - docker tag identity-provider $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:$VERSION
     - docker tag identity-provider $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider
+
+pack_production_identity_client:
+  image: docker
+  stage: pack
+  environment: production
+  only:
+    - master
+  before_script:
+    - apk add git
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+  script:
+    # get latest tag for app in master branch
+    # Idenitiy Client
+    - export VERSION=$(git tag --list "identity-client@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
+    - docker build -t identity-client frontends/identity-client
+    - docker tag identity-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-client:$VERSION
+    - docker tag identity-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-client:latest
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-client
 
 pack_production_infrastructure_console:
   image: docker

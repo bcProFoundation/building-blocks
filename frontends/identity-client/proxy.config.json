@@ -1,0 +1,7 @@
+{
+  "/info": { "target": "http://myaccount.localhost:3200", "secure": false, "logLevel": "debug" },
+  "/connect/v1": { "target": "http://myaccount.localhost:3200", "secure": false, "logLevel": "debug" },
+  "/profile/v1": { "target": "http://myaccount.localhost:3200", "secure": false, "logLevel": "debug" },
+  "/setup": { "target": "http://myaccount.localhost:3200", "secure": false, "logLevel": "debug" },
+  "/settings/v1": { "target": "http://myaccount.localhost:3200", "secure": false, "logLevel": "debug" }
+}
