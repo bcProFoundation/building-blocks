@@ -1,0 +1,6 @@
+{
+  "/info": { "target": "http://admin.localhost:5000", "secure": false, "logLevel": "debug" },
+  "/connect/v1": { "target": "http://admin.localhost:5000", "secure": false, "logLevel": "debug" },
+  "/setup": { "target": "http://admin.localhost:5000", "secure": false, "logLevel": "debug" },
+  "/settings/v1": { "target": "http://admin.localhost:5000", "secure": false, "logLevel": "debug" }
+}

@@ -1,18 +1,20 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "module": "commonjs",
     "baseUrl": "src",
     "outDir": "dist/out-tsc",
     "sourceMap": true,
-    "declaration": false,
+    "declaration": true,
+    "removeComments": true,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es5",
+    "target": "es6",
     "typeRoots": [
       "node_modules/@types"
     ],
-    "noUnusedLocals":true,
+    "noUnusedLocals": true,
     "types": [
       "node",
       "jest"

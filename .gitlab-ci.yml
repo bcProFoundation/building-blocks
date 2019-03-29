@@ -134,10 +134,24 @@ test_infrastructure_console:
     - npm run test:server
     # Test backend e2e
     - npm run test:e2e
+  tags:
+    - docker
+
+test_admin_client:
+  stage: tests
+  before_script:
+    - cd frontends/admin-client
+    - npm install
+  script:
+    # set env variable for test
+    - export NODE_ENV=test
+    # Check Code Quality
+    - npm run lint
+    - npm run format:check
     # Test frontend
     - export DISPLAY=:99
     - Xvfb :0 -ac -screen 0 1024x768x24 &
-    - npm run test:client
+    - npm run test
     - npm run e2e
   tags:
     - docker
@@ -211,6 +225,20 @@ pack_staging_infrastructure_console:
     - docker build -t infrastructure-console apps/infrastructure-console
     - docker tag infrastructure-console $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:edge
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console
+
+pack_staging_admin_client:
+  image: docker
+  stage: pack
+  environment: staging
+  only:
+    - staging
+  before_script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+  script:
+    # Admin Client
+    - docker build -t admin-client frontends/admin-client
+    - docker tag admin-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client:edge
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client
 
 pack_production_authorization_server:
   image: docker
@@ -301,6 +329,24 @@ pack_production_infrastructure_console:
     - docker tag infrastructure-console $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:$VERSION
     - docker tag infrastructure-console $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console
+
+pack_production_admin_client:
+  image: docker
+  stage: pack
+  environment: production
+  only:
+    - master
+  before_script:
+    - apk add git
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+  script:
+    # get latest tag for app in master branch
+    # Admin Client
+    - export VERSION=$(git tag --list "admin-client@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
+    - docker build -t admin-client frontends/admin-client
+    - docker tag admin-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client:$VERSION
+    - docker tag admin-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client:latest
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client
 
 deploy_staging:
   image: dtzar/helm-kubectl:latest

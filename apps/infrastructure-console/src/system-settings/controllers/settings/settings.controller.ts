@@ -1,7 +1,6 @@
 import {
   Controller,
   Get,
-  Res,
   UseGuards,
   Post,
   UsePipes,
@@ -9,7 +8,6 @@ import {
   Body,
 } from '@nestjs/common';
 import { switchMap } from 'rxjs/operators';
-import { INDEX_HTML } from '../../../constants/filesystem';
 import { Roles } from '../../../auth/decorators/roles.decorator';
 import { TokenGuard } from '../../../auth/guards/token.guard';
 import { RoleGuard } from '../../../auth/guards/role.guard';
@@ -20,11 +18,6 @@ import { SettingsService } from '../../../system-settings/aggregates/settings/se
 @Controller('settings')
 export class SettingsController {
   constructor(private readonly settingsService: SettingsService) {}
-
-  @Get()
-  settings(@Res() res) {
-    return res.sendFile(INDEX_HTML);
-  }
 
   @Get('v1/get')
   @Roles(ADMINISTRATOR)
@@ -43,10 +36,5 @@ export class SettingsController {
         return this.settingsService.update({ uuid: settings.uuid }, payload);
       }),
     );
-  }
-
-  @Get('*')
-  wildcard(@Res() res) {
-    res.sendFile(INDEX_HTML);
   }
 }

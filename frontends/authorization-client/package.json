@@ -1,15 +1,15 @@
 {
   "name": "authorization-client",
-  "version": "0.0.0",
+  "version": "2.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.config.json  --host \"accounts.localhost\" --port 4210",
     "build": "ng build --prod --aot=false --build-optimizer=false",
     "test": "ng test --no-progress",
-    "lint": "tslint -c tslint.json 'src/**/*.ts'",
+    "lint": "tslint -c tslint.json './src/**/*.ts' './e2e/**/*.ts'",
     "e2e": "ng e2e",
-    "format": "prettier --write \"**/*.ts\"",
-    "format:check": "prettier-check \"**/*.ts\""
+    "format": "prettier --write \"./src/**/*.ts\" \"./e2e/**/*.ts\"",
+    "format:check": "prettier-check \"./src/**/*.ts\" \"./e2e/**/*.ts\""
   },
   "private": true,
   "dependencies": {
