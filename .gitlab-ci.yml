@@ -88,11 +88,6 @@ test_communication_server:
     - npm run test:server
     # Test backend e2e
     - npm run test:e2e
-    # Test frontend
-    - export DISPLAY=:99
-    - Xvfb :0 -ac -screen 0 1024x768x24 &
-    - npm run test:client
-    - npm run e2e
   tags:
     - docker
 
