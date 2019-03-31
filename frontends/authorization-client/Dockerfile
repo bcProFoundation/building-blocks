@@ -7,5 +7,5 @@ RUN cd authorization-client \
     && npm run build
 
 FROM nginx:latest
-COPY --from=0 /home/craft/authorization-client/dist/authorization-server /var/www/html
+COPY --from=0 /home/craft/authorization-client/dist/authorization-client /var/www/html
 COPY ./docker/nginx.conf /etc/nginx/conf.d/auth.conf

@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { VerifyGeneratePasswordService } from './verify-generate-password.service';
 import { MatSnackBar } from '@angular/material';
 import { CLOSE, INVALID_VERIFICATION_CODE } from '../../constants/app-strings';
+import { isArray } from 'util';
 
 @Component({
   selector: 'app-verify-generate-password',
@@ -33,8 +34,8 @@ export class VerifyGeneratePasswordComponent implements OnInit {
           },
           error: error => {
             let message = INVALID_VERIFICATION_CODE;
-            if (error.error.length > 0) {
-              message = error.error[0];
+            if (isArray(error.error.message)) {
+              message = error.error.message[0];
             }
             this.snackBar.open(message, CLOSE, { duration: 2000 });
           },
