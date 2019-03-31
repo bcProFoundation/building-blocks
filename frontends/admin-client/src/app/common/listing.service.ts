@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { StorageService } from './storage.service';
-import { ISSUER_URL } from '../constants/storage';
+import { ISSUER_URL, COMMUNICATION_SERVER } from '../constants/storage';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import {
   HandleError,
@@ -28,8 +28,13 @@ export class ListingService {
     pageNumber = 0,
     pageSize = 10,
   ) {
-    const issuer = this.storageService.getInfo(ISSUER_URL);
-    const url = `${issuer}/${model}/v1/list`;
+    let baseUrl = this.storageService.getInfo(ISSUER_URL);
+
+    if (['storage', 'email'].includes(model)) {
+      baseUrl = this.storageService.getServiceURL(COMMUNICATION_SERVER);
+    }
+
+    const url = `${baseUrl}/${model}/v1/list`;
     const params = new HttpParams()
       .set('limit', pageSize.toString())
       .set('offset', (pageNumber * pageSize).toString())

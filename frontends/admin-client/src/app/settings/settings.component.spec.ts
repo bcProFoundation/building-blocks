@@ -13,6 +13,8 @@ describe('SettingsComponent', () => {
   let fixture: ComponentFixture<SettingsComponent>;
 
   beforeEach(async(() => {
+    spyOn(localStorage, 'getItem').and.callFake(key => '[]');
+
     TestBed.configureTestingModule({
       imports: [
         MaterialModule,
@@ -27,7 +29,10 @@ describe('SettingsComponent', () => {
           useValue: {
             getSettings: (...args) => of([]),
             getClientList: (...args) => of([]),
+            getBucketOptions: (...args) => of([]),
+            getEmailAccounts: (...args) => of([]),
             getClientSettings: (...args) => of([]),
+            getSavedEmailAccount: (...args) => of({}),
           },
         },
       ],

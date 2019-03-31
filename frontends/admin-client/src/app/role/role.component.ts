@@ -1,10 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { RoleService } from './role.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 import { FormGroup, FormControl } from '@angular/forms';
-import { CLIENT_ERROR, CLIENT_UPDATED } from '../constants/messages';
+import {
+  CREATE_SUCCESSFUL,
+  UPDATE_SUCCESSFUL,
+  CLOSE,
+  CREATE_ERROR,
+  UPDATE_ERROR,
+} from '../constants/messages';
 import { NEW_ID } from '../constants/common';
+
+export const ROLE_LIST_ROUTE = '/role/list';
 
 @Component({
   selector: 'app-role',
@@ -22,7 +30,8 @@ export class RoleComponent implements OnInit {
   constructor(
     private readonly roleService: RoleService,
     private route: ActivatedRoute,
-    private snackbar: MatSnackBar,
+    private router: Router,
+    private snackBar: MatSnackBar,
   ) {
     this.uuid = this.route.snapshot.params.id;
   }
@@ -42,12 +51,12 @@ export class RoleComponent implements OnInit {
     this.roleService
       .createRole(this.roleForm.controls.roleName.value)
       .subscribe({
-        next: (response: { name: string }) => {
-          this.name = response.name;
+        next: success => {
+          this.snackBar.open(CREATE_SUCCESSFUL, CLOSE, { duration: 2000 });
+          this.router.navigateByUrl(ROLE_LIST_ROUTE);
         },
-        error: error => {
-          this.snackbar.open(CLIENT_ERROR, 'Close', { duration: 2500 });
-        },
+        error: error =>
+          this.snackBar.open(CREATE_ERROR, CLOSE, { duration: 2000 }),
       });
   }
 
@@ -55,10 +64,12 @@ export class RoleComponent implements OnInit {
     this.roleService
       .updateRole(this.uuid, this.roleForm.controls.roleName.value)
       .subscribe({
-        next: (response: { name: string }) => {
-          this.name = response.name;
-          this.snackbar.open(CLIENT_UPDATED, 'Close', { duration: 2500 });
+        next: success => {
+          this.snackBar.open(UPDATE_SUCCESSFUL, CLOSE, { duration: 2000 });
+          this.router.navigateByUrl(ROLE_LIST_ROUTE);
         },
+        error: error =>
+          this.snackBar.open(UPDATE_ERROR, CLOSE, { duration: 2000 }),
       });
   }
 }

@@ -7,6 +7,8 @@ import {
   ISSUER_URL,
   USER_UUID,
   APP_URL,
+  SERVICES,
+  COMMUNICATION,
 } from '../constants/storage';
 
 @Injectable({
@@ -31,6 +33,18 @@ export class StorageService {
     localStorage.setItem(LOGIN_URL, response.authorizationURL);
     localStorage.setItem(ISSUER_URL, response.authServerURL);
     localStorage.setItem(APP_URL, response.appURL);
+    localStorage.setItem(SERVICES, JSON.stringify(response.services));
+    localStorage.setItem(COMMUNICATION, response.communication);
+  }
+
+  getServiceURL(serviceName) {
+    const services = JSON.parse(localStorage.getItem(SERVICES) || '[]');
+    for (const service of services) {
+      if (service.type === serviceName) {
+        return service.url;
+      }
+    }
+    return undefined;
   }
 
   getInfo(key) {

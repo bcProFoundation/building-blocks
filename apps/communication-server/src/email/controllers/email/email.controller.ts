@@ -16,7 +16,6 @@ import { AuthServerVerificationGuard } from '../../../auth/guards/authserver-ver
 import { EmailMessageAuthServerDto } from './email-message-authserver-dto';
 import { EmailAccountService } from '../../../email/entities/email-account/email-account.service';
 import { CreateEmailDto } from './create-email-dto';
-import { EmailListingDto } from './email-listing-dto';
 import { ADMINISTRATOR } from '../../../constants/app-strings';
 import { TokenGuard } from '../../../auth/guards/token.guard';
 import { RoleGuard } from '../../../auth/guards/role.guard';
@@ -48,12 +47,15 @@ export class EmailController {
 
   @Get('v1/list')
   @UseGuards(TokenGuard)
-  @UsePipes(new ValidationPipe({ transform: true }))
-  async list(@Query() query: EmailListingDto) {
-    const skip = Number(query.skip);
-    const take = Number(query.take);
-    const emailAccounts = await this.emailAccount.list(skip, take);
-    return emailAccounts;
+  async list(
+    @Query('offset') offset: number,
+    @Query('limit') limit: number,
+    @Query('search') search?: string,
+    @Query('sort') sort?: string,
+  ) {
+    const skip = Number(offset);
+    const take = Number(limit);
+    return await this.emailAccount.list(skip, take);
   }
 
   @Post('v1/update')
@@ -63,10 +65,11 @@ export class EmailController {
     const existingEmail = await this.emailAccount.findOne({
       uuid: payload.uuid,
     });
+    existingEmail.name = payload.name;
     existingEmail.host = payload.host;
     existingEmail.port = payload.port;
     existingEmail.user = payload.user;
-    existingEmail.pass = payload.pass;
+    if (payload.pass) existingEmail.pass = payload.pass;
     existingEmail.from = payload.from;
     await existingEmail.save();
     res.json({
@@ -80,10 +83,12 @@ export class EmailController {
     return await this.emailAccount.findAll();
   }
 
-  @Get('v1/:uuid')
+  @Get('v1/get/:uuid')
   @Roles(ADMINISTRATOR)
   @UseGuards(TokenGuard, RoleGuard)
-  async findOne(@Param('uuid') uuid: string, @Req() req) {
-    return await this.emailService.findOne({ uuid });
+  async findOne(@Param('uuid') uuid: string) {
+    const email = await this.emailService.findOne({ uuid });
+    email.pass = undefined;
+    return email;
   }
 }

@@ -4,6 +4,9 @@ export class CreateEmailDto {
   uuid?: string;
   owner?: string;
 
+  @IsString()
+  name: string;
+
   @IsUrl({ require_protocol: false })
   host: string;
 

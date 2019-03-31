@@ -34,10 +34,18 @@ export class EmailAccountService {
 
   public async list(skip, take) {
     const emailAccount = await this.emailAccountRepository.find({ skip, take });
-    return emailAccount;
+    return {
+      docs: emailAccount,
+      length: await this.emailAccountRepository.count(),
+      offset: skip,
+    };
   }
 
   public async find(params) {
     return await this.emailAccountRepository.find(params);
+  }
+
+  public async estimatedCount() {
+    return await this.emailAccountRepository.findAndCount();
   }
 }

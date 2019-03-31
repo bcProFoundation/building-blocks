@@ -5,7 +5,7 @@ import { map, filter } from 'rxjs/operators';
 import { OAuthService, OAuthEvent } from 'angular-oauth2-oidc';
 import { Router, NavigationEnd } from '@angular/router';
 import { StorageService } from '../common/storage.service';
-import { ISSUER_URL, APP_URL } from '../constants/storage';
+import { ISSUER_URL, APP_URL, COMMUNICATION } from '../constants/storage';
 import { IDTokenClaims } from '../interfaces/id-token-claims.interfaces';
 import { ADMINISTRATOR } from '../constants/roles';
 
@@ -23,6 +23,7 @@ export class NavigationComponent implements OnInit {
   loggedIn: boolean;
   route: string;
   hideFAB: boolean;
+  isCommunicationEnabled: boolean;
 
   constructor(
     private breakpointObserver: BreakpointObserver,
@@ -47,7 +48,16 @@ export class NavigationComponent implements OnInit {
           break;
       }
     });
+
     this.setUserSession();
+
+    try {
+      this.isCommunicationEnabled = JSON.parse(
+        localStorage.getItem(COMMUNICATION),
+      );
+    } catch (error) {
+      this.isCommunicationEnabled = false;
+    }
   }
 
   login() {

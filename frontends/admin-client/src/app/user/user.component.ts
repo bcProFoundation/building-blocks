@@ -1,12 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 import { NEW_ID } from '../constants/common';
 import { UserService } from './user.service';
-import { CLIENT_CREATED, CLIENT_ERROR } from '../constants/messages';
-import { CreateUserResponse } from '../interfaces/user-response.interface';
+import {
+  CREATE_SUCCESSFUL,
+  CLOSE,
+  CREATE_ERROR,
+  UPDATE_SUCCESSFUL,
+  UPDATE_ERROR,
+} from '../constants/messages';
 import { RoleService } from '../role/role.service';
+
+export const USER_LIST_ROUTE = '/user/list';
 
 @Component({
   selector: 'app-user',
@@ -40,6 +47,7 @@ export class UserComponent implements OnInit {
     private readonly roleService: RoleService,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
+    private router: Router,
   ) {
     this.uuid =
       this.route.snapshot.params.id === NEW_ID
@@ -86,15 +94,12 @@ export class UserComponent implements OnInit {
         this.userForm.controls.userRole.value,
       )
       .subscribe({
-        next: (response: CreateUserResponse) => {
-          this.fullName = response.name;
-          this.userPassword = response.userPassword;
-          this.uuid = response.uuid;
-          this.snackBar.open(CLIENT_CREATED, 'Close', { duration: 2500 });
+        next: success => {
+          this.snackBar.open(CREATE_SUCCESSFUL, CLOSE, { duration: 2000 });
+          this.router.navigateByUrl(USER_LIST_ROUTE);
         },
-        error: error => {
-          this.snackBar.open(CLIENT_ERROR, 'Close', { duration: 2500 });
-        },
+        error: error =>
+          this.snackBar.open(CREATE_ERROR, CLOSE, { duration: 2000 }),
       });
   }
 
@@ -107,12 +112,12 @@ export class UserComponent implements OnInit {
         this.userForm.controls.userPassword.value,
       )
       .subscribe({
-        next: (response: { name: string }) => {
-          this.fullName = response.name;
+        next: success => {
+          this.snackBar.open(UPDATE_SUCCESSFUL, CLOSE, { duration: 2000 });
+          this.router.navigateByUrl(USER_LIST_ROUTE);
         },
-        error: error => {
-          this.snackBar.open(error.error.message, 'Close', { duration: 2500 });
-        },
+        error: error =>
+          this.snackBar.open(UPDATE_ERROR, CLOSE, { duration: 2000 }),
       });
   }
 

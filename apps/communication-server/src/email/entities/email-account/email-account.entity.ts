@@ -8,6 +8,8 @@ export class EmailAccount extends BaseEntity {
   @Column()
   uuid: string;
   @Column()
+  name: string;
+  @Column()
   host: string;
   @Column()
   user: string;

@@ -32,7 +32,11 @@ export class StorageService {
 
   public async list(skip, take) {
     const storage = await this.storageRepository.find({ skip, take });
-    return storage;
+    return {
+      docs: storage,
+      length: await this.storageRepository.count(),
+      offset: skip,
+    };
   }
 
   public async updateOne(uuid, updateQuery) {

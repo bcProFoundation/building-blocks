@@ -1,11 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { ScopeService } from './scope.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 // import { MatSnackBar } from '@angular/material';
 import { NEW_ID } from '../constants/common';
 import { FormGroup, FormControl } from '@angular/forms';
-import { CLIENT_UPDATED, CLIENT_ERROR } from '../constants/messages';
+import {
+  CREATE_SUCCESSFUL,
+  CLOSE,
+  CREATE_ERROR,
+  UPDATE_SUCCESSFUL,
+  UPDATE_ERROR,
+} from '../constants/messages';
 import { MatSnackBar } from '@angular/material';
+
+export const SCOPE_LIST_ROUTE = '/scope/list';
 
 @Component({
   selector: 'app-scope',
@@ -26,7 +34,8 @@ export class ScopeComponent implements OnInit {
   constructor(
     private readonly scopeService: ScopeService,
     private route: ActivatedRoute,
-    private snackbar: MatSnackBar,
+    private router: Router,
+    private snackBar: MatSnackBar,
   ) {
     this.uuid =
       this.route.snapshot.params.id === NEW_ID
@@ -57,13 +66,12 @@ export class ScopeComponent implements OnInit {
         this.scopeForm.controls.description.value,
       )
       .subscribe({
-        next: (response: { name: string; description: string }) => {
-          this.name = response.name;
-          this.description = response.description;
+        next: success => {
+          this.snackBar.open(CREATE_SUCCESSFUL, CLOSE, { duration: 2000 });
+          this.router.navigateByUrl(SCOPE_LIST_ROUTE);
         },
-        error: error => {
-          this.snackbar.open(CLIENT_ERROR, 'Close', { duration: 2500 });
-        },
+        error: error =>
+          this.snackBar.open(CREATE_ERROR, CLOSE, { duration: 2000 }),
       });
   }
 
@@ -75,10 +83,12 @@ export class ScopeComponent implements OnInit {
         this.scopeForm.controls.description.value,
       )
       .subscribe({
-        next: (response: { name: string }) => {
-          this.name = response.name;
-          this.snackbar.open(CLIENT_UPDATED, 'Close', { duration: 2500 });
+        next: success => {
+          this.snackBar.open(UPDATE_SUCCESSFUL, CLOSE, { duration: 2000 });
+          this.router.navigateByUrl(SCOPE_LIST_ROUTE);
         },
+        error: error =>
+          this.snackBar.open(UPDATE_ERROR, CLOSE, { duration: 2000 }),
       });
   }
 
