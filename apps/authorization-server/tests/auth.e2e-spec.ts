@@ -2,11 +2,11 @@ import { Test } from '@nestjs/testing';
 import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { ExpressAdapter } from '@nestjs/platform-express';
-import { AppModule } from '../src/server/app.module';
-import { ExpressServer } from '../src/server/express-server';
+import { AppModule } from '../src/app.module';
+import { ExpressServer } from '../src/express-server';
 import 'jest';
-import { ConfigService } from '../src/server/config/config.service';
-import { UserService } from '../src/server/user-management/entities/user/user.service';
+import { ConfigService } from '../src/config/config.service';
+import { UserService } from '../src/user-management/entities/user/user.service';
 jest.setTimeout(30000);
 
 describe('AuthController (e2e)', () => {
@@ -49,7 +49,7 @@ describe('AuthController (e2e)', () => {
         name: 'Test User',
       })
       .expect(400)
-      .end(function(err, res) {
+      .end((err, res) => {
         if (err) return done(err);
         done();
       });
@@ -65,7 +65,7 @@ describe('AuthController (e2e)', () => {
         name: 'Test User',
       })
       .expect(400)
-      .end(function(err, res) {
+      .end((err, res) => {
         if (err) return done(err);
         done();
       });
@@ -75,7 +75,7 @@ describe('AuthController (e2e)', () => {
     return request(app.getHttpServer())
       .get('/auth/logout')
       .expect(302)
-      .end(function(err, res) {
+      .end((err, res) => {
         if (err) return done(err);
         done();
       });

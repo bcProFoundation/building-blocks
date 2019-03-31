@@ -1,0 +1,81 @@
+<div class="card-container">
+  <form (ngSubmit)="updateAuthSettings()" [formGroup]="authSettingsForm">
+    <mat-card>
+      <mat-card-title>Authorization Server Settings</mat-card-title>
+      <mat-card-content fxLayout="column">
+        <mat-form-field>
+          <input matInput formControlName="issuerUrl" placeholder="Server Url" readonly>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-select
+            placeholder="Communication Server Client ID"
+            formControlName="communicationServerClientId">
+            <mat-option *ngFor="let client of clientList" [value]="client.clientId">
+              {{ client.name + " (" + client.clientId + ")"}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-select
+            placeholder="UUID of System Email Account"
+            formControlName="communicationServerSystemEmailAccount">
+            <mat-option *ngFor="let account of emailAccounts" [value]="account.uuid">
+              {{ account.host + " (" + account.uuid + ")"}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </mat-card-content>
+      <mat-card-actions>
+        <button type="submit" mat-button color="primary" [disabled]="!authSettingsForm.valid">Update</button>
+      </mat-card-actions>
+    </mat-card>
+  </form>
+</div>
+<div [formGroup]="clientsFormGroup">
+  <div class="card-container" formArrayName="clientsFormArray"
+    *ngFor="let client of clientsFormGroup.get('clientsFormArray')['controls']; let i = index;">
+    <form [formGroupName]="i" (ngSubmit)="updateClientSettings(client)">
+      <mat-card>
+        <mat-card-title>{{ client.controls.serviceName.value }}</mat-card-title>
+      <mat-card-content fxLayout="column">
+          <mat-form-field>
+            <input
+              matInput
+              formControlName="appURL"
+              placeholder="Base URL"
+              readonly>
+          </mat-form-field>
+          <mat-form-field>
+            <input
+              matInput
+              formControlName="clientId"
+              placeholder="Client ID registered on Authorization Server"
+              readonly>
+          </mat-form-field>
+          <mat-form-field>
+            <input
+              matInput
+              formControlName="clientSecret"
+              placeholder="Client Secret registered on Authorization Server"
+              [type]="client.controls.hide.value ? 'password' : 'text'">
+            <mat-icon matSuffix (click)="client.controls.hide.setValue(!client.controls.hide.value)">
+              {{client.controls.hide.value ? 'visibility_off' : 'visibility' }}
+            </mat-icon>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-select
+              formControlName="cloudStorageSettings"
+              placeholder="Select Cloud Storage">
+              <mat-option *ngFor="let storage of cloudStorageList" [value]="storage.uuid">
+                {{ storage.name + " (" + storage.uuid + ")"}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </mat-card-content>
+        <mat-card-actions>
+          <button  type="submit" mat-button color="primary">Update</button>
+        </mat-card-actions>
+      </mat-card>
+    </form>
+  </div>
+</div>

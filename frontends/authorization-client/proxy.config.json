@@ -1,0 +1,15 @@
+{
+  "/info": { "target": "http://accounts.localhost:3000", "secure": false, "logLevel": "debug" },
+  "/auth": { "target": "http://accounts.localhost:3000", "secure": false, "logLevel": "debug" },
+  "/oauth2": { "target": "http://accounts.localhost:3000", "secure": false, "logLevel": "debug" },
+  "/social_login/v1": { "target": "http://accounts.localhost:3000", "secure": false, "logLevel": "debug" },
+  "/social_login/callback": { "target": "http://accounts.localhost:3000", "secure": false, "logLevel": "debug" },
+  "/.well-known": { "target": "http://accounts.localhost:3000", "secure": false, "logLevel": "debug" },
+  "/role/v1": { "target": "http://accounts.localhost:3000", "secure": false, "logLevel": "debug" },
+  "/signup/v1/email": { "target": "http://accounts.localhost:3000", "secure": false, "logLevel": "debug" },
+  "/user/v1": { "target": "http://accounts.localhost:3000", "secure": false, "logLevel": "debug" },
+  "/client/v1": { "target": "http://accounts.localhost:3000", "secure": false, "logLevel": "debug" },
+  "/scope/v1": { "target": "http://accounts.localhost:3000", "secure": false, "logLevel": "debug" },
+  "/setup": { "target": "http://accounts.localhost:3000", "secure": false, "logLevel": "debug" },
+  "/settings": { "target": "http://accounts.localhost:3000", "secure": false, "logLevel": "debug" }
+}

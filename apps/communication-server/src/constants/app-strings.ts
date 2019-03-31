@@ -1,0 +1,11 @@
+export const SEND_EMAIL = 'send_email';
+export const AUTHORIZATION = 'authorization';
+export const ADMINISTRATOR = 'administrator';
+export const TOKEN = 'token';
+export const SERVICE = 'communication-server';
+export const CHANNEL = 'com_channel';
+export const DEFAULT_BUCKET_STORAGE_PATH = 'volumes/';
+export const ACL_PUBLIC_PERMISSION = 'public-read';
+export const PUBLIC = 'public';
+export const APP_NAME = SERVICE;
+export const SWAGGER_ROUTE = 'api-docs';

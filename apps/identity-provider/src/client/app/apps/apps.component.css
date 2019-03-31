@@ -1,8 +1,0 @@
-.apps-container {
-    padding: 1em;
-}
-
-mat-card-content {
-    overflow: auto;
-    max-height: 5em;
-}
