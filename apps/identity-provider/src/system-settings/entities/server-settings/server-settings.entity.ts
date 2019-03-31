@@ -44,7 +44,7 @@ export class ServerSettings extends BaseEntity {
   service: string = SERVICE;
 
   @Column()
-  cloudStorageSettings: any;
+  cloudStorageSettings: string;
 
   constructor() {
     super();

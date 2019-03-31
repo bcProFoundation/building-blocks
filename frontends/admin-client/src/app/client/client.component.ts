@@ -1,15 +1,17 @@
 import { OnInit, Component } from '@angular/core';
 import { ClientService } from '../client/client.service';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 import {
-  CLIENT_UPDATED,
-  CLIENT_CREATED,
   CLIENT_ERROR,
+  CLOSE,
+  CLIENT_CREATED,
+  CLIENT_UPDATED,
 } from '../constants/messages';
 import { NEW_ID } from '../constants/common';
-import { CreateClientResponse } from '../interfaces/client-response.interface';
+
+export const CLIENT_LIST_ROUTE = '/client/list';
 
 @Component({
   selector: 'app-client',
@@ -40,7 +42,8 @@ export class ClientComponent implements OnInit {
   constructor(
     private readonly clientService: ClientService,
     private route: ActivatedRoute,
-    private snackbar: MatSnackBar,
+    private router: Router,
+    private snackBar: MatSnackBar,
     private formBuilder: FormBuilder,
   ) {
     this.uuid = this.route.snapshot.params.id;
@@ -103,21 +106,12 @@ export class ClientComponent implements OnInit {
         this.clientForm.controls.isTrusted.value || '0',
       )
       .subscribe({
-        next: (response: CreateClientResponse) => {
-          this.clientName = response.name;
-          this.clientId = response.clientId;
-          this.clientSecret = response.clientSecret;
-          this.uuid = response.uuid;
-          this.clientForm.controls.clientId.setValue(response.clientId);
-          this.clientForm.controls.clientSecret.setValue(response.clientSecret);
-          this.tokenDeleteEndpoint = response.tokenDeleteEndpoint;
-          this.userDeleteEndpoint = response.userDeleteEndpoint;
-          this.changedClientSecret = response.changedClientSecret;
-          this.snackbar.open(CLIENT_CREATED, 'Close', { duration: 2500 });
+        next: success => {
+          this.snackBar.open(CLIENT_CREATED, CLOSE, { duration: 2000 });
+          this.router.navigateByUrl(CLIENT_LIST_ROUTE);
         },
-        error: error => {
-          this.snackbar.open(CLIENT_ERROR, 'Close', { duration: 2500 });
-        },
+        error: error =>
+          this.snackBar.open(CLIENT_ERROR, CLOSE, { duration: 2000 }),
       });
   }
 
@@ -144,9 +138,12 @@ export class ClientComponent implements OnInit {
         this.clientForm.controls.isTrusted.value,
       )
       .subscribe({
-        next: () => {
-          this.snackbar.open(CLIENT_UPDATED, 'Close', { duration: 2500 });
+        next: success => {
+          this.snackBar.open(CLIENT_UPDATED, CLOSE, { duration: 2000 });
+          this.router.navigateByUrl(CLIENT_LIST_ROUTE);
         },
+        error: error =>
+          this.snackBar.open(CLIENT_ERROR, CLOSE, { duration: 2000 }),
       });
   }
 

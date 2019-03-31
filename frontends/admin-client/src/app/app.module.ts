@@ -30,6 +30,10 @@ import { SettingsComponent } from './settings/settings.component';
 import { SettingsService } from './settings/settings.service';
 import { SocialLoginComponent } from './social-login/social-login.component';
 import { SocialLoginService } from './social-login/social-login.service';
+import { EmailComponent } from './email/email.component';
+import { CloudStorageComponent } from './cloud-storage/cloud-storage.component';
+import { EmailService } from './email/email.service';
+import { CloudStorageService } from './cloud-storage/cloud-storage.service';
 
 @NgModule({
   declarations: [
@@ -44,6 +48,8 @@ import { SocialLoginService } from './social-login/social-login.service';
     UserComponent,
     SettingsComponent,
     SocialLoginComponent,
+    EmailComponent,
+    CloudStorageComponent,
   ],
   imports: [
     BrowserModule,
@@ -77,6 +83,8 @@ import { SocialLoginService } from './social-login/social-login.service';
     ScopeService,
     SettingsService,
     SocialLoginService,
+    EmailService,
+    CloudStorageService,
   ],
   bootstrap: [AppComponent],
 })

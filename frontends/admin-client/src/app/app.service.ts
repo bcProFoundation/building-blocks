@@ -5,7 +5,7 @@ import {
   HttpErrorHandler,
 } from './common/http-error-handler.service';
 import { Observable } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, switchMap, map } from 'rxjs/operators';
 
 @Injectable()
 export class AppService {
@@ -18,10 +18,17 @@ export class AppService {
 
   /** GET message from the server */
   getMessage(): Observable<any> {
-    return this.http
-      .get<string>(this.messageUrl)
-      .pipe(
-        catchError(this.handleError('getMessage', { message: 'disconnected' })),
-      );
+    return this.http.get<any>(this.messageUrl).pipe(
+      switchMap(appInfo => {
+        return this.http.get<any>(appInfo.authServerURL + '/info').pipe(
+          map(authInfo => {
+            appInfo.services = authInfo.services;
+            appInfo.communication = authInfo.communication;
+            return appInfo;
+          }),
+        );
+      }),
+      catchError(this.handleError('info', { message: 'disconnected' })),
+    );
   }
 }

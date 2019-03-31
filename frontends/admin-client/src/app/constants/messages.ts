@@ -9,3 +9,11 @@ export const LOGIN_AS_ADMINISTRATOR = 'Please login as administrator';
 export const SOCIAL_LOGIN_ERROR = 'Could not create Social Login';
 export const SOCIAL_LOGIN_UPDATED = 'Social Login Updated Successfully';
 export const SOCIAL_LOGIN_CREATED = 'Social Login Added Successfully';
+export const UPDATE_SUCCESSFUL = 'Updated Successfully';
+export const CREATE_SUCCESSFUL = 'Created Successfully';
+export const CREATE_ERROR = 'Error in creating document';
+export const UPDATE_ERROR = 'Error in updating document';
+export const CLOSE = 'Close';
+export const IS_DOWN = 'is down';
+export const ERROR_UPDATING_SERVICE_SETTINGS =
+  'Error in updating service settings';

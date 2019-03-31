@@ -7,13 +7,23 @@
     [disableClose]="!(isHandset$ | async)"
     [opened]="!(isHandset$ | async)">
     <mat-toolbar color="primary">Admin</mat-toolbar>
-    <ng-container *ngIf="tokenIsValid">
+    <ng-container *ngIf="loggedIn">
       <mat-nav-list>
         <mat-list-item routerLink="/client/list">Clients</mat-list-item>
         <mat-list-item routerLink="/role/list">Roles</mat-list-item>
         <mat-list-item routerLink="/user/list">Users</mat-list-item>
         <mat-list-item routerLink="/scope/list">Scopes</mat-list-item>
         <mat-list-item routerLink="/social_login/list">Social Login</mat-list-item>
+      </mat-nav-list>
+    </ng-container>
+    <ng-container *ngIf="isCommunicationEnabled">
+      <mat-nav-list>
+        <mat-list-item routerLink="/email/list">Email Accounts</mat-list-item>
+        <mat-list-item routerLink="/storage/list">Cloud Storage</mat-list-item>
+      </mat-nav-list>
+    </ng-container>
+    <ng-container *ngIf="loggedIn">
+      <mat-nav-list>
         <mat-list-item routerLink="/settings">Settings</mat-list-item>
       </mat-nav-list>
     </ng-container>

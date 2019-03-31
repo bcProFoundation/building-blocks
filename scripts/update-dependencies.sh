@@ -16,3 +16,12 @@
 
 # Infrastructure Console
 ./node_modules/.bin/npm-check --update apps/infrastructure-console
+
+# Authorization Client
+./node_modules/.bin/npm-check --update frontends/authorization-client
+
+# Admin Client
+./node_modules/.bin/npm-check --update frontends/admin-client
+
+# Identity Client
+./node_modules/.bin/npm-check --update frontends/identity-client

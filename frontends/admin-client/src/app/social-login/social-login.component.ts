@@ -1,14 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormGroup, FormControl } from '@angular/forms';
 import { SocialLoginService } from './social-login.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 import { NEW_ID } from '../constants/common';
 import {
   SOCIAL_LOGIN_ERROR,
   SOCIAL_LOGIN_UPDATED,
   SOCIAL_LOGIN_CREATED,
+  CLOSE,
+  UPDATE_ERROR,
 } from '../constants/messages';
+
+export const SOCIAL_LOGIN_LIST_ROUTE = '/social_login/list';
 
 @Component({
   selector: 'app-social-login',
@@ -55,7 +59,8 @@ export class SocialLoginComponent implements OnInit {
   constructor(
     private socialLoginService: SocialLoginService,
     private route: ActivatedRoute,
-    private snackbar: MatSnackBar,
+    private router: Router,
+    private snackBar: MatSnackBar,
   ) {
     this.uuid = this.route.snapshot.params.id;
   }
@@ -146,13 +151,12 @@ export class SocialLoginComponent implements OnInit {
         this.socialLoginForm.controls.clientSecretToTokenEndpoint.value,
       )
       .subscribe({
-        next: (response: any) => {
-          this.populateForm(response);
-          this.snackbar.open(SOCIAL_LOGIN_CREATED, 'Close', { duration: 2500 });
+        next: success => {
+          this.snackBar.open(SOCIAL_LOGIN_CREATED, CLOSE, { duration: 2000 });
+          this.router.navigateByUrl(SOCIAL_LOGIN_LIST_ROUTE);
         },
-        error: error => {
-          this.snackbar.open(SOCIAL_LOGIN_ERROR, 'Close', { duration: 2500 });
-        },
+        error: error =>
+          this.snackBar.open(SOCIAL_LOGIN_ERROR, CLOSE, { duration: 2000 }),
       });
   }
 
@@ -183,9 +187,12 @@ export class SocialLoginComponent implements OnInit {
         this.socialLoginForm.controls.clientSecretToTokenEndpoint.value,
       )
       .subscribe({
-        next: () => {
-          this.snackbar.open(SOCIAL_LOGIN_UPDATED, 'Close', { duration: 2500 });
+        next: success => {
+          this.snackBar.open(SOCIAL_LOGIN_UPDATED, CLOSE, { duration: 2000 });
+          this.router.navigateByUrl(SOCIAL_LOGIN_LIST_ROUTE);
         },
+        error: error =>
+          this.snackBar.open(UPDATE_ERROR, CLOSE, { duration: 2000 }),
       });
   }
 }
