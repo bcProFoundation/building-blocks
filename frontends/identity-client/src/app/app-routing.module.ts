@@ -5,12 +5,10 @@ import { HomeComponent } from './home/home.component';
 import { ProfileComponent } from './profile/profile.component';
 import { AppsComponent } from './apps/apps.component';
 import { MultifactorComponent } from './multifactor/multifactor.component';
-import { SettingsComponent } from './settings/settings.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
-  { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard] },
   { path: 'mfa', component: MultifactorComponent, canActivate: [AuthGuard] },
   { path: 'apps', component: AppsComponent, canActivate: [AuthGuard] },
   { path: '', redirectTo: 'home', pathMatch: 'full' },
