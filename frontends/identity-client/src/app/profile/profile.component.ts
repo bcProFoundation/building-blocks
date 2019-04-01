@@ -22,7 +22,10 @@ import {
   PROFILE_TITLE,
   UPDATE_SUCCESSFUL,
   CLOSE,
+  DELETING,
+  UNDO,
 } from '../constants/messages';
+import { isArray } from 'util';
 
 @Component({
   selector: 'app-profile',
@@ -57,6 +60,7 @@ export class ProfileComponent implements OnInit {
   newPassword: string;
   repeatPassword: string;
   hideAvatar: boolean = false;
+  flagDeleteUser: boolean = false;
 
   personalForm = new FormGroup({
     fullName: new FormControl(this.fullName),
@@ -88,7 +92,7 @@ export class ProfileComponent implements OnInit {
     private title: Title,
     private oauthService: OAuthService,
     private profileService: ProfileService,
-    private snackbar: MatSnackBar,
+    private snackBar: MatSnackBar,
     private router: Router,
   ) {}
 
@@ -179,7 +183,7 @@ export class ProfileComponent implements OnInit {
       })
       .subscribe({
         next: response =>
-          this.snackbar.open(UPDATE_SUCCESSFUL, CLOSE, {
+          this.snackBar.open(UPDATE_SUCCESSFUL, CLOSE, {
             duration: 2000,
           }),
       });
@@ -202,7 +206,7 @@ export class ProfileComponent implements OnInit {
       })
       .subscribe({
         next: response =>
-          this.snackbar.open(UPDATE_SUCCESSFUL, CLOSE, {
+          this.snackBar.open(UPDATE_SUCCESSFUL, CLOSE, {
             duration: 2000,
           }),
       });
@@ -228,18 +232,13 @@ export class ProfileComponent implements OnInit {
         this.changePasswordForm.controls.repeatPassword.value,
       )
       .subscribe({
-        next: data => {
-          const logoutUrl =
-            localStorage.getItem(ISSUER_URL) +
-            LOGOUT_URL +
-            '?redirect=' +
-            localStorage.getItem(APP_URL);
-          this.profileService.logout();
-          this.oauthService.logOut();
-          window.location.href = logoutUrl;
-        },
+        next: data => this.logout(),
         error: err => {
-          this.snackbar.open(err.error.message, CLOSE, { duration: 2000 });
+          let message = err.error.message;
+          if (isArray(err.error.message)) {
+            message = err.error.message[0];
+          }
+          this.snackBar.open(message, CLOSE, { duration: 2000 });
         },
       });
   }
@@ -248,5 +247,43 @@ export class ProfileComponent implements OnInit {
     this.profileService.deleteAvatar().subscribe(response => {
       this.picture = undefined;
     });
+  }
+
+  deleteUser() {
+    this.flagDeleteUser = true;
+    const snackBar = this.snackBar.open(DELETING, UNDO, { duration: 10000 });
+
+    snackBar.afterDismissed().subscribe({
+      next: dismissed => {
+        if (this.flagDeleteUser) {
+          this.profileService.deleteUser().subscribe({
+            next: deleted => {
+              this.oauthService.logOut();
+              this.logout();
+            },
+            error: error => {},
+          });
+        }
+      },
+      error: error => {},
+    });
+
+    snackBar.onAction().subscribe({
+      next: success => {
+        this.flagDeleteUser = false;
+      },
+      error: error => {},
+    });
+  }
+
+  logout() {
+    const logoutUrl =
+      localStorage.getItem(ISSUER_URL) +
+      LOGOUT_URL +
+      '?redirect=' +
+      localStorage.getItem(APP_URL);
+    this.profileService.logout();
+    this.oauthService.logOut();
+    window.location.href = logoutUrl;
   }
 }

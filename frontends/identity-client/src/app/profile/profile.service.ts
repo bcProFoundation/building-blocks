@@ -9,12 +9,13 @@ import {
   SET_AUTH_SERVER_USER,
   CHANGE_PASSWORD_ENDPOINT,
   DELETE_AVATAR_ENDPOINT,
+  DELETE_ME_ENDPOINT,
 } from '../constants/url-paths';
 import { ISSUER_URL, APP_URL } from '../constants/storage';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { MatSnackBar } from '@angular/material';
 import { CLOSE, CURRENT_PASSWORD_MISMATCH } from '../constants/messages';
-import { of } from 'rxjs';
+import { throwError } from 'rxjs';
 import { NavigationService } from '../navigation/navigation.service';
 
 @Injectable()
@@ -88,7 +89,7 @@ export class ProfileService {
   ) {
     if (newPassword !== repeatPassword) {
       this.snackBar.open(CURRENT_PASSWORD_MISMATCH, CLOSE, { duration: 2000 });
-      return of({ message: CURRENT_PASSWORD_MISMATCH });
+      return throwError({ message: CURRENT_PASSWORD_MISMATCH });
     } else {
       return this.http.post(
         localStorage.getItem(ISSUER_URL) + CHANGE_PASSWORD_ENDPOINT,
@@ -113,6 +114,15 @@ export class ProfileService {
       {
         headers: this.authorizationHeader,
       },
+    );
+  }
+
+  deleteUser() {
+    const issuerURL = localStorage.getItem(ISSUER_URL);
+    return this.http.post(
+      issuerURL + DELETE_ME_ENDPOINT,
+      {},
+      { headers: this.authorizationHeader },
     );
   }
 }
