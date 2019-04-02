@@ -1,0 +1,66 @@
+<mat-drawer-container class="sidenav-container">
+  <mat-drawer
+    #drawer
+    class="sidenav"
+    fixedInViewport="true"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'"
+    [disableClose]="!(isHandset$ | async)"
+    [opened]="!(isHandset$ | async)">
+    <mat-toolbar color="primary">Admin</mat-toolbar>
+    <mat-accordion>
+      <ng-container *ngIf="loggedIn">
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>Authorization</mat-panel-title>
+          </mat-expansion-panel-header>
+          <mat-nav-list>
+            <a mat-list-item routerLink="/client/list">Clients</a>
+            <a mat-list-item routerLink="/role/list">Roles</a>
+            <a mat-list-item routerLink="/user/list">Users</a>
+            <a mat-list-item routerLink="/scope/list">Scopes</a>
+            <a mat-list-item routerLink="/social_login/list">Social Login</a>
+            <a mat-list-item routerLink="/auth_settings">Settings</a>
+          </mat-nav-list>
+        </mat-expansion-panel>
+      </ng-container>
+      <ng-container *ngIf="loggedIn && isCommunicationEnabled">
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>Communication</mat-panel-title>
+          </mat-expansion-panel-header>
+            <mat-nav-list>
+              <mat-list-item routerLink="/email/list">Email Accounts</mat-list-item>
+              <mat-list-item routerLink="/storage/list">Cloud Storage</mat-list-item>
+            </mat-nav-list>
+        </mat-expansion-panel>
+      </ng-container>
+      <ng-container *ngIf="tokenIsValid || loggedIn">
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>Account</mat-expansion-panel-header>
+          <mat-nav-list>
+            <a mat-list-item (click)="logout()">Logout</a>
+          </mat-nav-list>
+        </mat-expansion-panel>
+      </ng-container>
+    </mat-accordion>
+  </mat-drawer>
+  <mat-drawer-content>
+    <mat-toolbar color="primary">
+      <button
+        type="button"
+        aria-label="Toggle sidenav"
+        mat-icon-button
+        (click)="drawer.toggle()"
+        *ngIf="isHandset$ | async">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+    </mat-toolbar>
+    <router-outlet></router-outlet>
+    <button
+      class="fab-container"
+      (click)="addModel()"
+      mat-fab>
+      <mat-icon>add</mat-icon>
+    </button>
+  </mat-drawer-content>
+</mat-drawer-container>
