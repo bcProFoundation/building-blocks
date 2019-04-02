@@ -1,7 +1,7 @@
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
-import { MaterialModule } from './material.module';
+import { MaterialModule } from './shared-imports/material/material.module';
 import { AppService } from './app.service';
 import { of } from 'rxjs';
 import { OAuthService } from 'angular-oauth2-oidc';

@@ -24,6 +24,7 @@ import { EmailVerifiedAndPasswordSetEvent } from '../../events/email-verified-an
 import { UserAccountModifiedEvent } from '../../events/user-account-modified/user-account-modified.event';
 import { USER } from '../../entities/user/user.schema';
 import { AuthDataRemovedEvent } from '../../events/auth-data-removed/auth-data-removed.event';
+import { i18n } from '../../../i18n/i18n.config';
 
 @Injectable()
 export class UserAggregateService extends AggregateRoot {
@@ -207,7 +208,7 @@ export class UserAggregateService extends AggregateRoot {
       this.apply(new PasswordChangedEvent(authData));
     } else {
       const errors =
-        result.errors.length > 0 ? result.errors : 'Invalid Password';
+        result.errors.length > 0 ? result.errors : i18n.__('Invalid Password');
       throw new BadRequestException(errors);
     }
   }

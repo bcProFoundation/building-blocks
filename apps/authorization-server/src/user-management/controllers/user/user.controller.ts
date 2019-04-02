@@ -212,4 +212,12 @@ export class UserController {
       ),
     );
   }
+
+  @Post('v1/delete_me')
+  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  async deleteMe(@Req() req) {
+    const user = req.user.user;
+    await this.commandBus.execute(new RemoveUserAccountCommand(user, user));
+    req.logout();
+  }
 }

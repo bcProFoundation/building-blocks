@@ -5,7 +5,7 @@ import {
   JwksValidationHandler,
   AuthConfig,
 } from 'angular-oauth2-oidc';
-import { StorageService } from './common/storage.service';
+import { StorageService } from './common/services/storage/storage.service';
 
 @Component({
   selector: 'app-root',

@@ -1,17 +1,17 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { HomeComponent } from './home/home.component';
-import { AuthGuard } from './guards/auth.guard.service';
-import { ListingComponent } from './listing/listing.component';
-import { ClientComponent } from './client/client.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { UserComponent } from './user/user.component';
-import { RoleComponent } from './role/role.component';
-import { ScopeComponent } from './scope/scope.component';
-import { SettingsComponent } from './settings/settings.component';
-import { SocialLoginComponent } from './social-login/social-login.component';
-import { EmailComponent } from './email/email.component';
-import { CloudStorageComponent } from './cloud-storage/cloud-storage.component';
+import { HomeComponent } from './shared-ui/home/home.component';
+import { AuthGuard } from './common/guards/auth-guard/auth.guard.service';
+import { ListingComponent } from './shared-ui/listing/listing.component';
+import { ClientComponent } from './authorization-ui/client/client.component';
+import { DashboardComponent } from './shared-ui/dashboard/dashboard.component';
+import { UserComponent } from './authorization-ui/user/user.component';
+import { RoleComponent } from './authorization-ui/role/role.component';
+import { ScopeComponent } from './authorization-ui/scope/scope.component';
+import { AuthSettingsComponent } from './authorization-ui/auth-settings/auth-settings.component';
+import { SocialLoginComponent } from './authorization-ui/social-login/social-login.component';
+import { EmailComponent } from './communication-ui/email/email.component';
+import { CloudStorageComponent } from './communication-ui/cloud-storage/cloud-storage.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -87,8 +87,8 @@ const routes: Routes = [
     canActivateChild: [AuthGuard],
   },
   {
-    path: 'settings',
-    component: SettingsComponent,
+    path: 'auth_settings',
+    component: AuthSettingsComponent,
     canActivateChild: [AuthGuard],
   },
 
