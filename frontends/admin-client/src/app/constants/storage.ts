@@ -10,3 +10,5 @@ export const STORAGE = 'storage';
 export const ACCESS_TOKEN = 'access_token';
 export const COMMUNICATION = 'communication';
 export const COMMUNICATION_SERVER = 'communication-server';
+export const INFRASTRUCTURE_CONSOLE = 'infrastructure-console';
+export const IDENTITY_PROVIDER = 'identity-provider';

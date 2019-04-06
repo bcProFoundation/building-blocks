@@ -1,0 +1,44 @@
+<div class="card-container">
+  <form [formGroup]="serviceForm">
+    <mat-card>
+      <mat-card-title>{{ name || "New Service" }}</mat-card-title>
+      <mat-card-content fxLayout="column">
+          <mat-form-field>
+            <input matInput placeholder="Service Name" formControlName="name" required>
+          </mat-form-field>
+          <mat-form-field>
+            <input
+              type="text"
+              placeholder="Select Type"
+              aria-label="Type"
+              matInput
+              formControlName="type"
+              (keyup)="searchKeyUp()"
+              [matAutocomplete]="auto">
+            <mat-autocomplete #auto="matAutocomplete">
+              <mat-option *ngFor="let type of serviceTypes | async" [value]="type.name">
+                {{ type.name }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-select
+              placeholder="Client ID"
+              formControlName="clientId">
+              <mat-option
+                *ngFor="let client of clientList"
+                [value]="client.clientId">{{ client.name + " (" + client.clientId + ")"}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput placeholder="Service URL" formControlName="serviceURL">
+          </mat-form-field>
+      </mat-card-content>
+      <mat-card-actions>
+        <button (click)="registerService()" mat-flat-button color="primary" [disabled]="!serviceForm.valid" *ngIf="!clientId">Create</button>
+        <button (click)="modifyService()" mat-flat-button color="primary" [disabled]="!serviceForm.valid" *ngIf="clientId">Update</button>
+      </mat-card-actions>
+    </mat-card>
+  </form>
+</div>

@@ -1,17 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, FormArray, FormBuilder } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 import { AuthSettingsService } from './auth-settings.service';
-import { SERVICES, ISSUER_URL } from '../../constants/storage';
-import { AuthServiceList } from './auth-service-list.interface';
-import { from, empty } from 'rxjs';
-import { mergeMap, toArray, map, catchError } from 'rxjs/operators';
-import { IAuthSettings } from './auth-settings.interface';
-import {
-  IS_DOWN,
-  CLOSE,
-  UPDATE_SUCCESSFUL,
-  ERROR_UPDATING_SERVICE_SETTINGS,
-} from '../../constants/messages';
+import { CLOSE, UPDATE_SUCCESSFUL } from '../../constants/messages';
 import { MatSnackBar } from '@angular/material';
 
 @Component({
@@ -21,6 +11,8 @@ import { MatSnackBar } from '@angular/material';
 })
 export class AuthSettingsComponent implements OnInit {
   issuerUrl: string;
+  identityProviderClientId: string;
+  infrastructureConsoleClientId: string;
   communicationServerClientId: string;
   clientList: any[];
   appURL: string;
@@ -28,18 +20,14 @@ export class AuthSettingsComponent implements OnInit {
   clientSecret: string;
   communicationServerSystemEmailAccount: string;
   emailAccounts: any[];
-  clientsFormGroup: FormGroup;
-  clientsFormArray: FormArray;
   cloudStorageList: { uuid: string; name: string }[] = [];
-
-  infraSettingsForm = new FormGroup({
-    appURL: new FormControl(this.appURL),
-    clientId: new FormControl(this.clientId),
-    clientSecret: new FormControl(this.clientSecret),
-  });
 
   authSettingsForm = new FormGroup({
     issuerUrl: new FormControl(this.issuerUrl),
+    infrastructureConsoleClientId: new FormControl(
+      this.infrastructureConsoleClientId,
+    ),
+    identityProviderClientId: new FormControl(this.identityProviderClientId),
     communicationServerClientId: new FormControl(
       this.communicationServerClientId,
     ),
@@ -50,19 +38,10 @@ export class AuthSettingsComponent implements OnInit {
 
   constructor(
     private settingsService: AuthSettingsService,
-    private formBuilder: FormBuilder,
     private snackBar: MatSnackBar,
   ) {}
 
   ngOnInit() {
-    this.clientsFormGroup = this.formBuilder.group({
-      clientsFormArray: new FormArray([]),
-    });
-
-    this.clientsFormArray = this.clientsFormGroup.get(
-      'clientsFormArray',
-    ) as FormArray;
-
     this.settingsService.getSettings().subscribe({
       next: (response: {
         issuerUrl: string;
@@ -75,94 +54,22 @@ export class AuthSettingsComponent implements OnInit {
       error: error => {},
     });
 
-    this.settingsService.getSavedEmailAccount<any>().subscribe({
-      next: settings => {
-        this.communicationServerSystemEmailAccount =
-          settings.communicationServerSystemEmailAccount;
-        this.authSettingsForm.controls.communicationServerSystemEmailAccount.setValue(
-          this.communicationServerSystemEmailAccount,
-        );
-      },
-    });
-
-    this.populateServicesSettings();
-
     this.settingsService.getClientList().subscribe({
       next: (response: any[]) => {
         this.clientList = response;
       },
       error: error => {},
     });
-
-    this.settingsService.getEmailAccounts().subscribe({
-      next: emails => {
-        this.emailAccounts = emails;
-      },
-      error: error => {},
-    });
-
-    this.settingsService.getBucketOptions().subscribe({
-      next: storages => (this.cloudStorageList = storages),
-      error: error => {},
-    });
-  }
-
-  populateServicesSettings() {
-    const services: AuthServiceList[] = JSON.parse(
-      localStorage.getItem(SERVICES),
-    );
-    from(services)
-      .pipe(
-        mergeMap(service => {
-          const serviceName = this.kebabToTitleCase(service.type);
-          return this.settingsService.getClientSettings(service.url).pipe(
-            catchError(error => {
-              this.snackBar.open(`${serviceName} ${IS_DOWN}`, CLOSE, {
-                duration: 2000,
-              });
-              return empty();
-            }),
-            map((data: IAuthSettings) => {
-              if (data) {
-                data.serviceName = serviceName;
-                return data;
-              }
-            }),
-          );
-        }),
-        toArray(),
-      )
-      .subscribe({
-        next: (servicesSettings: IAuthSettings[]) => {
-          for (const settings of servicesSettings) {
-            if (settings) {
-              this.clientsFormArray.push(
-                this.createClientsFormArrayItem(settings),
-              );
-            }
-          }
-        },
-        error: error => {},
-      });
-  }
-
-  createClientsFormArrayItem(settings: IAuthSettings): FormGroup {
-    const client = this.formBuilder.group({
-      appURL: settings.appURL,
-      clientId: settings.clientId,
-      clientSecret: settings.clientSecret,
-      cloudStorageSettings: settings.cloudStorageSettings,
-      serviceName: settings.serviceName,
-      hide: true,
-    });
-
-    client.controls.appURL.disable();
-
-    return client;
   }
 
   populateForm(response) {
     this.authSettingsForm.controls.issuerUrl.setValue(response.issuerUrl);
+    this.authSettingsForm.controls.infrastructureConsoleClientId.setValue(
+      response.infrastructureConsoleClientId,
+    );
+    this.authSettingsForm.controls.identityProviderClientId.setValue(
+      response.identityProviderClientId,
+    );
     this.authSettingsForm.controls.communicationServerClientId.setValue(
       response.communicationServerClientId,
     );
@@ -203,31 +110,5 @@ export class AuthSettingsComponent implements OnInit {
       .split('-')
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
-  }
-
-  updateClientSettings(client: FormGroup) {
-    const authServerURL = localStorage.getItem(ISSUER_URL);
-    const appURL = client.controls.appURL.value;
-    const clientId = client.controls.clientId.value;
-    const clientSecret = client.controls.clientSecret.value;
-    const cloudStorageSettings = client.controls.cloudStorageSettings.value;
-    this.settingsService
-      .updateClientSettings(appURL, {
-        authServerURL,
-        appURL,
-        clientId,
-        clientSecret,
-        cloudStorageSettings,
-      })
-      .subscribe({
-        next: success => {
-          this.snackBar.open(UPDATE_SUCCESSFUL, CLOSE, { duration: 2000 });
-        },
-        error: error => {
-          this.snackBar.open(ERROR_UPDATING_SERVICE_SETTINGS, CLOSE, {
-            duration: 2000,
-          });
-        },
-      });
   }
 }

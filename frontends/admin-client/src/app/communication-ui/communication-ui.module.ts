@@ -5,11 +5,20 @@ import { CloudStorageComponent } from './cloud-storage/cloud-storage.component';
 import { CloudStorageService } from './cloud-storage/cloud-storage.service';
 import { EmailService } from './email/email.service';
 import { SharedImportsModule } from '../shared-imports/shared-imports.module';
+import { CommunicationSettingsComponent } from './communication-settings/communication-settings.component';
 
 @NgModule({
-  declarations: [EmailComponent, CloudStorageComponent],
+  declarations: [
+    EmailComponent,
+    CloudStorageComponent,
+    CommunicationSettingsComponent,
+  ],
   imports: [CommonModule, SharedImportsModule],
-  exports: [EmailComponent, CloudStorageComponent],
+  exports: [
+    EmailComponent,
+    CloudStorageComponent,
+    CommunicationSettingsComponent,
+  ],
   providers: [EmailService, CloudStorageService],
 })
 export class CommunicationUIModule {}

@@ -8,13 +8,13 @@ import {
   Param,
   Req,
   Res,
-  ForbiddenException,
   SerializeOptions,
   UsePipes,
   ValidationPipe,
   UnauthorizedException,
   Delete,
   Put,
+  NotFoundException,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { ClientService } from '../../../client-management/entities/client/client.service';
@@ -146,7 +146,7 @@ export class ClientController {
         createdBy: req.user.user,
       });
     }
-    if (!client) throw new ForbiddenException();
+    if (!client) throw new NotFoundException({ uuid });
     return client;
   }
 
@@ -162,7 +162,7 @@ export class ClientController {
         createdBy: req.user.user,
       });
     }
-    if (!client) throw new ForbiddenException();
+    if (!client) throw new NotFoundException({ clientId });
     return client;
   }
 
