@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { StorageService } from '../../common/services/storage/storage.service';
-import { ISSUER_URL, COMMUNICATION_SERVER } from '../../constants/storage';
+import {
+  ISSUER_URL,
+  COMMUNICATION_SERVER,
+  APP_URL,
+} from '../../constants/storage';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import {
   HandleError,
@@ -32,6 +36,10 @@ export class ListingService {
 
     if (['storage', 'email'].includes(model)) {
       baseUrl = this.storageService.getServiceURL(COMMUNICATION_SERVER);
+    }
+
+    if (['service', 'service_type'].includes(model)) {
+      baseUrl = this.storageService.getInfo(APP_URL);
     }
 
     const url = `${baseUrl}/${model}/v1/list`;

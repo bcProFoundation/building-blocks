@@ -9,6 +9,8 @@ import { AccessTokenInjector } from './common/interceptors/access-token-injector
 import { SharedUIModule } from './shared-ui/shared-ui.module';
 import { AuthorizationUIModule } from './authorization-ui/authorization-ui.module';
 import { CommunicationUIModule } from './communication-ui/communication-ui.module';
+import { InfrastructureUIModule } from './infrastructure-ui/infrastructure-ui.module';
+import { IdentityProviderUIModule } from './identity-provider-ui/identity-provider-ui.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -17,6 +19,8 @@ import { CommunicationUIModule } from './communication-ui/communication-ui.modul
     SharedUIModule,
     CommunicationUIModule,
     AuthorizationUIModule,
+    InfrastructureUIModule,
+    IdentityProviderUIModule,
   ],
   providers: [
     AppService,

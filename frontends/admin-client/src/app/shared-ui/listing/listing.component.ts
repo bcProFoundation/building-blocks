@@ -49,4 +49,13 @@ export class ListingComponent {
       this.paginator.pageSize,
     );
   }
+
+  snakeToTitleCase(string: string) {
+    if (!string) return;
+
+    return string
+      .split('_')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }
 }

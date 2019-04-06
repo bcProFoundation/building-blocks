@@ -2,6 +2,8 @@ import { ConfigService } from '../config/config.service';
 import { MongoConnectionOptions } from 'typeorm/driver/mongodb/MongoConnectionOptions';
 import { ServerSettings } from '../system-settings/entities/server-settings/server-settings.entity';
 import { TokenCache } from '../auth/entities/token-cache/token-cache.entity';
+import { Service } from '../service-management/entities/service/service.entity';
+import { ServiceType } from '../service-management/entities/service-type/service-type.entity';
 
 const config = new ConfigService();
 
@@ -13,6 +15,6 @@ export const TYPEORM_CONNECTION: MongoConnectionOptions = {
   password: config.get('DB_PASSWORD'),
   logging: false,
   synchronize: true,
-  entities: [ServerSettings, TokenCache],
+  entities: [ServerSettings, TokenCache, Service, ServiceType],
   useNewUrlParser: true,
 };

@@ -12,6 +12,11 @@ import { AuthSettingsComponent } from './authorization-ui/auth-settings/auth-set
 import { SocialLoginComponent } from './authorization-ui/social-login/social-login.component';
 import { EmailComponent } from './communication-ui/email/email.component';
 import { CloudStorageComponent } from './communication-ui/cloud-storage/cloud-storage.component';
+import { ServiceComponent } from './infrastructure-ui/service/service.component';
+import { ServiceTypeComponent } from './infrastructure-ui/service-type/service-type.component';
+import { CommunicationSettingsComponent } from './communication-ui/communication-settings/communication-settings.component';
+import { InfrastructureSettingsComponent } from './infrastructure-ui/infrastructure-settings/infrastructure-settings.component';
+import { IdpSettingsComponent } from './identity-provider-ui/idp-settings/idp-settings.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -52,6 +57,16 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'service/list',
+    component: ListingComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'service_type/list',
+    component: ListingComponent,
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'client/:id',
     component: ClientComponent,
     canActivateChild: [AuthGuard],
@@ -87,8 +102,33 @@ const routes: Routes = [
     canActivateChild: [AuthGuard],
   },
   {
+    path: 'service/:id',
+    component: ServiceComponent,
+    canActivateChild: [AuthGuard],
+  },
+  {
+    path: 'service_type/:id',
+    component: ServiceTypeComponent,
+    canActivateChild: [AuthGuard],
+  },
+  {
     path: 'auth_settings',
     component: AuthSettingsComponent,
+    canActivateChild: [AuthGuard],
+  },
+  {
+    path: 'communication_settings',
+    component: CommunicationSettingsComponent,
+    canActivateChild: [AuthGuard],
+  },
+  {
+    path: 'infrastructure_settings',
+    component: InfrastructureSettingsComponent,
+    canActivateChild: [AuthGuard],
+  },
+  {
+    path: 'idp_settings',
+    component: IdpSettingsComponent,
     canActivateChild: [AuthGuard],
   },
 

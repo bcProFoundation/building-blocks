@@ -22,12 +22,20 @@ export class AppService {
       session: req.isAuthenticated(),
       communication: false,
     };
+
+    let parsedUrl: URL;
+    let url: string;
+
     try {
       services = trustedClients.map(client => {
         const type = this.kebabCase(client.name);
-        const parsedUrl = new URL(client.redirectUris[0]);
-        let url = `${parsedUrl.protocol}//${parsedUrl.hostname}`;
-        if (parsedUrl.port) url += `:${parsedUrl.port}`;
+        try {
+          parsedUrl = new URL(client.redirectUris[0]);
+          url = `${parsedUrl.protocol}//${parsedUrl.hostname}`;
+          if (parsedUrl.port) url += `:${parsedUrl.port}`;
+        } catch (error) {
+          url = undefined;
+        }
         return { type, url };
       });
       message.services = services;

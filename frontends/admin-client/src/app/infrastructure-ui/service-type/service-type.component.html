@@ -1,0 +1,25 @@
+<div class="card-container">
+  <form [formGroup]="serviceTypeForm">
+    <mat-card>
+      <mat-card-title>{{ name || "New Service Type" }}</mat-card-title>
+      <mat-card-content fxLayout="column">
+          <mat-form-field>
+            <input matInput placeholder="Service Type Name" formControlName="serviceTypeName" required>
+          </mat-form-field>
+      </mat-card-content>
+      <mat-card-actions>
+        <button
+          mat-flat-button
+          color="warn"
+          (click)="deleteServiceType()"
+          *ngIf="name">Delete</button>
+        <button
+          (click)="createServiceType()"
+          mat-flat-button
+          color="primary"
+          [disabled]="!serviceTypeForm.valid"
+          *ngIf="!name">Create</button>
+      </mat-card-actions>
+    </mat-card>
+  </form>
+</div>
