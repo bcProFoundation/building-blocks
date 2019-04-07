@@ -7,9 +7,9 @@
     [disableClose]="!(isHandset$ | async)"
     [opened]="!(isHandset$ | async)">
     <mat-toolbar color="primary">Admin</mat-toolbar>
-    <mat-accordion>
-      <ng-container *ngIf="loggedIn">
-        <mat-expansion-panel>
+    <ng-container *ngIf="loggedIn">
+      <mat-accordion>
+        <mat-expansion-panel class="mat-elevation-z0">
           <mat-expansion-panel-header>
             <mat-panel-title>Authorization</mat-panel-title>
           </mat-expansion-panel-header>
@@ -22,27 +22,56 @@
             <a mat-list-item routerLink="/auth_settings">Settings</a>
           </mat-nav-list>
         </mat-expansion-panel>
-      </ng-container>
-      <ng-container *ngIf="loggedIn && isCommunicationEnabled">
-        <mat-expansion-panel>
+      </mat-accordion>
+      <mat-accordion>
+        <mat-expansion-panel class="mat-elevation-z0">
+          <mat-expansion-panel-header>
+            <mat-panel-title>Infrastructure</mat-panel-title>
+          </mat-expansion-panel-header>
+          <mat-nav-list>
+            <a mat-list-item routerLink="/service/list">Services</a>
+            <a mat-list-item routerLink="/service_type/list">Service Types</a>
+            <a mat-list-item routerLink="/infrastructure_settings">Settings</a>
+          </mat-nav-list>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </ng-container>
+    <ng-container *ngIf="loggedIn && isCommunicationEnabled">
+      <mat-accordion>
+        <mat-expansion-panel class="mat-elevation-z0">
           <mat-expansion-panel-header>
             <mat-panel-title>Communication</mat-panel-title>
           </mat-expansion-panel-header>
             <mat-nav-list>
-              <mat-list-item routerLink="/email/list">Email Accounts</mat-list-item>
-              <mat-list-item routerLink="/storage/list">Cloud Storage</mat-list-item>
+              <a mat-list-item routerLink="/email/list">Email</a>
+              <a mat-list-item routerLink="/storage/list">Storage</a>
+              <a mat-list-item routerLink="/communication_settings">Settings</a>
             </mat-nav-list>
         </mat-expansion-panel>
-      </ng-container>
-      <ng-container *ngIf="tokenIsValid || loggedIn">
-        <mat-expansion-panel>
+      </mat-accordion>
+    </ng-container>
+    <ng-container *ngIf="loggedIn && isCommunicationEnabled">
+      <mat-accordion>
+        <mat-expansion-panel class="mat-elevation-z0">
+          <mat-expansion-panel-header>
+            <mat-panel-title>Identity Provider</mat-panel-title>
+          </mat-expansion-panel-header>
+            <mat-nav-list>
+              <a mat-list-item routerLink="/idp_settings">Settings</a>
+            </mat-nav-list>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </ng-container>
+    <ng-container *ngIf="tokenIsValid || loggedIn">
+      <mat-accordion>
+        <mat-expansion-panel class="mat-elevation-z0">
           <mat-expansion-panel-header>Account</mat-expansion-panel-header>
           <mat-nav-list>
             <a mat-list-item (click)="logout()">Logout</a>
           </mat-nav-list>
         </mat-expansion-panel>
-      </ng-container>
-    </mat-accordion>
+      </mat-accordion>
+    </ng-container>
   </mat-drawer>
   <mat-drawer-content>
     <mat-toolbar color="primary">

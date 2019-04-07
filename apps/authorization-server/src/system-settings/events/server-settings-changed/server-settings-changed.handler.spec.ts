@@ -38,7 +38,7 @@ describe('Event: SystemSettingsChangedHandler', () => {
     expect(eventHandler).toBeDefined();
   });
 
-  it('should save AuthData using Mongoose', async () => {
+  it('should save ServerSettings using Mongoose', async () => {
     mockServerSettings.save = jest.fn(() =>
       Promise.resolve(mockServerSettings),
     );
