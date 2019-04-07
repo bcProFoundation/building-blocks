@@ -1,6 +1,6 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { ServiceService } from '../../entities/service/service.service';
-import { Service } from 'service-management/entities/service/service.entity';
+import { Service } from '../../entities/service/service.entity';
 
 @Injectable()
 export class ServiceClientIdMustBeUniquePolicyService {
