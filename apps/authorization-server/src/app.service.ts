@@ -14,9 +14,8 @@ export class AppService {
 
   async info(req?) {
     let settings: ServerSettings, services;
-    const trustedClients = await this.clientService.findAll({
-      isTrusted: { $gt: 0 },
-    });
+    this.serverSettings.find();
+
     const message: ServiceMessage = {
       service: i18n.__('Authorization Server'),
       session: req.isAuthenticated(),
@@ -27,8 +26,20 @@ export class AppService {
     let url: string;
 
     try {
+      settings = await this.serverSettings.find();
+
+      const trustedClients = await this.clientService.findAll({
+        clientId: {
+          $in: [
+            settings.identityProviderClientId,
+            settings.infrastructureConsoleClientId,
+            settings.communicationServerClientId,
+          ],
+        },
+        isTrusted: { $gt: 0 },
+      });
       services = trustedClients.map(client => {
-        const type = this.kebabCase(client.name);
+        const type = this.getServiceName(client.clientId, settings);
         try {
           parsedUrl = new URL(client.redirectUris[0]);
           url = `${parsedUrl.protocol}//${parsedUrl.hostname}`;
@@ -38,26 +49,34 @@ export class AppService {
         }
         return { type, url };
       });
-      message.services = services;
-    } catch (error) {
-      message.services = [];
-    }
 
-    try {
-      settings = await this.serverSettings.find();
       if (settings.communicationServerClientId) {
         message.communication = true;
       }
     } catch (error) {
       message.communication = false;
+      services = [];
     }
+
+    message.services = services;
+
     return message;
   }
 
-  kebabCase(str) {
-    return str
-      .replace(/([a-z])([A-Z])/g, '$1-$2')
-      .replace(/[\s_]+/g, '-')
-      .toLowerCase();
+  getServiceName(clientId: string, settings: ServerSettings) {
+    switch (clientId) {
+      case settings.infrastructureConsoleClientId:
+        return ConnectedServiceNames.INFRASTRUCTURE_CONSOLE;
+      case settings.communicationServerClientId:
+        return ConnectedServiceNames.COMMUNICATION_SERVER;
+      case settings.identityProviderClientId:
+        return ConnectedServiceNames.IDENTITY_PROVIDER;
+    }
   }
+}
+
+export enum ConnectedServiceNames {
+  INFRASTRUCTURE_CONSOLE = 'infrastructure-console',
+  COMMUNICATION_SERVER = 'communication-server',
+  IDENTITY_PROVIDER = 'identity-provider',
 }
