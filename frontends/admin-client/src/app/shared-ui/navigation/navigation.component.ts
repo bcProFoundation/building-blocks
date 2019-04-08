@@ -5,7 +5,12 @@ import { map, filter } from 'rxjs/operators';
 import { OAuthService, OAuthEvent } from 'angular-oauth2-oidc';
 import { Router, NavigationEnd } from '@angular/router';
 import { StorageService } from '../../common/services/storage/storage.service';
-import { ISSUER_URL, APP_URL, COMMUNICATION } from '../../constants/storage';
+import {
+  ISSUER_URL,
+  APP_URL,
+  COMMUNICATION,
+  IDENTITY_PROVIDER,
+} from '../../constants/storage';
 import { IDTokenClaims } from '../../interfaces/id-token-claims.interfaces';
 import { ADMINISTRATOR } from '../../constants/roles';
 
@@ -24,6 +29,7 @@ export class NavigationComponent implements OnInit {
   route: string;
   hideFAB: boolean;
   isCommunicationEnabled: boolean;
+  isIdentityProviderAvailable: boolean;
 
   constructor(
     private breakpointObserver: BreakpointObserver,
@@ -50,6 +56,14 @@ export class NavigationComponent implements OnInit {
     });
 
     this.setUserSession();
+
+    try {
+      this.isIdentityProviderAvailable = this.storageService.getServiceURL(
+        IDENTITY_PROVIDER,
+      );
+    } catch (error) {
+      this.isIdentityProviderAvailable = false;
+    }
 
     try {
       this.isCommunicationEnabled = JSON.parse(
