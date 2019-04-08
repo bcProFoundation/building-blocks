@@ -6,5 +6,6 @@ export class ListServicesQuery implements IQuery {
     public readonly limit: number,
     public readonly search?: string,
     public readonly sort?: string,
+    public readonly type?: string,
   ) {}
 }

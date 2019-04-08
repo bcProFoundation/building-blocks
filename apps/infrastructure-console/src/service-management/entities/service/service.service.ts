@@ -30,10 +30,15 @@ export class ServiceService {
     return await this.serviceRepository.count();
   }
 
-  async paginate(skip: number, take: number, search: string, order: any) {
+  async paginate(
+    skip: number,
+    take: number,
+    search: string,
+    order: any,
+    type: string,
+  ) {
     skip = Number(skip);
     take = Number(take);
-
     const nameExp = new RegExp(search, 'i');
     const $or = ['name', 'clientId', 'serviceURL', 'type', 'uuid'].map(
       field => {
@@ -43,11 +48,14 @@ export class ServiceService {
       },
     );
 
+    const where: { $or?: any; type?: string } = { $or };
+    if (type) where.type = type;
+
     const docs = await this.serviceRepository.find({
       skip,
       take,
       order,
-      where: { $or },
+      where,
     });
 
     const length = await this.serviceRepository.count({ $or });

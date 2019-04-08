@@ -37,11 +37,12 @@ export class ServiceController {
     @Req() req: Request,
     @Query('offset') offset: number,
     @Query('limit') limit: number,
+    @Query('type') type?: string,
     @Query('search') search?: string,
     @Query('sort') sort?: string,
   ) {
     return await this.queryBus.execute(
-      new ListServicesQuery(offset, limit, search, sort),
+      new ListServicesQuery(offset, limit, search, sort, type),
     );
   }
 
