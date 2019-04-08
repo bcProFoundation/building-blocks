@@ -80,6 +80,8 @@ export class AuthSettingsComponent implements OnInit {
       .update(
         this.authSettingsForm.controls.issuerUrl.value,
         this.authSettingsForm.controls.communicationServerClientId.value,
+        this.authSettingsForm.controls.infrastructureConsoleClientId.value,
+        this.authSettingsForm.controls.identityProviderClientId.value,
       )
       .subscribe({
         next: response => {

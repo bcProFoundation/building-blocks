@@ -48,13 +48,20 @@ export class AuthSettingsService {
     return this.http.get(requestUrl, { headers: this.headers });
   }
 
-  update(issuerUrl, communicationServerClientId) {
+  update(
+    issuerUrl: string,
+    communicationServerClientId: string,
+    infrastructureConsoleClienId: string,
+    identityProviderClienId: string,
+  ) {
     const requestUrl = localStorage.getItem(ISSUER_URL) + '/settings/v1/update';
     return this.http.post(
       requestUrl,
       {
         issuerUrl,
         communicationServerClientId,
+        infrastructureConsoleClienId,
+        identityProviderClienId,
       },
       { headers: this.headers },
     );
