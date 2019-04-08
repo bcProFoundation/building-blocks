@@ -7,11 +7,11 @@ export class ChangeServerSettingsHandler
   implements ICommandHandler<ChangeServerSettingsCommand> {
   constructor(
     private readonly manager: SystemSettingsManagementService,
-    private readonly pulisher: EventPublisher,
+    private readonly publisher: EventPublisher,
   ) {}
   async execute(command: ChangeServerSettingsCommand) {
     const { actorUserUuid, payload } = command;
-    const aggregate = this.pulisher.mergeObjectContext(this.manager);
+    const aggregate = this.publisher.mergeObjectContext(this.manager);
     const settings = await aggregate.updateSettings(actorUserUuid, payload);
     aggregate.commit();
     return {

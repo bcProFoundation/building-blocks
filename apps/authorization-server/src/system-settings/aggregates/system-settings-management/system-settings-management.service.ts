@@ -24,17 +24,32 @@ export class SystemSettingsManagementService extends AggregateRoot {
       payload.communicationServerClientId &&
       ['production', 'development'].includes(process.env.NODE_ENV)
     ) {
-      const client = await this.clientService.findOne({
-        clientId: payload.communicationServerClientId,
-      });
-      if (!client) throw invalidClientException;
+      await this.checkValidClientId(payload.communicationServerClientId);
       settings.communicationServerClientId =
         payload.communicationServerClientId;
     }
+
+    if (payload.identityProviderClientId) {
+      await this.checkValidClientId(payload.identityProviderClientId);
+      settings.identityProviderClientId = payload.identityProviderClientId;
+    }
+
+    if (payload.infrastructureConsoleClientId) {
+      await this.checkValidClientId(payload.infrastructureConsoleClientId);
+      settings.infrastructureConsoleClientId =
+        payload.infrastructureConsoleClientId;
+    }
+
     this.apply(new SystemSettingsChangedEvent(actorUserUuid, settings));
   }
 
   getSettings() {
     return from(this.settingsService.find());
+  }
+
+  async checkValidClientId(clientId: string) {
+    if (!(await this.clientService.findOne({ clientId }))) {
+      throw invalidClientException;
+    }
   }
 }
