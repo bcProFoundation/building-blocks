@@ -46,9 +46,6 @@ export class TokenSchedulerService implements OnModuleInit {
           const clients = await clientModel.find().exec();
           for (const client of clients) {
             if (client.tokenDeleteEndpoint) {
-              const baseEncodedCred = Buffer.from(
-                client.clientId + ':' + client.clientSecret,
-              ).toString('base64');
               this.http
                 .post(
                   client.tokenDeleteEndpoint,
@@ -57,8 +54,9 @@ export class TokenSchedulerService implements OnModuleInit {
                     accessToken,
                   },
                   {
-                    headers: {
-                      Authorization: 'Basic ' + baseEncodedCred,
+                    auth: {
+                      username: client.clientId,
+                      password: client.clientSecret,
                     },
                   },
                 )

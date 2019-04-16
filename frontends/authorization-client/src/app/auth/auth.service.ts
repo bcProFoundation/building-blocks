@@ -27,13 +27,15 @@ export class AuthService {
     });
   }
 
-  isAuthenticated(router: Router): Observable<boolean> {
+  isAuthenticated(router?: Router): Observable<boolean> {
     return this.http.get('/info').pipe(
       map((r: InfoResponse) => {
         if (r.session) {
           return r.session;
         } else {
-          router.navigate(['login']);
+          if (router) {
+            router.navigate(['login']);
+          }
           return false;
         }
       }),
