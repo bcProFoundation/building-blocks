@@ -28,7 +28,7 @@ export class TokenGuard implements CanActivate {
       switchMap(cachedToken => {
         if (!cachedToken) {
           return this.introspectToken(accessToken, req);
-        } else if (new Date().getTime() < cachedToken.exp) {
+        } else if (Math.floor(new Date().getTime() / 1000) < cachedToken.exp) {
           req[TOKEN] = cachedToken;
           return of(true);
         } else {
@@ -59,12 +59,15 @@ export class TokenGuard implements CanActivate {
           .pipe(
             retry(3),
             switchMap(response => {
-              return from(this.cacheToken(response.data, accessToken)).pipe(
-                switchMap(cachedToken => {
-                  req[TOKEN] = cachedToken;
-                  return of(cachedToken.active);
-                }),
-              );
+              if (response.data.active) {
+                return from(this.cacheToken(response.data, accessToken)).pipe(
+                  switchMap(cachedToken => {
+                    req[TOKEN] = cachedToken;
+                    return of(cachedToken.active);
+                  }),
+                );
+              }
+              return of(false);
             }),
           );
       }),

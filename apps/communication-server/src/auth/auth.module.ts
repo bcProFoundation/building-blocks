@@ -3,6 +3,7 @@ import { AuthEntitiesModule } from './entities/entities.module';
 import { AuthServerVerificationGuard } from './guards/authserver-verification.guard';
 import { RoleGuard } from './guards/role.guard';
 import { TokenGuard } from './guards/token.guard';
+import { AuthSchedulers } from './schedulers';
 
 @Global()
 @Module({
@@ -12,6 +13,7 @@ import { TokenGuard } from './guards/token.guard';
     AuthServerVerificationGuard,
     RoleGuard,
     TokenGuard,
+    ...AuthSchedulers,
   ],
   exports: [
     AuthEntitiesModule,
