@@ -13,6 +13,7 @@ describe('LoginComponent', () => {
   let fixture: ComponentFixture<LoginComponent>;
   const authServiceStub: Partial<AuthService> = {
     getSocialLogins: (...args) => of([{}]),
+    isAuthenticated: (...args) => of(false),
   };
 
   beforeEach(async(() => {
