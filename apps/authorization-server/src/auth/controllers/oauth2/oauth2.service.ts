@@ -34,14 +34,19 @@ export class OAuth2Service {
 
     let tokenData: any = { active: false };
     if (bearerToken) {
+      /**
+       * exp Integer timestamp, measured in the number of seconds
+       * since January 1 1970 UTC, indicating when this token will expire
+       * https://tools.ietf.org/html/rfc7662#section-2.2
+       */
       const exp = new Date(
         bearerToken.creation.getTime() + bearerToken.expiresIn * 1000,
       );
 
       tokenData = {
         client_id: bearerToken.client,
-        active: exp.valueOf() > new Date().valueOf(),
-        exp: exp.valueOf(),
+        active: this.unixTime(exp) > this.unixTime(new Date()),
+        exp: this.unixTime(exp),
       };
 
       if (bearerToken.user) tokenData.sub = bearerToken.user;
@@ -69,5 +74,13 @@ export class OAuth2Service {
         });
       }),
     );
+  }
+
+  /**
+   * unixTime Returns the stored time value in seconds since midnight, January 1, 1970 UTC.
+   * @param date
+   */
+  unixTime(date: Date) {
+    return Math.floor(date.valueOf() / 1000);
   }
 }
