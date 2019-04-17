@@ -17,16 +17,18 @@ export class ErrorFilter implements ExceptionFilter {
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
     if (status === HttpStatus.FORBIDDEN) {
-      return response.redirect(
+      response.redirect(
         '/login?redirect=' + encodeURIComponent(request.originalUrl),
       );
     }
 
-    if (status === HttpStatus.NOT_FOUND)
-      return response.status(status).render('404');
+    if (status === HttpStatus.NOT_FOUND) {
+      response.status(status).render('404');
+    }
+
     if (status === HttpStatus.INTERNAL_SERVER_ERROR) {
       const message = error.message;
-      return response.status(status).json({ error: message });
+      response.status(status).json({ error: message });
     }
   }
 }
