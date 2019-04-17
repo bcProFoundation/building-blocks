@@ -3,7 +3,6 @@ import { AppModule } from './app.module';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { ExpressServer } from './express-server';
 import { ConfigService } from './config/config.service';
-import { ErrorFilter } from './common/filters/errors.filter';
 
 async function bootstrap() {
   const authServer = new ExpressServer(new ConfigService());
@@ -14,9 +13,6 @@ async function bootstrap() {
     AppModule,
     new ExpressAdapter(authServer.server),
   );
-
-  // Enable global error filter
-  app.useGlobalFilters(new ErrorFilter());
 
   // Enable CORS
   app.enableCors();
