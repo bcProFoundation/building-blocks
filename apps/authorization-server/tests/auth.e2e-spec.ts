@@ -36,7 +36,7 @@ describe('AuthController (e2e)', () => {
         password: '14CharP@ssword',
         name: 'Test User',
       })
-      .expect(200);
+      .expect(201);
   });
 
   it('/POST /auth/signup (invalid email)', done => {

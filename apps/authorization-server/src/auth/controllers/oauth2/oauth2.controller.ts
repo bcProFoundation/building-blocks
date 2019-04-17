@@ -7,7 +7,8 @@ import {
   Render,
   UseFilters,
   Body,
-  Res,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { AuthGuard } from '../../guards/auth.guard';
 import { EnsureLoginGuard } from '../../guards/ensure-login.guard';
@@ -68,13 +69,13 @@ export class OAuth2Controller {
   }
 
   @Post('introspection')
+  @HttpCode(HttpStatus.OK)
   @UseGuards(TokenIntrospectionGuard)
   @ApiOperation({
     title: i18n.__('Introspection'),
     description: i18n.__('Introspect token validity'),
   })
-  async tokenIntrospection(@Body('token') token, @Res() res, @Req() req) {
-    const tokenData = await this.oauth2Service.tokenIntrospection(token);
-    res.json(tokenData);
+  async tokenIntrospection(@Body('token') token) {
+    return await this.oauth2Service.tokenIntrospection(token);
   }
 }

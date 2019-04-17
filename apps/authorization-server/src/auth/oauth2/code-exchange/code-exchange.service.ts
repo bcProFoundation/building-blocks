@@ -29,6 +29,7 @@ export class CodeExchangeService {
 
       if (!localCode) {
         issued(invalidAuthorizationCodeException);
+        return;
       } else {
         const user = await this.userService.findOne({ uuid: localCode.user });
         const scope: string[] = localCode.scope;
@@ -45,6 +46,13 @@ export class CodeExchangeService {
         if (localCode.codeChallenge && localCode.codeChallengeMethod) {
           switch (localCode.codeChallengeMethod) {
             case 's256':
+              if (!body.code_verifier) {
+                await this.authorizationCodeService.delete({
+                  code: localCode.code,
+                });
+                issued(invalidCodeChallengeException);
+                return;
+              }
               // decode
               const codeVerifier = crypto
                 .createHash('sha256')
@@ -58,13 +66,21 @@ export class CodeExchangeService {
                 .replace(/=/g, '');
 
               if (codeChallenge !== localCode.codeChallenge) {
+                await this.authorizationCodeService.delete({
+                  code: localCode.code,
+                });
                 issued(invalidCodeChallengeException);
+                return;
               }
               break;
             case 'plain':
               // direct compare
               if (body.code_verifier !== localCode.codeChallenge) {
+                await this.authorizationCodeService.delete({
+                  code: localCode.code,
+                });
                 issued(invalidCodeChallengeException);
+                return;
               }
               break;
           }

@@ -31,6 +31,7 @@ describe('OAuth2Controller (e2e)', () => {
   let refreshToken: string;
   let bearerTokenService;
   let userService;
+  let codePKCE: string;
   const authServer = new ExpressServer(new ConfigService());
 
   beforeAll(async () => {
@@ -339,6 +340,41 @@ describe('OAuth2Controller (e2e)', () => {
       expect(oidcCode).not.toBeNull();
       done();
     });
+  });
+
+  it('/GET /oauth2/confirmation (Authorization Code Grant PKCE)', done => {
+    const authRequest = `/oauth2/confirmation?scope=${allowedScopes.toString()}&response_type=code&client_id=${clientId}&redirect_uri=${
+      redirectUris[0]
+    }&state=420&code_challenge_method=S256&code_challenge=21XaP8MJjpxCMRxgEzBP82sZ73PRLqkyBUta1R309J0`;
+    const req = request(app.getHttpServer()).get(authRequest);
+    req.cookies = Cookies;
+    return req.end((err, response) => {
+      if (err) return done(err);
+      codePKCE = getParameterByName(response.header.location, 'code');
+      const state = getParameterByName(response.header.location, 'state');
+      expect(state).toEqual('420');
+      done();
+    });
+  });
+
+  it('/POST /oauth2/token (Code Exchange PKCE)', done => {
+    const req: any = {
+      grant_type: 'authorization_code',
+      code: codePKCE,
+      redirect_uri: redirectUris[0],
+      client_id: clientId,
+      scope: allowedScopes.toString(),
+      code_verifier: '420',
+    };
+    return request(app.getHttpServer())
+      .post('/oauth2/token')
+      .send(req)
+      .expect(200)
+      .then(response => {
+        refreshToken = response.body.refresh_token;
+        expect(response.body.token_type).toEqual('Bearer');
+        done();
+      });
   });
 
   afterAll(async () => {
