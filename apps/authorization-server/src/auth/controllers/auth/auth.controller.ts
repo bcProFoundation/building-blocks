@@ -8,6 +8,8 @@ import {
   ValidationPipe,
   UsePipes,
   Get,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { callback } from '../../passport/strategies/local.strategy';
@@ -25,6 +27,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
+  @HttpCode(HttpStatus.OK)
   @UseGuards(
     AuthGuard('local', {
       session: true,
