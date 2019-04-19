@@ -44,7 +44,7 @@ export class AuthService {
    * @param user
    * @param roles
    */
-  public async signUp(user: UserAccountDto, roles?: Role[]) {
+  public async signUp(user: UserAccountDto) {
     const settings = await this.settings
       .getModel()
       .find()
@@ -58,39 +58,13 @@ export class AuthService {
         message: 'SIGNUP_VIA_EMAIL_OR_PHONE',
       });
     }
-    const result = this.passwordPolicy.validatePassword(user.password);
-    if (result.errors.length > 0) {
-      throw new BadRequestException({
-        errors: result.errors,
-        message: i18n.__('Password not secure'),
-      });
-    }
-    const UserModel = this.userService.getModel();
-    const userEntity: User = new UserModel();
-    userEntity.name = user.name;
+    this.validatePassword(user);
+    return this.saveUser(user);
+  }
 
-    // process email field
-    userEntity.email = user.email.toLowerCase().trim();
-    userEntity.phone = user.phone;
-
-    const AuthDataModel = this.authDataService.getModel();
-    const authData: AuthData = new AuthDataModel();
-    authData.password = await this.cryptoService.hashPassword(user.password);
-    await authData.save();
-    userEntity.password = authData.uuid;
-
-    if (roles && roles.length) {
-      userEntity.roles = roles.map(r => r.name);
-    }
-
-    const checkUser = await this.checkExistingUser(userEntity);
-
-    if (checkUser) {
-      await AuthDataModel.deleteOne(authData);
-      throw userAlreadyExistsException;
-    } else {
-      return await this.userService.save(userEntity);
-    }
+  async setupAdministrator(user: UserAccountDto, roles: Role[]) {
+    this.validatePassword(user);
+    return this.saveUser(user, roles);
   }
 
   /**
@@ -265,6 +239,45 @@ export class AuthService {
         }
       }
       throw invalidOTPException;
+    }
+  }
+
+  async saveUser(user: UserAccountDto, roles?: Role[]) {
+    const UserModel = this.userService.getModel();
+    const userEntity: User = new UserModel();
+    userEntity.name = user.name;
+
+    // process email field
+    userEntity.email = user.email.toLowerCase().trim();
+    userEntity.phone = user.phone;
+
+    const AuthDataModel = this.authDataService.getModel();
+    const authData: AuthData = new AuthDataModel();
+    authData.password = await this.cryptoService.hashPassword(user.password);
+    await authData.save();
+    userEntity.password = authData.uuid;
+
+    if (roles && roles.length) {
+      userEntity.roles = roles.map(r => r.name);
+    }
+
+    const checkUser = await this.checkExistingUser(userEntity);
+
+    if (checkUser) {
+      await AuthDataModel.deleteOne(authData);
+      throw userAlreadyExistsException;
+    } else {
+      return await this.userService.save(userEntity);
+    }
+  }
+
+  validatePassword(user: UserAccountDto) {
+    const result = this.passwordPolicy.validatePassword(user.password);
+    if (result.errors.length > 0) {
+      throw new BadRequestException({
+        errors: result.errors,
+        message: i18n.__('Password not secure'),
+      });
     }
   }
 }
