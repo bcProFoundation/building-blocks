@@ -123,6 +123,6 @@ export class SetupService {
       password: adminPassword,
       phone,
     };
-    return await this.authService.signUp(user, [adminRole]);
+    return await this.authService.setupAdministrator(user, [adminRole]);
   }
 }
