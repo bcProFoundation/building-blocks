@@ -5,17 +5,12 @@ import { ExpressAdapter } from '@nestjs/platform-express';
 import { AppModule } from '../src/app.module';
 import { ExpressServer } from '../src/express-server';
 import { getParameterByName, OIDCKey } from './e2e-helpers';
-import { SetupService } from '../src/system-settings/controllers/setup/setup.service';
-import { ScopeService } from '../src/client-management/entities/scope/scope.service';
 import { UserService } from '../src/user-management/entities/user/user.service';
-import { ClientService } from '../src/client-management/entities/client/client.service';
-import { AuthorizationCodeService } from '../src/auth/entities/authorization-code/authorization-code.service';
 import { BearerTokenService } from '../src/auth/entities/bearer-token/bearer-token.service';
-import { RoleService } from '../src/user-management/entities/role/role.service';
-import { ServerSettingsService } from '../src/system-settings/entities/server-settings/server-settings.service';
 import { OIDCKeyService } from '../src/auth/entities/oidc-key/oidc-key.service';
 import 'jest';
 import { ConfigService } from '../src/config/config.service';
+import { KeyPairGeneratorService } from '../src/auth/schedulers';
 jest.setTimeout(30000);
 
 describe('OAuth2Controller (e2e)', () => {
@@ -43,47 +38,50 @@ describe('OAuth2Controller (e2e)', () => {
       new ExpressAdapter(authServer.server),
     );
     authServer.setupSession();
+    const keyPairService = moduleFixture.get(KeyPairGeneratorService);
+    keyPairService.generateKeyPair = jest.fn(() => Promise.resolve());
+
     await app.init();
-    userService = moduleFixture.get(UserService);
-    const setupService = moduleFixture.get(SetupService);
-    const authCodeService = moduleFixture.get(AuthorizationCodeService);
-    const roleService = moduleFixture.get(RoleService);
-    const clientService = moduleFixture.get(ClientService);
-    const scopeService = moduleFixture.get(ScopeService);
-    const serverSettingsService = moduleFixture.get(ServerSettingsService);
     const oidcKeyService = moduleFixture.get(OIDCKeyService);
 
     bearerTokenService = moduleFixture.get(BearerTokenService);
-
-    await bearerTokenService.clear();
-    await authCodeService.clear();
-    await roleService.clear();
-
-    await scopeService.clear();
-    await clientService.clear();
-
-    await userService.deleteByEmail('admin@user.org');
-    await setupService.createUser(
-      'Administrator',
-      'admin@user.org',
-      '+919876543210',
-      '14CharP@ssword',
-    );
-    const client = await setupService.createClient(
-      'admin@user.org',
-      'http://localhost:4000',
-    );
-    clientId = client.clientId;
-    clientSecret = client.clientSecret;
-    allowedScopes = client.allowedScopes;
-    redirectUris = client.redirectUris;
+    userService = moduleFixture.get(UserService);
 
     await oidcKeyService.save(OIDCKey);
+  });
 
-    const serverSettings = {
-      appURL: 'http://localhost:3000',
-    };
-    await serverSettingsService.save(serverSettings);
+  it('/POST /setup', done => {
+    return request(app.getHttpServer())
+      .post('/setup')
+      .send({
+        fullName: 'Administrator',
+        email: 'admin@user.org',
+        infrastructureConsoleUrl: 'http://admin.localhost:5000',
+        issuerUrl: 'http://accounts.localhost:3000',
+        adminPassword: '14CharP@ssword',
+        phone: '+919876543210',
+      })
+      .expect(201)
+      .end((err, res) => {
+        clientId = res.body.clientId;
+        clientSecret = res.body.clientSecret;
+        redirectUris = res.body.redirectUris;
+        allowedScopes = res.body.allowedScopes;
+        if (err) return done(err);
+        done();
+      });
+  });
+
+  it('/POST /auth/signup', () => {
+    return request(app.getHttpServer())
+      .post('/auth/signup')
+      .send({
+        email: 'test@user.org',
+        phone: '+919876543211', // admin@user.org is +919876543210
+        password: '14CharP@ssword',
+        name: 'Test User',
+      })
+      .expect(201);
   });
 
   it('/GET /oauth2/profile (Invalid Token Use)', done => {
