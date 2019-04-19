@@ -18,6 +18,10 @@ import { AuthAggregates } from './aggregates';
 import { AuthCommandHandlers } from './commands';
 import { AuthEventHandlers } from './events';
 import { AuthSchedulers } from './schedulers';
+import { APP_FILTER } from '@nestjs/core';
+import { AuthorizationErrorFilter } from '../common/filters/authorization-error.filter';
+import { TokenErrorFilter } from '../common/filters/token-error.filter';
+import { OAuth2ErrorFilter } from '../common/filters/oauth2-error.filter';
 
 @Global()
 @Module({
@@ -44,6 +48,11 @@ import { AuthSchedulers } from './schedulers';
     ...AuthAggregates,
     ...AuthCommandHandlers,
     ...AuthEventHandlers,
+
+    // oauth2orize Error Filters
+    { provide: APP_FILTER, useClass: AuthorizationErrorFilter },
+    { provide: APP_FILTER, useClass: TokenErrorFilter },
+    { provide: APP_FILTER, useClass: OAuth2ErrorFilter },
   ],
   controllers: [...authControllers],
   exports: [
