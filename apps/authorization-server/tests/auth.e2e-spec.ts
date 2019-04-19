@@ -27,18 +27,6 @@ describe('AuthController (e2e)', () => {
     userService = moduleFixture.get(UserService);
   });
 
-  it('/POST /auth/signup', () => {
-    return request(app.getHttpServer())
-      .post('/auth/signup')
-      .send({
-        email: 'test@user.org',
-        phone: '+919876543211', // admin@user.org is +919876543210
-        password: '14CharP@ssword',
-        name: 'Test User',
-      })
-      .expect(201);
-  });
-
   it('/POST /auth/signup (invalid email)', done => {
     return request(app.getHttpServer())
       .post('/auth/signup')
