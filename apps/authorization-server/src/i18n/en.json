@@ -72,5 +72,7 @@
 	"OTP For Login for ": "OTP For Login for ",
 	"Password less login is not enabled": "Password less login is not enabled",
 	"Password less login is already disabled": "Password less login is already disabled",
-	"Password less login is already enabled": "Password less login is already enabled"
+	"Password less login is already enabled": "Password less login is already enabled",
+	"Bearer Token Revoked Successfully": "Bearer Token Revoked Successfully",
+	"Invalid Bearer Token": "Invalid Bearer Token"
 }
