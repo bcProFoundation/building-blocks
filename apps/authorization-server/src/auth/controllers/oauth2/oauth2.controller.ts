@@ -59,13 +59,14 @@ export class OAuth2Controller {
   }
 
   @Post('revoke')
+  @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
   @ApiOperation({
     title: i18n.__('Revoke'),
     description: i18n.__('OAuth2.0 flow: Revoke a token explicitly'),
   })
   async tokenRevoke(@Body('token') token) {
-    await this.oauth2Service.tokenRevoke(token);
+    return await this.oauth2Service.tokenRevoke(token);
   }
 
   @Post('introspection')

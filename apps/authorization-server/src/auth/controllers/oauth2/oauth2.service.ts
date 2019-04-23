@@ -1,4 +1,4 @@
-import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { i18n } from '../../../i18n/i18n.config';
 import { ROLES } from '../../../constants/app-strings';
 import { from, of } from 'rxjs';
@@ -18,12 +18,10 @@ export class OAuth2Service {
       accessToken: token,
     });
     if (bearerToken) {
-      bearerToken.remove();
+      await bearerToken.remove();
+      return { message: i18n.__('Bearer Token Revoked Successfully') };
     } else {
-      throw new HttpException(
-        i18n.__('Invalid Bearer Token'),
-        HttpStatus.NOT_FOUND,
-      );
+      return { message: i18n.__('Invalid Bearer Token') };
     }
   }
 
