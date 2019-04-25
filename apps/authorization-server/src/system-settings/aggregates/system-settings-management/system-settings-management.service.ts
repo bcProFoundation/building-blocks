@@ -6,6 +6,8 @@ import { invalidClientException } from '../../../common/filters/exceptions';
 import { AggregateRoot } from '@nestjs/cqrs';
 import { SystemSettingsChangedEvent } from '../../events/server-settings-changed/server-settings-changed.event';
 import { ServerSettingDto } from '../../entities/server-settings/server-setting.dto';
+import { BearerTokensDeletedEvent } from '../../events/bearer-tokens-deleted/bearer-tokens-deleted.event';
+import { UserSessionsDeletedEvent } from '../../events/user-sessions-deleted/user-sessions-deleted.event';
 
 @Injectable()
 export class SystemSettingsManagementService extends AggregateRoot {
@@ -39,7 +41,7 @@ export class SystemSettingsManagementService extends AggregateRoot {
       settings.infrastructureConsoleClientId =
         payload.infrastructureConsoleClientId;
     }
-
+    settings.disableSignup = payload.disableSignup;
     this.apply(new SystemSettingsChangedEvent(actorUserUuid, settings));
   }
 
@@ -51,5 +53,13 @@ export class SystemSettingsManagementService extends AggregateRoot {
     if (!(await this.clientService.findOne({ clientId }))) {
       throw invalidClientException;
     }
+  }
+
+  async deleteUserSessions(userUuid: string) {
+    this.apply(new UserSessionsDeletedEvent(userUuid));
+  }
+
+  async deleteBearerTokens(userUuid: string) {
+    this.apply(new BearerTokensDeletedEvent(userUuid));
   }
 }

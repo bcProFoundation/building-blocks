@@ -52,7 +52,7 @@ mongo admin -u root -p admin --authenticationDatabase admin
 npm run test:e2e
 
 # Angular unit tests
-npm run test:client --watch=false --browsers ChromeHeadless
+npm run test --watch=false --browsers ChromeHeadless
 
 # Angular e2e
 npm run e2e
@@ -67,3 +67,7 @@ npm run format && npm run lint --fix
 * [Infrastructure Console]({{ book.docUrl }}/api/infrastructure-console/)
 * [Identity Provider]({{ book.docUrl }}/api/identity-provider/)
 * [Communication Server]({{ book.docUrl }}/api/communication-server/)
+
+# ReST API Swagger Docs
+
+ReST API Docs for each app can be accessed at `/api-docs` and `/api-docs-json`

@@ -6,10 +6,11 @@ import { ServerSettingsController } from './controllers/server-settings/server-s
 import { SystemSettingsManagementService } from './aggregates/system-settings-management/system-settings-management.service';
 import { SystemSettingsCommandHandlers } from './commands';
 import { SystemSettingsEventHandlers } from './events';
+import { AuthEntitiesModule } from '../auth/entities/entities.module';
 
 @Global()
 @Module({
-  imports: [SystemSettingsEntitiesModule],
+  imports: [SystemSettingsEntitiesModule, AuthEntitiesModule],
   exports: [SystemSettingsEntitiesModule],
   providers: [
     SetupService,

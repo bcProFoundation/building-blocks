@@ -11,6 +11,8 @@ import { OIDCKey, OIDC_KEY } from './oidc-key/oidc-key.schema';
 import { OIDCKeyService } from './oidc-key/oidc-key.service';
 import { SocialLogin, SOCIAL_LOGIN } from './social-login/social-login.schema';
 import { SocialLoginService } from './social-login/social-login.service';
+import { SessionService } from './session/session.service';
+import { Session, SESSION } from './session/session.schema';
 
 @Module({
   imports: [
@@ -19,6 +21,7 @@ import { SocialLoginService } from './social-login/social-login.service';
       { name: BEARER_TOKEN, schema: BearerToken },
       { name: OIDC_KEY, schema: OIDCKey },
       { name: SOCIAL_LOGIN, schema: SocialLogin },
+      { name: SESSION, schema: Session },
     ]),
     HttpModule,
   ],
@@ -27,12 +30,14 @@ import { SocialLoginService } from './social-login/social-login.service';
     BearerTokenService,
     OIDCKeyService,
     SocialLoginService,
+    SessionService,
   ],
   exports: [
     AuthorizationCodeService,
     BearerTokenService,
     OIDCKeyService,
     SocialLoginService,
+    SessionService,
   ],
 })
 export class AuthEntitiesModule {}

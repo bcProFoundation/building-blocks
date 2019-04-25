@@ -11,6 +11,7 @@ import { switchMap, map } from 'rxjs/operators';
 import { IAuthSettings } from './auth-settings.interface';
 import { StorageService } from '../../common/services/storage/storage.service';
 import { ListResponse } from '../../shared-ui/listing/listing-datasource';
+import { LOGOUT_URL } from '../../constants/url-paths';
 
 @Injectable({
   providedIn: 'root',
@@ -50,6 +51,7 @@ export class AuthSettingsService {
 
   update(
     issuerUrl: string,
+    disableSignup: boolean,
     communicationServerClientId: string,
     infrastructureConsoleClientId: string,
     identityProviderClientId: string,
@@ -59,6 +61,7 @@ export class AuthSettingsService {
       requestUrl,
       {
         issuerUrl,
+        disableSignup,
         communicationServerClientId,
         infrastructureConsoleClientId,
         identityProviderClientId,
@@ -143,5 +146,28 @@ export class AuthSettingsService {
     return this.http
       .get<ListResponse>(requestUrl, { headers: this.headers })
       .pipe(map(data => data.docs));
+  }
+
+  deleteBearerTokens() {
+    const requestUrl =
+      localStorage.getItem(ISSUER_URL) + '/settings/v1/delete_bearer_tokens';
+    return this.http.post(requestUrl, {}, { headers: this.headers });
+  }
+
+  deleteUserSessions() {
+    const requestUrl =
+      localStorage.getItem(ISSUER_URL) + '/settings/v1/delete_user_sessions';
+    return this.http.post(requestUrl, {}, { headers: this.headers });
+  }
+
+  logout() {
+    const logoutUrl =
+      localStorage.getItem(ISSUER_URL) +
+      LOGOUT_URL +
+      '?redirect=' +
+      localStorage.getItem(APP_URL);
+    this.storageService.clearInfoLocalStorage();
+    this.oauthService.logOut();
+    window.location.href = logoutUrl;
   }
 }

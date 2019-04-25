@@ -61,6 +61,7 @@ export class ExpressServer {
       url,
       touchAfter: 24 * 3600, // 24 hours * 3600 secs
       collection: 'session',
+      stringify: false,
     });
     const sessionConfig = {
       name: this.configService.get('SESSION_NAME'),
