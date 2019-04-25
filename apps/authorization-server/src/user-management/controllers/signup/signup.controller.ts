@@ -9,7 +9,7 @@ import {
 import { SignupService } from '../../aggregates/signup/signup.service';
 import { SignupViaEmailDto } from '../../policies';
 
-@Controller('signup')
+@Controller('user_signup')
 export class SignupController {
   constructor(private readonly signupService: SignupService) {}
 
