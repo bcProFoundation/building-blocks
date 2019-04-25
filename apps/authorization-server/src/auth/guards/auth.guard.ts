@@ -41,7 +41,9 @@ export function AuthGuard(
         const passportFn = createPassportContext(request, response);
         const user = await passportFn(types, options);
         request[options.property || defaultOptions.property] = user;
-        this.logIn(request);
+        if (options.session) {
+          this.logIn(request);
+        }
         return true;
       }
 
