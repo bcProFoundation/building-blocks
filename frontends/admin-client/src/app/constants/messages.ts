@@ -20,3 +20,5 @@ export const CLOSE = 'Close';
 export const IS_DOWN = 'is down';
 export const ERROR_UPDATING_SERVICE_SETTINGS =
   'Error in updating service settings';
+export const DELETING = 'Deleting';
+export const UNDO = 'Undo';
