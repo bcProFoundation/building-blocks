@@ -1,7 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { AuthSettingsService } from './auth-settings.service';
-import { CLOSE, UPDATE_SUCCESSFUL } from '../../constants/messages';
+import {
+  CLOSE,
+  UPDATE_SUCCESSFUL,
+  DELETING,
+  UNDO,
+} from '../../constants/messages';
 import { MatSnackBar } from '@angular/material';
 
 @Component({
@@ -21,9 +26,15 @@ export class AuthSettingsComponent implements OnInit {
   communicationServerSystemEmailAccount: string;
   emailAccounts: any[];
   cloudStorageList: { uuid: string; name: string }[] = [];
+  disableSignup: boolean;
+  flagDeleteUserSessions: boolean = false;
+  flagDeleteBearerTokens: boolean = false;
+  disableDeleteSessions: boolean = false;
+  disableDeleteTokens: boolean = false;
 
   authSettingsForm = new FormGroup({
     issuerUrl: new FormControl(this.issuerUrl),
+    disableSignup: new FormControl(this.disableSignup),
     infrastructureConsoleClientId: new FormControl(
       this.infrastructureConsoleClientId,
     ),
@@ -46,9 +57,11 @@ export class AuthSettingsComponent implements OnInit {
       next: (response: {
         issuerUrl: string;
         communicationServerClientId: string;
+        disableSignup: boolean;
       }) => {
         this.issuerUrl = response.issuerUrl;
         this.communicationServerClientId = response.communicationServerClientId;
+        this.disableSignup = response.disableSignup;
         this.populateForm(response);
       },
       error: error => {},
@@ -64,6 +77,9 @@ export class AuthSettingsComponent implements OnInit {
 
   populateForm(response) {
     this.authSettingsForm.controls.issuerUrl.setValue(response.issuerUrl);
+    this.authSettingsForm.controls.disableSignup.setValue(
+      response.disableSignup,
+    );
     this.authSettingsForm.controls.infrastructureConsoleClientId.setValue(
       response.infrastructureConsoleClientId,
     );
@@ -79,6 +95,7 @@ export class AuthSettingsComponent implements OnInit {
     this.settingsService
       .update(
         this.authSettingsForm.controls.issuerUrl.value,
+        this.authSettingsForm.controls.disableSignup.value,
         this.authSettingsForm.controls.communicationServerClientId.value,
         this.authSettingsForm.controls.infrastructureConsoleClientId.value,
         this.authSettingsForm.controls.identityProviderClientId.value,
@@ -105,6 +122,70 @@ export class AuthSettingsComponent implements OnInit {
           error: error => {},
         });
     }
+  }
+
+  deleteUserSessions() {
+    this.flagDeleteUserSessions = true;
+    this.disableDeleteSessions = true;
+    this.disableDeleteTokens = true;
+    const snackBar = this.snackBar.open(DELETING, UNDO, { duration: 10000 });
+
+    snackBar.afterDismissed().subscribe({
+      next: dismissed => {
+        if (this.flagDeleteUserSessions) {
+          this.settingsService.deleteUserSessions().subscribe({
+            next: deleted => {
+              this.logout();
+            },
+            error: error => {},
+          });
+        }
+      },
+      error: error => {},
+    });
+
+    snackBar.onAction().subscribe({
+      next: success => {
+        this.flagDeleteUserSessions = false;
+        this.disableDeleteSessions = false;
+        this.disableDeleteTokens = false;
+      },
+      error: error => {},
+    });
+  }
+
+  deleteBearerTokens() {
+    this.flagDeleteUserSessions = true;
+    this.disableDeleteSessions = true;
+    this.disableDeleteTokens = true;
+    const snackBar = this.snackBar.open(DELETING, UNDO, { duration: 10000 });
+
+    snackBar.afterDismissed().subscribe({
+      next: dismissed => {
+        if (this.flagDeleteUserSessions) {
+          this.settingsService.deleteBearerTokens().subscribe({
+            next: deleted => {
+              this.logout();
+            },
+            error: error => {},
+          });
+        }
+      },
+      error: error => {},
+    });
+
+    snackBar.onAction().subscribe({
+      next: success => {
+        this.flagDeleteUserSessions = false;
+        this.disableDeleteSessions = false;
+        this.disableDeleteTokens = false;
+      },
+      error: error => {},
+    });
+  }
+
+  logout() {
+    this.settingsService.logout();
   }
 
   kebabToTitleCase(string: string) {

@@ -53,13 +53,6 @@ export class SocialLoginManagementService extends AggregateRoot {
 
         return from(this.settingsService.find()).pipe(
           switchMap(settings => {
-            if (settings.disableSignup) {
-              return done(
-                new UnauthorizedException({
-                  message: i18n.__('Signup Disabled'),
-                }),
-              );
-            }
             const redirectURI =
               settings.issuerUrl + '/social_login/callback/' + data.uuid;
             confirmationURL +=
@@ -134,6 +127,13 @@ export class SocialLoginManagementService extends AggregateRoot {
                           ).pipe(
                             switchMap(user => {
                               if (!user) {
+                                if (settings.disableSignup) {
+                                  return done(
+                                    new UnauthorizedException({
+                                      message: i18n.__('Signup Disabled'),
+                                    }),
+                                  );
+                                }
                                 return from(
                                   this.userService.save({
                                     email: profile.email,

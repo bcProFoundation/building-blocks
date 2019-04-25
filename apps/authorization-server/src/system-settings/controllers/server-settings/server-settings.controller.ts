@@ -17,6 +17,8 @@ import { RoleGuard } from '../../../auth/guards/role.guard';
 import { ServerSettingDto } from '../../entities/server-settings/server-setting.dto';
 import { SystemSettingsManagementService } from '../../../system-settings/aggregates';
 import { ChangeServerSettingsCommand } from '../../commands/change-server-settings/change-server-settings.command';
+import { DeleteUserSessionsCommand } from '../../commands/delete-user-sessions/delete-user-sessions.command';
+import { DeleteBearerTokensCommand } from '../../commands/delete-bearer-tokens/delete-bearer-tokens.command';
 
 @Controller('settings')
 export class ServerSettingsController {
@@ -40,6 +42,28 @@ export class ServerSettingsController {
     const actorUserUuid = req.user.user;
     return await this.commandBus.execute(
       new ChangeServerSettingsCommand(actorUserUuid, payload),
+    );
+  }
+
+  @Post('v1/delete_bearer_tokens')
+  @UsePipes(ValidationPipe)
+  @Roles(ADMINISTRATOR)
+  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  async deleteTokens(@Req() req) {
+    const actorUserUuid = req.user.user;
+    return await this.commandBus.execute(
+      new DeleteBearerTokensCommand(actorUserUuid),
+    );
+  }
+
+  @Post('v1/delete_user_sessions')
+  @UsePipes(ValidationPipe)
+  @Roles(ADMINISTRATOR)
+  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  async deleteSessions(@Req() req) {
+    const actorUserUuid = req.user.user;
+    return await this.commandBus.execute(
+      new DeleteUserSessionsCommand(actorUserUuid),
     );
   }
 }
