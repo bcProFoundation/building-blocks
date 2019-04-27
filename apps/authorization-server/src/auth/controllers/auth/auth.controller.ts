@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { callback } from '../../passport/strategies/local.strategy';
-import { AuthGuard } from '../../../auth/guards/auth.guard';
+import { AuthGuard, addSessionUser } from '../../../auth/guards/auth.guard';
 import { ApiOperation } from '@nestjs/swagger';
 import { i18n } from '../../../i18n/i18n.config';
 import {
@@ -64,8 +64,9 @@ export class AuthController {
     description: i18n.__('Logout of the session'),
   })
   logout(@Req() req, @Res() res) {
-    if (req.session && req.session.secondFactor)
-      delete res.session.secondFactor;
+    if (req.user) {
+      this.authService.removeUserFromSessionUsers(req, req.user.uuid);
+    }
     req.logout();
     if (req.query && req.query.redirect) {
       res.redirect(req.query.redirect);
@@ -95,6 +96,7 @@ export class AuthController {
   @UsePipes(ValidationPipe)
   async passwordLess(@Body() payload: PasswordLessDto, @Req() req) {
     const user = await this.authService.passwordLessLogin(payload);
+    addSessionUser(req, { uuid: user.uuid });
     req.logIn(user, () => {});
     return {
       user: user.email,

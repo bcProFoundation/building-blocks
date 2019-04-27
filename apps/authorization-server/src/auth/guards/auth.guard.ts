@@ -41,7 +41,9 @@ export function AuthGuard(
         const passportFn = createPassportContext(request, response);
         const user = await passportFn(types, options);
         request[options.property || defaultOptions.property] = user;
+        const reqUser = user as RequestUser;
         if (options.session) {
+          addSessionUser(request, { uuid: reqUser.uuid });
           this.logIn(request);
         }
         return true;
@@ -108,4 +110,26 @@ export function TestAuthGuard(
     },
   );
   return guard;
+}
+
+export interface RequestUser {
+  email: string;
+  uuid: string;
+  phone: string;
+  disabled: boolean;
+  enable2fa: boolean;
+  enablePasswordLess: boolean;
+  roles: string[];
+}
+
+export function addSessionUser(request, reqUser) {
+  if (!request.session.users) {
+    request.session.users = [];
+  }
+  const existingUser = request.session.users.find(
+    user => user.uuid === reqUser.uuid,
+  );
+  if (!existingUser) {
+    request.session.users.push(reqUser);
+  }
 }

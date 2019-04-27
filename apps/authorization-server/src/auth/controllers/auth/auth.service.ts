@@ -280,4 +280,13 @@ export class AuthService {
       });
     }
   }
+
+  removeUserFromSessionUsers(req, uuid) {
+    const users = req.session.users.filter(user => {
+      if (user.uuid !== uuid) {
+        return user;
+      }
+    });
+    req.session.users = users;
+  }
 }
