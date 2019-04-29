@@ -16,3 +16,5 @@ export const CHANGE_PASSWORD = 'Change Password';
 export const CURRENT_PASSWORD_MISMATCH = 'Current Password Mismatch';
 export const DELETING = 'Deleting...';
 export const UNDO = 'Undo';
+export const AVATAR_UPDATED = 'Avatar successfully updated';
+export const AVATAR_UPDATED_FAILED = 'Avatar upload failed';

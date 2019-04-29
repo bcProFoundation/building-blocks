@@ -7,7 +7,7 @@
 git clone https://gitlab.com/castlecraft/building-blocks
 cd building-blocks/docker
 nano .env # setup required environment variables mentioned below
-docker-compose -f docker-compose.yml up -d
+docker-compose --project-name bb -f docker-compose.yml up -d
 ```
 
 Required environment variables in `.env` file:

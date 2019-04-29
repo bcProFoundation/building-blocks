@@ -28,6 +28,7 @@ import { ModifyCloudStorageCommand } from '../../../cloud-storage/commands/modif
 import { RemoveCloudStorageCommand } from '../../../cloud-storage/commands/remove-cloud-storage/remove-cloud-storage.command';
 import { ModifyStorageDto } from '../../policies/modify-cloud-storage-dto/modify-cloud-storage-dto';
 import { UploadFilesCloudBucketCommand } from '../../commands/upload-files-cloud-bucket/upload-files-cloud-bucket.command';
+import { Storage } from 'cloud-storage/entities/storage/storage.entity';
 
 @Controller('storage')
 export class CloudStorageController {
@@ -54,7 +55,10 @@ export class CloudStorageController {
   @Roles(ADMINISTRATOR)
   @UseGuards(TokenGuard, RoleGuard)
   async findOne(@Param('uuid') uuid: string) {
-    return await this.storage.findOne({ uuid });
+    const storage: Storage = await this.storage.findOne({ uuid });
+    storage.accessKey = undefined;
+    storage.secretKey = undefined;
+    return storage;
   }
 
   @Post('v1/add')

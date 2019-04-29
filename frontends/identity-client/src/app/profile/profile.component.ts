@@ -24,6 +24,8 @@ import {
   CLOSE,
   DELETING,
   UNDO,
+  AVATAR_UPDATED,
+  AVATAR_UPDATED_FAILED,
 } from '../constants/messages';
 import { isArray } from 'util';
 
@@ -160,13 +162,19 @@ export class ProfileComponent implements OnInit {
 
   onFileChanged(event) {
     this.selectedFile = event.target.files[0];
+    const reader = new FileReader();
     this.profileService.uploadAvatar(this.selectedFile).subscribe({
       next: (profile: any) => {
+        reader.readAsDataURL(event.target.files[0]);
+        reader.onload = (file: any) => {
+          this.picture = file.target.result;
+        };
         this.hideAvatar = false;
-        this.profileForm.controls.picture.setValue('');
-        this.profileForm.controls.picture.setValue(this.picture);
+        this.snackBar.open(AVATAR_UPDATED, CLOSE, { duration: 2500 });
       },
-      error: err => {},
+      error: err => {
+        this.snackBar.open(AVATAR_UPDATED_FAILED, CLOSE, { duration: 2500 });
+      },
     });
   }
 
