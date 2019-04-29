@@ -28,7 +28,7 @@ import { ModifyCloudStorageCommand } from '../../../cloud-storage/commands/modif
 import { RemoveCloudStorageCommand } from '../../../cloud-storage/commands/remove-cloud-storage/remove-cloud-storage.command';
 import { ModifyStorageDto } from '../../policies/modify-cloud-storage-dto/modify-cloud-storage-dto';
 import { UploadFilesCloudBucketCommand } from '../../commands/upload-files-cloud-bucket/upload-files-cloud-bucket.command';
-import { Storage } from 'cloud-storage/entities/storage/storage.entity';
+import { Storage } from '../../../cloud-storage/entities/storage/storage.entity';
 
 @Controller('storage')
 export class CloudStorageController {
