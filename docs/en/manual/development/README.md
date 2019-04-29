@@ -34,6 +34,18 @@ npm i
 lerna bootstrap
 ```
 
+Setup Development
+
+```
+# export required environment variables
+ADMIN_FULL_NAME="Mr Administrator"
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=Secret@9000
+ADMIN_PHONE=+919876543210
+# Start development backends and frontends and then Run script
+./scripts/setup-dev.sh
+```
+
 All apps dependencies and services are up and downloaded. Refer App's development documentation for further development.
 
 # Commands for testing

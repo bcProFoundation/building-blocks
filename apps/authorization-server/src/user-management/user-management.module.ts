@@ -8,6 +8,7 @@ import { UserManagementAggregates } from './aggregates';
 import { UserManagementControllers } from './controllers';
 import { UserManagementSchedulers } from './schedulers';
 import { UserManagementPolicies } from './policies';
+import { UserManagementQueryHandlers } from './queries';
 
 @Global()
 @Module({
@@ -23,6 +24,7 @@ import { UserManagementPolicies } from './policies';
     ...UserManagementSagas,
     ...UserManagementSchedulers,
     ...UserManagementPolicies,
+    ...UserManagementQueryHandlers,
   ],
   controllers: [...UserManagementControllers],
   exports: [

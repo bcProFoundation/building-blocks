@@ -67,15 +67,6 @@ export class LoginComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.authService.isAuthenticated().subscribe({
-      next: success => {
-        if (success) {
-          window.location.href =
-            this.route.snapshot.queryParamMap.get('redirect') || '/account';
-        }
-      },
-      error: error => {},
-    });
     this.usernameRef.nativeElement.focus();
     this.redirect =
       this.route.snapshot.queryParamMap.get('redirect') || '/account';

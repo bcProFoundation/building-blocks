@@ -13,7 +13,7 @@ import {
   Put,
   Delete,
 } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { UserService } from '../../entities/user/user.service';
 import { AuthGuard } from '../../../auth/guards/auth.guard';
 import { callback } from '../../../auth/passport/strategies/local.strategy';
@@ -40,6 +40,7 @@ import {
 import { Initialize2FACommand } from '../../commands/initialize-2fa/initialize-2fa.command';
 import { Verify2FACommand } from '../../commands/verify-2fa/verify-2fa.command';
 import { Disable2FACommand } from '../../commands/disable-2fa/disable-2fa.command';
+import { ListSessionUsersQuery } from '../../queries/list-session-users/list-session-users.query';
 
 @Controller('user')
 export class UserController {
@@ -47,6 +48,7 @@ export class UserController {
     private readonly userService: UserService,
     private readonly crudService: CRUDOperationService,
     private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
   ) {}
 
   @Post('v1/change_password')
@@ -219,5 +221,10 @@ export class UserController {
     const user = req.user.user;
     await this.commandBus.execute(new RemoveUserAccountCommand(user, user));
     req.logout();
+  }
+
+  @Get('v1/list_session_users')
+  async listSessionUsers(@Req() req) {
+    return await this.queryBus.execute(new ListSessionUsersQuery(req));
   }
 }

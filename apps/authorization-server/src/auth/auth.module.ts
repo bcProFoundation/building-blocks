@@ -9,6 +9,7 @@ import { OAuth2DecisionMiddleware } from './middlewares/oauth2-decision.middlewa
 import { PassportAuthenticateMiddleware } from './middlewares/passport-authenticate.middleware';
 import { CleanOauth2orizeSessionMiddleware } from './middlewares/clean-oauth2orize-session.middleware';
 import { SaveDeviceInfoMiddleware } from './middlewares/save-device-info.middleware';
+import { ChooseAccountMiddleware } from './middlewares/choose-account.middleware';
 import { AuthEntitiesModule } from './entities/entities.module';
 import { OAuth2Module } from './oauth2/oauth2.module';
 import { PassportModule } from './passport/passport.module';
@@ -37,6 +38,7 @@ import { OAuth2ErrorFilter } from '../common/filters/oauth2-error.filter';
     OAuth2AuthorizationMiddleware,
     CleanOauth2orizeSessionMiddleware,
     SaveDeviceInfoMiddleware,
+    ChooseAccountMiddleware,
     OAuth2TokenMiddleware,
     OAuth2ErrorHandlerMiddleware,
 
@@ -72,6 +74,7 @@ export class AuthModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(
+        ChooseAccountMiddleware,
         OAuth2ConfirmationMiddleware,
         CleanOauth2orizeSessionMiddleware,
         SaveDeviceInfoMiddleware,

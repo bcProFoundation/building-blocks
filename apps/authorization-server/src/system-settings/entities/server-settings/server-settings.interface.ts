@@ -9,4 +9,5 @@ export interface ServerSettings extends Document {
   backupBucket?: string;
   disableSignup?: boolean;
   otpExpiry?: number;
+  enableChoosingAccount?: boolean;
 }

@@ -43,7 +43,11 @@ export function AuthGuard(
         request[options.property || defaultOptions.property] = user;
         const reqUser = user as RequestUser;
         if (options.session) {
-          addSessionUser(request, { uuid: reqUser.uuid });
+          addSessionUser(request, {
+            uuid: reqUser.uuid,
+            email: reqUser.email,
+            phone: reqUser.phone,
+          });
           this.logIn(request);
         }
         return true;
