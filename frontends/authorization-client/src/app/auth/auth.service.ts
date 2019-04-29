@@ -113,4 +113,12 @@ export class AuthService {
       .post(environment.routes.SEND_LOGIN_OTP, { emailOrPhone })
       .pipe(delay(10000));
   }
+
+  getSessionUsers() {
+    return this.http.get(environment.routes.LIST_SESSION_USERS);
+  }
+
+  selectUser<T>(uuid) {
+    return this.http.post<T>(environment.routes.CHOOSE_USER, { uuid });
+  }
 }
