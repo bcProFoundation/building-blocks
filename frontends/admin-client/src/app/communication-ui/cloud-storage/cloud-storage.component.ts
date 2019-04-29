@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { CloudStorageService } from './cloud-storage.service';
@@ -67,6 +67,8 @@ export class CloudStorageComponent implements OnInit {
 
     if (this.uuid === NEW_ID) {
       this.uuid = undefined;
+      this.cloudForm.controls.secretKey.setValidators([Validators.required]);
+      this.cloudForm.controls.accessKey.setValidators([Validators.required]);
     } else {
       this.cloudForm.controls.uuid.disable();
       this.subscribeGetCloud(this.uuid);

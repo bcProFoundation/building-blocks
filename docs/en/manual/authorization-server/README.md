@@ -39,9 +39,46 @@ add `127.0.0.1 *.localhost` in `/etc/hosts` file or hosts file of your operating
 
 Above script would store the `clientId` and `clientSecret` from response to setup Authorization Server.
 
+
 - Expected response
 ```
 <Response [201]>
+```
+-Note
+```
+   The password must be at least 10 characters long 
+   The password must contain at least one uppercase letter,
+   least one number and least one special character.
+   phone must be MobileE164. (ie. +911234567890)
+
+   If you see any response other response such as 400 try the manual way,
+   making post request on /setup rest endpoint from something like postman or rester add your request parameters to your body,
+
+   appURL : http://accounts.example.com,
+   email  : your@email.com,
+   infrastructureConsoleUrl : http://admin.example.com,
+   adminPassword : Admin@123,
+   phone : +911234567890,
+   issuerUrl : http://accounts.example.com,
+   fullName : Your_full_name
+   
+   Response should be something like
+   {
+    "redirectUris": [
+        "http://admin.example.com/index.html",
+        "http://admin.example.com/silent-refresh.html"
+    ],
+    "allowedScopes": [],
+    "uuid": "67cda72c-d214-4b87-a8a2-fcd2acc9c978",
+    "clientId": "68c373e0-cf3f-46d6-88b4-d56192eb392c",
+    "clientSecret": "b71915d04dccbda33f99c8d15e677c6da30ebb657910f9cfd0d0b971e7af07c1",
+    "name": "Infrastructure Console",
+    "isTrusted": 1,
+    "userDeleteEndpoint": "http://admin.example.com/connect/v1/user_delete",
+    "tokenDeleteEndpoint": "http://admin.example.com/connect/v1/token_delete"
+    }
+
+    take clientId, clientSecret from above response and setup infrastructure-console similarly.
 ```
 
 This sets up Authorization Server as well as Infrastructure Console
