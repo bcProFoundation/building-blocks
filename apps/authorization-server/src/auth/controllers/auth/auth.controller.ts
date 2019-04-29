@@ -64,9 +64,8 @@ export class AuthController {
     description: i18n.__('Logout of the session'),
   })
   logout(@Req() req, @Res() res) {
-    if (req.user) {
-      this.authService.removeUserFromSessionUsers(req, req.user.uuid);
-    }
+    req.session.users = [];
+    delete req.session.selectedUser;
     req.logout();
     if (req.query && req.query.redirect) {
       res.redirect(req.query.redirect);
@@ -96,11 +95,29 @@ export class AuthController {
   @UsePipes(ValidationPipe)
   async passwordLess(@Body() payload: PasswordLessDto, @Req() req) {
     const user = await this.authService.passwordLessLogin(payload);
-    addSessionUser(req, { uuid: user.uuid });
+    addSessionUser(req, {
+      uuid: user.uuid,
+      email: user.email,
+      phone: user.phone,
+    });
     req.logIn(user, () => {});
     return {
       user: user.email,
       path: payload.redirect,
+    };
+  }
+
+  @Post('choose_user')
+  @HttpCode(HttpStatus.OK)
+  async chooseUser(
+    @Body('uuid') uuid: string,
+    @Req() req,
+    @Body('redirect') redirect = '/account',
+  ) {
+    const user = await this.authService.chooseUser(req, uuid);
+    return {
+      user: user.email,
+      path: redirect,
     };
   }
 }

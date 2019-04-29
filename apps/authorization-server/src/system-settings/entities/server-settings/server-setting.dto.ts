@@ -55,4 +55,8 @@ export class ServerSettingDto {
   @IsOptional()
   @IsNumber()
   otpExpiry?: number;
+
+  @IsOptional()
+  @IsBoolean()
+  enableChoosingAccount?: boolean;
 }
