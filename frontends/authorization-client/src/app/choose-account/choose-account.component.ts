@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ChooseAccountService } from './choose-account.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { stringify } from 'querystring';
 import { environment } from '../../environments/environment.prod';
 
@@ -15,6 +15,7 @@ export class ChooseAccountComponent implements OnInit {
   constructor(
     private activeRoute: ActivatedRoute,
     private chooseAccountService: ChooseAccountService,
+    private router: Router,
   ) {}
 
   ngOnInit() {
@@ -31,5 +32,11 @@ export class ChooseAccountComponent implements OnInit {
       },
       error: error => {},
     });
+  }
+
+  addAccount() {
+    const query = { ...this.activeRoute.snapshot.queryParams };
+    query.login_type = 'add_account';
+    this.router.navigate(['/login'], { queryParams: query });
   }
 }

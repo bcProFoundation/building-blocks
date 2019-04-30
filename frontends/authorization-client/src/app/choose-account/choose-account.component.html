@@ -16,5 +16,10 @@
         (click)="chooseUser(user.uuid)"
         mat-stroked-button>{{ user.email }}</button>
     </mat-card-content>
+    <mat-card-actions>
+      <button
+        (click)="addAccount()"
+        mat-stroked-button>Add Account</button>
+    </mat-card-actions>
   </mat-card>
 </div>

@@ -19,3 +19,19 @@ mat-card-content {
 .spacer {
     margin: 2em;
 }
+
+/* width */
+::-webkit-scrollbar {
+    width: 2px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 2px grey; 
+    border-radius: 1px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    border-radius: 1px;
+}
