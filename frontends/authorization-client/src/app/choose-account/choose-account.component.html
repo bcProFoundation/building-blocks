@@ -1,0 +1,20 @@
+<div fxLayout="column" fxLayoutAlign="start center" class="choose-account-container">
+  <mat-card
+      fxLayout="column"
+      fxLayoutAlign="start center"
+    class="choose-account-card mat-elevation-z2">
+    <mat-card-header>
+      <mat-card-title i18n="@@chooseAccount">Choose Account</mat-card-title>
+    </mat-card-header>
+    <mat-card-content
+      fxLayout="column"
+      fxLayoutAlign="start stretch"
+      fxLayoutGap="5px">
+      <div class="spacer"></div>
+      <button
+        *ngFor="let user of (sessionUsers | async)"
+        (click)="chooseUser(user.uuid)"
+        mat-stroked-button>{{ user.email }}</button>
+    </mat-card-content>
+  </mat-card>
+</div>

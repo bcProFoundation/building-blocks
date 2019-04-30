@@ -1,0 +1,21 @@
+mat-card {
+    border-radius: 10px;
+}
+
+mat-card-content {
+    overflow: auto;
+}
+
+.choose-account-container {
+    padding: 2em;
+}
+
+.choose-account-card {
+    box-sizing: border-box;
+    width: 20em;
+    height: 20em;
+}
+
+.spacer {
+    margin: 2em;
+}
