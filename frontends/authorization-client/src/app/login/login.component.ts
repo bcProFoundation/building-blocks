@@ -4,7 +4,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { map } from 'rxjs/operators';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 import {
   PLEASE_CHECK_EMAIL,
@@ -63,6 +63,7 @@ export class LoginComponent implements OnInit {
     private authService: AuthService,
     private breakpointObserver: BreakpointObserver,
     private route: ActivatedRoute,
+    private router: Router,
     private snackBar: MatSnackBar,
   ) {}
 
@@ -91,7 +92,12 @@ export class LoginComponent implements OnInit {
       .subscribe({
         next: (response: any) => {
           this.submitOTPForm.controls.code.setErrors(null);
-          window.location.href = response.path;
+          const loginType = this.route.snapshot.queryParams.login_type;
+          if (!loginType) {
+            window.location.href = response.path;
+          } else if (loginType === 'add_account') {
+            this.chooseAccount();
+          }
         },
         error: err => {
           this.serverError = err.error.message;
@@ -109,7 +115,12 @@ export class LoginComponent implements OnInit {
       .subscribe({
         next: (response: any) => {
           this.submitOTPForm.controls.code.setErrors(null);
-          window.location.href = response.path;
+          const loginType = this.route.snapshot.queryParams.login_type;
+          if (!loginType) {
+            window.location.href = response.path;
+          } else if (loginType === 'add_account') {
+            this.chooseAccount();
+          }
         },
         error: err => {
           this.serverError = err.error.message;
@@ -148,7 +159,12 @@ export class LoginComponent implements OnInit {
         .subscribe({
           next: (response: any) => {
             this.loginUserForm.controls.password.setErrors(null);
-            window.location.href = response.path;
+            const loginType = this.route.snapshot.queryParams.login_type;
+            if (!loginType) {
+              window.location.href = response.path;
+            } else if (loginType === 'add_account') {
+              this.chooseAccount();
+            }
           },
           error: err => {
             this.serverError = err.error.message;
@@ -235,5 +251,11 @@ export class LoginComponent implements OnInit {
     this.hidePassword = true;
     this.hideCode = false;
     this.resendOTP();
+  }
+
+  chooseAccount() {
+    const query = { ...this.route.snapshot.queryParams };
+    delete query.login_type;
+    this.router.navigate(['/account/choose'], { queryParams: query });
   }
 }

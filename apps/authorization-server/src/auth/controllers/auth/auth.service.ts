@@ -291,7 +291,7 @@ export class AuthService {
   }
 
   async chooseUser(req, uuid: string) {
-    if (req.session.users.length === 0) {
+    if (!req.session.users) {
       req.session.users = [];
     }
 
