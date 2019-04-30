@@ -14,6 +14,7 @@ import { AuthService } from './auth/auth.service';
 import { AVAILABLE_TRANSLATIONS } from '../constants/app-strings';
 import { VerifyGeneratePasswordComponent } from './verify-generate-password/verify-generate-password.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { ChooseAccountComponent } from './choose-account/choose-account.component';
 
 let lang = navigator.language;
 if (!AVAILABLE_TRANSLATIONS.includes(lang)) {
@@ -27,6 +28,7 @@ if (!AVAILABLE_TRANSLATIONS.includes(lang)) {
     SignupComponent,
     AccountComponent,
     VerifyGeneratePasswordComponent,
+    ChooseAccountComponent,
   ],
   imports: [
     BrowserModule,

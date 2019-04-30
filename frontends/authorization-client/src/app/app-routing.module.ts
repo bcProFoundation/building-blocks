@@ -5,10 +5,12 @@ import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
 import { AuthGuardService } from './auth/auth-guard.service';
 import { VerifyGeneratePasswordComponent } from './verify-generate-password/verify-generate-password.component';
+import { ChooseAccountComponent } from './choose-account/choose-account.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'account', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
+  { path: 'account/choose', component: ChooseAccountComponent },
   {
     path: 'account',
     component: AccountComponent,
