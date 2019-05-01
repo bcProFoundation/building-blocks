@@ -1,13 +1,43 @@
 # Development Installation
 
-- Install Docker and Docker compose
-- Clone Building Blocks Repository and Start the backing services
+### Setup hosts file
+
+add `127.0.0.1 *.localhost` in `/etc/hosts` file or hosts file of your operating system.
+
+### Install Prerequisites
+
+- Docker (to run backing services containers for redis and mongo)
+- Docker compose (easy bootstrap of development setup)
+- NodeJS
+- Python and Python Requests (to setup backend apps on first run)
+- VS Code (Editor and NodeJS/TypeScript IDE)
+
+### Install NodeJS global commands
+
+```
+# use nvm for better control and secure node environments for users.
+# DO NOT USE sudo or root privileges
+npm i lerna @angular/cli @nestjs/cli -g
+```
+
+### Clone Repository and set working directory
 
 ```sh
 git clone https://gitlab.com/castlecraft/building-blocks
-cd building-blocks/docker
-nano .env # setup required environment variables mentioned below
-docker-compose --project-name bb -f docker-compose.yml up -d
+cd building-blocks
+```
+
+### Bootstrap NodeJS package dependencies
+
+```
+npm i
+lerna bootstrap
+```
+
+### Setup Environment Variables
+
+```
+code .env # setup required environment variables mentioned below
 ```
 
 Required environment variables in `.env` file:
@@ -20,39 +50,93 @@ MONGODB_ROOT_PASSWORD=admin
 REDIS_PASSWORD=admin
 ```
 
-Install NodeJS global commands
+Setup Development environment. place appropriate `.env` files under each app's package root
 
 ```
-npm i lerna @angular/cli @nestjs/cli -g
+code apps/authorization-server/.env
 ```
 
-Bootstrap dependencies
+refer [Authorization Server](/authorization-server/README.md) `.env` file
 
 ```
-cd building-blocks # change directory to repo root
-npm i
-lerna bootstrap
+code apps/communication-server/.env
 ```
 
-Setup Development
+refer [Communication Server](/communication-server/README.md) `.env` file
+
+```
+code apps/identity-provider/.env
+```
+
+refer [Identity Provider](/identity-provider/README.md) `.env` file
+
+```
+code apps/infrastructure-console/.env
+```
+
+refer [Infrastructure Console](/infrastructure-console/README.md) `.env` file
+
+### Start Backing Services
+
+```
+docker-compose --project-name bb -f docker/docker-compose.yml up -d
+```
+
+### Start apps and frontends
+
+Start Development backend and frontend using following commands
+
+```
+# for packages in apps/ directory,
+# execute following command from the app package root
+npm run start:debug
+
+# for packages in frontends/ directory,
+# execute following command from the frontend package root
+npm start
+```
+
+or use VS Code Setup, refer [example](/development/vscode.md)
+
+### Run development setup script
+
+Execute to initialize administrator user and core trusted clients
+
+Note:
+
+- The password must be at least 10 characters long
+- The password must contain at least one uppercase letter
+- The password must contain at least one number
+- The password must contain at least one special character
+- phone must be MobileE164. (ie. +911234567890)
+- email must be valid email address
 
 ```
 # export required environment variables
-ADMIN_FULL_NAME="Mr Administrator"
-ADMIN_EMAIL=admin@example.com
-ADMIN_PASSWORD=Secret@9000
-ADMIN_PHONE=+919876543210
-# Start development backends and frontends and then Run script
+export ADMIN_FULL_NAME="Mr Administrator"
+export ADMIN_EMAIL=admin@example.com
+export ADMIN_PASSWORD=Secret@9000
+export ADMIN_PHONE=+919876543210
+
+# Run script
 ./scripts/setup-dev.sh
+
+# Output
+Setting Up Authorization Server and Infrastructure Console
+<Response [201]>
+Setting Up Identity Provider
+<Response [201]>
+Setting Up Communication Server
+<Response [201]>
 ```
 
-All apps dependencies and services are up and downloaded. Refer App's development documentation for further development.
+All apps dependencies and services are up for debug and development.
 
-# Commands for testing
+### Commands for testing
 
 ```
 # NestJS unit tests
-npm run test:server
+lerna run test:server
 
 # Drop databases for auth-server e2e
 mongo admin -u root -p admin --authenticationDatabase admin
@@ -60,17 +144,34 @@ mongo admin -u root -p admin --authenticationDatabase admin
 > db.dropDatabase()
 > exit
 
+# Or use command to drop test database
+echo -e "use test_authorization-server;\n db.dropDatabase()" | mongo -u root -p admin --authenticationDatabase admin
+
 # NestJS e2e/integration
-npm run test:e2e
+lerna run test:e2e
 
 # Angular unit tests
-npm run test --watch=false --browsers ChromeHeadless
+export NODE_ENV=test
+lerna run test
 
 # Angular e2e
-npm run e2e
+lerna --concurrency 1 run e2e
 
-# Format Code and lint
-npm run format && npm run lint --fix
+# Check format
+lerna run format:check
+
+# Check Linting
+lerna run lint
+```
+
+### Commands to format code and lint fixes
+
+```
+# To execute from project root
+lerna run format && lerna run lint -- --fix
+
+# OR execute from app or frontend package root
+npm run format && npm run lint -- --fix
 ```
 
 # TypeScript API Documentation

@@ -1,4 +1,4 @@
-# Authorization Server Development
+# Infrastructure Console Development
 
 Complete the [development setup](/development/README.md)
 
@@ -13,8 +13,6 @@ DB_USER=infrastructure-console
 DB_PASSWORD=admin
 ```
 
-Note: It is important to change the secrets and password. DO NOT USE example passwords or secrets.
+Note: It is important to change the secrets and password. DO NOT USE development passwords or secrets in production.
 
-### Setup
-
-Refer Authorization Server's setup. This service is setup along with authorization-server
+Use Infrastructure console to as an adminstration panel for all clients, users and services.
