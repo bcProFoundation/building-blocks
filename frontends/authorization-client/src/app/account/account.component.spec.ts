@@ -2,6 +2,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AccountComponent } from './account.component';
 import { AuthServerMaterialModule } from '../auth-server-material/auth-server-material.module';
+import { AccountService } from './account.service';
+import { of } from 'rxjs';
 
 describe('AccountComponent', () => {
   let component: AccountComponent;
@@ -11,6 +13,14 @@ describe('AccountComponent', () => {
     TestBed.configureTestingModule({
       declarations: [AccountComponent],
       imports: [AuthServerMaterialModule],
+      providers: [
+        {
+          provide: AccountService,
+          useValue: {
+            subscribeInfo: () => of({}),
+          },
+        },
+      ],
     }).compileComponents();
   }));
 

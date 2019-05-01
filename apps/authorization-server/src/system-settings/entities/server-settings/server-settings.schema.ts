@@ -11,6 +11,7 @@ export const ServerSettings = new mongoose.Schema(
     backupBucket: String,
     disableSignup: Boolean,
     otpExpiry: { type: Number, default: 5 },
+    enableChoosingAccount: Boolean,
   },
   { collection: 'server_settings', versionKey: false },
 );

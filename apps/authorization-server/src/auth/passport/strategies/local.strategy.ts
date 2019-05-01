@@ -1,11 +1,7 @@
 import { Strategy } from 'passport-local';
 import { AuthService } from '../../controllers/auth/auth.service';
 import { PassportStrategy } from './passport.strategy';
-import {
-  Injectable,
-  UnauthorizedException,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ACCOUNTS_ROUTE } from '../../../constants/app-strings';
 
 @Injectable()
@@ -18,9 +14,6 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(req, username, password, done: (err, user) => any) {
-    if (req.user) {
-      done(new BadRequestException({ session: true }), false);
-    }
     const code = lookup(req.body, 'code') || lookup(req.query, 'code');
     await this.authService
       .logIn(username.trim().toLowerCase(), password, code)

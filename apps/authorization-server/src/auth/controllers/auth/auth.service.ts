@@ -280,4 +280,34 @@ export class AuthService {
       });
     }
   }
+
+  removeUserFromSessionUsers(req, uuid) {
+    const users = req.session.users.filter(user => {
+      if (user.uuid !== uuid) {
+        return user;
+      }
+    });
+    req.session.users = users;
+  }
+
+  async chooseUser(req, uuid: string) {
+    if (!req.session.users) {
+      req.session.users = [];
+    }
+
+    const userFromSessionUsers = req.session.users.find(user => {
+      if (user.uuid === uuid) {
+        return user;
+      }
+    });
+
+    const reqUser = await this.userService.findOne({ uuid });
+    if (!userFromSessionUsers || !reqUser) {
+      throw invalidUserException;
+    }
+
+    req.session.selectedUser = uuid;
+    req.logIn(reqUser, () => {});
+    return userFromSessionUsers;
+  }
 }
