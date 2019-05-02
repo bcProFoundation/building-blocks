@@ -34,7 +34,7 @@ export class NewAvatarUploadedHandler
           let profile: Profile = await this.profileService.findOne({
             uuid: event.clientHttpRequest.token.sub,
           });
-          if (profile && profile.picture) {
+          if (profile) {
             profile.picture = this.getProfileUrl(event);
             await profile.save();
             return profile;

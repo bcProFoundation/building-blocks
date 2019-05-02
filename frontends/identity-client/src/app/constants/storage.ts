@@ -1,3 +1,4 @@
+export const APP_NAME = 'identity_provider';
 export const CLIENT_ID = 'client_id';
 export const REDIRECT_URI = 'redirect_uri';
 export const SILENT_REFRESH_REDIRECT_URI = 'silent_refresh_redirect_uri';

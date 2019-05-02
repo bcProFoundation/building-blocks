@@ -10,8 +10,6 @@ import {
 @EventsHandler(FileUploadedCloudBucketEvent)
 export class FileUploadedCloudBucketHandler
   implements IEventHandler<FileUploadedCloudBucketEvent> {
-  constructor() {}
-
   async handle(event: FileUploadedCloudBucketEvent) {
     const spacesEndpoint: any = new AWS.Endpoint(
       event.storageSettings.endpoint,
