@@ -428,7 +428,7 @@ pages:
     - npm install -g lerna
     - npm install
     - lerna clean -y
-    - lerna bootstrap
+    - lerna bootstrap --scope={authorization-server,communication-server,identity-provider,infrastructure-console}
   script:
     - npm install gitbook-cli -g
     - npm install typedoc -g
