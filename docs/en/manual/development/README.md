@@ -8,7 +8,7 @@ add `127.0.0.1 *.localhost` in `/etc/hosts` file or hosts file of your operating
 
 - Docker (to run backing services containers for redis and mongo)
 - Docker compose (easy bootstrap of development setup)
-- NodeJS
+- NVM / NodeJS (use nvm to manage different node versions required)
 - Python and Python Requests (to setup backend apps on first run)
 - VS Code (Editor and NodeJS/TypeScript IDE)
 
@@ -29,9 +29,10 @@ cd building-blocks
 
 ### Bootstrap NodeJS package dependencies
 
+The following command needs nvm and `$HOME/.nvm/nvm.sh` installed.
+
 ```
-npm i
-lerna bootstrap
+./scripts/bootstrap-dependencies.sh
 ```
 
 ### Setup Environment Variables
