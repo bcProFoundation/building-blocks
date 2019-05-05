@@ -1,4 +1,4 @@
-image: registry.gitlab.com/castlecraft/docker-craft/node-latest-headless-chrome:latest
+image: registry.gitlab.com/castlecraft/docker-craft/node-latest-dockerize:latest
 
 services:
   - name: bitnami/mongodb:latest
@@ -55,6 +55,7 @@ test_authorization_server:
     - docker
 
 test_authorization_client:
+  image: registry.gitlab.com/castlecraft/docker-craft/node-lts-headless-chrome:latest
   stage: tests
   before_script:
     - cd frontends/authorization-client
@@ -110,6 +111,7 @@ test_identity_provider:
     - docker
 
 test_identity_client:
+  image: registry.gitlab.com/castlecraft/docker-craft/node-lts-headless-chrome:latest
   stage: tests
   before_script:
     - cd frontends/identity-client
@@ -147,6 +149,7 @@ test_infrastructure_console:
     - docker
 
 test_admin_client:
+  image: registry.gitlab.com/castlecraft/docker-craft/node-lts-headless-chrome:latest
   stage: tests
   before_script:
     - cd frontends/admin-client

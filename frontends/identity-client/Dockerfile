@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:lts
 # Copy and build app
 COPY . /home/craft/identity-client
 WORKDIR /home/craft
