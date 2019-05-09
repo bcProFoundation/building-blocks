@@ -3,7 +3,9 @@
 reference : https://jeremievallee.com/2018/05/28/kubernetes-rbac-namespace-user.html
 
 ```sh
-kubectl create -f https://gitlab.com/castlecraft/building-blocks/raw/develop/helm-charts/deploy/create-namespace-for-access/example-access.yaml
+wget -c https://gitlab.com/castlecraft/building-blocks/raw/develop/kubernetes/deploy/create-namespace-for-access/example-access.yaml
+mv example-access.yaml <namespace>-access.yaml # change to your settings
+kubectl create -f <namespace>-access.yaml # use changed file
 ```
 
 ### Get secrets
