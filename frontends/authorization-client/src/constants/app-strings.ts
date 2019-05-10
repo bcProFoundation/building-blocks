@@ -1,6 +1,6 @@
 export const APP_ID = 'authorization-server';
 export const CLOSE = 'close';
-export const PLEASE_CHECK_EMAIL = 'Please check email to reset password';
+export const PLEASE_CHECK_EMAIL = 'Please check your email';
 export const PLEASE_CHECK_USERNAME =
   'Something went wrong, Please re-check username';
 export const AVAILABLE_TRANSLATIONS = [

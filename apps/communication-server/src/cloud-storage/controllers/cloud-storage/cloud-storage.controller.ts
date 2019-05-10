@@ -52,8 +52,7 @@ export class CloudStorageController {
   }
 
   @Get('v1/getOne/:uuid')
-  @Roles(ADMINISTRATOR)
-  @UseGuards(TokenGuard, RoleGuard)
+  @UseGuards(TokenGuard)
   async findOne(@Param('uuid') uuid: string) {
     const storage: Storage = await this.storage.findOne({ uuid });
     storage.accessKey = undefined;
@@ -92,7 +91,7 @@ export class CloudStorageController {
 
   @Post('cloud/uploadFile/:uuid')
   @UseInterceptors(FileInterceptor('file'))
-  async testing(
+  async uploadFile(
     @UploadedFile('file') file,
     @Req() req,
     @Body('permission') permission,

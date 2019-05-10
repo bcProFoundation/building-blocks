@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../auth/auth.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('SignupComponent', () => {
   let fixture: ComponentFixture<SignupComponent>;
@@ -26,6 +27,7 @@ describe('SignupComponent', () => {
         FormsModule,
         BrowserAnimationsModule,
         HttpClientTestingModule,
+        RouterTestingModule,
       ],
     }).compileComponents();
   }));
