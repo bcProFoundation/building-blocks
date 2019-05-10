@@ -4,6 +4,8 @@ import { MatSnackBar } from '@angular/material';
 import { SOMETHING_WENT_WRONG } from '../../constants/messages';
 import { SignupService } from './signup.service';
 import { ServerInfo } from '../../common/server-info.interface';
+import { CLOSE, PLEASE_CHECK_EMAIL } from 'src/constants/app-strings';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-signup',
@@ -21,6 +23,7 @@ export class SignupComponent implements OnInit {
     private authService: AuthService,
     private snackBar: MatSnackBar,
     private signupService: SignupService,
+    private router: Router,
   ) {}
 
   ngOnInit() {
@@ -44,11 +47,12 @@ export class SignupComponent implements OnInit {
       )
       .subscribe({
         next: (response: any) => {
-          window.location.href = '/login';
+          this.snackBar.open(PLEASE_CHECK_EMAIL, CLOSE, { duration: 5000 });
+          this.router.navigateByUrl('/login');
         },
         error: err => {
           if (typeof err.error.message === 'string') {
-            this.snackBar.open(err.error.message, null, { duration: 2500 });
+            this.snackBar.open(err.error.message, null, { duration: 5000 });
           } else {
             this.snackBar.open(SOMETHING_WENT_WRONG);
           }
