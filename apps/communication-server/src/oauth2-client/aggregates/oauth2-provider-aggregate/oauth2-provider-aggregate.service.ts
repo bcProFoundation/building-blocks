@@ -37,6 +37,8 @@ export class Oauth2ProviderAggregateService extends AggregateRoot {
   }
 
   async list(offset: number, limit: number, search?: string, sort?: string) {
+    offset = Number(offset);
+    limit = Number(offset);
     return this.oauth2Provider.list(offset, limit);
   }
 }

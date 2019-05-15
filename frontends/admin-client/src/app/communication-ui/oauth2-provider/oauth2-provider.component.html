@@ -1,0 +1,103 @@
+<div class="card-container">
+  <form [formGroup]="providerForm">
+    <mat-card>
+      <mat-card-title>{{ name || "New OAuth 2.0 Provider" }}</mat-card-title>
+      <mat-card-content fxLayout="column">
+          <mat-form-field>
+            <input
+              matInput
+              placeholder="Name"
+              formControlName="name"
+              mat-raised-button
+              required>
+          </mat-form-field>
+          <mat-form-field>
+            <input
+              matInput
+              placeholder="Authorization Server URL"
+              formControlName="authServerURL"
+              mat-raised-button
+              required>
+          </mat-form-field>
+          <mat-form-field>
+            <input
+              matInput
+              placeholder="Client ID"
+              formControlName="clientId"
+              mat-raised-button
+              required>
+          </mat-form-field>
+          <mat-form-field>
+            <input
+              [type]="hideClientSecret ? 'password' : 'text'"
+              matInput placeholder="Client Secret" formControlName="clientSecret"
+              mat-raised-button>
+            <mat-icon
+              matSuffix
+              (click)="hideClientSecret = !hideClientSecret">
+              {{hideClientSecret ? 'visibility' : 'visibility_off'}}
+            </mat-icon>
+          </mat-form-field>
+          <mat-form-field *ngIf="uuid !== 'new'">
+            <input
+              matInput
+              readonly
+              placeholder="Redirect URI"
+              formControlName="redirectURI"
+              mat-raised-button>
+          </mat-form-field>
+          <mat-form-field>
+            <input
+              matInput
+              placeholder="Profile URL"
+              formControlName="profileURL"
+              mat-raised-button>
+          </mat-form-field>
+          <mat-form-field>
+            <input
+              matInput
+              placeholder="Token Endpoint"
+              formControlName="tokenURL"
+              mat-raised-button
+              required>
+          </mat-form-field>
+          <mat-form-field>
+            <input
+              matInput
+              placeholder="Introspection Endpoint"
+              formControlName="introspectionURL"
+              mat-raised-button>
+          </mat-form-field>
+          <mat-form-field>
+            <input
+              matInput
+              placeholder="Authorization Endpoint"
+              formControlName="authorizationURL"
+              mat-raised-button
+              required>
+          </mat-form-field>
+          <mat-form-field>
+            <input
+              matInput
+              placeholder="Revocation Endpoint"
+              formControlName="revocationURL"
+              mat-raised-button
+              required>
+          </mat-form-field>
+      </mat-card-content>
+      <mat-card-actions>
+        <button
+          (click)="updateProvider()"
+          mat-flat-button color="primary"
+          [disabled]="!providerForm.valid"
+          *ngIf="name">Update</button>
+        <button
+          (click)="createProvider()"
+          mat-flat-button
+          color="primary"
+          [disabled]="!providerForm.valid"
+          *ngIf="!name">Create</button>
+      </mat-card-actions>
+    </mat-card>
+  </form>
+</div>
