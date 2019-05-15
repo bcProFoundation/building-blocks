@@ -34,7 +34,7 @@ export class ListingService {
   ) {
     let baseUrl = this.storageService.getInfo(ISSUER_URL);
 
-    if (['storage', 'email'].includes(model)) {
+    if (['storage', 'email', 'oauth2_provider'].includes(model)) {
       baseUrl = this.storageService.getServiceURL(COMMUNICATION_SERVER);
     }
 

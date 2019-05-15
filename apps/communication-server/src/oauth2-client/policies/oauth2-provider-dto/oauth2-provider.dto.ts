@@ -3,7 +3,7 @@ import { IsString, IsUrl, IsNotEmpty, IsOptional } from 'class-validator';
 export class OAuth2ProviderDto {
   @IsString()
   @IsNotEmpty()
-  appName: string;
+  name: string;
 
   @IsUrl()
   authServerURL: string;

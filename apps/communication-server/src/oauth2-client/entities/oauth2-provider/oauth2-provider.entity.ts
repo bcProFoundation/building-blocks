@@ -10,7 +10,7 @@ export class OAuth2Provider extends BaseEntity {
   uuid: string;
 
   @Column()
-  appName: string;
+  name: string;
 
   @Column()
   authServerURL: string;
