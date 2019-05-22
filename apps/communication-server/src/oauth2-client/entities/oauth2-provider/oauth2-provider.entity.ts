@@ -36,6 +36,9 @@ export class OAuth2Provider extends BaseEntity {
   @Column()
   revocationURL: string;
 
+  @Column()
+  scope: string[];
+
   constructor() {
     super();
     if (!this.uuid) this.uuid = uuidv4();
