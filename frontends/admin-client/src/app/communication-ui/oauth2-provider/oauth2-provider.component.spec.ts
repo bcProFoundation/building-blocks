@@ -14,12 +14,13 @@ describe('OAuth2ProviderComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule,
         MaterialModule,
         FormsModule,
         ReactiveFormsModule,
+        RouterTestingModule,
         BrowserAnimationsModule,
       ],
+      declarations: [OAuth2ProviderComponent],
       providers: [
         {
           provide: OAuth2ProviderService,
@@ -29,7 +30,6 @@ describe('OAuth2ProviderComponent', () => {
           },
         },
       ],
-      declarations: [OAuth2ProviderComponent],
     }).compileComponents();
   }));
 

@@ -1,4 +1,10 @@
-import { IsString, IsUrl, IsNotEmpty, IsOptional } from 'class-validator';
+import {
+  IsString,
+  IsUrl,
+  IsNotEmpty,
+  IsOptional,
+  IsArray,
+} from 'class-validator';
 
 export class OAuth2ProviderDto {
   @IsString()
@@ -28,4 +34,8 @@ export class OAuth2ProviderDto {
 
   @IsUrl()
   revocationURL: string;
+
+  @IsArray()
+  @IsNotEmpty({ each: true })
+  scope: string[];
 }

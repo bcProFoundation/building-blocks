@@ -30,6 +30,7 @@ export class OAuth2ProviderService {
     introspectionURL: string,
     authorizationURL: string,
     revocationURL: string,
+    scope: string[],
   ) {
     const url = `${this.storageService.getServiceURL(
       COMMUNICATION_SERVER,
@@ -44,6 +45,7 @@ export class OAuth2ProviderService {
       introspectionURL,
       authorizationURL,
       revocationURL,
+      scope,
     };
 
     return this.http.post(url, payload, {
@@ -62,6 +64,7 @@ export class OAuth2ProviderService {
     introspectionURL: string,
     authorizationURL: string,
     revocationURL: string,
+    scope: string[],
   ) {
     const url = `${this.storageService.getServiceURL(
       COMMUNICATION_SERVER,
@@ -76,6 +79,7 @@ export class OAuth2ProviderService {
       introspectionURL,
       authorizationURL,
       revocationURL,
+      scope,
     };
 
     return this.http.post(url, payload, {

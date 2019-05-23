@@ -31,7 +31,7 @@
             <input
               [type]="hideClientSecret ? 'password' : 'text'"
               matInput placeholder="Client Secret" formControlName="clientSecret"
-              mat-raised-button>
+              mat-raised-button required>
             <mat-icon
               matSuffix
               (click)="hideClientSecret = !hideClientSecret">
@@ -84,8 +84,23 @@
               mat-raised-button
               required>
           </mat-form-field>
+          <div
+            *ngFor="let scp of providerForm.get('scope')['controls']; let i = index;"
+            formArrayName="scope">
+            <div [formGroupName]="i">
+              <mat-form-field>
+                <input matInput formControlName="scope" placeholder="Scope {{i+1}}">
+                <button mat-icon-button color="accent" matSuffix (click)="removeScope(i)">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </mat-form-field>
+            </div>
+          </div>
+          <button mat-icon-button color="accent" (click)="addScope()">
+            Add Scope <mat-icon>add</mat-icon>
+          </button>      
       </mat-card-content>
-      <mat-card-actions>
+      <mat-card-actions  fxLayout="row" fxLayoutGap="1em">
         <button
           (click)="updateProvider()"
           mat-flat-button color="primary"
@@ -97,6 +112,11 @@
           color="primary"
           [disabled]="!providerForm.valid"
           *ngIf="!name">Create</button>
+        <!-- <button
+          (click)="connectAccount()"
+          mat-flat-button color="accent"
+          [disabled]="!providerForm.valid"
+          *ngIf="name">Connect</button> -->
       </mat-card-actions>
     </mat-card>
   </form>
