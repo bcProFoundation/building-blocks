@@ -29,10 +29,8 @@ cd building-blocks
 
 ### Bootstrap NodeJS package dependencies
 
-The following command needs nvm and `$HOME/.nvm/nvm.sh` installed.
-
-```
-./scripts/bootstrap-dependencies.sh
+```sh
+rm -fr node_modules && npm i && lerna clean -y && lerna bootstrap
 ```
 
 ### Setup Environment Variables
