@@ -37,10 +37,10 @@ export class LoginComponent implements OnInit {
   disableLoginChoice: boolean = false;
   disableResendOTP: boolean = false;
 
-  @ViewChild('password') passwordRef: ElementRef;
-  @ViewChild('otp') otpRef: ElementRef;
-  @ViewChild('username') usernameRef: ElementRef;
-  @ViewChild('reSendOTP') reSendOTPRef: ElementRef;
+  @ViewChild('password', { static: true }) passwordRef: ElementRef;
+  @ViewChild('otp', { static: true }) otpRef: ElementRef;
+  @ViewChild('username', { static: true }) usernameRef: ElementRef;
+  @ViewChild('reSendOTP', { static: true }) reSendOTPRef: ElementRef;
 
   verifyUserForm = new FormGroup({
     username: new FormControl(this.username),
