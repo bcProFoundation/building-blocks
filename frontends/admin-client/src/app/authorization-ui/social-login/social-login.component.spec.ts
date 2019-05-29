@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SocialLoginComponent } from './social-login.component';
 import { MaterialModule } from '../../shared-imports/material/material.module';
 import { SocialLoginService } from './social-login.service';

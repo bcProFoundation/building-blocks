@@ -2,13 +2,13 @@ import { Entity, BaseEntity, ObjectIdColumn, Column, ObjectID } from 'typeorm';
 import * as uuidv4 from 'uuid/v4';
 
 @Entity()
-export class SocialToken extends BaseEntity {
+export class OAuth2Token extends BaseEntity {
   @ObjectIdColumn()
   _id: ObjectID;
   @Column()
   uuid: string;
   @Column()
-  socialKey: string; // uuid of Social Key
+  oauth2Provider: string; // uuid of Social Key
   @Column()
   user: string; // uuid of request user;
   @Column()

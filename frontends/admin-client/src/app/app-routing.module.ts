@@ -17,6 +17,7 @@ import { ServiceTypeComponent } from './infrastructure-ui/service-type/service-t
 import { CommunicationSettingsComponent } from './communication-ui/communication-settings/communication-settings.component';
 import { InfrastructureSettingsComponent } from './infrastructure-ui/infrastructure-settings/infrastructure-settings.component';
 import { IdpSettingsComponent } from './identity-provider-ui/idp-settings/idp-settings.component';
+import { OAuth2ProviderComponent } from './communication-ui/oauth2-provider/oauth2-provider.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -53,6 +54,11 @@ const routes: Routes = [
   },
   {
     path: 'storage/list',
+    component: ListingComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'oauth2_provider/list',
     component: ListingComponent,
     canActivate: [AuthGuard],
   },
@@ -102,6 +108,11 @@ const routes: Routes = [
     canActivateChild: [AuthGuard],
   },
   {
+    path: 'oauth2_provider/:id',
+    component: OAuth2ProviderComponent,
+    canActivateChild: [AuthGuard],
+  },
+  {
     path: 'service/:id',
     component: ServiceComponent,
     canActivateChild: [AuthGuard],
@@ -114,22 +125,22 @@ const routes: Routes = [
   {
     path: 'auth_settings',
     component: AuthSettingsComponent,
-    canActivateChild: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'communication_settings',
     component: CommunicationSettingsComponent,
-    canActivateChild: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'infrastructure_settings',
     component: InfrastructureSettingsComponent,
-    canActivateChild: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'idp_settings',
     component: IdpSettingsComponent,
-    canActivateChild: [AuthGuard],
+    canActivate: [AuthGuard],
   },
 
   { path: '', redirectTo: 'home', pathMatch: 'full' },

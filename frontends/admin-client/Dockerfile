@@ -1,4 +1,4 @@
-FROM node:lts
+FROM node:latest
 # Copy and build app
 COPY . /home/craft/admin-client
 WORKDIR /home/craft

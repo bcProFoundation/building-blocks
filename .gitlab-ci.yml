@@ -1,4 +1,4 @@
-image: registry.gitlab.com/castlecraft/docker-craft/node-latest-dockerize:latest
+image: registry.gitlab.com/castlecraft/docker-craft/node-latest-headless-chrome:latest
 
 services:
   - name: bitnami/mongodb:latest
@@ -111,7 +111,6 @@ test_identity_provider:
     - docker
 
 test_identity_client:
-  image: registry.gitlab.com/castlecraft/docker-craft/node-lts-headless-chrome:latest
   stage: tests
   before_script:
     - cd frontends/identity-client
@@ -149,7 +148,6 @@ test_infrastructure_console:
     - docker
 
 test_admin_client:
-  image: registry.gitlab.com/castlecraft/docker-craft/node-lts-headless-chrome:latest
   stage: tests
   before_script:
     - cd frontends/admin-client
@@ -401,24 +399,6 @@ deploy_staging:
     - staging
   script:
     - ./kubernetes/deploy/deploy-staging.sh
-
-deploy_develop:
-  image: dtzar/helm-kubectl:latest
-  stage: deploy
-  only:
-    - staging
-  variables:
-    KUBECONFIG: /etc/deploy/config
-  before_script:
-    - mkdir -p /etc/deploy
-    - echo ${develop_kube_config} | base64 -d > ${KUBECONFIG}
-    - kubectl config use-context develop
-    - helm init --service-account develop-user --client-only
-    - helm repo add stable https://kubernetes-charts.storage.googleapis.com/
-    - helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
-    - helm repo update
-  script:
-    - ./kubernetes/deploy/deploy-develop.sh
 
 pages:
   stage: docs

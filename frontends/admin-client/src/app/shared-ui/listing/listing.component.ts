@@ -11,8 +11,8 @@ import { NavigationEnd, Router } from '@angular/router';
   styleUrls: ['./listing.component.css'],
 })
 export class ListingComponent {
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
   dataSource: ListingDataSource;
 
   displayedColumns = ['name', 'uuid'];
