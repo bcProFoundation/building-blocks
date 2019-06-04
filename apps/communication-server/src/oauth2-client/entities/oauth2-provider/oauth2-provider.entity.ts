@@ -1,7 +1,9 @@
 import { Column, Entity, BaseEntity, ObjectID, ObjectIdColumn } from 'typeorm';
 import * as uuidv4 from 'uuid/v4';
 
-@Entity()
+export const OAUTH2_PROVIDER = 'oauth2_provider';
+
+@Entity(OAUTH2_PROVIDER)
 export class OAuth2Provider extends BaseEntity {
   @ObjectIdColumn()
   _id: ObjectID;

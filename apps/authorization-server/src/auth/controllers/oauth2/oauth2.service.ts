@@ -69,6 +69,8 @@ export class OAuth2Service {
           name: user.name,
           email: user.email,
           roles: user.roles,
+          verified_email: user.email,
+          verified: user.email ? true : false,
         });
       }),
     );
