@@ -45,6 +45,7 @@ export class ClientService {
     callbackURLs: string[],
     scopes: string[],
     isTrusted: string,
+    autoApprove: boolean,
   ) {
     const url = `${this.storageService.getInfo(ISSUER_URL)}/client/v1/create`;
     const clientData = {
@@ -52,6 +53,7 @@ export class ClientService {
       redirectUris: callbackURLs,
       allowedScopes: scopes,
       isTrusted,
+      autoApprove,
     };
     return this.http.post(url, clientData);
   }
@@ -64,6 +66,7 @@ export class ClientService {
     callbackURLs: string[],
     scopes: string[],
     isTrusted: boolean,
+    autoApprove: boolean,
   ) {
     const url = `${this.storageService.getInfo(
       ISSUER_URL,
@@ -75,6 +78,7 @@ export class ClientService {
       redirectUris: callbackURLs,
       allowedScopes: scopes,
       isTrusted,
+      autoApprove,
     });
   }
 
