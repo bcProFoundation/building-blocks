@@ -10,6 +10,7 @@ export interface Client extends Document {
   clientId?: string;
   clientSecret?: string;
   isTrusted?: number;
+  autoApprove?: boolean;
   redirectUris?: string[];
   allowedScopes?: string[];
   userDeleteEndpoint?: string;
