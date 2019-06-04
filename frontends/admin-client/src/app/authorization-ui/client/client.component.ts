@@ -25,6 +25,7 @@ export class ClientComponent implements OnInit {
   clientSecret: string;
   clientURL: string;
   isTrusted: boolean;
+  autoApprove: boolean;
   clientScopes: any[];
   callbackURLs: string[];
   tokenDeleteEndpoint: string;
@@ -58,6 +59,7 @@ export class ClientComponent implements OnInit {
       userDeleteEndpoint: this.userDeleteEndpoint,
       callbackURLForms: this.formBuilder.array([]),
       isTrusted: this.isTrusted,
+      autoApprove: this.autoApprove,
       clientId: this.clientId,
       clientSecret: this.clientSecret,
       changedClientSecret: this.changedClientSecret,
@@ -104,6 +106,7 @@ export class ClientComponent implements OnInit {
         this.getCallbackURLs(),
         this.clientForm.controls.clientScopes.value,
         this.clientForm.controls.isTrusted.value ? '1' : '0',
+        this.clientForm.controls.autoApprove.value,
       )
       .subscribe({
         next: success => {
@@ -136,6 +139,7 @@ export class ClientComponent implements OnInit {
         this.getCallbackURLs(),
         this.clientForm.controls.clientScopes.value,
         this.clientForm.controls.isTrusted.value,
+        this.clientForm.controls.autoApprove.value,
       )
       .subscribe({
         next: success => {
@@ -164,6 +168,7 @@ export class ClientComponent implements OnInit {
     this.clientSecret = client.clientSecret;
     this.clientName = client.name;
     this.callbackURLs = client.redirectUris;
+    this.isTrusted = client.isTrusted;
     this.clientForm.controls.tokenDeleteEndpoint.setValue(
       client.tokenDeleteEndpoint,
     );
@@ -180,6 +185,25 @@ export class ClientComponent implements OnInit {
     this.clientForm.controls.clientSecret.setValue(client.clientSecret);
     this.clientForm.controls.clientName.setValue(client.name);
     this.clientForm.controls.isTrusted.setValue(client.isTrusted);
+    this.clientForm.controls.autoApprove.setValue(client.autoApprove);
     this.clientForm.controls.clientScopes.setValue(client.allowedScopes);
+    this.toggleTrustedAutoApprove(this.isTrusted);
+
+    this.clientForm.controls.isTrusted.valueChanges.subscribe({
+      next: value => {
+        this.toggleTrustedAutoApprove(value);
+      },
+      error: error => {},
+    });
+  }
+
+  toggleTrustedAutoApprove(isTrusted: boolean) {
+    if (isTrusted) {
+      this.clientForm.controls.autoApprove.setValue(true);
+      this.clientForm.controls.autoApprove.disable();
+    } else {
+      this.clientForm.controls.autoApprove.setValue(false);
+      this.clientForm.controls.autoApprove.enable();
+    }
   }
 }

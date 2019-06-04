@@ -4,6 +4,7 @@ import {
   IsString,
   IsNumberString,
   ValidateNested,
+  IsBoolean,
 } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 import { i18n } from '../../../i18n/i18n.config';
@@ -23,10 +24,20 @@ export class CreateClientDto {
   @IsNumberString()
   @IsOptional()
   @ApiModelProperty({
-    description: i18n.__('Skips the Allow/Deny screen if value is 1'),
+    description: i18n.__(
+      'Treat this as internal trusted client if trust is greater than 0',
+    ),
     type: 'number',
   })
   isTrusted: number;
+
+  @IsBoolean()
+  @IsOptional()
+  @ApiModelProperty({
+    description: i18n.__('Skips the Allow/Deny screen if value is true'),
+    type: 'boolean',
+  })
+  autoApprove: boolean;
 
   @ApiModelProperty({
     description: i18n.__(

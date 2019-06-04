@@ -213,8 +213,13 @@ export class OAuth2orizeSetup implements OnModuleInit, OnApplicationBootstrap {
       async (client, user, done) => {
         // Check if grant request qualifies for immediate approval
         if (!user) return done(null, false);
+
         // Auto-approve
-        if (client.isTrusted) return done(null, true);
+        if (client.isTrusted) {
+          return done(null, true);
+        } else if (client.autoApprove) {
+          return done(null, true);
+        }
 
         try {
           // findByUserIdAndClientId

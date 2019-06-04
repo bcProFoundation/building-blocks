@@ -74,5 +74,7 @@
 	"Password less login is already disabled": "Password less login is already disabled",
 	"Password less login is already enabled": "Password less login is already enabled",
 	"Bearer Token Revoked Successfully": "Bearer Token Revoked Successfully",
-	"Invalid Bearer Token": "Invalid Bearer Token"
+	"Invalid Bearer Token": "Invalid Bearer Token",
+	"Treat this as internal trusted client if trust is greater than 0": "Treat this as internal trusted client if trust is greater than 0",
+	"Skips the Allow/Deny screen if value is true": "Skips the Allow/Deny screen if value is true"
 }

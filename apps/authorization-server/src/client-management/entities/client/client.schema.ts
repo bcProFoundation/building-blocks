@@ -13,6 +13,7 @@ const schema = new mongoose.Schema(
     clientId: { type: String, default: uuidv4 },
     clientSecret: { type: String, default: randomBytes32 },
     isTrusted: Number,
+    autoApprove: Boolean,
     redirectUris: [String],
     allowedScopes: [String],
     userDeleteEndpoint: String,

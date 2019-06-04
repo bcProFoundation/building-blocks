@@ -3,9 +3,10 @@
       <mat-card>
         <mat-card-title>{{ clientName || "New Client" }}</mat-card-title>
         <mat-card-content fxLayout="column">
-            <mat-form-field>
+            <mat-form-field fxLayout="column" fxLayoutGap="1em">
               <input matInput placeholder="Client Name" formControlName="clientName" required>
-              <mat-checkbox formControlName="isTrusted" matSuffix>Trusted</mat-checkbox>
+              <mat-checkbox formControlName="isTrusted" matSuffix class="client-checkboxes">Trusted</mat-checkbox>
+              <mat-checkbox formControlName="autoApprove" matSuffix>Auto Approve</mat-checkbox>
             </mat-form-field>
             <mat-form-field *ngIf="clientId">
               <input matInput placeholder="Client ID" formControlName="clientId" password readonly>
