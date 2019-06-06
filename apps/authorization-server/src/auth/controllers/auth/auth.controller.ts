@@ -45,7 +45,7 @@ export class AuthController {
   }
 
   @Post('signup')
-  @UsePipes(ValidationPipe)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   @ApiOperation({
     title: i18n.__('Signup'),
     description: i18n.__('Sign up a new user'),
@@ -92,7 +92,7 @@ export class AuthController {
   }
 
   @Post('password_less')
-  @UsePipes(ValidationPipe)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   async passwordLess(@Body() payload: PasswordLessDto, @Req() req) {
     const user = await this.authService.passwordLessLogin(payload);
     addSessionUser(req, {

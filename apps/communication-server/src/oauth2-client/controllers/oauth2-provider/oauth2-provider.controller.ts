@@ -32,7 +32,7 @@ export class Oauth2ProviderController {
   @Post('v1/add_provider')
   @Roles(ADMINISTRATOR)
   @UseGuards(TokenGuard, RoleGuard)
-  @UsePipes(ValidationPipe)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   async addProvider(@Body() payload: OAuth2ProviderDto) {
     return await this.commandBus.execute(new AddOAuth2ProviderCommand(payload));
   }
@@ -50,7 +50,7 @@ export class Oauth2ProviderController {
   @Post('v1/update_provider/:uuid')
   @Roles(ADMINISTRATOR)
   @UseGuards(TokenGuard, RoleGuard)
-  @UsePipes(ValidationPipe)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   async updateProvider(
     @Param('uuid') uuid,
     @Body() payload: OAuth2ProviderDto,

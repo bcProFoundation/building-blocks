@@ -54,7 +54,7 @@ export class ServiceTypeController {
   }
 
   @Post('v1/create')
-  @UsePipes(ValidationPipe)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   @Roles(ADMINISTRATOR)
   @UseGuards(TokenGuard, RoleGuard)
   async registerService(@Body() payload: ServiceTypeValidationDto) {

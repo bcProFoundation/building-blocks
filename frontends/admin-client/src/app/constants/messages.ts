@@ -22,3 +22,6 @@ export const ERROR_UPDATING_SERVICE_SETTINGS =
   'Error in updating service settings';
 export const DELETING = 'Deleting';
 export const UNDO = 'Undo';
+export const BASIC_HEADER = 'Basic Header';
+export const PUBLIC_CLIENT = 'Public Client';
+export const BODY_PARAM = 'Body Param';

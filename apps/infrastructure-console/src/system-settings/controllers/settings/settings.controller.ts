@@ -29,7 +29,7 @@ export class SettingsController {
   @Post('v1/update')
   @Roles(ADMINISTRATOR)
   @UseGuards(TokenGuard, RoleGuard)
-  @UsePipes(ValidationPipe)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   updateSettings(@Body() payload: ServerSettingsDto) {
     return this.settingsService.find().pipe(
       switchMap(settings => {

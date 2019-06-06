@@ -8,6 +8,17 @@
               <mat-checkbox formControlName="isTrusted" matSuffix class="client-checkboxes">Trusted</mat-checkbox>
               <mat-checkbox formControlName="autoApprove" matSuffix>Auto Approve</mat-checkbox>
             </mat-form-field>
+            <mat-form-field>
+              <mat-label>Authentication Method</mat-label>
+              <mat-select
+                [(value)]="authenticationMethod"
+                formControlName="authenticationMethod"
+                placeholder="Client Authentication">
+                <mat-option *ngFor="let method of authMethods" [value]="method.value">
+                  {{ method.viewValue }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
             <mat-form-field *ngIf="clientId">
               <input matInput placeholder="Client ID" formControlName="clientId" password readonly>
             </mat-form-field>

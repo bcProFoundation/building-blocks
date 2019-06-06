@@ -53,7 +53,7 @@ export class UserController {
 
   @Post('v1/change_password')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
-  @UsePipes(ValidationPipe)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   async updatePassword(@Req() req, @Body() passwordPayload: ChangePasswordDto) {
     const userUuid = req.user.user;
     return await this.commandBus.execute(
@@ -100,7 +100,7 @@ export class UserController {
   }
 
   @Post('v1/create')
-  @UsePipes(ValidationPipe)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   @Roles(ADMINISTRATOR)
   @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   async create(@Body() payload: UserAccountDto, @Req() req) {
@@ -178,7 +178,7 @@ export class UserController {
   }
 
   @Post('v1/generate_password')
-  @UsePipes(ValidationPipe)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   async verifyEmail(@Body() payload: VerifyEmailDto) {
     return await this.commandBus.execute(
       new VerifyEmailAndSetPasswordCommand(payload),

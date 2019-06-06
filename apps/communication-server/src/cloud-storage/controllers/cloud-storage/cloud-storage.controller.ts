@@ -61,7 +61,7 @@ export class CloudStorageController {
   }
 
   @Post('v1/add')
-  @UsePipes(ValidationPipe)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   @Roles(ADMINISTRATOR)
   @UseGuards(TokenGuard, RoleGuard)
   async addStorage(@Body() payload: StorageValidationDto, @Req() req) {
@@ -69,7 +69,7 @@ export class CloudStorageController {
   }
 
   @Put('v1/modify/:uuid')
-  @UsePipes(ValidationPipe)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   @Roles(ADMINISTRATOR)
   @UseGuards(TokenGuard, RoleGuard)
   async modifyStorage(@Body() payload: ModifyStorageDto, @Param('uuid') uuid) {
@@ -79,7 +79,7 @@ export class CloudStorageController {
   }
 
   @Delete('v1/remove/:uuid')
-  @UsePipes(ValidationPipe)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   @Roles(ADMINISTRATOR)
   @UseGuards(TokenGuard, RoleGuard)
   async removeStorage(@Param() uuid, @Req() req) {
