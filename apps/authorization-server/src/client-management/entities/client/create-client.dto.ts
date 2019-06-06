@@ -5,12 +5,14 @@ import {
   IsNumberString,
   ValidateNested,
   IsBoolean,
+  IsEnum,
 } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 import { i18n } from '../../../i18n/i18n.config';
 import { Type } from 'class-transformer';
 import { RedirectURIsDTO } from './redirect-uris.dto';
 import { AllowedScopeDTO } from './allowed-scopes.dto';
+import { ClientAuthentication } from './client.interface';
 
 export class CreateClientDto {
   @IsString()
@@ -44,14 +46,14 @@ export class CreateClientDto {
       'Client app endpoint which will receive the token/code',
     ),
   })
-  @ValidateNested()
+  @ValidateNested({ each: true })
   @Type(() => RedirectURIsDTO)
   redirectUris: RedirectURIsDTO[];
 
   @ApiModelProperty({
     description: i18n.__('Allowed Scopes for Client app'),
   })
-  @ValidateNested()
+  @ValidateNested({ each: true })
   @Type(() => AllowedScopeDTO)
   allowedScopes: AllowedScopeDTO[];
 
@@ -74,4 +76,16 @@ export class CreateClientDto {
     type: 'string',
   })
   tokenDeleteEndpoint: string;
+
+  @IsEnum(ClientAuthentication)
+  @IsOptional()
+  @ApiModelProperty({
+    description: i18n.__(
+      'Type of method to authenticate client during authorization code exchange',
+    ),
+    required: false,
+    type: 'string',
+    enum: ClientAuthentication,
+  })
+  authenticationMethod: string;
 }

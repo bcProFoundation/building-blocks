@@ -1,23 +1,57 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from './passport.strategy';
 import { Strategy } from 'passport-oauth2-code';
 import { ClientService } from '../../../client-management/entities/client/client.service';
+import { ClientAuthentication } from '../../../client-management/entities/client/client.interface';
 
 @Injectable()
 export class AuthorizationCodeStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly clientService: ClientService) {
-    super();
+    super({ passReqToCallback: true });
   }
-  async validate(code, clientId, clientSecret, redirectURI, verified) {
+  async validate(req, code, clientId, clientSecret, redirectURI, verified) {
     // check the client for allowed redirect uri and pas the code
     try {
       const client = await this.clientService.findOne({ clientId });
       if (!client) return verified(null, false);
       if (!client.redirectUris.includes(redirectURI))
         return verified(null, false);
-      return verified(null, client);
+
+      // Check Authentication for Client
+      if (client.authenticationMethod === ClientAuthentication.BasicHeader) {
+        if (req.headers.authorization) {
+          const basicAuthHeader = req.headers.authorization.split(' ')[1];
+          const [reqClientId, reqClientSecret] = Buffer.from(
+            basicAuthHeader,
+            'base64',
+          )
+            .toString()
+            .split(':');
+          if (
+            reqClientId === client.clientId &&
+            reqClientSecret === client.clientSecret
+          ) {
+            return verified(null, client);
+          }
+        }
+      } else if (
+        client.authenticationMethod === ClientAuthentication.BodyParam
+      ) {
+        if (
+          req.body.client_id === client.clientId &&
+          req.body.client_secret === client.clientSecret
+        ) {
+          return verified(null, client);
+        }
+      } else if (
+        !client.authenticationMethod ||
+        client.authenticationMethod === ClientAuthentication.PublicClient
+      ) {
+        return verified(null, client);
+      }
+      return verified(null, false);
     } catch (error) {
-      return verified(error, null);
+      return verified(new UnauthorizedException(error), null);
     }
   }
 }

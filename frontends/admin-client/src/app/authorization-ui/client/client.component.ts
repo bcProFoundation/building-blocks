@@ -8,8 +8,12 @@ import {
   CLOSE,
   CLIENT_CREATED,
   CLIENT_UPDATED,
+  BASIC_HEADER,
+  PUBLIC_CLIENT,
+  BODY_PARAM,
 } from '../../constants/messages';
 import { NEW_ID } from '../../constants/common';
+import { ClientAuthentication } from './client-authentication.enum';
 
 export const CLIENT_LIST_ROUTE = '/client/list';
 
@@ -40,6 +44,13 @@ export class ClientComponent implements OnInit {
   clientForm: FormGroup;
   callbackURLForms: FormArray;
 
+  authenticationMethod = ClientAuthentication.PublicClient;
+  authMethods = [
+    { value: ClientAuthentication.BasicHeader, viewValue: BASIC_HEADER },
+    { value: ClientAuthentication.PublicClient, viewValue: PUBLIC_CLIENT },
+    { value: ClientAuthentication.BodyParam, viewValue: BODY_PARAM },
+  ];
+
   constructor(
     private readonly clientService: ClientService,
     private route: ActivatedRoute,
@@ -53,6 +64,7 @@ export class ClientComponent implements OnInit {
   ngOnInit() {
     this.clientForm = this.formBuilder.group({
       clientName: this.clientName,
+      authenticationMethod: this.authenticationMethod,
       clientURL: this.clientURL,
       clientScopes: this.clientScopes,
       tokenDeleteEndpoint: this.tokenDeleteEndpoint,
@@ -69,6 +81,7 @@ export class ClientComponent implements OnInit {
       this.subscribeGetClient(this.uuid);
     }
     this.subscribeGetScopes();
+    this.setupFieldObservables();
   }
 
   createCallbackURLFormGroup(callbackURL?: string): FormGroup {
@@ -103,6 +116,7 @@ export class ClientComponent implements OnInit {
     this.clientService
       .createClient(
         this.clientForm.controls.clientName.value,
+        this.clientForm.controls.authenticationMethod.value,
         this.getCallbackURLs(),
         this.clientForm.controls.clientScopes.value,
         this.clientForm.controls.isTrusted.value ? '1' : '0',
@@ -134,11 +148,12 @@ export class ClientComponent implements OnInit {
       .updateClient(
         this.clientId,
         this.clientForm.controls.clientName.value,
+        this.clientForm.controls.authenticationMethod.value,
         this.clientForm.controls.tokenDeleteEndpoint.value,
         this.clientForm.controls.userDeleteEndpoint.value,
         this.getCallbackURLs(),
         this.clientForm.controls.clientScopes.value,
-        this.clientForm.controls.isTrusted.value,
+        this.clientForm.controls.isTrusted.value ? '1' : '0',
         this.clientForm.controls.autoApprove.value,
       )
       .subscribe({
@@ -169,6 +184,13 @@ export class ClientComponent implements OnInit {
     this.clientName = client.name;
     this.callbackURLs = client.redirectUris;
     this.isTrusted = client.isTrusted;
+    if (client.authenticationMethod) {
+      this.authenticationMethod = client.authenticationMethod;
+      this.clientForm.controls.authenticationMethod.setValue(
+        client.authenticationMethod,
+      );
+    }
+
     this.clientForm.controls.tokenDeleteEndpoint.setValue(
       client.tokenDeleteEndpoint,
     );
@@ -187,8 +209,10 @@ export class ClientComponent implements OnInit {
     this.clientForm.controls.isTrusted.setValue(client.isTrusted);
     this.clientForm.controls.autoApprove.setValue(client.autoApprove);
     this.clientForm.controls.clientScopes.setValue(client.allowedScopes);
-    this.toggleTrustedAutoApprove(this.isTrusted);
+    this.toggleTrustedAutoApprove(client.isTrusted);
+  }
 
+  setupFieldObservables() {
     this.clientForm.controls.isTrusted.valueChanges.subscribe({
       next: value => {
         this.toggleTrustedAutoApprove(value);

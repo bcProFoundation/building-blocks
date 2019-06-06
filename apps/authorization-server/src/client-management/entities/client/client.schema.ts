@@ -1,6 +1,7 @@
 import * as mongoose from 'mongoose';
 import * as uuidv4 from 'uuid/v4';
 import { randomBytes } from 'crypto';
+import { ClientAuthentication } from './client.interface';
 
 const schema = new mongoose.Schema(
   {
@@ -19,6 +20,10 @@ const schema = new mongoose.Schema(
     userDeleteEndpoint: String,
     tokenDeleteEndpoint: String,
     changedClientSecret: String,
+    authenticationMethod: {
+      type: String,
+      default: ClientAuthentication.PublicClient,
+    },
   },
   { collection: 'client', versionKey: false },
 );
