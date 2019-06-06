@@ -35,7 +35,7 @@ export class ServerSettingsController {
   }
 
   @Post('v1/update')
-  @UsePipes(ValidationPipe)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   @Roles(ADMINISTRATOR)
   @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   async updateSettings(@Body() payload: ServerSettingDto, @Req() req) {
@@ -46,7 +46,7 @@ export class ServerSettingsController {
   }
 
   @Post('v1/delete_bearer_tokens')
-  @UsePipes(ValidationPipe)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   @Roles(ADMINISTRATOR)
   @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   async deleteTokens(@Req() req) {
@@ -57,7 +57,7 @@ export class ServerSettingsController {
   }
 
   @Post('v1/delete_user_sessions')
-  @UsePipes(ValidationPipe)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   @Roles(ADMINISTRATOR)
   @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   async deleteSessions(@Req() req) {

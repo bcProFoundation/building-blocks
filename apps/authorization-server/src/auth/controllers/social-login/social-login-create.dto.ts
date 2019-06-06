@@ -14,11 +14,9 @@ export class CreateSocialLoginDto {
   clientSecret: string;
 
   @IsUrl()
-  @IsOptional()
   authorizationURL: string;
 
   @IsUrl()
-  @IsOptional()
   tokenURL: string;
 
   @IsUrl()
@@ -30,7 +28,6 @@ export class CreateSocialLoginDto {
   baseURL: string;
 
   @IsUrl()
-  @IsOptional()
   profileURL: string;
 
   @IsUrl()

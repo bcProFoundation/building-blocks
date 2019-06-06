@@ -13,7 +13,7 @@ export class SetupController {
   constructor(private readonly setupService: SetupService) {}
 
   @Post()
-  @UsePipes(ValidationPipe)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   async setup(@Body() setupForm: ServerSettingsDto) {
     return await this.setupService.setup(setupForm);
   }

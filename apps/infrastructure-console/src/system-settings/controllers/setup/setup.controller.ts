@@ -13,7 +13,7 @@ export class SetupController {
   constructor(private readonly settingsService: SetupService) {}
 
   @Post()
-  @UsePipes(ValidationPipe)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   async setup(@Body() icSettingsDTO: ServerSettingsDto) {
     return await this.settingsService.setup(icSettingsDTO);
   }

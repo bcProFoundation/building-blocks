@@ -41,7 +41,7 @@ export class ClientController {
 
   @Post('v1/create')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
-  @UsePipes(ValidationPipe)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   async create(@Body() body: CreateClientDto, @Req() req, @Res() res) {
     const payload: any = body;
     if (!(await this.userService.checkAdministrator(req.user.user))) {

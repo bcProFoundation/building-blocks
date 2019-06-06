@@ -38,7 +38,7 @@ export class SocialLoginController {
   @Post('v1/create')
   @Roles(ADMINISTRATOR)
   @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
-  @UsePipes(ValidationPipe)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   async create(@Body() body: CreateSocialLoginDto, @Req() req, @Res() res) {
     const payload: any = body;
     payload.createdBy = req.user.user;
