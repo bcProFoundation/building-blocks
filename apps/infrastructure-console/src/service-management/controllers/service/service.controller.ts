@@ -57,7 +57,7 @@ export class ServiceController {
   }
 
   @Post('v1/register')
-  @UsePipes(ValidationPipe)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   @Roles(ADMINISTRATOR)
   @UseGuards(TokenGuard, RoleGuard)
   async registerService(@Body() payload: CreateServiceDto, @Req() req) {
@@ -68,7 +68,7 @@ export class ServiceController {
   }
 
   @Post('v1/modify/:clientId')
-  @UsePipes(ValidationPipe)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   @Roles(ADMINISTRATOR)
   @UseGuards(TokenGuard, RoleGuard)
   async modifyService(

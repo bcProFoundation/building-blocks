@@ -41,7 +41,7 @@ export class ClientController {
 
   @Post('v1/create')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
-  @UsePipes(ValidationPipe)
+  @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
   async create(@Body() body: CreateClientDto, @Req() req, @Res() res) {
     const payload: any = body;
     if (!(await this.userService.checkAdministrator(req.user.user))) {
@@ -56,6 +56,7 @@ export class ClientController {
   }
 
   @Put('v1/update/:clientId')
+  @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
   async update(
     @Body() payload: CreateClientDto,

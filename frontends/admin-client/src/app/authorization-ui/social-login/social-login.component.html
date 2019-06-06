@@ -21,10 +21,10 @@
             <mat-icon matSuffix (click)="hideClientSecret = !hideClientSecret">{{hideClientSecret ? 'visibility_off' : 'visibility'}}</mat-icon>
           </mat-form-field>
           <mat-form-field>
-            <input matInput placeholder="Authorization URL" formControlName="authorizationURL">
+            <input matInput placeholder="Authorization URL" formControlName="authorizationURL" required>
           </mat-form-field>
           <mat-form-field>
-            <input matInput placeholder="Token URL" formControlName="tokenURL">
+            <input matInput placeholder="Token URL" formControlName="tokenURL" required>
             <mat-checkbox formControlName="clientSecretToTokenEndpoint" matSuffix>Requires Client Secret</mat-checkbox>
           </mat-form-field>
           <mat-form-field>
@@ -34,7 +34,7 @@
             <input matInput placeholder="Base URL" formControlName="baseURL">
           </mat-form-field>
           <mat-form-field>
-            <input matInput placeholder="Profile URL" formControlName="profileURL">
+            <input matInput placeholder="Profile URL" formControlName="profileURL" required>
           </mat-form-field>
           <mat-form-field>
             <input matInput placeholder="Revocation URL" formControlName="revocationURL">

@@ -30,14 +30,14 @@ export class EmailController {
 
   @Post('v1/system')
   @UseGuards(AuthServerVerificationGuard)
-  @UsePipes(ValidationPipe)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   async sendSystemEmail(@Body() payload: EmailMessageAuthServerDto) {
     return await this.emailService.sendSystemMessage(payload);
   }
 
   @Post('v1/create')
   @UseGuards(TokenGuard)
-  @UsePipes(ValidationPipe)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   async create(@Req() req, @Res() res, @Body() payload: CreateEmailDto) {
     payload.owner = req.token.sub;
     const emailAccount = await this.emailAccount.save(payload);

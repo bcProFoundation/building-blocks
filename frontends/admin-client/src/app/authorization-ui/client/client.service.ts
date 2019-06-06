@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 import { StorageService } from '../../common/services/storage/storage.service';
 import { ISSUER_URL } from '../../constants/storage';
 import { CANNOT_FETCH_CLIENT } from '../../constants/messages';
+import { ClientAuthentication } from './client-authentication.enum';
 
 @Injectable()
 export class ClientService {
@@ -42,6 +43,7 @@ export class ClientService {
 
   createClient(
     clientName: string,
+    authenticationMethod: ClientAuthentication,
     callbackURLs: string[],
     scopes: string[],
     isTrusted: string,
@@ -50,6 +52,7 @@ export class ClientService {
     const url = `${this.storageService.getInfo(ISSUER_URL)}/client/v1/create`;
     const clientData = {
       name: clientName,
+      authenticationMethod,
       redirectUris: callbackURLs,
       allowedScopes: scopes,
       isTrusted,
@@ -61,11 +64,12 @@ export class ClientService {
   updateClient(
     clientId: string,
     clientName: string,
+    authenticationMethod: ClientAuthentication,
     tokenDeleteEndpoint: string,
     userDeleteEndpoint: string,
     callbackURLs: string[],
     scopes: string[],
-    isTrusted: boolean,
+    isTrusted: string,
     autoApprove: boolean,
   ) {
     const url = `${this.storageService.getInfo(
@@ -73,6 +77,7 @@ export class ClientService {
     )}/client/v1/update/${clientId}`;
     return this.http.put(url, {
       name: clientName,
+      authenticationMethod,
       tokenDeleteEndpoint,
       userDeleteEndpoint,
       redirectUris: callbackURLs,

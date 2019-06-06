@@ -28,7 +28,7 @@ export class ProfileController {
 
   @Post('v1/update_profile_details')
   @UseGuards(TokenGuard)
-  @UsePipes(ValidationPipe)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   async updateProfileDetails(@Body() profile: ProfileDetailsDTO, @Req() req) {
     let updatedProfile: Profile;
     if (profile.uuid && profile.uuid === req.token.sub) {
@@ -48,7 +48,7 @@ export class ProfileController {
 
   @Post('v1/update_personal_details')
   @UseGuards(TokenGuard)
-  @UsePipes(ValidationPipe)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   async updateProfile(
     @Body() profile: PersonalDetailsDTO,
     @Req() req,

@@ -14,7 +14,7 @@ export class SignupController {
   constructor(private readonly signupService: SignupService) {}
 
   @Post('v1/email')
-  @UsePipes(ValidationPipe)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   async signupViaEmail(@Body() payload: SignupViaEmailDto, @Res() res) {
     await this.signupService.validateSignupEnabled();
     payload.email = payload.email.trim().toLocaleLowerCase();

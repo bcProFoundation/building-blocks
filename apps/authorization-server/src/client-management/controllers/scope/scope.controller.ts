@@ -74,7 +74,7 @@ export class ScopeController {
   }
 
   @Post('v1/create')
-  @UsePipes(ValidationPipe)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   @Roles(ADMINISTRATOR)
   @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   async create(@Body() body: CreateScopeDto, @Res() res) {

@@ -16,4 +16,11 @@ export interface Client extends Document {
   userDeleteEndpoint?: string;
   tokenDeleteEndpoint?: string;
   changedClientSecret?: string;
+  authenticationMethod?: ClientAuthentication;
+}
+
+export enum ClientAuthentication {
+  BasicHeader = 'BASIC_HEADER',
+  BodyParam = 'BODY_PARAM',
+  PublicClient = 'PUBLIC_CLIENT',
 }
