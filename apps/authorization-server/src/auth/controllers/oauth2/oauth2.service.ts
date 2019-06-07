@@ -1,16 +1,23 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpService } from '@nestjs/common';
 import { i18n } from '../../../i18n/i18n.config';
 import { ROLES } from '../../../constants/app-strings';
 import { from, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, map, catchError } from 'rxjs/operators';
 import { BearerTokenService } from '../../../auth/entities/bearer-token/bearer-token.service';
 import { UserService } from '../../../user-management/entities/user/user.service';
+import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
+import { ClientService } from '../../../client-management/entities/client/client.service';
+
+export const PROFILE_USERINFO_ENDPOINT = '/profile/v1/userinfo';
 
 @Injectable()
 export class OAuth2Service {
   constructor(
     private readonly bearerTokenService: BearerTokenService,
     private readonly userService: UserService,
+    private readonly settings: ServerSettingsService,
+    private readonly http: HttpService,
+    private readonly clientService: ClientService,
   ) {}
 
   async tokenRevoke(token) {
@@ -62,16 +69,99 @@ export class OAuth2Service {
   }
 
   getProfile(req) {
-    return from(this.userService.findOne({ uuid: req.user.user })).pipe(
-      switchMap(user => {
-        return of({
-          uuid: user.uuid,
-          name: user.name,
-          email: user.email,
-          roles: user.roles,
-          verified_email: user.email,
-          verified: user.email ? true : false,
-        });
+    const accessToken = this.getAccessToken(req);
+    const uuid = req.user.user;
+    return from(this.settings.find()).pipe(
+      switchMap(settings => {
+        if (!settings.identityProviderClientId) {
+          return this.observeLocalProfile(uuid, accessToken);
+        } else {
+          return this.observeIdentityProviderProfile(
+            settings.identityProviderClientId,
+            uuid,
+            accessToken,
+          );
+        }
+      }),
+    );
+  }
+
+  getAccessToken(request) {
+    if (!request.headers.authorization) {
+      if (!request.query.access_token) return null;
+    }
+    return (
+      request.query.access_token ||
+      request.headers.authorization.split(' ')[1] ||
+      null
+    );
+  }
+
+  observeLocalProfile(uuid: string, accessToken: string) {
+    return from(this.settings.find()).pipe(
+      switchMap(settings => {
+        return from(this.bearerTokenService.findOne({ accessToken })).pipe(
+          switchMap(token => {
+            return from(this.userService.findOne({ uuid })).pipe(
+              switchMap(user => {
+                return of({
+                  aud: token.client,
+                  iss: settings.issuerUrl,
+                  sub: user.uuid,
+                  name: user.name,
+                  email: user.email,
+                  roles: user.roles,
+                  verified_email: user.email,
+                  verified: user.email ? true : false,
+                });
+              }),
+            );
+          }),
+        );
+      }),
+    );
+  }
+
+  observeIdentityProviderProfile(
+    identityProviderClientId: string,
+    uuid: string,
+    accessToken: string,
+  ) {
+    return from(
+      this.clientService.findOne({
+        clientId: identityProviderClientId,
+      }),
+    ).pipe(
+      switchMap(client => {
+        let parsedUrl: URL;
+        let url: string = '';
+        try {
+          parsedUrl = new URL(client.redirectUris[0]);
+          url = `${parsedUrl.protocol}//${parsedUrl.hostname}`;
+          if (parsedUrl.port) url += `:${parsedUrl.port}`;
+          return this.http
+            .get(url + PROFILE_USERINFO_ENDPOINT, {
+              headers: {
+                Authorization: 'Bearer ' + accessToken,
+              },
+            })
+            .pipe(
+              catchError(error => of({ data: {} })),
+              map(res => res.data),
+            );
+        } catch (error) {
+          return of({});
+        }
+      }),
+      switchMap(userInfo => {
+        return this.observeLocalProfile(uuid, accessToken).pipe(
+          map(localUser => {
+            return {
+              ...localUser,
+              ...userInfo,
+            };
+          }),
+        );
       }),
     );
   }

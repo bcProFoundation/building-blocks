@@ -6,3 +6,4 @@ export const COMMUNICATION_SERVER = 'communication-server';
 export const PUBLIC = 'public';
 export const APP_NAME = 'identity-provider';
 export const SWAGGER_ROUTE = 'api-docs';
+export const PROFILE = 'profile';

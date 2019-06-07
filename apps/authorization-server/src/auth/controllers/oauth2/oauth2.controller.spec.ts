@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { CqrsModule } from '@nestjs/cqrs';
 import { OAuth2Controller } from './oauth2.controller';
 import { OAuth2Service } from './oauth2.service';
 import { BearerTokenService } from '../../../auth/entities/bearer-token/bearer-token.service';
@@ -9,9 +10,13 @@ describe('OAuth2Controller', () => {
   let module: TestingModule;
   beforeAll(async () => {
     module = await Test.createTestingModule({
+      imports: [CqrsModule],
       controllers: [OAuth2Controller],
       providers: [
-        OAuth2Service,
+        {
+          provide: OAuth2Service,
+          useValue: {},
+        },
         {
           provide: BearerTokenService,
           useValue: {},

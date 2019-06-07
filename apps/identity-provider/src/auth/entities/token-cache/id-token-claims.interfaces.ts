@@ -6,6 +6,7 @@ export interface IDTokenClaims {
   iat?: number;
   email?: string;
   verified_email?: string;
+  verified?: boolean;
   name?: string;
   family_name?: string;
   given_name?: string;
