@@ -95,4 +95,7 @@ export class Profile extends BaseEntity implements IDTokenClaims {
 
   @Column()
   roles: string[];
+
+  @Column()
+  verified: boolean;
 }

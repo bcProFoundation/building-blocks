@@ -14,6 +14,7 @@ import {
   UploadedFile,
   Delete,
 } from '@nestjs/common';
+import { QueryBus } from '@nestjs/cqrs';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ProfileService } from '../../../profile-management/entities/profile/profile.service';
 import { PersonalDetailsDTO } from './personal-details-dto';
@@ -21,10 +22,14 @@ import { Profile } from '../../../profile-management/entities/profile/profile.en
 import { ProfileDetailsDTO } from './profile-details-dto';
 import { TokenGuard } from '../../../auth/guards/token.guard';
 import { multerAvatarConnection } from './multer-avatar.connection';
+import { GetUserInfoQuery } from 'profile-management/queries/get-user-info/get-user-info.query';
 
 @Controller('profile')
 export class ProfileController {
-  constructor(private readonly profileService: ProfileService) {}
+  constructor(
+    private readonly profileService: ProfileService,
+    private readonly queryBus: QueryBus,
+  ) {}
 
   @Post('v1/update_profile_details')
   @UseGuards(TokenGuard)
@@ -116,5 +121,12 @@ export class ProfileController {
       profile.picture = undefined;
       return await profile.save();
     }
+  }
+
+  @Get('v1/userinfo')
+  @UseGuards(TokenGuard)
+  userInfo(@Req() req) {
+    const token = req.token;
+    return this.queryBus.execute(new GetUserInfoQuery(token));
   }
 }

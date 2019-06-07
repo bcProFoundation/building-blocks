@@ -6,6 +6,7 @@ import { UploadAvatarMetaDataService } from './policies/upload-avatar-meta-data/
 import { ProfileManagementCommandHandlers } from './commands';
 import { CqrsModule } from '@nestjs/cqrs';
 import { ProfileManagementEventHandlers } from './events';
+import { ProfileManagementQueryHandlers } from './queries';
 
 @Global()
 @Module({
@@ -17,6 +18,7 @@ import { ProfileManagementEventHandlers } from './events';
     UploadAvatarMetaDataService,
     ...ProfileManagementCommandHandlers,
     ...ProfileManagementEventHandlers,
+    ...ProfileManagementQueryHandlers,
   ],
 })
 export class ProfileManagementModule {}

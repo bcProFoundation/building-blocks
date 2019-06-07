@@ -1,12 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { HttpModule } from '@nestjs/common';
 import { OAuth2Service } from './oauth2.service';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { BearerTokenService } from '../../../auth/entities/bearer-token/bearer-token.service';
+import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
+import { ClientService } from 'client-management/entities/client/client.service';
 
 describe('OAuth2Service', () => {
   let service: OAuth2Service;
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [HttpModule],
       providers: [
         OAuth2Service,
         {
@@ -16,6 +20,14 @@ describe('OAuth2Service', () => {
         {
           provide: UserService,
           useValue: {}, // provide mock values
+        },
+        {
+          provide: ServerSettingsService,
+          useValue: {},
+        },
+        {
+          provide: ClientService,
+          useValue: {},
         },
       ],
     }).compile();
