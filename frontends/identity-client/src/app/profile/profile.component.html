@@ -103,6 +103,7 @@
     </mat-card>
   </form>
 </div>
+
 <div class="profile-container">
   <mat-card>
     <mat-card-title>Access Details</mat-card-title>
@@ -116,6 +117,7 @@
     </mat-card-content>
   </mat-card>
 </div>
+
 <div class="profile-container">
   <mat-card>
     <mat-card-title>Security Details</mat-card-title>
@@ -129,7 +131,8 @@
     </mat-card-content>
   </mat-card>
 </div>
-<div class="profile-container">
+
+<div class="profile-container" *ngIf="isPasswordSet">
   <mat-card>
     <div fxLayout="row" fxLayoutAlign="space-between none">
       <mat-card-title>Change Password</mat-card-title>
@@ -145,6 +148,7 @@
         <mat-form-field>
           <input matInput type="password" formControlName="repeatPassword" placeholder="Repeat Password" required>
         </mat-form-field>
+        <app-password-requirement></app-password-requirement>
       </mat-card-content>
       <mat-card-actions>
           <button type="submit" mat-button color="primary">Update</button>
@@ -153,16 +157,32 @@
     <mat-card-actions *ngIf="!showPasswordSection">
       <button (click)="showChangePassword()" mat-button color="primary">Change Password</button>
     </mat-card-actions>
+  </mat-card>
+</div>
+
+<div class="profile-container" *ngIf="!isPasswordSet">
+  <mat-card>
+    <div fxLayout="row" fxLayoutAlign="space-between none">
+      <mat-card-title>Set Password</mat-card-title>
+    </div>
+    <mat-card-actions>
+      <button
+        (click)="setPassword()"
+        mat-button
+        [disabled]="sentForgotPasswordEmail"
+        color="primary">Send Email</button>
+    </mat-card-actions>
     </mat-card>
 </div>
 
 <div class="profile-container">
   <mat-card>
     <mat-card-title>Delete User</mat-card-title>
-    <mat-card-subtitle>Deleting User Account is irrevocable</mat-card-subtitle>
+    <mat-card-subtitle *ngIf="!checkIfAdmin()">Deleting User Account is irreversible</mat-card-subtitle>
+    <mat-card-subtitle *ngIf="checkIfAdmin()">Administrator cannot be deleted</mat-card-subtitle>
     <mat-card-content></mat-card-content>
     <mat-card-actions>
-      <button (click)="deleteUser()" mat-button color="warn">Delete User</button>
+      <button [disabled]="checkIfAdmin()" (click)="deleteUser()" mat-button color="warn">Delete User</button>
     </mat-card-actions>
   </mat-card>
 </div>

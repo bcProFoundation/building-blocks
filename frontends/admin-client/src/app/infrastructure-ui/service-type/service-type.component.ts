@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { NEW_ID } from '../../constants/common';
+import { NEW_ID, DURATION } from '../../constants/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 import {
@@ -55,11 +55,11 @@ export class ServiceTypeComponent implements OnInit {
       .createServiceType(this.serviceTypeForm.controls.serviceTypeName.value)
       .subscribe({
         next: success => {
-          this.snackBar.open(CREATE_SUCCESSFUL, CLOSE, { duration: 2000 });
+          this.snackBar.open(CREATE_SUCCESSFUL, CLOSE, { duration: DURATION });
           this.router.navigateByUrl(SERVICE_TYPE_LIST_ROUTE);
         },
         error: error =>
-          this.snackBar.open(CREATE_ERROR, CLOSE, { duration: 2000 }),
+          this.snackBar.open(CREATE_ERROR, CLOSE, { duration: DURATION }),
       });
   }
 
@@ -68,11 +68,11 @@ export class ServiceTypeComponent implements OnInit {
       .deleteServiceType(this.serviceTypeForm.controls.serviceTypeName.value)
       .subscribe({
         next: success => {
-          this.snackBar.open(DELETE_SUCCESSFUL, CLOSE, { duration: 2000 });
+          this.snackBar.open(DELETE_SUCCESSFUL, CLOSE, { duration: DURATION });
           this.router.navigateByUrl(SERVICE_TYPE_LIST_ROUTE);
         },
         error: error =>
-          this.snackBar.open(DELETE_ERROR, CLOSE, { duration: 2000 }),
+          this.snackBar.open(DELETE_ERROR, CLOSE, { duration: DURATION }),
       });
   }
 }

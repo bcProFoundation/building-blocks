@@ -9,8 +9,8 @@ import {
   CREATE_ERROR,
   UPDATE_SUCCESSFUL,
   UPDATE_ERROR,
-} from 'src/app/constants/messages';
-import { NEW_ID } from 'src/app/constants/common';
+} from '../../constants/messages';
+import { NEW_ID, DURATION } from '../../constants/common';
 
 export const OAUTH2_PROVIDER_LIST_ROUTE = '/oauth2_provider/list';
 
@@ -73,11 +73,11 @@ export class OAuth2ProviderComponent implements OnInit {
       )
       .subscribe({
         next: response => {
-          this.snackBar.open(CREATE_SUCCESSFUL, CLOSE, { duration: 2000 });
+          this.snackBar.open(CREATE_SUCCESSFUL, CLOSE, { duration: DURATION });
           this.router.navigateByUrl(OAUTH2_PROVIDER_LIST_ROUTE);
         },
         error: error => {
-          this.snackBar.open(CREATE_ERROR, CLOSE, { duration: 2000 });
+          this.snackBar.open(CREATE_ERROR, CLOSE, { duration: DURATION });
         },
       });
   }
@@ -99,11 +99,11 @@ export class OAuth2ProviderComponent implements OnInit {
       )
       .subscribe({
         next: response => {
-          this.snackBar.open(UPDATE_SUCCESSFUL, CLOSE, { duration: 2000 });
+          this.snackBar.open(UPDATE_SUCCESSFUL, CLOSE, { duration: DURATION });
           this.router.navigateByUrl(OAUTH2_PROVIDER_LIST_ROUTE);
         },
         error: error => {
-          this.snackBar.open(UPDATE_ERROR, CLOSE, { duration: 2000 });
+          this.snackBar.open(UPDATE_ERROR, CLOSE, { duration: DURATION });
         },
       });
   }

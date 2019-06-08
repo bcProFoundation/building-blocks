@@ -4,10 +4,12 @@
 
 .sidenav {
   width: 200px;
+  border-right: none;
+  box-shadow: 1px 0 4px rgb(0,0,0,.24)
 }
 
 .mat-toolbar.mat-primary {
   position: sticky;
   top: 0;
   z-index: 2;
-} 
+}

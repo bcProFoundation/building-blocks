@@ -28,6 +28,11 @@ import {
   AVATAR_UPDATED_FAILED,
 } from '../constants/messages';
 import { isArray } from 'util';
+import {
+  DURATION,
+  UNDO_DURATION,
+  ADMINISTRATOR,
+} from '../constants/app-constants';
 
 @Component({
   selector: 'app-profile',
@@ -63,6 +68,8 @@ export class ProfileComponent implements OnInit {
   repeatPassword: string;
   hideAvatar: boolean = false;
   flagDeleteUser: boolean = false;
+  isPasswordSet: boolean;
+  sentForgotPasswordEmail: boolean = false;
 
   personalForm = new FormGroup({
     fullName: new FormControl(this.fullName),
@@ -121,6 +128,7 @@ export class ProfileComponent implements OnInit {
           this.personalForm.controls.fullName.setValue(response.name);
           this.checked2fa = response.enable2fa;
           this.uuid = response.uuid;
+          this.isPasswordSet = response.isPasswordSet;
         },
       });
   }
@@ -170,10 +178,12 @@ export class ProfileComponent implements OnInit {
           this.picture = file.target.result;
         };
         this.hideAvatar = false;
-        this.snackBar.open(AVATAR_UPDATED, CLOSE, { duration: 2500 });
+        this.snackBar.open(AVATAR_UPDATED, CLOSE, { duration: DURATION });
       },
       error: err => {
-        this.snackBar.open(AVATAR_UPDATED_FAILED, CLOSE, { duration: 2500 });
+        this.snackBar.open(AVATAR_UPDATED_FAILED, CLOSE, {
+          duration: DURATION,
+        });
       },
     });
   }
@@ -192,7 +202,7 @@ export class ProfileComponent implements OnInit {
       .subscribe({
         next: response =>
           this.snackBar.open(UPDATE_SUCCESSFUL, CLOSE, {
-            duration: 2000,
+            duration: DURATION,
           }),
       });
     this.profileService
@@ -215,7 +225,7 @@ export class ProfileComponent implements OnInit {
       .subscribe({
         next: response =>
           this.snackBar.open(UPDATE_SUCCESSFUL, CLOSE, {
-            duration: 2000,
+            duration: DURATION,
           }),
       });
   }
@@ -246,7 +256,7 @@ export class ProfileComponent implements OnInit {
           if (isArray(err.error.message)) {
             message = err.error.message[0];
           }
-          this.snackBar.open(message, CLOSE, { duration: 2000 });
+          this.snackBar.open(message, CLOSE, { duration: DURATION });
         },
       });
   }
@@ -259,7 +269,9 @@ export class ProfileComponent implements OnInit {
 
   deleteUser() {
     this.flagDeleteUser = true;
-    const snackBar = this.snackBar.open(DELETING, UNDO, { duration: 10000 });
+    const snackBar = this.snackBar.open(DELETING, UNDO, {
+      duration: UNDO_DURATION,
+    });
 
     snackBar.afterDismissed().subscribe({
       next: dismissed => {
@@ -293,5 +305,18 @@ export class ProfileComponent implements OnInit {
     this.profileService.logout();
     this.oauthService.logOut();
     window.location.href = logoutUrl;
+  }
+
+  setPassword() {
+    this.profileService.setPassword().subscribe({
+      next: response => {
+        this.sentForgotPasswordEmail = true;
+      },
+      error: err => {},
+    });
+  }
+
+  checkIfAdmin() {
+    return this.roles.includes(ADMINISTRATOR);
   }
 }
