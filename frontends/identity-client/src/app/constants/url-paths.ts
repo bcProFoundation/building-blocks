@@ -13,3 +13,5 @@ export const DISABLE_2FA = '/user/v1/disable_2fa';
 export const MISSING_AVATAR_IMAGE = 'assets/missing_avatar.png';
 export const DELETE_AVATAR_ENDPOINT = '/profile/v1/delete_avatar';
 export const DELETE_ME_ENDPOINT = '/user/v1/delete_me';
+export const FORGOT_PASSWORD = '/user/v1/forgot_password';
+export const USER_INFO = '/oauth2/profile';

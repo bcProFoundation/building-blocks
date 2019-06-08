@@ -86,3 +86,5 @@ export const AVAILABLE_TRANSLATIONS = [
   'zh-TW',
 ];
 export const INVALID_VERIFICATION_CODE = 'Invalid Verification Code';
+export const DURATION = 5000;
+export const NEW_PASSWORD_MISMATCH = 'Please check repeated password';

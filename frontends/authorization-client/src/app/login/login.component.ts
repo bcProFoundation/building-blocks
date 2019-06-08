@@ -10,6 +10,7 @@ import {
   PLEASE_CHECK_EMAIL,
   CLOSE,
   PLEASE_CHECK_USERNAME,
+  DURATION,
 } from '../../constants/app-strings';
 import { LoginChoice } from './login-choice';
 
@@ -205,11 +206,13 @@ export class LoginComponent implements OnInit {
       .forgotPassword(this.loginUserForm.controls.username.value)
       .subscribe({
         next: success => {
-          this.snackBar.open(PLEASE_CHECK_EMAIL, CLOSE, { duration: 2000 });
+          this.snackBar.open(PLEASE_CHECK_EMAIL, CLOSE, { duration: DURATION });
           window.location.href = '/login';
         },
         error: error =>
-          this.snackBar.open(PLEASE_CHECK_USERNAME, CLOSE, { duration: 2000 }),
+          this.snackBar.open(PLEASE_CHECK_USERNAME, CLOSE, {
+            duration: DURATION,
+          }),
       });
   }
 

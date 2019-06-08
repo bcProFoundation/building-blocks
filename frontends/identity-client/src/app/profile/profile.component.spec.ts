@@ -9,6 +9,10 @@ import { ProfileService } from './profile.service';
 import { from } from 'rxjs';
 import { MatSnackBar } from '@angular/material';
 import { RouterTestingModule } from '@angular/router/testing';
+import { Component } from '@angular/core';
+
+@Component({ selector: 'app-password-requirement', template: '' })
+class PasswordRequirementComponent {}
 
 describe('ProfileComponent', () => {
   let component: ProfileComponent;
@@ -50,7 +54,7 @@ describe('ProfileComponent', () => {
         },
         MatSnackBar,
       ],
-      declarations: [ProfileComponent],
+      declarations: [ProfileComponent, PasswordRequirementComponent],
     }).compileComponents();
   }));
 

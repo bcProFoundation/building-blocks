@@ -69,9 +69,20 @@ export class UserService {
   }
 
   async getAuthorizedUser(uuid: string) {
-    let user = await this.findOne({ uuid });
-    user = this.getUserWithoutSecrets(user);
-    return user;
+    const user = await this.findOne({ uuid });
+
+    return {
+      disabled: user.disabled,
+      roles: user.roles,
+      enable2fa: user.enable2fa,
+      deleted: user.deleted,
+      enablePasswordLess: user.enablePasswordLess,
+      email: user.email,
+      name: user.name,
+      uuid: user.uuid,
+      creation: user.creation,
+      isPasswordSet: user.password ? true : false,
+    };
   }
 
   getUserWithoutSecrets(user: User) {

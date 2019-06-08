@@ -3,6 +3,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 import { InfrastructureSettingsService } from './infrastructure-settings.service';
 import { UPDATE_SUCCESSFUL, CLOSE } from '../../constants/messages';
+import { DURATION } from '../../constants/common';
 
 @Component({
   selector: 'app-infrastructure-settings',
@@ -51,7 +52,7 @@ export class InfrastructureSettingsComponent implements OnInit {
       )
       .subscribe({
         next: response => {
-          this.snackBar.open(UPDATE_SUCCESSFUL, CLOSE, { duration: 2000 });
+          this.snackBar.open(UPDATE_SUCCESSFUL, CLOSE, { duration: DURATION });
         },
         error: error => {},
       });

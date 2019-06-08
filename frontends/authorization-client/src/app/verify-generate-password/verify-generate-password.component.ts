@@ -2,7 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { VerifyGeneratePasswordService } from './verify-generate-password.service';
 import { MatSnackBar } from '@angular/material';
-import { CLOSE, INVALID_VERIFICATION_CODE } from '../../constants/app-strings';
+import {
+  CLOSE,
+  INVALID_VERIFICATION_CODE,
+  DURATION,
+  NEW_PASSWORD_MISMATCH,
+} from '../../constants/app-strings';
 import { isArray } from 'util';
 
 @Component({
@@ -37,9 +42,11 @@ export class VerifyGeneratePasswordComponent implements OnInit {
             if (isArray(error.error.message)) {
               message = error.error.message[0];
             }
-            this.snackBar.open(message, CLOSE, { duration: 2000 });
+            this.snackBar.open(message, CLOSE, { duration: DURATION });
           },
         });
+    } else {
+      this.snackBar.open(NEW_PASSWORD_MISMATCH, CLOSE, { duration: DURATION });
     }
   }
 }

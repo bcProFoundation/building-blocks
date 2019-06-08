@@ -7,4 +7,5 @@ export interface UserResponse {
   phone?: string;
   roles?: string[];
   uuid?: string;
+  isPasswordSet?: boolean;
 }

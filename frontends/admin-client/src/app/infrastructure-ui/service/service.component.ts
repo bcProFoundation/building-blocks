@@ -3,7 +3,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { ServiceService } from './service.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
-import { NEW_ID } from '../../constants/common';
+import { NEW_ID, DURATION } from '../../constants/common';
 import { map, debounceTime } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { ListingService } from '../../shared-ui/listing/listing.service';
@@ -56,7 +56,7 @@ export class ServiceComponent implements OnInit {
         this.clientList = response;
       },
       error: error => {
-        this.snackBar.open(FETCH_ERROR, CLOSE, { duration: 2000 });
+        this.snackBar.open(FETCH_ERROR, CLOSE, { duration: DURATION });
       },
     });
 
@@ -74,7 +74,7 @@ export class ServiceComponent implements OnInit {
           this.serviceForm.controls.clientId.disable();
         },
         error: error => {
-          this.snackBar.open(FETCH_ERROR, CLOSE, { duration: 2000 });
+          this.snackBar.open(FETCH_ERROR, CLOSE, { duration: DURATION });
         },
       });
     }
@@ -104,11 +104,11 @@ export class ServiceComponent implements OnInit {
       )
       .subscribe({
         next: success => {
-          this.snackBar.open(CREATE_SUCCESSFUL, CLOSE, { duration: 2000 });
+          this.snackBar.open(CREATE_SUCCESSFUL, CLOSE, { duration: DURATION });
           this.router.navigateByUrl(SERVICE_LIST_ROUTE);
         },
         error: error =>
-          this.snackBar.open(CREATE_ERROR, CLOSE, { duration: 2000 }),
+          this.snackBar.open(CREATE_ERROR, CLOSE, { duration: DURATION }),
       });
   }
 
@@ -122,11 +122,11 @@ export class ServiceComponent implements OnInit {
       )
       .subscribe({
         next: success => {
-          this.snackBar.open(UPDATE_SUCCESSFUL, CLOSE, { duration: 2000 });
+          this.snackBar.open(UPDATE_SUCCESSFUL, CLOSE, { duration: DURATION });
           this.router.navigateByUrl(SERVICE_LIST_ROUTE);
         },
         error: error =>
-          this.snackBar.open(UPDATE_ERROR, CLOSE, { duration: 2000 }),
+          this.snackBar.open(UPDATE_ERROR, CLOSE, { duration: DURATION }),
       });
   }
 }

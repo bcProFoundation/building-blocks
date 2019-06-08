@@ -20,6 +20,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { NavigationService } from './navigation/navigation.service';
 import { ProfileService } from './profile/profile.service';
 import { MultifactorComponent } from './multifactor/multifactor.component';
+import { PasswordRequirementComponent } from './password-requirement/password-requirement.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { MultifactorComponent } from './multifactor/multifactor.component';
     ProfileComponent,
     AppsComponent,
     MultifactorComponent,
+    PasswordRequirementComponent,
   ],
   imports: [
     BrowserModule,

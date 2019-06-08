@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { OAuthService } from 'angular-oauth2-oidc';
+import { MatSnackBar } from '@angular/material';
+import { throwError } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import {
   UPDATE_PERSONAL_DETAILS_URL,
   UPDATE_PROFILE_DETAILS_URL,
@@ -10,13 +14,13 @@ import {
   CHANGE_PASSWORD_ENDPOINT,
   DELETE_AVATAR_ENDPOINT,
   DELETE_ME_ENDPOINT,
+  FORGOT_PASSWORD,
+  USER_INFO,
 } from '../constants/url-paths';
 import { ISSUER_URL, APP_URL } from '../constants/storage';
-import { OAuthService } from 'angular-oauth2-oidc';
-import { MatSnackBar } from '@angular/material';
 import { CLOSE, CURRENT_PASSWORD_MISMATCH } from '../constants/messages';
-import { throwError } from 'rxjs';
 import { NavigationService } from '../navigation/navigation.service';
+import { DURATION } from '../constants/app-constants';
 
 @Injectable()
 export class ProfileService {
@@ -88,7 +92,9 @@ export class ProfileService {
     repeatPassword: string,
   ) {
     if (newPassword !== repeatPassword) {
-      this.snackBar.open(CURRENT_PASSWORD_MISMATCH, CLOSE, { duration: 2000 });
+      this.snackBar.open(CURRENT_PASSWORD_MISMATCH, CLOSE, {
+        duration: DURATION,
+      });
       return throwError({ message: CURRENT_PASSWORD_MISMATCH });
     } else {
       return this.http.post(
@@ -124,5 +130,22 @@ export class ProfileService {
       {},
       { headers: this.authorizationHeader },
     );
+  }
+
+  setPassword() {
+    return this.http
+      .get<{
+        email?: string;
+      }>(localStorage.getItem(ISSUER_URL) + USER_INFO, {
+        headers: this.authorizationHeader,
+      })
+      .pipe(
+        switchMap(userInfo => {
+          return this.http.post(
+            localStorage.getItem(ISSUER_URL) + FORGOT_PASSWORD,
+            { emailOrPhone: userInfo.email },
+          );
+        }),
+      );
   }
 }

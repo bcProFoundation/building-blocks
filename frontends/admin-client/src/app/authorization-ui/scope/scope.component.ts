@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ScopeService } from './scope.service';
 import { ActivatedRoute, Router } from '@angular/router';
-// import { MatSnackBar } from '@angular/material';
-import { NEW_ID } from '../../constants/common';
+import { NEW_ID, DURATION } from '../../constants/common';
 import { FormGroup, FormControl } from '@angular/forms';
 import {
   CREATE_SUCCESSFUL,
@@ -67,11 +66,11 @@ export class ScopeComponent implements OnInit {
       )
       .subscribe({
         next: success => {
-          this.snackBar.open(CREATE_SUCCESSFUL, CLOSE, { duration: 2000 });
+          this.snackBar.open(CREATE_SUCCESSFUL, CLOSE, { duration: DURATION });
           this.router.navigateByUrl(SCOPE_LIST_ROUTE);
         },
         error: error =>
-          this.snackBar.open(CREATE_ERROR, CLOSE, { duration: 2000 }),
+          this.snackBar.open(CREATE_ERROR, CLOSE, { duration: DURATION }),
       });
   }
 
@@ -84,11 +83,11 @@ export class ScopeComponent implements OnInit {
       )
       .subscribe({
         next: success => {
-          this.snackBar.open(UPDATE_SUCCESSFUL, CLOSE, { duration: 2000 });
+          this.snackBar.open(UPDATE_SUCCESSFUL, CLOSE, { duration: DURATION });
           this.router.navigateByUrl(SCOPE_LIST_ROUTE);
         },
         error: error =>
-          this.snackBar.open(UPDATE_ERROR, CLOSE, { duration: 2000 }),
+          this.snackBar.open(UPDATE_ERROR, CLOSE, { duration: DURATION }),
       });
   }
 
