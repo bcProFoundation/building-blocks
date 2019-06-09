@@ -16,14 +16,14 @@ import {
 } from '@nestjs/common';
 import { QueryBus, CommandBus } from '@nestjs/cqrs';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ProfileService } from '../../../profile-management/entities/profile/profile.service';
+import { ProfileService } from '../..//entities/profile/profile.service';
 import { PersonalDetailsDTO } from './personal-details-dto';
-import { Profile } from '../../../profile-management/entities/profile/profile.entity';
+import { Profile } from '../../entities/profile/profile.entity';
 import { ProfileDetailsDTO } from './profile-details-dto';
 import { TokenGuard } from '../../../auth/guards/token.guard';
 import { multerAvatarConnection } from './multer-avatar.connection';
-import { GetUserInfoQuery } from 'profile-management/queries/get-user-info/get-user-info.query';
-import { UploadNewAvatarCommand } from 'profile-management/commands/upload-new-avatar/upload-new-avatar.command';
+import { GetUserInfoQuery } from '../../queries/get-user-info/get-user-info.query';
+import { UploadNewAvatarCommand } from '../../commands/upload-new-avatar/upload-new-avatar.command';
 
 @Controller('profile')
 export class ProfileController {
