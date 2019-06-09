@@ -1,6 +1,6 @@
 {
   "name": "admin-client",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.config.json  --host \"admin.localhost\" --port 4220",
