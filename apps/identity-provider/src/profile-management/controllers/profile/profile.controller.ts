@@ -14,7 +14,7 @@ import {
   UploadedFile,
   Delete,
 } from '@nestjs/common';
-import { QueryBus } from '@nestjs/cqrs';
+import { QueryBus, CommandBus } from '@nestjs/cqrs';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ProfileService } from '../../../profile-management/entities/profile/profile.service';
 import { PersonalDetailsDTO } from './personal-details-dto';
@@ -23,12 +23,14 @@ import { ProfileDetailsDTO } from './profile-details-dto';
 import { TokenGuard } from '../../../auth/guards/token.guard';
 import { multerAvatarConnection } from './multer-avatar.connection';
 import { GetUserInfoQuery } from 'profile-management/queries/get-user-info/get-user-info.query';
+import { UploadNewAvatarCommand } from 'profile-management/commands/upload-new-avatar/upload-new-avatar.command';
 
 @Controller('profile')
 export class ProfileController {
   constructor(
     private readonly profileService: ProfileService,
     private readonly queryBus: QueryBus,
+    private readonly commandBus: CommandBus,
   ) {}
 
   @Post('v1/update_profile_details')
@@ -100,14 +102,9 @@ export class ProfileController {
   @Post('v1/upload_avatar')
   @UseGuards(TokenGuard)
   @UseInterceptors(FileInterceptor('file', multerAvatarConnection))
+  public async uploadAndSetAvatar(file, clientHttpRequest) {}
   async uploadFile(@Req() req, @Res() res, @UploadedFile('file') file) {
-    if (req.token.active) {
-      const uploadResponse = await this.profileService.uploadAndSetAvatar(
-        file,
-        req,
-      );
-      res.json(uploadResponse);
-    }
+    return this.commandBus.execute(new UploadNewAvatarCommand(file, req));
   }
 
   @Delete('v1/delete_avatar')

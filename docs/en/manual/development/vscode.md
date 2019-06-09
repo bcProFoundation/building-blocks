@@ -121,6 +121,14 @@ This configuration works on linux machine. You need to make changes as per your 
                 "communication-server"
             ],
             "problemMatcher": []
+        },
+        {
+            "label": "building-blocks-all",
+            "dependsOn": [
+                "building-blocks-backend",
+                "building-blocks-frontend"
+            ],
+            "problemMatcher": []
         }
     ]
 }

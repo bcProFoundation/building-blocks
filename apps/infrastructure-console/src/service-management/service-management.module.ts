@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, HttpModule } from '@nestjs/common';
 import { ServiceManagementControllers } from './controllers';
 import { ServiceManagementAggregates } from './aggregates';
 import { CqrsModule } from '@nestjs/cqrs';
@@ -9,7 +9,7 @@ import { ServiceManagementEvents } from './events';
 import { ServiceManagementPolicies } from './policies';
 
 @Module({
-  imports: [CqrsModule, ServiceManagementEntitiesModule],
+  imports: [CqrsModule, ServiceManagementEntitiesModule, HttpModule],
   controllers: [...ServiceManagementControllers],
   providers: [
     ...ServiceManagementAggregates,

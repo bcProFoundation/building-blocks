@@ -1,4 +1,10 @@
-import { Module, NestModule, MiddlewareConsumer, Global } from '@nestjs/common';
+import {
+  Module,
+  NestModule,
+  MiddlewareConsumer,
+  Global,
+  HttpModule,
+} from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { OAuth2orizeSetup } from './middlewares/oauth2orize.setup';
 import { OAuth2ConfirmationMiddleware } from './middlewares/oauth2-confirmation.middleware';
@@ -28,7 +34,13 @@ import { OAuth2ErrorFilter } from '../common/filters/oauth2-error.filter';
 
 @Global()
 @Module({
-  imports: [CqrsModule, AuthEntitiesModule, OAuth2Module, PassportModule],
+  imports: [
+    CqrsModule,
+    AuthEntitiesModule,
+    OAuth2Module,
+    PassportModule,
+    HttpModule,
+  ],
   providers: [
     ...authServices,
 
