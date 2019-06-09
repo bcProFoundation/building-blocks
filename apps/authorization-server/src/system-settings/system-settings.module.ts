@@ -7,10 +7,11 @@ import { SystemSettingsManagementService } from './aggregates/system-settings-ma
 import { SystemSettingsCommandHandlers } from './commands';
 import { SystemSettingsEventHandlers } from './events';
 import { AuthEntitiesModule } from '../auth/entities/entities.module';
+import { CqrsModule } from '@nestjs/cqrs';
 
 @Global()
 @Module({
-  imports: [SystemSettingsEntitiesModule, AuthEntitiesModule],
+  imports: [SystemSettingsEntitiesModule, AuthEntitiesModule, CqrsModule],
   exports: [SystemSettingsEntitiesModule],
   providers: [
     SetupService,

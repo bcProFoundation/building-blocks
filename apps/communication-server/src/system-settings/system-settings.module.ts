@@ -1,4 +1,4 @@
-import { Module, Global } from '@nestjs/common';
+import { Module, Global, HttpModule } from '@nestjs/common';
 import { SystemSettingsEntitiesModule } from './entities/entities.module';
 import { SettingsController } from './controllers/settings/settings.controller';
 import { SetupController } from './controllers/setup/setup.controller';
@@ -7,7 +7,7 @@ import { SetupService } from './aggregates/setup.service';
 
 @Global()
 @Module({
-  imports: [SystemSettingsEntitiesModule],
+  imports: [SystemSettingsEntitiesModule, HttpModule],
   controllers: [SettingsController, SetupController],
   providers: [SettingsService, SetupService],
   exports: [SystemSettingsEntitiesModule, SetupService],

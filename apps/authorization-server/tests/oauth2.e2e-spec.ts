@@ -230,9 +230,12 @@ describe('OAuth2Controller (e2e)', () => {
   });
 
   it('/GET /oauth2/confirmation (OIDC IDToken Grant)', done => {
-    const authRequest = `/oauth2/confirmation?scope=openid&response_type=id_token&client_id=${clientId}&redirect_uri=${
-      redirectUris[0]
-    }&state=420&nonce=tHc_Cbd`;
+    let authRequest = '/oauth2/confirmation?scope=openid';
+    authRequest += '&response_type=id_token';
+    authRequest += '&client_id=' + clientId;
+    authRequest += '&redirect_uri=' + redirectUris[0];
+    authRequest += '&state=420&nonce=tHc_Cbd';
+
     const req = request(app.getHttpServer()).get(authRequest);
     req.cookies = Cookies;
     return req.end((err, response) => {
@@ -249,9 +252,12 @@ describe('OAuth2Controller (e2e)', () => {
   });
 
   it('/GET /oauth2/confirmation (OIDC IDToken Token Grant)', done => {
-    const authRequest = `/oauth2/confirmation?scope=openid&response_type=id_token%20token&client_id=${clientId}&redirect_uri=${
-      redirectUris[0]
-    }&state=420&nonce=tHc_Cbd`;
+    let authRequest = '/oauth2/confirmation?scope=openid';
+    authRequest += '&response_type=id_token%20token';
+    authRequest += '&client_id=' + clientId;
+    authRequest += '&redirect_uri=' + redirectUris[0];
+    authRequest += '&state=420&nonce=tHc_Cbd';
+
     const req = request(app.getHttpServer()).get(authRequest);
     req.cookies = Cookies;
     return req.expect(302).end((err, response) => {
@@ -273,9 +279,12 @@ describe('OAuth2Controller (e2e)', () => {
   });
 
   it('/GET /oauth2/confirmation (OIDC Code IDToken Grant)', done => {
-    const authRequest = `/oauth2/confirmation?scope=openid&response_type=code%20id_token&client_id=${clientId}&redirect_uri=${
-      redirectUris[0]
-    }&state=420&nonce=tHc_Cbd`;
+    let authRequest = '/oauth2/confirmation?scope=openid';
+    authRequest += '&response_type=code%20id_token';
+    authRequest += '&client_id=' + clientId;
+    authRequest += '&redirect_uri=' + redirectUris[0];
+    authRequest += '&state=420&nonce=tHc_Cbd';
+
     const req = request(app.getHttpServer()).get(authRequest);
     req.cookies = Cookies;
     return req.expect(302).end((err, response) => {
@@ -294,9 +303,12 @@ describe('OAuth2Controller (e2e)', () => {
   });
 
   it('/GET /oauth2/confirmation (OIDC Code Token Grant)', done => {
-    const authRequest = `/oauth2/confirmation?scope=openid&response_type=code%20token&client_id=${clientId}&redirect_uri=${
-      redirectUris[0]
-    }&state=420&nonce=tHc_Cbd`;
+    let authRequest = '/oauth2/confirmation?scope=openid';
+    authRequest += '&response_type=code%20token';
+    authRequest += '&client_id=' + clientId;
+    authRequest += '&redirect_uri=' + redirectUris[0];
+    authRequest += '&state=420&nonce=tHc_Cbd';
+
     const req = request(app.getHttpServer()).get(authRequest);
     req.cookies = Cookies;
     return req.expect(302).end((err, response) => {
@@ -315,9 +327,12 @@ describe('OAuth2Controller (e2e)', () => {
   });
 
   it('/GET /oauth2/confirmation (OIDC Code IDToken Token Grant)', done => {
-    const authRequest = `/oauth2/confirmation?scope=openid&response_type=code%20id_token%20token&client_id=${clientId}&redirect_uri=${
-      redirectUris[0]
-    }&state=420&nonce=tHc_Cbd`;
+    let authRequest = '/oauth2/confirmation?scope=openid';
+    authRequest += '&response_type=code%20id_token%20token';
+    authRequest += '&client_id=' + clientId;
+    authRequest += '&redirect_uri=' + redirectUris[0];
+    authRequest += '&state=420&nonce=tHc_Cbd';
+
     const req = request(app.getHttpServer()).get(authRequest);
     req.cookies = Cookies;
     return req.expect(302).end((err, response) => {
