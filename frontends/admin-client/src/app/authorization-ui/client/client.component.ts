@@ -12,7 +12,7 @@ import {
   PUBLIC_CLIENT,
   BODY_PARAM,
 } from '../../constants/messages';
-import { NEW_ID } from '../../constants/common';
+import { NEW_ID, DURATION } from '../../constants/common';
 import { ClientAuthentication } from './client-authentication.enum';
 
 export const CLIENT_LIST_ROUTE = '/client/list';
@@ -124,11 +124,11 @@ export class ClientComponent implements OnInit {
       )
       .subscribe({
         next: success => {
-          this.snackBar.open(CLIENT_CREATED, CLOSE, { duration: 2000 });
+          this.snackBar.open(CLIENT_CREATED, CLOSE, { duration: DURATION });
           this.router.navigateByUrl(CLIENT_LIST_ROUTE);
         },
         error: error =>
-          this.snackBar.open(CLIENT_ERROR, CLOSE, { duration: 2000 }),
+          this.snackBar.open(CLIENT_ERROR, CLOSE, { duration: DURATION }),
       });
   }
 
@@ -158,11 +158,11 @@ export class ClientComponent implements OnInit {
       )
       .subscribe({
         next: success => {
-          this.snackBar.open(CLIENT_UPDATED, CLOSE, { duration: 2000 });
+          this.snackBar.open(CLIENT_UPDATED, CLOSE, { duration: DURATION });
           this.router.navigateByUrl(CLIENT_LIST_ROUTE);
         },
         error: error =>
-          this.snackBar.open(CLIENT_ERROR, CLOSE, { duration: 2000 }),
+          this.snackBar.open(CLIENT_ERROR, CLOSE, { duration: DURATION }),
       });
   }
 

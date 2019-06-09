@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { StorageService } from '../../common/services/storage/storage.service';
-import { COMMUNICATION_SERVER } from 'src/app/constants/storage';
+import { COMMUNICATION_SERVER } from '../../constants/storage';
 
 @Injectable({
   providedIn: 'root',

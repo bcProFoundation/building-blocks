@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { CloudStorageService } from './cloud-storage.service';
-import { NEW_ID } from '../../constants/common';
+import { NEW_ID, DURATION } from '../../constants/common';
 import { MatSnackBar } from '@angular/material';
 import {
   UPDATE_SUCCESSFUL,
@@ -89,11 +89,11 @@ export class CloudStorageComponent implements OnInit {
       )
       .subscribe({
         next: success => {
-          this.snackBar.open(UPDATE_SUCCESSFUL, CLOSE, { duration: 2000 });
+          this.snackBar.open(UPDATE_SUCCESSFUL, CLOSE, { duration: DURATION });
           this.router.navigateByUrl(STORAGE_LIST_ROUTE);
         },
         error: error =>
-          this.snackBar.open(UPDATE_ERROR, CLOSE, { duration: 2000 }),
+          this.snackBar.open(UPDATE_ERROR, CLOSE, { duration: DURATION }),
       });
   }
 
@@ -110,11 +110,11 @@ export class CloudStorageComponent implements OnInit {
       )
       .subscribe({
         next: success => {
-          this.snackBar.open(CREATE_SUCCESSFUL, CLOSE, { duration: 2000 });
+          this.snackBar.open(CREATE_SUCCESSFUL, CLOSE, { duration: DURATION });
           this.router.navigateByUrl(STORAGE_LIST_ROUTE);
         },
         error: error =>
-          this.snackBar.open(CREATE_ERROR, CLOSE, { duration: 2000 }),
+          this.snackBar.open(CREATE_ERROR, CLOSE, { duration: DURATION }),
       });
   }
 

@@ -1,4 +1,4 @@
-import { Module, Global } from '@nestjs/common';
+import { Module, Global, HttpModule } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { CloudStorageEntitiesModule } from './entities/entities.module';
 import { CloudStorageAggregates } from './aggregates';
@@ -9,7 +9,7 @@ import { ModifyCloudStorageAggregateService } from './aggregates/modify-cloud-st
 
 @Global()
 @Module({
-  imports: [CloudStorageEntitiesModule, CqrsModule],
+  imports: [CloudStorageEntitiesModule, CqrsModule, HttpModule],
   providers: [
     ...CloudStorageAggregates,
     ...CloudStorageCommands,

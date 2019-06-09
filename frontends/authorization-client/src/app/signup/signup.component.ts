@@ -4,7 +4,7 @@ import { MatSnackBar } from '@angular/material';
 import { SOMETHING_WENT_WRONG } from '../../constants/messages';
 import { SignupService } from './signup.service';
 import { ServerInfo } from '../../common/server-info.interface';
-import { CLOSE, PLEASE_CHECK_EMAIL } from 'src/constants/app-strings';
+import { CLOSE, PLEASE_CHECK_EMAIL, DURATION } from 'src/constants/app-strings';
 import { Router } from '@angular/router';
 
 @Component({
@@ -47,12 +47,12 @@ export class SignupComponent implements OnInit {
       )
       .subscribe({
         next: (response: any) => {
-          this.snackBar.open(PLEASE_CHECK_EMAIL, CLOSE, { duration: 5000 });
+          this.snackBar.open(PLEASE_CHECK_EMAIL, CLOSE, { duration: DURATION });
           this.router.navigateByUrl('/login');
         },
         error: err => {
           if (typeof err.error.message === 'string') {
-            this.snackBar.open(err.error.message, null, { duration: 5000 });
+            this.snackBar.open(err.error.message, null, { duration: DURATION });
           } else {
             this.snackBar.open(SOMETHING_WENT_WRONG);
           }

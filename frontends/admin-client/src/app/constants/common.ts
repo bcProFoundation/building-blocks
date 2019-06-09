@@ -5,3 +5,5 @@ export const MODELS = [
   { route: 'user' },
   { route: 'scope' },
 ];
+export const DURATION = 5000;
+export const UNDO_DURATION = 10000;

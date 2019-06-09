@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { StorageService } from '../../common/services/storage/storage.service';
 import { Observable } from 'rxjs';
-import { APP_URL } from 'src/app/constants/storage';
+import { APP_URL } from '../../constants/storage';
 import { catchError } from 'rxjs/operators';
 import { FETCH_ERROR } from '../../constants/messages';
 import {
   HandleError,
   HttpErrorHandler,
-} from 'src/app/common/services/http-error-handler/http-error-handler.service';
+} from '../../common/services/http-error-handler/http-error-handler.service';
 import { OAuthService } from 'angular-oauth2-oidc';
 
 @Injectable({

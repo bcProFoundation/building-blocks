@@ -1,4 +1,4 @@
-import { Module, Global } from '@nestjs/common';
+import { Module, Global, HttpModule } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { EmailEntitiesModule } from './entities/entities.module';
 import { EmailController } from './controllers/email/email.controller';
@@ -9,7 +9,7 @@ import { EmailCommandHandlers } from './commands';
 
 @Global()
 @Module({
-  imports: [CqrsModule, EmailEntitiesModule],
+  imports: [CqrsModule, EmailEntitiesModule, HttpModule],
   providers: [
     EmailService,
     ...EmailAggregates,

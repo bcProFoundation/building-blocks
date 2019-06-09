@@ -5,15 +5,12 @@ import { Profile } from './profile.entity';
 import { AVATAR_IMAGE_FOLDER } from '../../../constants/filesystem';
 import { unlink } from 'fs';
 import { from } from 'rxjs';
-import { CommandBus } from '@nestjs/cqrs';
-import { UploadNewAvatarCommand } from '../../../profile-management/commands/upload-new-avatar/upload-new-avatar.command';
 
 @Injectable()
 export class ProfileService {
   constructor(
     @InjectRepository(Profile)
     private readonly profileRepository: MongoRepository<Profile>,
-    private readonly commandBus: CommandBus,
   ) {}
 
   public async save(profile) {
@@ -30,12 +27,6 @@ export class ProfileService {
 
   public async find() {
     return await this.profileRepository.find();
-  }
-
-  public async uploadAndSetAvatar(file, clientHttpRequest) {
-    return this.commandBus.execute(
-      new UploadNewAvatarCommand(file, clientHttpRequest),
-    );
   }
 
   public deleteAvatarFile(pictureFile) {

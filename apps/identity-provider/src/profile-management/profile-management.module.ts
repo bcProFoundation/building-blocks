@@ -1,4 +1,4 @@
-import { Module, Global } from '@nestjs/common';
+import { Module, Global, HttpModule } from '@nestjs/common';
 import { ProfileManagementEntitiesModule } from './entities/profile-management-entities.module';
 import { ProfileController } from './controllers/profile/profile.controller';
 import { ProfileAggregate } from './aggregates';
@@ -6,10 +6,11 @@ import { UploadAvatarMetaDataService } from './policies/upload-avatar-meta-data/
 import { ProfileManagementCommandHandlers } from './commands';
 import { CqrsModule } from '@nestjs/cqrs';
 import { ProfileManagementEventHandlers } from './events';
+import { ProfileManagementQueryHandlers } from './queries';
 
 @Global()
 @Module({
-  imports: [ProfileManagementEntitiesModule, CqrsModule],
+  imports: [ProfileManagementEntitiesModule, CqrsModule, HttpModule],
   exports: [ProfileManagementEntitiesModule],
   controllers: [ProfileController],
   providers: [
@@ -17,6 +18,7 @@ import { ProfileManagementEventHandlers } from './events';
     UploadAvatarMetaDataService,
     ...ProfileManagementCommandHandlers,
     ...ProfileManagementEventHandlers,
+    ...ProfileManagementQueryHandlers,
   ],
 })
 export class ProfileManagementModule {}

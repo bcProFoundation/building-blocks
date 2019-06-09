@@ -23,8 +23,8 @@ export class SettingsController {
   @Get('v1/get')
   @Roles(ADMINISTRATOR)
   @UseGuards(TokenGuard, RoleGuard)
-  async getSettings() {
-    return await this.settingsService.find();
+  getSettings() {
+    return this.settingsService.find();
   }
 
   @Post('v1/update')
