@@ -20,4 +20,6 @@ export class Storage extends BaseEntity {
   secretKey: string;
   @Column()
   bucket: string;
+  @Column()
+  basePath: string;
 }

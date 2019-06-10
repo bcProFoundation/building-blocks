@@ -31,7 +31,7 @@ export class UploadAvatarMetaDataService {
       }),
       switchMap((url: any) => {
         return this.http
-          .get(url + '/storage/v1/getOne/' + cloudStorage, {
+          .get(url + '/storage/v1/get/' + cloudStorage, {
             headers: this.authorizationHeader,
           })
           .pipe(

@@ -16,20 +16,22 @@
           <input matInput placeholder="Endpoint" formControlName="endpoint" required>
         </mat-form-field>
         <mat-form-field >
-          <input matInput placeholder="AccessKey" formControlName="accessKey"
+          <input matInput placeholder="Access Key" formControlName="accessKey"
           [type]="hideAccessKey ? 'password' : 'text'"
          >
          <mat-icon matSuffix (click)="hideAccessKey = !hideAccessKey">{{ hideAccessKey ? 'visibility_off' : 'visibility' }}</mat-icon>
         </mat-form-field>
         <mat-form-field >
-          <input matInput placeholder="SecretKey" formControlName="secretKey" password
+          <input matInput placeholder="Secret Key" formControlName="secretKey" password
           [type]="hideSecretKey ? 'password' : 'text'" >
           <mat-icon matSuffix (click)="hideSecretKey = !hideSecretKey">{{ hideSecretKey ? 'visibility_off' : 'visibility' }}</mat-icon>
         </mat-form-field>
         <mat-form-field>
-            <input matInput placeholder="Bucket" formControlName="bucket" required>
+          <input matInput placeholder="Bucket" formControlName="bucket" required>
         </mat-form-field>
-
+        <mat-form-field>
+          <input matInput placeholder="Base Path" formControlName="basePath" required>
+        </mat-form-field>
       </mat-card-content>
       <mat-card-actions>
         <button (click)="createCloudStorage()" mat-flat-button color="primary" [disabled]="!cloudForm.valid" *ngIf="!uuid">Create</button>

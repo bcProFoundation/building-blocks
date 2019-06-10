@@ -29,4 +29,8 @@ export class StorageValidationDto {
   @IsString()
   @IsNotEmpty()
   bucket: string;
+
+  @IsString()
+  @IsNotEmpty()
+  basePath: string;
 }
