@@ -6,4 +6,5 @@ export interface BucketSettings {
   endpoint: string;
   bucket: string;
   communicationServerUrl: string;
+  basePath: string;
 }

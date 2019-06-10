@@ -28,7 +28,7 @@ export class CloudStorageService {
   }
 
   getCloud(uuid) {
-    const requestUrl = this.url + '/' + this.model + '/v1/getOne/' + uuid;
+    const requestUrl = this.url + '/' + this.model + '/v1/get/' + uuid;
     return this.http.get(requestUrl, { headers: this.headers });
   }
 
@@ -41,6 +41,7 @@ export class CloudStorageService {
     accessKey: string,
     secretKey: string,
     bucket: string,
+    basePath: string,
   ) {
     const requestUrl = this.url + '/' + this.model + '/v1/modify/' + uuid;
 
@@ -52,6 +53,7 @@ export class CloudStorageService {
       accessKey,
       secretKey,
       bucket,
+      basePath,
     };
 
     return this.http.put(requestUrl, updateCloudStorageCredentials, {
@@ -67,6 +69,7 @@ export class CloudStorageService {
     accessKey: string,
     secretKey: string,
     bucket: string,
+    basePath: string,
   ) {
     const cloudCredentials = {
       version,
@@ -76,6 +79,7 @@ export class CloudStorageService {
       accessKey,
       secretKey,
       bucket,
+      basePath,
     };
 
     const requestUrl = this.url + '/' + this.model + '/v1/add';

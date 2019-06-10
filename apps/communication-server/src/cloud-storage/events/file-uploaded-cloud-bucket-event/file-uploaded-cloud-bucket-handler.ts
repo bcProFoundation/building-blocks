@@ -1,11 +1,7 @@
 import { IEventHandler, EventsHandler } from '@nestjs/cqrs';
 import { FileUploadedCloudBucketEvent } from './file-uploaded-cloud-bucket-event';
 import * as AWS from 'aws-sdk';
-import {
-  DEFAULT_BUCKET_STORAGE_PATH,
-  PUBLIC,
-  ACL_PUBLIC_PERMISSION,
-} from '../../../constants/app-strings';
+import { PUBLIC, ACL_PUBLIC_PERMISSION } from '../../../constants/app-strings';
 
 @EventsHandler(FileUploadedCloudBucketEvent)
 export class FileUploadedCloudBucketHandler
@@ -30,7 +26,10 @@ export class FileUploadedCloudBucketHandler
       ACL: filePermissions,
       Body: event.clientUploadedFile.buffer,
       Bucket: event.storageSettings.bucket,
-      Key: DEFAULT_BUCKET_STORAGE_PATH + event.clientUploadedFile.originalname, // file.filename
+      Key:
+        event.storageSettings.basePath +
+        '/' +
+        event.clientUploadedFile.originalname,
     };
     s3.putObject(params, (err, data) => {});
   }

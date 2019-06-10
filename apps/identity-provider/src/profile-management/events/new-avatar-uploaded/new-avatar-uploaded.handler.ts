@@ -17,7 +17,7 @@ export class NewAvatarUploadedHandler
   handle(event: NewAvatarUploadedEvent) {
     const requestUrl =
       event.cloudBucketCredentials.communicationServerUrl +
-      '/storage/cloud/uploadFile/' +
+      '/storage/v1/upload_file/' +
       event.cloudBucketCredentials.uuid;
 
     const uploadFile: FormData = new FormData();
@@ -50,13 +50,15 @@ export class NewAvatarUploadedHandler
       });
   }
 
-  getProfileUrl(event) {
+  getProfileUrl(event: NewAvatarUploadedEvent) {
     return (
       'https://' +
       event.cloudBucketCredentials.bucket +
       '.' +
       event.cloudBucketCredentials.endpoint +
-      '/volumes/' +
+      '/' +
+      event.cloudBucketCredentials.basePath +
+      '/' +
       event.file.originalname
     );
   }

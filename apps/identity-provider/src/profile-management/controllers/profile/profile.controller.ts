@@ -102,9 +102,8 @@ export class ProfileController {
   @Post('v1/upload_avatar')
   @UseGuards(TokenGuard)
   @UseInterceptors(FileInterceptor('file', multerAvatarConnection))
-  public async uploadAndSetAvatar(file, clientHttpRequest) {}
-  async uploadFile(@Req() req, @Res() res, @UploadedFile('file') file) {
-    return this.commandBus.execute(new UploadNewAvatarCommand(file, req));
+  async uploadFile(@Req() req, @UploadedFile('file') file) {
+    return await this.commandBus.execute(new UploadNewAvatarCommand(file, req));
   }
 
   @Delete('v1/delete_avatar')

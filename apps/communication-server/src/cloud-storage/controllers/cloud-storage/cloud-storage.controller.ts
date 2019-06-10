@@ -51,7 +51,7 @@ export class CloudStorageController {
     return await this.storage.list(skip, take);
   }
 
-  @Get('v1/getOne/:uuid')
+  @Get('v1/get/:uuid')
   @UseGuards(TokenGuard)
   async findOne(@Param('uuid') uuid: string) {
     const storage: Storage = await this.storage.findOne({ uuid });
@@ -89,7 +89,7 @@ export class CloudStorageController {
     );
   }
 
-  @Post('cloud/uploadFile/:uuid')
+  @Post('v1/upload_file/:uuid')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(
     @UploadedFile('file') file,

@@ -35,6 +35,7 @@ export class CloudStorageComponent implements OnInit {
   bucket: string;
   hideAccessKey: boolean = true;
   hideSecretKey: boolean = true;
+  basePath: string;
 
   cloudForm: FormGroup;
 
@@ -63,6 +64,7 @@ export class CloudStorageComponent implements OnInit {
       accessKey: '',
       secretKey: '',
       bucket: '',
+      basePath: '',
     });
 
     if (this.uuid === NEW_ID) {
@@ -86,6 +88,7 @@ export class CloudStorageComponent implements OnInit {
         this.cloudForm.controls.accessKey.value,
         this.cloudForm.controls.secretKey.value,
         this.cloudForm.controls.bucket.value,
+        this.cloudForm.controls.basePath.value,
       )
       .subscribe({
         next: success => {
@@ -107,6 +110,7 @@ export class CloudStorageComponent implements OnInit {
         this.cloudForm.controls.accessKey.value,
         this.cloudForm.controls.secretKey.value,
         this.cloudForm.controls.bucket.value,
+        this.cloudForm.controls.basePath.value,
       )
       .subscribe({
         next: success => {
@@ -129,6 +133,7 @@ export class CloudStorageComponent implements OnInit {
         this.accessKey = res.accessKey;
         this.secretKey = res.secretKey;
         this.bucket = res.bucket;
+        this.basePath = res.basePath;
         this.cloudForm.controls.name.setValue(res.name);
         this.cloudForm.controls.uuid.setValue(res.uuid);
         this.cloudForm.controls.version.setValue(res.version);
@@ -137,6 +142,7 @@ export class CloudStorageComponent implements OnInit {
         this.cloudForm.controls.accessKey.setValue(res.accessKey);
         this.cloudForm.controls.secretKey.setValue(res.secretKey);
         this.cloudForm.controls.bucket.setValue(res.bucket);
+        this.cloudForm.controls.basePath.setValue(res.basePath);
       },
       error: err => {},
     });

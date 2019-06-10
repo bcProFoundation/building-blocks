@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsUrl } from 'class-validator';
+import { IsString, IsOptional, IsUrl, IsNotEmpty } from 'class-validator';
 
 export class ModifyStorageDto {
   @IsString()
@@ -29,4 +29,8 @@ export class ModifyStorageDto {
   @IsString()
   @IsOptional()
   bucket: string;
+
+  @IsString()
+  @IsNotEmpty()
+  basePath: string;
 }
