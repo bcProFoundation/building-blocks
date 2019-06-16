@@ -58,7 +58,7 @@ export class ServiceService {
       where,
     });
 
-    const length = await this.serviceRepository.count({ $or });
+    const length = await this.serviceRepository.count({ ...where });
     return { docs, length, offset: skip ? skip : undefined };
   }
 
