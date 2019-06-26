@@ -71,3 +71,9 @@ cat example-config.yaml | base64 | pbcopy
 ```
 
 To use configuration in CI, export it into an environment variable, base64 decode and use as config.
+
+### Install Tiller
+
+```
+helm init --service-account example-user --tiller-namespace example
+```

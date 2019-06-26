@@ -17,10 +17,10 @@ grep 'client-certificate-data' $KUBECONFIG | awk -F 'client-certificate-data: ' 
 ### Run following to get token for gitlab:
 
 ```sh
-kubectl apply -f https://gitlab.com/castlecraft/building-blocks/raw/develop/helm-charts/deploy/gitlab-kubernetes/serviceaccount-gitlab.yaml
+kubectl apply -f https://gitlab.com/castlecraft/building-blocks/raw/develop/kubernetes/deploy/gitlab-kubernetes/serviceaccount-gitlab.yaml
 serviceaccount/gitlab created
 
-kubectl apply -f https://gitlab.com/castlecraft/building-blocks/raw/develop/helm-charts/deploy/gitlab-kubernetes/clusterrolebinding-gitlab-cluster-admin.yaml
+kubectl apply -f https://gitlab.com/castlecraft/building-blocks/raw/develop/kubernetes/deploy/gitlab-kubernetes/clusterrolebinding-gitlab-cluster-admin.yaml
 clusterrolebinding.rbac.authorization.k8s.io/gitlab-cluster-admin created
 
 kubectl get secrets
