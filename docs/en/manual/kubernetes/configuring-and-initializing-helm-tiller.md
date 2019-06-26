@@ -3,7 +3,7 @@
 Run following commands
 
 ```sh
-kubectl create -f https://gitlab.com/castlecraft/building-blocks/raw/develop/helm-charts/deploy/gitlab-kubernetes/rbac-config-helm-tiller.yaml
+kubectl create -f https://gitlab.com/castlecraft/building-blocks/raw/develop/kubernetes/deploy/gitlab-kubernetes/rbac-config-helm-tiller.yaml
 
 helm init --service-account tiller
 

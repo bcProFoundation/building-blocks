@@ -15,4 +15,4 @@ $ kubectl create -f cert-manager-ingress/cluster-issuer.yaml
 $ kubectl create -f cert-manager-ingress/certificate.yaml
 ```
 
-The directory `helm-charts/deploy/cert-manager-ingress` has reference files used in production.
+The directory `kubernetes/deploy/cert-manager-ingress` has reference files used in production.

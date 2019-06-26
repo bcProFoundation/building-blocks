@@ -41,3 +41,4 @@
     * [Cert Manager and Letsencrypt](/kubernetes/cert-manager-letsencrypt.md)
     * [Create Namespace for access](/kubernetes/create-namespace-for-repo.md)
     * [Letsencrypt Certificates](/kubernetes/letsencrypt-certificates.md)
+    * [Production Deployment](/kubernetes/production-deployment.md)
