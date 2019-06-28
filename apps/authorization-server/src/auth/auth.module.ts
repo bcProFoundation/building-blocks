@@ -31,6 +31,7 @@ import { APP_FILTER } from '@nestjs/core';
 import { AuthorizationErrorFilter } from '../common/filters/authorization-error.filter';
 import { TokenErrorFilter } from '../common/filters/token-error.filter';
 import { OAuth2ErrorFilter } from '../common/filters/oauth2-error.filter';
+import { OpenIDAuthorizationErrorFilter } from '../common/filters/openid-authorization-error.filter';
 
 @Global()
 @Module({
@@ -71,6 +72,7 @@ import { OAuth2ErrorFilter } from '../common/filters/oauth2-error.filter';
     { provide: APP_FILTER, useClass: AuthorizationErrorFilter },
     { provide: APP_FILTER, useClass: TokenErrorFilter },
     { provide: APP_FILTER, useClass: OAuth2ErrorFilter },
+    { provide: APP_FILTER, useClass: OpenIDAuthorizationErrorFilter },
   ],
   controllers: [...authControllers],
   exports: [
