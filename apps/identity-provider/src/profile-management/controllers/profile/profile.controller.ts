@@ -70,7 +70,10 @@ export class ProfileController {
 
         if (!updatedProfile) updatedProfile = new Profile();
         Object.assign(updatedProfile, profile);
-        updatedProfile.birthdate = new Date(profile.birthdate);
+        if (profile.birthdate) {
+          updatedProfile.birthdate = new Date(profile.birthdate);
+        }
+
         await updatedProfile.save();
       } else {
         updatedProfile = await this.profileService.save(profile);

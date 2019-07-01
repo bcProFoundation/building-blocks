@@ -11,6 +11,7 @@ export const OTHER_CONST = 'Other';
 export const NO_AVATAR_SET = 'No avatar set';
 export const SECURITY_DETAILS = 'Security Details';
 export const UPDATE_SUCCESSFUL = 'Update Successful';
+export const UPDATE_FAILED = 'Update Failed';
 export const CLOSE = 'close';
 export const CHANGE_PASSWORD = 'Change Password';
 export const CURRENT_PASSWORD_MISMATCH = 'Current Password Mismatch';

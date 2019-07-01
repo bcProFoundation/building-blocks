@@ -25,20 +25,22 @@ export class GetUserInfoHandler implements IQueryHandler<GetUserInfoQuery> {
     const profile = await this.profileService.findOne({ uuid: token.sub });
 
     if (profile && token.scope.includes(PROFILE)) {
-      scopedProfile.family_name = profile.familyName;
       scopedProfile.aud = token.clientId;
-      scopedProfile.given_name = profile.givenName;
-      scopedProfile.middle_name = profile.middleName;
-      scopedProfile.nickname = profile.nickname;
-      scopedProfile.preferred_username = profile.preferredUsername;
-      scopedProfile.profile = profile.profile;
-      scopedProfile.picture = profile.picture;
-      scopedProfile.website = profile.website;
-      scopedProfile.gender = profile.gender;
-      scopedProfile.birthdate = profile.birthdate;
-      scopedProfile.zoneinfo = profile.zoneinfo;
-      scopedProfile.locale = profile.locale;
-      scopedProfile.updated_at = profile.modified;
+      if (profile.familyName) scopedProfile.family_name = profile.familyName;
+      if (profile.givenName) scopedProfile.given_name = profile.givenName;
+      if (profile.middleName) scopedProfile.middle_name = profile.middleName;
+      if (profile.nickname) scopedProfile.nickname = profile.nickname;
+      if (profile.preferredUsername) {
+        scopedProfile.preferred_username = profile.preferredUsername;
+      }
+      if (profile.profile) scopedProfile.profile = profile.profile;
+      if (profile.picture) scopedProfile.picture = profile.picture;
+      if (profile.website) scopedProfile.website = profile.website;
+      if (profile.gender) scopedProfile.gender = profile.gender;
+      if (profile.birthdate) scopedProfile.birthdate = profile.birthdate;
+      if (profile.zoneinfo) scopedProfile.zoneinfo = profile.zoneinfo;
+      if (profile.locale) scopedProfile.locale = profile.locale;
+      if (profile.modified) scopedProfile.updated_at = profile.modified;
     }
 
     return scopedProfile;

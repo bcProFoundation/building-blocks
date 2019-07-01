@@ -36,10 +36,28 @@ export class ProfileService {
     });
   }
 
-  updatePersonalDetails(personalDetails) {
-    return this.http.post(UPDATE_PERSONAL_DETAILS_URL, personalDetails, {
-      headers: this.authorizationHeader,
-    });
+  updatePersonalDetails(
+    uuid: string,
+    givenName: string,
+    middleName: string,
+    familyName: string,
+    nickname: string,
+    gender: string,
+    birthdate: string,
+  ) {
+    return this.http.post(
+      UPDATE_PERSONAL_DETAILS_URL,
+      {
+        uuid,
+        givenName,
+        middleName,
+        familyName,
+        nickname,
+        gender,
+        birthdate,
+      },
+      { headers: this.authorizationHeader },
+    );
   }
 
   updateProfileDetails(profileDetails) {
