@@ -26,6 +26,7 @@ import {
   UNDO,
   AVATAR_UPDATED,
   AVATAR_UPDATED_FAILED,
+  UPDATE_FAILED,
 } from '../constants/messages';
 import { isArray } from 'util';
 import {
@@ -190,20 +191,26 @@ export class ProfileComponent implements OnInit {
 
   updatePersonal() {
     this.profileService
-      .updatePersonalDetails({
-        uuid: this.uuid,
-        givenName: this.personalForm.controls.givenName.value,
-        middleName: this.personalForm.controls.middleName.value,
-        familyName: this.personalForm.controls.familyName.value,
-        nickname: this.personalForm.controls.nickname.value,
-        gender: this.personalForm.controls.gender.value,
-        birthdate: this.personalForm.controls.birthdate.value,
-      })
+      .updatePersonalDetails(
+        this.uuid,
+        this.personalForm.controls.givenName.value,
+        this.personalForm.controls.middleName.value,
+        this.personalForm.controls.familyName.value,
+        this.personalForm.controls.nickname.value,
+        this.personalForm.controls.gender.value,
+        this.personalForm.controls.birthdate.value,
+      )
       .subscribe({
-        next: response =>
+        next: response => {
           this.snackBar.open(UPDATE_SUCCESSFUL, CLOSE, {
             duration: DURATION,
-          }),
+          });
+        },
+        error: error => {
+          this.snackBar.open(UPDATE_FAILED, CLOSE, {
+            duration: DURATION,
+          });
+        },
       });
     this.profileService
       .setAuthServerUser({ name: this.personalForm.controls.fullName.value })
@@ -223,10 +230,16 @@ export class ProfileComponent implements OnInit {
         locale: this.profileForm.controls.locale.value,
       })
       .subscribe({
-        next: response =>
+        next: response => {
           this.snackBar.open(UPDATE_SUCCESSFUL, CLOSE, {
             duration: DURATION,
-          }),
+          });
+        },
+        error: error => {
+          this.snackBar.open(UPDATE_FAILED, CLOSE, {
+            duration: DURATION,
+          });
+        },
       });
   }
 

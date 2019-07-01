@@ -14,6 +14,7 @@ import {
   SCOPE_OPENID,
   SCOPE_ROLES,
   SCOPE_EMAIL,
+  SCOPE_PROFILE,
 } from '../../../constants/app-strings';
 import { KeyPairGeneratorService } from '../../../auth/schedulers';
 
@@ -80,6 +81,7 @@ export class SetupService {
       { name: SCOPE_OPENID },
       { name: SCOPE_ROLES },
       { name: SCOPE_EMAIL },
+      { name: SCOPE_PROFILE },
     ]);
     const createdBy = await this.userService.findOne({ email });
     const allowedScopes: string[] = scope.map(r => r.name);
