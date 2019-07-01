@@ -1,22 +1,22 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 
 export class CreateScopeDto {
   @IsNotEmpty()
   @ApiModelProperty({
-    description: '',
+    description: 'Scope Name',
     type: 'string',
     required: true,
   })
   @IsString()
   readonly name: string;
 
-  @IsNotEmpty()
   @ApiModelProperty({
-    description: '',
+    description: 'Scope Description',
     type: 'string',
-    required: true,
+    required: false,
   })
   @IsString()
+  @IsOptional()
   readonly description: string;
 }
