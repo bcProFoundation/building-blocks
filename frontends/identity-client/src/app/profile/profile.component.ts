@@ -222,13 +222,17 @@ export class ProfileComponent implements OnInit {
   }
 
   updateProfile() {
+    let website: string;
+    if (this.profileForm.controls.website.value) {
+      website = this.profileForm.controls.website.value;
+    }
     this.profileService
-      .updateProfileDetails({
-        uuid: this.uuid,
-        website: this.profileForm.controls.website.value,
-        zoneinfo: this.profileForm.controls.zoneinfo.value,
-        locale: this.profileForm.controls.locale.value,
-      })
+      .updateProfileDetails(
+        this.uuid,
+        website,
+        this.profileForm.controls.zoneinfo.value,
+        this.profileForm.controls.locale.value,
+      )
       .subscribe({
         next: response => {
           this.snackBar.open(UPDATE_SUCCESSFUL, CLOSE, {

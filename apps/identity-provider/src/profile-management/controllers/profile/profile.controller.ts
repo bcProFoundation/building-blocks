@@ -45,6 +45,11 @@ export class ProfileController {
 
       if (!updatedProfile) updatedProfile = new Profile();
       Object.assign(updatedProfile, profile);
+
+      if (!profile.website) {
+        updatedProfile.website = undefined;
+      }
+
       await updatedProfile.save();
     } else {
       if (req.token.sub) profile.uuid = req.token.sub;
