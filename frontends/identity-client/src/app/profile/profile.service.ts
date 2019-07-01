@@ -60,10 +60,17 @@ export class ProfileService {
     );
   }
 
-  updateProfileDetails(profileDetails) {
-    return this.http.post(UPDATE_PROFILE_DETAILS_URL, profileDetails, {
-      headers: this.authorizationHeader,
-    });
+  updateProfileDetails(
+    uuid: string,
+    website: string,
+    zoneinfo: string,
+    locale: string,
+  ) {
+    return this.http.post(
+      UPDATE_PROFILE_DETAILS_URL,
+      { uuid, website, zoneinfo, locale },
+      { headers: this.authorizationHeader },
+    );
   }
 
   getPersonalDetails(uuid) {
