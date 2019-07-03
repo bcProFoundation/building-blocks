@@ -27,6 +27,7 @@ import { PasswordPolicyService } from '../../../user-management/policies/passwor
 import { SendLoginOTPCommand } from '../../commands/send-login-otp/send-login-otp.command';
 import { USER } from '../../../user-management/entities/user/user.schema';
 import { PasswordLessDto } from '../../policies/password-less/password-less.dto';
+import { SUCCESS } from '../../../constants/app-strings';
 
 @Injectable()
 export class AuthService {
@@ -309,5 +310,38 @@ export class AuthService {
     req.session.selectedUser = uuid;
     req.logIn(reqUser, () => {});
     return userFromSessionUsers;
+  }
+
+  logout(req, res) {
+    req.session.users = [];
+    req.logout();
+    delete req.session.selectedUser;
+
+    if (req.query && req.query.redirect) {
+      return res.redirect(req.query.redirect);
+    }
+
+    return res.redirect('/');
+  }
+
+  logoutUuid(uuid: string, req) {
+    if (req.session.users.filter(user => user.uuid === uuid).length > 0) {
+      req.session.users.splice(
+        req.session.users.indexOf(
+          req.session.users.filter(user => user && user.uuid === uuid)[0],
+        ),
+        1,
+      );
+
+      // Check if uuid is passport session user
+      if (req.session.user && req.session.user.uuid === uuid) {
+        req.logout();
+        delete req.session.selectedUser;
+      }
+    } else {
+      throw invalidUserException;
+    }
+
+    return { message: SUCCESS };
   }
 }

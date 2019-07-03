@@ -15,4 +15,10 @@ export class ChooseAccountService {
   chooseUser(uuid) {
     return this.http.post(environment.routes.CHOOSE_USER, { uuid });
   }
+
+  logoutUser(uuid) {
+    return this.http.get(
+      environment.routes.LOGOUT + '/' + uuid + '?redirect=%2Faccount%2Fchoose',
+    );
+  }
 }

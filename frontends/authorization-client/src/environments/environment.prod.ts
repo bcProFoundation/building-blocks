@@ -16,5 +16,6 @@ export const environment = {
     SEND_LOGIN_OTP: '/user/v1/send_login_otp',
     LIST_SESSION_USERS: '/user/v1/list_session_users',
     CHOOSE_USER: '/auth/choose_user',
+    LOGOUT: '/auth/logout',
   },
 };

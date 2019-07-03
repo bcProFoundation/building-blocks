@@ -59,7 +59,7 @@ describe('AuthController (e2e)', () => {
       });
   });
 
-  it('/POST /auth/logout', done => {
+  it('/GET /auth/logout', done => {
     return request(app.getHttpServer())
       .get('/auth/logout')
       .expect(302)

@@ -13,3 +13,4 @@ export const SCOPE_EMAIL = 'email';
 export const SCOPE_ROLES = 'roles';
 export const SCOPE_PROFILE = 'profile';
 export const SWAGGER_ROUTE = 'api-docs';
+export const SUCCESS = 'Success';

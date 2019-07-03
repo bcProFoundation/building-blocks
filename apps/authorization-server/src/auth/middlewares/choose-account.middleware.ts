@@ -36,17 +36,15 @@ export class ChooseAccountMiddleware implements NestMiddleware {
       return next();
     }
 
-    if (!reqUser) {
+    if (
+      settings &&
+      settings.enableChoosingAccount &&
+      req.query.prompt === SELECT_ACCOUNT
+    ) {
       const query = stringify(req.query);
-      if (
-        settings &&
-        settings.enableChoosingAccount &&
-        req.query.prompt === SELECT_ACCOUNT
-      ) {
-        res.redirect(ACCOUNT_CHOOSE_ROUTE + '?' + query);
-      } else {
-        return next();
-      }
+      return res.redirect(ACCOUNT_CHOOSE_ROUTE + '?' + query);
     }
+
+    return next();
   }
 }
