@@ -23,6 +23,8 @@ stages:
 
 test_authorization_server:
   stage: tests
+  only:
+    - develop
   variables:
     SESSION_SECRET: "secret"
     EXPIRY_DAYS: "1"
@@ -57,6 +59,8 @@ test_authorization_server:
 test_authorization_client:
   image: registry.gitlab.com/castlecraft/docker-craft/node-lts-headless-chrome:latest
   stage: tests
+  only:
+    - develop
   before_script:
     - cd frontends/authorization-client
     - npm install
@@ -76,6 +80,8 @@ test_authorization_client:
 
 test_communication_server:
   stage: tests
+  only:
+    - develop
   before_script:
     - cd apps/communication-server
     - npm install
@@ -94,6 +100,8 @@ test_communication_server:
 
 test_identity_provider:
   stage: tests
+  only:
+    - develop
   before_script:
     - cd apps/identity-provider
     - npm install
@@ -112,6 +120,8 @@ test_identity_provider:
 
 test_identity_client:
   stage: tests
+  only:
+    - develop
   before_script:
     - cd frontends/identity-client
     - npm install
@@ -131,6 +141,8 @@ test_identity_client:
 
 test_infrastructure_console:
   stage: tests
+  only:
+    - develop
   before_script:
     - cd apps/infrastructure-console
     - npm install
@@ -149,6 +161,8 @@ test_infrastructure_console:
 
 test_admin_client:
   stage: tests
+  only:
+    - develop
   before_script:
     - cd frontends/admin-client
     - npm install
