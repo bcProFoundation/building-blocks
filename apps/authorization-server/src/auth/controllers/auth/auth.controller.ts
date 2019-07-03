@@ -10,6 +10,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { callback } from '../../passport/strategies/local.strategy';
@@ -63,13 +64,17 @@ export class AuthController {
     title: i18n.__('Logout'),
     description: i18n.__('Logout of the session'),
   })
-  logout(@Req() req, @Res() res) {
-    req.session.users = [];
-    delete req.session.selectedUser;
-    req.logout();
-    if (req.query && req.query.redirect) {
-      res.redirect(req.query.redirect);
-    } else res.redirect('/');
+  logout(@Param('uuid') uuid, @Req() req, @Res() res) {
+    return this.authService.logout(req, res);
+  }
+
+  @Get('logout/:uuid')
+  @ApiOperation({
+    title: i18n.__('Logout'),
+    description: i18n.__('Logout of the session'),
+  })
+  logoutUuid(@Param('uuid') uuid, @Req() req) {
+    return this.authService.logoutUuid(uuid, req);
   }
 
   @Post('verify_user')

@@ -3,6 +3,7 @@ import { ChooseAccountService } from './choose-account.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { stringify } from 'querystring';
 import { environment } from '../../environments/environment.prod';
+import { FormGroup, FormArray, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-choose-account',
@@ -10,7 +11,12 @@ import { environment } from '../../environments/environment.prod';
   styleUrls: ['./choose-account.component.css'],
 })
 export class ChooseAccountComponent implements OnInit {
-  sessionUsers;
+  sessionUsers: any[];
+
+  userForm = new FormArray([]);
+  userSelectionForm = new FormGroup({
+    users: this.userForm,
+  });
 
   constructor(
     private activeRoute: ActivatedRoute,
@@ -19,19 +25,58 @@ export class ChooseAccountComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.sessionUsers = this.chooseAccountService.getSessionUsers();
-  }
-
-  chooseUser(uuid) {
-    this.chooseAccountService.chooseUser(uuid).subscribe({
-      next: success => {
-        const query = { ...this.activeRoute.snapshot.queryParams };
-        delete query.prompt;
-        window.location.href =
-          environment.routes.CONFIRMATION + '?' + stringify(query);
+    this.chooseAccountService.getSessionUsers().subscribe({
+      next: sessionUsers => {
+        this.populateForm(sessionUsers);
       },
       error: error => {},
     });
+  }
+
+  populateForm(sessionUsers) {
+    this.sessionUsers = sessionUsers;
+    this.sessionUsers.forEach(user => {
+      this.addUser(user);
+    });
+  }
+
+  addUser(user) {
+    this.userForm.push(
+      new FormGroup({
+        email: new FormControl(user.email),
+        uuid: new FormControl(user.uuid),
+        phone: new FormControl(user.phone),
+      }),
+    );
+  }
+
+  chooseUser(index: number) {
+    this.chooseAccountService
+      .chooseUser(this.sessionUsers[index].uuid)
+      .subscribe({
+        next: success => {
+          const query = { ...this.activeRoute.snapshot.queryParams };
+          if (query.prompt) {
+            delete query.prompt;
+            window.location.href =
+              environment.routes.CONFIRMATION + '?' + stringify(query);
+          } else {
+            window.location.href = '/';
+          }
+        },
+        error: error => {},
+      });
+  }
+
+  logoutUser(index: number) {
+    this.chooseAccountService
+      .logoutUser(this.sessionUsers[index].uuid)
+      .subscribe({
+        next: success => {
+          this.userForm.removeAt(index);
+        },
+        error: error => {},
+      });
   }
 
   addAccount() {

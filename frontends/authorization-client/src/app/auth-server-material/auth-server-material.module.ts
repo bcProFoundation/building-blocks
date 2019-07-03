@@ -13,6 +13,7 @@ import {
   MatRadioModule,
   MatSnackBarModule,
   MatButtonToggleModule,
+  MatIconModule,
 } from '@angular/material';
 
 @NgModule({
@@ -29,6 +30,7 @@ import {
     MatGridListModule,
     MatSnackBarModule,
     MatButtonToggleModule,
+    MatIconModule,
   ],
   exports: [
     CommonModule,
@@ -43,6 +45,7 @@ import {
     MatGridListModule,
     MatSnackBarModule,
     MatButtonToggleModule,
+    MatIconModule,
   ],
   declarations: [],
 })

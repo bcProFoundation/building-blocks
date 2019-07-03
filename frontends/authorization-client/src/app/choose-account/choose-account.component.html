@@ -1,25 +1,36 @@
 <div fxLayout="column" fxLayoutAlign="start center" class="choose-account-container">
   <mat-card
-      fxLayout="column"
-      fxLayoutAlign="start center"
+    fxLayout="column"
+    fxLayoutAlign="start center"
     class="choose-account-card mat-elevation-z2">
     <mat-card-header>
       <mat-card-title i18n="@@chooseAccount">Choose Account</mat-card-title>
     </mat-card-header>
-    <mat-card-content
-      fxLayout="column"
-      fxLayoutAlign="start stretch"
-      fxLayoutGap="5px">
-      <div class="spacer"></div>
-      <button
-        *ngFor="let user of (sessionUsers | async)"
-        (click)="chooseUser(user.uuid)"
-        mat-stroked-button>{{ user.email }}</button>
-    </mat-card-content>
-    <mat-card-actions>
-      <button
-        (click)="addAccount()"
-        mat-stroked-button>Add Account</button>
-    </mat-card-actions>
+    <form [formGroup]="userSelectionForm">
+      <mat-card-content
+        fxLayout="column"
+        fxLayoutAlign="start stretch"
+        fxLayoutGap="5px">
+        <div
+          *ngFor="let user of userSelectionForm.get('users')['controls']; let i = index;"
+          formArrayName="users">
+          <div [formGroupName]="i">
+            <button
+              class="email-button"
+              fxFlex="90"
+              (click)="chooseUser(i)"
+              mat-stroked-button>{{ user.value.email }}</button>
+            <button mat-icon-button matSuffix (click)="logoutUser(i)">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        </div>
+      </mat-card-content>
+      <mat-card-actions fxLayout="column" fxLayoutAlign="center center">
+        <button
+          (click)="addAccount()"
+          mat-stroked-button>Add Account</button>
+      </mat-card-actions>
+    </form>
   </mat-card>
 </div>

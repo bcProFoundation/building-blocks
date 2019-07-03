@@ -32,6 +32,7 @@ export class AuthSettingsComponent implements OnInit {
   flagDeleteBearerTokens: boolean = false;
   disableDeleteSessions: boolean = false;
   disableDeleteTokens: boolean = false;
+  enableChoosingAccount: boolean;
 
   authSettingsForm = new FormGroup({
     issuerUrl: new FormControl(this.issuerUrl),
@@ -46,6 +47,7 @@ export class AuthSettingsComponent implements OnInit {
     communicationServerSystemEmailAccount: new FormControl(
       this.communicationServerSystemEmailAccount,
     ),
+    enableChoosingAccount: new FormControl(this.enableChoosingAccount),
   });
 
   constructor(
@@ -59,10 +61,12 @@ export class AuthSettingsComponent implements OnInit {
         issuerUrl: string;
         communicationServerClientId: string;
         disableSignup: boolean;
+        enableChoosingAccount: boolean;
       }) => {
         this.issuerUrl = response.issuerUrl;
         this.communicationServerClientId = response.communicationServerClientId;
         this.disableSignup = response.disableSignup;
+        this.enableChoosingAccount = response.enableChoosingAccount;
         this.populateForm(response);
       },
       error: error => {},
@@ -90,6 +94,9 @@ export class AuthSettingsComponent implements OnInit {
     this.authSettingsForm.controls.communicationServerClientId.setValue(
       response.communicationServerClientId,
     );
+    this.authSettingsForm.controls.enableChoosingAccount.setValue(
+      response.enableChoosingAccount,
+    );
   }
 
   updateAuthSettings() {
@@ -100,6 +107,7 @@ export class AuthSettingsComponent implements OnInit {
         this.authSettingsForm.controls.communicationServerClientId.value,
         this.authSettingsForm.controls.infrastructureConsoleClientId.value,
         this.authSettingsForm.controls.identityProviderClientId.value,
+        this.authSettingsForm.controls.enableChoosingAccount.value,
       )
       .subscribe({
         next: response => {

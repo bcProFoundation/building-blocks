@@ -13,6 +13,7 @@ import {
   SCOPE_EMAIL,
   SCOPE_OPENID,
   SCOPE_ROLES,
+  SCOPE_PROFILE,
 } from '../../../constants/app-strings';
 import { OAuth2ScopeRemovedEvent } from '../../../client-management/events/oauth2scope-removed/oauth2scope-removed.event';
 import { ScopeService } from '../../../client-management/entities/scope/scope.service';
@@ -52,7 +53,11 @@ export class ClientManagementAggregateService extends AggregateRoot {
     }).exec();
     if (!scope) throw new NotFoundException({ scope: scopeName });
 
-    if ([SCOPE_EMAIL, SCOPE_OPENID, SCOPE_ROLES].includes(scope.name)) {
+    if (
+      [SCOPE_EMAIL, SCOPE_OPENID, SCOPE_ROLES, SCOPE_PROFILE].includes(
+        scope.name,
+      )
+    ) {
       throw new BadRequestException({ cannotDeleteScope: scope.name });
     }
 
