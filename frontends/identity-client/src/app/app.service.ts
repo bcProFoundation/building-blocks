@@ -4,8 +4,8 @@ import {
   HandleError,
   HttpErrorHandler,
 } from './common/http-error-handler.service';
-import { Observable } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { catchError, switchMap } from 'rxjs/operators';
 import {
   CLIENT_ID,
   REDIRECT_URI,
@@ -15,6 +15,7 @@ import {
   APP_URL,
   COMMUNICATION_SERVER,
   COMMUNICATION_SERVER_URL,
+  ENABLE_CHOOSING_ACCOUNT,
 } from './constants/storage';
 
 @Injectable()
@@ -28,11 +29,25 @@ export class AppService {
 
   /** GET message from the server */
   getMessage(): Observable<any> {
-    return this.http
-      .get<any>(this.messageUrl)
-      .pipe(
-        catchError(this.handleError('getMessage', { message: 'disconnected' })),
-      );
+    return this.http.get<any>(this.messageUrl).pipe(
+      switchMap(response => {
+        return this.http.get<any>(response.authServerURL + '/info').pipe(
+          switchMap(data => {
+            data.services.forEach(element => {
+              if (element.type === COMMUNICATION_SERVER) {
+                localStorage.setItem(COMMUNICATION_SERVER_URL, element.url);
+              }
+            });
+            localStorage.setItem(
+              ENABLE_CHOOSING_ACCOUNT,
+              data.enableChoosingAccount,
+            );
+            return of(response);
+          }),
+        );
+      }),
+      catchError(this.handleError('getMessage', { message: 'disconnected' })),
+    );
   }
 
   setInfoLocalStorage(response) {
@@ -42,16 +57,5 @@ export class AppService {
     localStorage.setItem(LOGIN_URL, response.authorizationURL);
     localStorage.setItem(ISSUER_URL, response.authServerURL);
     localStorage.setItem(APP_URL, response.appURL);
-
-    this.http.get<any>(response.authServerURL + '/info').subscribe({
-      next: data => {
-        data.services.forEach(element => {
-          if (element.type === COMMUNICATION_SERVER) {
-            localStorage.setItem(COMMUNICATION_SERVER_URL, element.url);
-          }
-        });
-      },
-      error: err => {},
-    });
   }
 }

@@ -13,6 +13,7 @@ import {
   DURATION,
 } from '../../constants/app-strings';
 import { LoginChoice } from './login-choice';
+import { stringify } from 'querystring';
 
 @Component({
   selector: 'app-login',
@@ -70,8 +71,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.usernameRef.nativeElement.focus();
-    this.redirect =
-      this.route.snapshot.queryParamMap.get('redirect') || '/account';
+    this.redirect = this.route.snapshot.queryParamMap.get('redirect');
     this.getSocialLogins();
   }
 
@@ -227,11 +227,22 @@ export class LoginComponent implements OnInit {
   }
 
   connectWith(login) {
+    let redirect = '/account';
+    const query: any = { ...this.route.snapshot.queryParamMap };
+
+    if (this.redirect) {
+      redirect = this.redirect;
+    }
+
+    if (!this.redirect && query.params) {
+      redirect = '/account/choose?' + stringify(query.params);
+    }
+
     window.location.href =
       '/social_login/callback/' +
       login.uuid +
       '?redirect=' +
-      encodeURIComponent(this.redirect);
+      encodeURIComponent(redirect);
   }
 
   getSocialLogins() {

@@ -49,6 +49,9 @@ export class Profile extends BaseEntity implements IDTokenClaims {
   email: string;
 
   @Column()
+  phone: string;
+
+  @Column()
   verified_email: string;
 
   @Column()

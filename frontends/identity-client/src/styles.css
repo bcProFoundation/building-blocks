@@ -3,3 +3,8 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: 'Roboto', sans-serif; }
+
+.avatar-image {
+    background-image: url('/assets/missing_avatar.png');
+    background-size: cover;
+}

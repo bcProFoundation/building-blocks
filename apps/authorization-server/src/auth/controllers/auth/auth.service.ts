@@ -324,8 +324,11 @@ export class AuthService {
     return res.redirect('/');
   }
 
-  logoutUuid(uuid: string, req) {
-    if (req.session.users.filter(user => user.uuid === uuid).length > 0) {
+  logoutUuid(uuid: string, req, res) {
+    if (
+      req.session.users &&
+      req.session.users.filter(user => user.uuid === uuid).length > 0
+    ) {
       req.session.users.splice(
         req.session.users.indexOf(
           req.session.users.filter(user => user && user.uuid === uuid)[0],
@@ -342,6 +345,10 @@ export class AuthService {
       throw invalidUserException;
     }
 
-    return { message: SUCCESS };
+    if (req.query.redirect) {
+      return res.redirect(req.query.redirect);
+    }
+
+    res.json({ message: SUCCESS });
   }
 }

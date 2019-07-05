@@ -50,7 +50,7 @@ import { PasswordRequirementComponent } from './password-requirement/password-re
     MessageService,
     AuthGuard,
     Title,
-    { provide: OAuthStorage, useValue: localStorage },
+    { provide: OAuthStorage, useValue: sessionStorage },
     ProfileService,
     NavigationService,
   ],

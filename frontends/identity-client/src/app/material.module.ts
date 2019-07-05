@@ -15,6 +15,7 @@ import {
   MatChipsModule,
   MatSlideToggleModule,
   MatSnackBarModule,
+  MatMenuModule,
 } from '@angular/material';
 import { MaterialFileInputModule } from 'ngx-material-file-input';
 
@@ -36,6 +37,7 @@ import { MaterialFileInputModule } from 'ngx-material-file-input';
     MatChipsModule,
     MatSlideToggleModule,
     MatSnackBarModule,
+    MatMenuModule,
   ],
   exports: [
     MatToolbarModule,
@@ -54,6 +56,7 @@ import { MaterialFileInputModule } from 'ngx-material-file-input';
     MatChipsModule,
     MatSlideToggleModule,
     MatSnackBarModule,
+    MatMenuModule,
   ],
 })
 export class MaterialModule {}

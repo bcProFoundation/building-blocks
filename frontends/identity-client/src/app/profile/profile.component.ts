@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { FormControl, FormGroup } from '@angular/forms';
 import { TIME_ZONES } from '../constants/timezones';
@@ -71,9 +71,13 @@ export class ProfileComponent implements OnInit {
   flagDeleteUser: boolean = false;
   isPasswordSet: boolean;
   sentForgotPasswordEmail: boolean = false;
+  email: string;
+  phone: string;
 
   personalForm = new FormGroup({
     fullName: new FormControl(this.fullName),
+    email: new FormControl(this.email),
+    phone: new FormControl(this.phone),
     givenName: new FormControl(this.givenName),
     middleName: new FormControl(this.middleName),
     familyName: new FormControl(this.familyName),
@@ -98,6 +102,8 @@ export class ProfileComponent implements OnInit {
     repeatPassword: new FormControl(this.repeatPassword),
   });
 
+  @Output() messageEvent = new EventEmitter<string>();
+
   constructor(
     private title: Title,
     private oauthService: OAuthService,
@@ -118,7 +124,7 @@ export class ProfileComponent implements OnInit {
       .getAuthServerUser()
       .pipe(
         map(project => {
-          localStorage.setItem(USER_UUID, (project as UserResponse).uuid);
+          sessionStorage.setItem(USER_UUID, (project as UserResponse).uuid);
           this.subscribeGetProfilePersonal();
           this.subscribeGetProfile();
           return project;
@@ -127,6 +133,8 @@ export class ProfileComponent implements OnInit {
       .subscribe({
         next: (response: UserResponse) => {
           this.personalForm.controls.fullName.setValue(response.name);
+          this.personalForm.controls.email.setValue(response.email);
+          this.personalForm.controls.phone.setValue(response.phone);
           this.checked2fa = response.enable2fa;
           this.uuid = response.uuid;
           this.isPasswordSet = response.isPasswordSet;
@@ -135,7 +143,7 @@ export class ProfileComponent implements OnInit {
   }
 
   subscribeGetProfilePersonal() {
-    const uuid = localStorage.getItem(USER_UUID);
+    const uuid = sessionStorage.getItem(USER_UUID);
     this.profileService.getPersonalDetails(uuid).subscribe({
       next: (response: PersonalResponse) => {
         if (response) {
@@ -152,7 +160,7 @@ export class ProfileComponent implements OnInit {
   }
 
   subscribeGetProfile() {
-    const uuid = localStorage.getItem(USER_UUID);
+    const uuid = sessionStorage.getItem(USER_UUID);
     this.profileService.getProfileDetails(uuid).subscribe({
       next: (response: ProfileResponse) => {
         if (response) {
@@ -161,6 +169,7 @@ export class ProfileComponent implements OnInit {
           } else {
             this.picture = MISSING_AVATAR_IMAGE;
           }
+          this.messageEvent.emit(this.picture);
           this.profileForm.controls.website.setValue(response.website);
           this.profileForm.controls.zoneinfo.setValue(response.zoneinfo);
           this.profileForm.controls.locale.setValue(response.locale);
