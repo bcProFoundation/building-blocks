@@ -37,12 +37,14 @@ export class MultifactorComponent implements OnInit {
           this.qrCode = response.qrImage;
           this.sharedSecret = response.key;
         },
+        error: error => {},
       });
     } else if (this.enableDisable) {
       this.mfaService.disable2fa().subscribe({
         next: response => {
           this.router.navigate(['/profile']);
         },
+        error: error => {},
       });
     }
   }
@@ -52,6 +54,7 @@ export class MultifactorComponent implements OnInit {
       next: response => {
         this.router.navigate(['/profile']);
       },
+      error: error => {},
     });
   }
 
@@ -62,6 +65,7 @@ export class MultifactorComponent implements OnInit {
       next: (response: UserResponse) => {
         this.enableDisable = response.enable2fa;
       },
+      error: error => {},
     });
   }
 }

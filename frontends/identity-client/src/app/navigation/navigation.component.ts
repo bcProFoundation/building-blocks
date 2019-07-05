@@ -37,13 +37,16 @@ export class NavigationComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.oauthService.events.subscribe(({ type }: OAuthEvent) => {
-      switch (type) {
-        case 'token_received':
-          this.tokenIsValid = true;
-          this.router.navigate(['profile']);
-          break;
-      }
+    this.oauthService.events.subscribe({
+      next: ({ type }: OAuthEvent) => {
+        switch (type) {
+          case 'token_received':
+            this.tokenIsValid = true;
+            this.router.navigate(['profile']);
+            break;
+        }
+      },
+      error: error => {},
     });
     this.tokenIsValid = this.oauthService.hasValidAccessToken();
   }

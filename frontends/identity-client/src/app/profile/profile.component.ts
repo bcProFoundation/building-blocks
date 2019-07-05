@@ -139,6 +139,7 @@ export class ProfileComponent implements OnInit {
           this.uuid = response.uuid;
           this.isPasswordSet = response.isPasswordSet;
         },
+        error: error => {},
       });
   }
 
@@ -223,7 +224,10 @@ export class ProfileComponent implements OnInit {
       });
     this.profileService
       .setAuthServerUser({ name: this.personalForm.controls.fullName.value })
-      .subscribe();
+      .subscribe({
+        next: success => {},
+        error: error => {},
+      });
   }
 
   toggleFileField() {
@@ -288,8 +292,9 @@ export class ProfileComponent implements OnInit {
   }
 
   deleteAvatar() {
-    this.profileService.deleteAvatar().subscribe(response => {
-      this.picture = undefined;
+    this.profileService.deleteAvatar().subscribe({
+      next: response => (this.picture = undefined),
+      error: error => {},
     });
   }
 
