@@ -5,6 +5,8 @@ import { OAuthService } from 'angular-oauth2-oidc';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { Observable } from 'rxjs';
 import { NavigationService } from './navigation.service';
+import { MaterialModule } from '../material.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('NavigationComponent', () => {
   let component: NavigationComponent;
@@ -16,7 +18,7 @@ describe('NavigationComponent', () => {
       hasValidAccessToken: () => false,
     };
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
+      imports: [RouterTestingModule, MaterialModule, BrowserAnimationsModule],
       declarations: [NavigationComponent],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [

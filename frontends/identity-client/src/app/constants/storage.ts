@@ -8,3 +8,5 @@ export const APP_URL = 'app_url';
 export const USER_UUID = 'user_uuid';
 export const COMMUNICATION_SERVER = 'communication-server';
 export const COMMUNICATION_SERVER_URL = 'communication-server-url';
+export const ENABLE_CHOOSING_ACCOUNT = 'enable_choosing_account';
+export const CLEAR_SESSION = 'clear_session';

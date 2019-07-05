@@ -73,6 +73,7 @@ export class ChooseAccountComponent implements OnInit {
       .logoutUser(this.sessionUsers[index].uuid)
       .subscribe({
         next: success => {
+          this.sessionUsers.splice(index, 1);
           this.userForm.removeAt(index);
         },
         error: error => {},

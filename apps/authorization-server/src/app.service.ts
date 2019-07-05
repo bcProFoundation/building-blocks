@@ -59,6 +59,7 @@ export class AppService {
     }
 
     message.services = services;
+    message.enableChoosingAccount = settings.enableChoosingAccount;
 
     return message;
   }

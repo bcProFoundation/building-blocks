@@ -78,6 +78,7 @@ export class UserService {
       deleted: user.deleted,
       enablePasswordLess: user.enablePasswordLess,
       email: user.email,
+      phone: user.phone,
       name: user.name,
       uuid: user.uuid,
       creation: user.creation,

@@ -5,7 +5,15 @@ import { map } from 'rxjs/operators';
 import { OAuthService, OAuthEvent } from 'angular-oauth2-oidc';
 import { Router } from '@angular/router';
 import { NavigationService } from './navigation.service';
-import { ISSUER_URL, APP_URL } from '../constants/storage';
+import {
+  ISSUER_URL,
+  APP_URL,
+  ENABLE_CHOOSING_ACCOUNT,
+  USER_UUID,
+  CLEAR_SESSION,
+} from '../constants/storage';
+import { LOGOUT_URL } from '../constants/url-paths';
+import { ProfileComponent } from '../profile/profile.component';
 
 @Component({
   selector: 'app-navigation',
@@ -13,10 +21,13 @@ import { ISSUER_URL, APP_URL } from '../constants/storage';
   styleUrls: ['./navigation.component.css'],
 })
 export class NavigationComponent implements OnInit {
+  enableChoosingAccount =
+    localStorage.getItem(ENABLE_CHOOSING_ACCOUNT) === 'true';
   isHandset$: Observable<boolean> = this.breakpointObserver
     .observe(Breakpoints.Handset)
     .pipe(map(result => result.matches));
   tokenIsValid: boolean;
+  avatar: string;
 
   constructor(
     private breakpointObserver: BreakpointObserver,
@@ -37,6 +48,13 @@ export class NavigationComponent implements OnInit {
     this.tokenIsValid = this.oauthService.hasValidAccessToken();
   }
 
+  onActivate(profileComponent: ProfileComponent) {
+    profileComponent.messageEvent.subscribe({
+      next: avatar => (this.avatar = avatar),
+      error: error => {},
+    });
+  }
+
   login() {
     this.oauthService.initImplicitFlow();
   }
@@ -50,5 +68,27 @@ export class NavigationComponent implements OnInit {
     this.oauthService.logOut();
     this.tokenIsValid = false;
     window.location.href = logoutUrl;
+  }
+
+  chooseAccount() {
+    const appURL = localStorage.getItem(APP_URL);
+    localStorage.setItem(CLEAR_SESSION, 'true');
+    window.open(appURL, '_blank');
+  }
+
+  logoutCurrentUser() {
+    const issuerURL = localStorage.getItem(ISSUER_URL);
+    const userUUID = sessionStorage.getItem(USER_UUID);
+    const appURL = localStorage.getItem(APP_URL);
+    const logoutURL =
+      issuerURL +
+      LOGOUT_URL +
+      '/' +
+      userUUID +
+      '?redirect=' +
+      encodeURIComponent(appURL);
+
+    sessionStorage.clear();
+    window.location.href = logoutURL;
   }
 }

@@ -7,6 +7,12 @@
           <input matInput formControlName="fullName" placeholder="Full Name">
         </mat-form-field>
         <mat-form-field>
+          <input matInput formControlName="email" placeholder="Email" readonly>
+        </mat-form-field>
+        <mat-form-field *ngIf="phone">
+          <input matInput formControlName="phone" placeholder="Phone" readonly>
+        </mat-form-field>
+        <mat-form-field>
           <input matInput formControlName="givenName" placeholder="First Name">
         </mat-form-field>
         <mat-form-field>

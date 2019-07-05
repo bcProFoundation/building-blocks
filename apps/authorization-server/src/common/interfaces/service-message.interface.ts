@@ -5,4 +5,5 @@ export interface ServiceMessage {
   session: boolean;
   communication: boolean;
   services?: ConnectedService[];
+  enableChoosingAccount?: boolean;
 }

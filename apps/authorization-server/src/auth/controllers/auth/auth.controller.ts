@@ -73,8 +73,8 @@ export class AuthController {
     title: i18n.__('Logout'),
     description: i18n.__('Logout of the session'),
   })
-  logoutUuid(@Param('uuid') uuid, @Req() req) {
-    return this.authService.logoutUuid(uuid, req);
+  logoutUuid(@Param('uuid') uuid, @Req() req, @Res() res) {
+    this.authService.logoutUuid(uuid, req, res);
   }
 
   @Post('verify_user')

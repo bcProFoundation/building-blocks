@@ -10,11 +10,11 @@
     <mat-nav-list>
       <a mat-list-item (click)="login()" *ngIf="!tokenIsValid">Login</a>
       <a mat-list-item routerLink="/profile" *ngIf="tokenIsValid">My Profile</a>
-      <a mat-list-item (click)="logout()" *ngIf="tokenIsValid">Logout</a>
+      <a mat-list-item (click)="logout()" *ngIf="tokenIsValid && !enableChoosingAccount">Logout</a>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
-    <mat-toolbar color="primary">
+    <mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="space-between center">
       <button
         type="button"
         aria-label="Toggle sidenav"
@@ -23,7 +23,24 @@
         *ngIf="isHandset$ | async">
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
+      <div fxFlex="100"></div>
+      <ng-container *ngIf="enableChoosingAccount">
+        <img
+          mat-card-avatar
+          [matMenuTriggerFor]="menu"
+          [src]="avatar"
+          *ngIf="avatar">
+        <div
+          mat-card-avatar
+          [matMenuTriggerFor]="menu"
+          class="avatar-image pointer"
+          *ngIf="!avatar"></div>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="chooseAccount()">Choose Account</button>
+          <button mat-menu-item (click)="logoutCurrentUser()">Logout</button>
+        </mat-menu>
+      </ng-container>
     </mat-toolbar>
-    <router-outlet></router-outlet>
+    <router-outlet (activate)="onActivate($event)"></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>

@@ -12,6 +12,8 @@ import {
   SILENT_REFRESH_REDIRECT_URI,
   LOGIN_URL,
   ISSUER_URL,
+  ENABLE_CHOOSING_ACCOUNT,
+  CLEAR_SESSION,
 } from './constants/storage';
 
 @Component({
@@ -41,6 +43,21 @@ export class AppComponent {
         scope: 'openid roles',
         issuer: localStorage.getItem(ISSUER_URL),
       };
+
+      const enableChoosingAccount =
+        localStorage.getItem(ENABLE_CHOOSING_ACCOUNT) === 'true';
+
+      const clearSession = localStorage.getItem(CLEAR_SESSION) === 'true';
+
+      if (clearSession) {
+        sessionStorage.clear();
+        localStorage.removeItem(CLEAR_SESSION);
+      }
+
+      if (enableChoosingAccount) {
+        authConfig.customQueryParams = { prompt: 'select_account' };
+      }
+
       if (isDevMode()) authConfig.requireHttps = false;
       this.oauthService.configure(authConfig);
       this.oauthService.tokenValidationHandler = new JwksValidationHandler();
