@@ -26,28 +26,28 @@ export class NewAvatarUploadedHandler
       contentType: event.file.mimetype,
     });
     uploadFile.append('permission', PUBLIC);
-
-    this.http
-      .post(requestUrl, uploadFile, { headers: uploadFile.getHeaders() })
-      .subscribe({
-        next: async data => {
-          let profile: Profile = await this.profileService.findOne({
-            uuid: event.clientHttpRequest.token.sub,
-          });
-          if (profile) {
-            profile.picture = this.getProfileUrl(event);
-            await profile.save();
-            return profile;
-          } else {
-            profile = new Profile();
-            profile.uuid = event.clientHttpRequest.token.sub;
-            profile.picture = this.getProfileUrl(event);
-            await profile.save();
-            return profile;
-          }
-        },
-        error: err => {},
-      });
+    const headers: { [key: string]: string } = uploadFile.getHeaders();
+    headers.authorization =
+      'Bearer ' + event.clientHttpRequest.token.accessToken;
+    this.http.post(requestUrl, uploadFile, { headers }).subscribe({
+      next: async data => {
+        let profile: Profile = await this.profileService.findOne({
+          uuid: event.clientHttpRequest.token.sub,
+        });
+        if (profile) {
+          profile.picture = this.getProfileUrl(event);
+          await profile.save();
+          return profile;
+        } else {
+          profile = new Profile();
+          profile.uuid = event.clientHttpRequest.token.sub;
+          profile.picture = this.getProfileUrl(event);
+          await profile.save();
+          return profile;
+        }
+      },
+      error: err => {},
+    });
   }
 
   getProfileUrl(event: NewAvatarUploadedEvent) {
