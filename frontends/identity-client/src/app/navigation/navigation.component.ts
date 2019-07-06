@@ -52,10 +52,12 @@ export class NavigationComponent implements OnInit {
   }
 
   onActivate(profileComponent: ProfileComponent) {
-    profileComponent.messageEvent.subscribe({
-      next: avatar => (this.avatar = avatar),
-      error: error => {},
-    });
+    if (profileComponent && profileComponent.messageEvent) {
+      profileComponent.messageEvent.subscribe({
+        next: avatar => (this.avatar = avatar),
+        error: error => {},
+      });
+    }
   }
 
   login() {
