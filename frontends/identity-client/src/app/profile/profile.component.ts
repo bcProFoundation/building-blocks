@@ -187,6 +187,7 @@ export class ProfileComponent implements OnInit {
         reader.readAsDataURL(event.target.files[0]);
         reader.onload = (file: any) => {
           this.picture = file.target.result;
+          this.messageEvent.emit(this.picture);
         };
         this.hideAvatar = false;
         this.snackBar.open(AVATAR_UPDATED, CLOSE, { duration: DURATION });
@@ -293,7 +294,10 @@ export class ProfileComponent implements OnInit {
 
   deleteAvatar() {
     this.profileService.deleteAvatar().subscribe({
-      next: response => (this.picture = undefined),
+      next: response => {
+        this.picture = undefined;
+        this.messageEvent.emit(this.picture);
+      },
       error: error => {},
     });
   }
