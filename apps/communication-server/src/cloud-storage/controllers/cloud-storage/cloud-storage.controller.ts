@@ -90,6 +90,7 @@ export class CloudStorageController {
   }
 
   @Post('v1/upload_file/:uuid')
+  @UseGuards(TokenGuard)
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(
     @UploadedFile('file') file,
