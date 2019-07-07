@@ -173,6 +173,9 @@ export class UserManagementService extends AggregateRoot {
     user.modifiedBy = modifiedBy;
     user.modified = new Date();
 
+    // Set disabled
+    user.disabled = payload.disabled;
+
     // Set password if exists
     if (payload.password) {
       const result = this.passwordPolicy.validatePassword(payload.password);

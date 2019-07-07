@@ -21,7 +21,7 @@ import { OAuth2Module } from './oauth2/oauth2.module';
 import { PassportModule } from './passport/passport.module';
 import { authControllers, authServices } from './controllers';
 import { RoleGuard } from './guards/role.guard';
-import { TokenIntrospectionGuard } from './guards/token-introspection.guard';
+import { BasicClientCredentialsGuard } from './guards/basic-client-credentials.guard';
 import { EnsureLoginGuard } from './guards/ensure-login.guard';
 import { AuthAggregates } from './aggregates';
 import { AuthCommandHandlers } from './commands';
@@ -60,7 +60,7 @@ import { OpenIDAuthorizationErrorFilter } from '../common/filters/openid-authori
 
     // Guards
     RoleGuard,
-    TokenIntrospectionGuard,
+    BasicClientCredentialsGuard,
     EnsureLoginGuard,
 
     // CQRS
@@ -81,7 +81,7 @@ import { OpenIDAuthorizationErrorFilter } from '../common/filters/openid-authori
     ...AuthSchedulers,
     AuthEntitiesModule,
     RoleGuard,
-    TokenIntrospectionGuard,
+    BasicClientCredentialsGuard,
   ],
 })
 export class AuthModule implements NestModule {

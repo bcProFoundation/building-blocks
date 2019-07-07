@@ -3,4 +3,5 @@ export interface UserUpdate {
   roles?: string[] | any;
   name?: string;
   password?: string;
+  disabled?: boolean;
 }

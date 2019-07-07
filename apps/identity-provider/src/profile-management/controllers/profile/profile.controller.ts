@@ -16,7 +16,7 @@ import {
 } from '@nestjs/common';
 import { QueryBus, CommandBus } from '@nestjs/cqrs';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ProfileService } from '../..//entities/profile/profile.service';
+import { ProfileService } from '../../entities/profile/profile.service';
 import { PersonalDetailsDTO } from './personal-details-dto';
 import { Profile } from '../../entities/profile/profile.entity';
 import { ProfileDetailsDTO } from './profile-details-dto';
@@ -24,6 +24,7 @@ import { TokenGuard } from '../../../auth/guards/token.guard';
 import { multerAvatarConnection } from './multer-avatar.connection';
 import { GetUserInfoQuery } from '../../queries/get-user-info/get-user-info.query';
 import { UploadNewAvatarCommand } from '../../commands/upload-new-avatar/upload-new-avatar.command';
+import { DeleteAvatarCommand } from '../../commands/delete-avatar/delete-avatar.command';
 
 @Controller('profile')
 export class ProfileController {
@@ -117,14 +118,9 @@ export class ProfileController {
   @Delete('v1/delete_avatar')
   @UseGuards(TokenGuard)
   async deleteAvatar(@Req() req) {
-    const profile = await this.profileService.findOne({
-      uuid: req.token.sub,
-    });
-    if (profile.picture) {
-      this.profileService.deleteAvatarFile(profile.picture.split('/')[2]);
-      profile.picture = undefined;
-      return await profile.save();
-    }
+    return await this.commandBus.execute(
+      new DeleteAvatarCommand(req.token.sub, req),
+    );
   }
 
   @Get('v1/userinfo')

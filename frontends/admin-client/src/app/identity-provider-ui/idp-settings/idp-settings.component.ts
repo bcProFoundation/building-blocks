@@ -2,8 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { IdpSettingsService } from './idp-settings.service';
 import { MatSnackBar } from '@angular/material';
-import { UPDATE_SUCCESSFUL, CLOSE } from '../../constants/messages';
-import { DURATION } from '../../constants/common';
+import {
+  UPDATE_SUCCESSFUL,
+  CLOSE,
+  DELETING,
+  UNDO,
+} from '../../constants/messages';
+import { DURATION, UNDO_DURATION } from '../../constants/common';
 
 export interface CloudStorage {
   name: string;
@@ -22,7 +27,8 @@ export class IdpSettingsComponent implements OnInit {
   cloudStorages: CloudStorage[] = [];
   cloudStorageSettings: string;
   hideClientSecret = true;
-
+  disableDeleteTokens: boolean = false;
+  flagDeleteTokens: boolean = false;
   settingsForm = new FormGroup({
     appURL: new FormControl(this.appURL),
     clientId: new FormControl(this.clientId),
@@ -76,5 +82,39 @@ export class IdpSettingsComponent implements OnInit {
         },
         error: error => {},
       });
+  }
+
+  deleteCachedTokens() {
+    this.disableDeleteTokens = true;
+    this.flagDeleteTokens = true;
+    const snackBar = this.snackBar.open(DELETING, UNDO, {
+      duration: UNDO_DURATION,
+    });
+
+    snackBar.afterDismissed().subscribe({
+      next: dismissed => {
+        if (this.flagDeleteTokens) {
+          this.settingsService.deleteCachedTokens().subscribe({
+            next: deleted => {
+              this.logout();
+            },
+            error: error => {},
+          });
+        }
+      },
+      error: error => {},
+    });
+
+    snackBar.onAction().subscribe({
+      next: success => {
+        this.flagDeleteTokens = false;
+        this.disableDeleteTokens = false;
+      },
+      error: error => {},
+    });
+  }
+
+  logout() {
+    this.settingsService.logout();
   }
 }

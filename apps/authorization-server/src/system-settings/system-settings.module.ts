@@ -1,4 +1,4 @@
-import { Module, Global } from '@nestjs/common';
+import { Module, Global, HttpModule } from '@nestjs/common';
 import { SystemSettingsEntitiesModule } from './entities/entities.module';
 import { SetupService } from './controllers/setup/setup.service';
 import { SetupController } from './controllers/setup/setup.controller';
@@ -11,7 +11,12 @@ import { CqrsModule } from '@nestjs/cqrs';
 
 @Global()
 @Module({
-  imports: [SystemSettingsEntitiesModule, AuthEntitiesModule, CqrsModule],
+  imports: [
+    SystemSettingsEntitiesModule,
+    AuthEntitiesModule,
+    CqrsModule,
+    HttpModule,
+  ],
   exports: [SystemSettingsEntitiesModule],
   providers: [
     SetupService,

@@ -5,11 +5,12 @@ import { SetupController } from './controllers/setup/setup.controller';
 import { ConnectController } from './controllers/connect/connect.controller';
 import { SettingsService } from './controllers/settings/settings.service';
 import { SetupService } from './controllers/setup/setup.service';
+import { ConnectService } from './controllers/connect/connect.service';
 
 @Global()
 @Module({
   imports: [SystemSettingsEntitiesModule, HttpModule],
-  providers: [SettingsService, SetupService],
+  providers: [SettingsService, SetupService, ConnectService],
   controllers: [SettingsController, SetupController, ConnectController],
   exports: [SystemSettingsEntitiesModule, SettingsService, SetupService],
 })

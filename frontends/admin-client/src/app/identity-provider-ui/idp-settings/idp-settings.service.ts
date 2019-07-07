@@ -6,8 +6,10 @@ import {
   IDENTITY_PROVIDER,
   ISSUER_URL,
   COMMUNICATION_SERVER,
+  APP_URL,
 } from '../../constants/storage';
 import { map } from 'rxjs/operators';
+import { LOGOUT_URL } from '../../constants/url-paths';
 
 @Injectable({
   providedIn: 'root',
@@ -56,5 +58,26 @@ export class IdpSettingsService {
       clientSecret,
       cloudStorageSettings,
     });
+  }
+
+  deleteCachedTokens() {
+    const identityProvider = this.storageService.getServiceURL(
+      IDENTITY_PROVIDER,
+    );
+    return this.http.post(
+      identityProvider + '/settings/v1/clear_token_cache',
+      {},
+    );
+  }
+
+  logout() {
+    const logoutUrl =
+      localStorage.getItem(ISSUER_URL) +
+      LOGOUT_URL +
+      '?redirect=' +
+      localStorage.getItem(APP_URL);
+    this.storageService.clearInfoLocalStorage();
+    this.oauthService.logOut();
+    window.location.href = logoutUrl;
   }
 }

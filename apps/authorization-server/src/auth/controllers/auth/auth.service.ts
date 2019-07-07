@@ -2,6 +2,7 @@ import {
   Injectable,
   UnauthorizedException,
   BadRequestException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import * as speakeasy from 'speakeasy';
@@ -28,6 +29,7 @@ import { SendLoginOTPCommand } from '../../commands/send-login-otp/send-login-ot
 import { USER } from '../../../user-management/entities/user/user.schema';
 import { PasswordLessDto } from '../../policies/password-less/password-less.dto';
 import { SUCCESS } from '../../../constants/app-strings';
+import { addSessionUser } from '../../guards/auth.guard';
 
 @Injectable()
 export class AuthService {
@@ -215,6 +217,9 @@ export class AuthService {
 
     if (!user) throw invalidUserException;
     if (!user.enablePasswordLess) throw passwordLessLoginNotEnabledException;
+    if (user.disabled) {
+      throw new ForbiddenException(i18n.__('User Disabled'));
+    }
 
     const sharedSecret = await this.authDataService.findOne({
       uuid: user.sharedSecret,
@@ -350,5 +355,19 @@ export class AuthService {
     }
 
     res.json({ message: SUCCESS });
+  }
+
+  async passwordLess(payload, req) {
+    const user = await this.passwordLessLogin(payload);
+    addSessionUser(req, {
+      uuid: user.uuid,
+      email: user.email,
+      phone: user.phone,
+    });
+    req.logIn(user, () => {});
+    return {
+      user: user.email,
+      path: payload.redirect,
+    };
   }
 }

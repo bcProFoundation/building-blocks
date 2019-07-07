@@ -9,7 +9,7 @@ import { invalidClientException } from '../../common/filters/exceptions';
 import { i18n } from '../../i18n/i18n.config';
 
 @Injectable()
-export class TokenIntrospectionGuard implements CanActivate {
+export class BasicClientCredentialsGuard implements CanActivate {
   constructor(private readonly clientService: ClientService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {

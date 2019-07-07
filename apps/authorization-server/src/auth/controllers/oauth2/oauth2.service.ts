@@ -48,8 +48,12 @@ export class OAuth2Service {
         bearerToken.creation.getTime() + bearerToken.expiresIn * 1000,
       );
 
+      const client = await this.clientService.findOne({
+        clientId: bearerToken.client,
+      });
       tokenData = {
         client_id: bearerToken.client,
+        trusted_client: client.isTrusted,
         active: this.unixTime(exp) > this.unixTime(new Date()),
         exp: this.unixTime(exp),
       };

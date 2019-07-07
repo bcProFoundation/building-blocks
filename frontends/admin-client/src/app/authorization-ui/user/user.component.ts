@@ -110,6 +110,7 @@ export class UserComponent implements OnInit {
         this.userForm.controls.fullName.value,
         this.userForm.controls.userRole.value,
         this.userForm.controls.userPassword.value,
+        this.userForm.controls.isDisabled.value,
       )
       .subscribe({
         next: success => {

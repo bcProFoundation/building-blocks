@@ -8,6 +8,8 @@ export class TokenCache extends BaseEntity {
   @Column()
   accessToken: string;
   @Column()
+  refreshToken: string;
+  @Column()
   uuid: string;
   @Column()
   active: boolean;

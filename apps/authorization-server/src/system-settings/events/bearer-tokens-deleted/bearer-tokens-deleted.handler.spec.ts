@@ -1,8 +1,10 @@
 import { Test } from '@nestjs/testing';
 import { CqrsModule, EventBus } from '@nestjs/cqrs';
+import { HttpService } from '@nestjs/common';
 import { BearerTokensDeletedHandler } from './bearer-tokens-deleted.handler';
 import { BearerTokensDeletedEvent } from './bearer-tokens-deleted.event';
 import { BearerTokenService } from '../../../auth/entities/bearer-token/bearer-token.service';
+import { ClientService } from '../../../client-management/entities/client/client.service';
 
 describe('Event: BearerTokensDeletedHandler', () => {
   let eventBus$: EventBus;
@@ -15,6 +17,8 @@ describe('Event: BearerTokensDeletedHandler', () => {
       providers: [
         BearerTokensDeletedHandler,
         { provide: BearerTokenService, useValue: {} },
+        { provide: ClientService, useValue: {} },
+        { provide: HttpService, useValue: {} },
         {
           provide: EventBus,
           useFactory: () => jest.fn(),
@@ -36,8 +40,8 @@ describe('Event: BearerTokensDeletedHandler', () => {
 
   it('should clear tokens using Mongoose', async () => {
     eventBus$.publish = jest.fn(() => {});
-    bearerTokenService.clear = jest.fn(() => Promise.resolve({ ok: 420 }));
+    bearerTokenService.getAll = jest.fn(() => Promise.resolve([]));
     await eventHandler.handle(new BearerTokensDeletedEvent('uuid-here'));
-    expect(bearerTokenService.clear).toHaveBeenCalledTimes(1);
+    expect(bearerTokenService.getAll).toHaveBeenCalledTimes(1);
   });
 });

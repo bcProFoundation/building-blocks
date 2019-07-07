@@ -2,8 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MongoRepository } from 'typeorm';
 import { Profile } from './profile.entity';
-import { AVATAR_IMAGE_FOLDER } from '../../../constants/filesystem';
-import { unlink } from 'fs';
 import { from } from 'rxjs';
 
 @Injectable()
@@ -27,10 +25,6 @@ export class ProfileService {
 
   public async find() {
     return await this.profileRepository.find();
-  }
-
-  public deleteAvatarFile(pictureFile) {
-    unlink(AVATAR_IMAGE_FOLDER + '/' + pictureFile, () => {});
   }
 
   public deleteProfile(uuid) {

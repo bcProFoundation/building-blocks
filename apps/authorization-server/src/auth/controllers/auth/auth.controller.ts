@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { callback } from '../../passport/strategies/local.strategy';
-import { AuthGuard, addSessionUser } from '../../../auth/guards/auth.guard';
+import { AuthGuard } from '../../../auth/guards/auth.guard';
 import { ApiOperation } from '@nestjs/swagger';
 import { i18n } from '../../../i18n/i18n.config';
 import {
@@ -99,17 +99,7 @@ export class AuthController {
   @Post('password_less')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async passwordLess(@Body() payload: PasswordLessDto, @Req() req) {
-    const user = await this.authService.passwordLessLogin(payload);
-    addSessionUser(req, {
-      uuid: user.uuid,
-      email: user.email,
-      phone: user.phone,
-    });
-    req.logIn(user, () => {});
-    return {
-      user: user.email,
-      path: payload.redirect,
-    };
+    return await this.authService.passwordLess(payload, req);
   }
 
   @Post('choose_user')

@@ -1,4 +1,10 @@
-import { IsString, IsEmail, IsNotEmpty, IsOptional } from 'class-validator';
+import {
+  IsString,
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsBoolean,
+} from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 import { IsMobileE164 } from '../../../common/decorators/is-mobile-e164.decorator';
 import { i18n } from '../../../i18n/i18n.config';
@@ -49,4 +55,13 @@ export class UserAccountDto {
   @IsOptional()
   @IsString({ each: true })
   roles?: string[];
+
+  @ApiModelProperty({
+    description: i18n.__('Disable User'),
+    type: 'boolean',
+    required: true,
+  })
+  @IsOptional()
+  @IsBoolean()
+  disabled?: boolean;
 }

@@ -4,6 +4,7 @@ import { ConfigService } from '../../../config/config.service';
 import { BearerTokenService } from '../../entities/bearer-token/bearer-token.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
 import { HttpService } from '@nestjs/common';
+import { ServerSettingsService } from 'system-settings/entities/server-settings/server-settings.service';
 
 describe('TokenSchedulerService', () => {
   let service: TokenSchedulerService;
@@ -29,6 +30,10 @@ describe('TokenSchedulerService', () => {
           useValue: {
             get(...args) {},
           },
+        },
+        {
+          provide: ServerSettingsService,
+          useValue: {},
         },
       ],
     }).compile();

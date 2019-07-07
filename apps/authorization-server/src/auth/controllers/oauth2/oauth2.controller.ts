@@ -16,7 +16,7 @@ import { ErrorFilter } from '../../../common/filters/errors.filter';
 import { callback } from '../../passport/strategies/local.strategy';
 import { ApiExcludeEndpoint, ApiOperation } from '@nestjs/swagger';
 import { OAuth2Service } from './oauth2.service';
-import { TokenIntrospectionGuard } from '../../guards/token-introspection.guard';
+import { BasicClientCredentialsGuard } from '../../guards/basic-client-credentials.guard';
 import { i18n } from '../../../i18n/i18n.config';
 
 @Controller('oauth2')
@@ -60,7 +60,7 @@ export class OAuth2Controller {
 
   @Post('revoke')
   @HttpCode(HttpStatus.OK)
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @UseGuards(BasicClientCredentialsGuard)
   @ApiOperation({
     title: i18n.__('Revoke'),
     description: i18n.__('OAuth2.0 flow: Revoke a token explicitly'),
@@ -71,7 +71,7 @@ export class OAuth2Controller {
 
   @Post('introspection')
   @HttpCode(HttpStatus.OK)
-  @UseGuards(TokenIntrospectionGuard)
+  @UseGuards(BasicClientCredentialsGuard)
   @ApiOperation({
     title: i18n.__('Introspection'),
     description: i18n.__('Introspect token validity'),

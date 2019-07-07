@@ -3,11 +3,14 @@ import { ServerSettingsService } from '../../../system-settings/entities/server-
 import { ServerSettings } from '../../../system-settings/entities/server-settings/server-settings.entity';
 import { Observable, from, of } from 'rxjs';
 import { switchMap, catchError } from 'rxjs/operators';
+import { TokenCacheService } from '../../../auth/entities/token-cache/token-cache.service';
+import { BASIC } from '../../../constants/app-strings';
 
 @Injectable()
 export class SettingsService {
   constructor(
     private readonly serverSettingsService: ServerSettingsService,
+    private readonly tokenService: TokenCacheService,
     private readonly http: HttpService,
   ) {}
 
@@ -48,5 +51,52 @@ export class SettingsService {
         }
       }),
     );
+  }
+
+  async clearTokenCache() {
+    this.find()
+      .pipe(
+        switchMap(settings => {
+          // Revoke Bearer Tokens with Refresh Tokens
+          this.revokeAndDeleteTokens(settings)
+            .then(success => {})
+            .catch(fail => {});
+          settings.clientTokenUuid = undefined;
+          return from(settings.save());
+        }),
+      )
+      .subscribe({
+        next: success => {},
+        error: error => {},
+      });
+    return await this.tokenService.deleteMany({
+      refreshToken: { $exists: false, $not: { $size: 0 } },
+    });
+  }
+
+  async revokeAndDeleteTokens(settings: ServerSettings) {
+    const tokens = await this.tokenService.find({
+      refreshToken: { $exists: true },
+    });
+
+    for (const token of tokens) {
+      token
+        .remove()
+        .then(success => {})
+        .catch(fail => {});
+      const credentials = Buffer.from(
+        settings.clientId + ':' + settings.clientSecret,
+      ).toString('base64');
+      this.http
+        .post(
+          settings.revocationURL,
+          { token: token.accessToken },
+          { headers: { authorization: `${BASIC} ${credentials}` } },
+        )
+        .subscribe({
+          next: success => {},
+          error: error => {},
+        });
+    }
   }
 }

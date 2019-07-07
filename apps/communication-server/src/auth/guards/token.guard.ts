@@ -88,6 +88,7 @@ export class TokenGuard implements CanActivate {
   cacheToken(introspectedToken: any, accessToken: string): Promise<TokenCache> {
     introspectedToken.accessToken = accessToken;
     introspectedToken.clientId = introspectedToken.client_id;
+    introspectedToken.trustedClient = introspectedToken.trusted_client;
     return this.tokenCacheService.save(introspectedToken);
   }
 }

@@ -59,4 +59,8 @@ export class ServerSettingDto {
   @IsOptional()
   @IsBoolean()
   enableChoosingAccount?: boolean;
+
+  @IsOptional()
+  @IsNumber()
+  refreshTokenExpiresInDays?: number;
 }

@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CleanExpiredTokenCacheService } from './clean-expired-token-cache.service';
 import { TokenCacheService } from '../../entities/token-cache/token-cache.service';
+import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 
 describe('CleanExpiredTokenCacheService', () => {
   let service: CleanExpiredTokenCacheService;
@@ -9,6 +10,7 @@ describe('CleanExpiredTokenCacheService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CleanExpiredTokenCacheService,
+        { provide: ServerSettingsService, useValue: {} },
         { provide: TokenCacheService, useValue: {} },
       ],
     }).compile();

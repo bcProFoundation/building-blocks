@@ -11,6 +11,7 @@
           </mat-form-field>
           <mat-form-field>
               <input matInput placeholder="Email" formControlName="userEmail" [readonly]="uuid">
+              <mat-checkbox formControlName="isDisabled" matSuffix>Disable User</mat-checkbox>
           </mat-form-field>
           <mat-form-field>
               <input matInput type="password" placeholder="Password" formControlName="userPassword">

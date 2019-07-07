@@ -41,7 +41,8 @@ export class SetupService {
   async getInfo() {
     const info = await this.serverSettingsService.find();
     if (info) {
-      delete info.clientSecret, info._id;
+      info._id = undefined;
+      info.clientSecret = undefined;
     }
     return info;
   }

@@ -43,6 +43,8 @@ export class SystemSettingsManagementService extends AggregateRoot {
     }
     settings.disableSignup = payload.disableSignup;
     settings.enableChoosingAccount = payload.enableChoosingAccount;
+    settings.refreshTokenExpiresInDays = payload.refreshTokenExpiresInDays;
+
     this.apply(new SystemSettingsChangedEvent(actorUserUuid, settings));
   }
 

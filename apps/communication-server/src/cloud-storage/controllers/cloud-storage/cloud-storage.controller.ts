@@ -21,14 +21,16 @@ import { TokenGuard } from '../../../auth/guards/token.guard';
 import { Roles } from '../../../auth/decorators/roles.decorator';
 import { ADMINISTRATOR } from '../../../constants/app-strings';
 import { RoleGuard } from '../../../auth/guards/role.guard';
-import { StorageService } from '../../../cloud-storage/entities/storage/storage.service';
-import { StorageValidationDto } from '../../../cloud-storage/policies';
-import { AddCloudStorageCommand } from '../../../cloud-storage/commands/add-cloud-storage/add-cloud-storage.command';
-import { ModifyCloudStorageCommand } from '../../../cloud-storage/commands/modify-cloud-storage/modify-cloud-storage.command';
-import { RemoveCloudStorageCommand } from '../../../cloud-storage/commands/remove-cloud-storage/remove-cloud-storage.command';
+import { StorageService } from '../../entities/storage/storage.service';
+import { StorageValidationDto } from '../../policies';
+import { AddCloudStorageCommand } from '../../commands/add-cloud-storage/add-cloud-storage.command';
+import { ModifyCloudStorageCommand } from '../../commands/modify-cloud-storage/modify-cloud-storage.command';
+import { RemoveCloudStorageCommand } from '../../commands/remove-cloud-storage/remove-cloud-storage.command';
 import { ModifyStorageDto } from '../../policies/modify-cloud-storage-dto/modify-cloud-storage-dto';
 import { UploadFilesCloudBucketCommand } from '../../commands/upload-files-cloud-bucket/upload-files-cloud-bucket.command';
-import { Storage } from '../../../cloud-storage/entities/storage/storage.entity';
+import { Storage } from '../../entities/storage/storage.entity';
+import { DeleteFileFromStorageCommand } from '../../commands/delete-file-from-storage/delete-file-from-storage.command';
+import { INVALID_FILE_OR_STORAGE_UUID } from '../../../constants/messages';
 
 @Controller('storage')
 export class CloudStorageController {
@@ -55,6 +57,7 @@ export class CloudStorageController {
   @UseGuards(TokenGuard)
   async findOne(@Param('uuid') uuid: string) {
     const storage: Storage = await this.storage.findOne({ uuid });
+    if (!storage) throw new BadRequestException(INVALID_FILE_OR_STORAGE_UUID);
     storage.accessKey = undefined;
     storage.secretKey = undefined;
     return storage;
@@ -98,19 +101,20 @@ export class CloudStorageController {
     @Body('permission') permission,
     @Param('uuid') storageUuid,
   ) {
-    const cloudStorageSettings = await this.storage.findOne({
-      uuid: storageUuid,
-    });
-    if (!file || !cloudStorageSettings) {
-      throw new BadRequestException('Invalid Request bad file or uuid');
-    }
     return this.commandBus.execute(
-      new UploadFilesCloudBucketCommand(
-        file,
-        cloudStorageSettings,
-        req,
-        permission,
-      ),
+      new UploadFilesCloudBucketCommand(file, storageUuid, req, permission),
+    );
+  }
+
+  @Post('v1/delete_file/:uuid')
+  @UseGuards(TokenGuard)
+  async deleteFile(
+    @Body('filename') filename,
+    @Req() req,
+    @Param('uuid') storageUuid,
+  ) {
+    return this.commandBus.execute(
+      new DeleteFileFromStorageCommand(filename, storageUuid, req),
     );
   }
 }

@@ -14,3 +14,4 @@ export const SCOPE_ROLES = 'roles';
 export const SCOPE_PROFILE = 'profile';
 export const SWAGGER_ROUTE = 'api-docs';
 export const SUCCESS = 'Success';
+export const THIRTY_DAYS = 30;

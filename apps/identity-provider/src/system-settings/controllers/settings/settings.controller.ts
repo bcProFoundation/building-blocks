@@ -38,4 +38,11 @@ export class SettingsController {
       }),
     );
   }
+
+  @Post('v1/clear_token_cache')
+  @Roles(ADMINISTRATOR)
+  @UseGuards(TokenGuard, RoleGuard)
+  async clearTokenCache() {
+    return await this.settingsService.clearTokenCache();
+  }
 }
