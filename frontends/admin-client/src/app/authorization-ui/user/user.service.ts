@@ -64,7 +64,13 @@ export class UserService {
     return this.http.post(url, userData);
   }
 
-  updateUser(uuid: string, fullName: string, roles: string, password?: string) {
+  updateUser(
+    uuid: string,
+    fullName: string,
+    roles: string,
+    password?: string,
+    disabled = false,
+  ) {
     const url = `${this.storageService.getInfo(
       ISSUER_URL,
     )}/user/v1/update/${uuid}`;
@@ -72,6 +78,7 @@ export class UserService {
     const userData: UserUpdate = {
       name: fullName,
       roles,
+      disabled,
     };
 
     if (password) userData.password = password;

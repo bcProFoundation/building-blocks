@@ -8,7 +8,7 @@ import {
   UNDO,
 } from '../../constants/messages';
 import { MatSnackBar } from '@angular/material';
-import { DURATION, UNDO_DURATION } from '../../constants/common';
+import { DURATION, UNDO_DURATION, THIRTY } from '../../constants/common';
 
 @Component({
   selector: 'app-auth-settings',
@@ -33,6 +33,7 @@ export class AuthSettingsComponent implements OnInit {
   disableDeleteSessions: boolean = false;
   disableDeleteTokens: boolean = false;
   enableChoosingAccount: boolean;
+  refreshTokenExpiresInDays: number = THIRTY;
 
   authSettingsForm = new FormGroup({
     issuerUrl: new FormControl(this.issuerUrl),
@@ -48,6 +49,7 @@ export class AuthSettingsComponent implements OnInit {
       this.communicationServerSystemEmailAccount,
     ),
     enableChoosingAccount: new FormControl(this.enableChoosingAccount),
+    refreshTokenExpiresInDays: new FormControl(this.refreshTokenExpiresInDays),
   });
 
   constructor(
@@ -97,6 +99,9 @@ export class AuthSettingsComponent implements OnInit {
     this.authSettingsForm.controls.enableChoosingAccount.setValue(
       response.enableChoosingAccount,
     );
+    this.authSettingsForm.controls.refreshTokenExpiresInDays.setValue(
+      response.refreshTokenExpiresInDays,
+    );
   }
 
   updateAuthSettings() {
@@ -108,6 +113,7 @@ export class AuthSettingsComponent implements OnInit {
         this.authSettingsForm.controls.infrastructureConsoleClientId.value,
         this.authSettingsForm.controls.identityProviderClientId.value,
         this.authSettingsForm.controls.enableChoosingAccount.value,
+        this.authSettingsForm.controls.refreshTokenExpiresInDays.value,
       )
       .subscribe({
         next: response => {
