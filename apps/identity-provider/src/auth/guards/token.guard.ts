@@ -31,12 +31,8 @@ export class TokenGuard implements CanActivate {
         } else if (Math.floor(new Date().getTime() / 1000) < cachedToken.exp) {
           req[TOKEN] = cachedToken;
           return of(true);
-        } else {
-          from(
-            this.tokenCacheService.deleteMany({
-              accessToken: cachedToken.accessToken,
-            }),
-          ).subscribe();
+        } else if (!cachedToken.refreshToken) {
+          this.deleteToken(cachedToken);
           return this.introspectToken(accessToken, req);
         }
       }),
@@ -89,5 +85,23 @@ export class TokenGuard implements CanActivate {
     introspectedToken.accessToken = accessToken;
     introspectedToken.clientId = introspectedToken.client_id;
     return this.tokenCacheService.save(introspectedToken);
+  }
+
+  deleteToken(cachedToken: TokenCache) {
+    from(this.settingsService.find())
+      .pipe(
+        switchMap(settings => {
+          return from(
+            this.tokenCacheService.deleteMany({
+              uuid: { $ne: settings.clientTokenUuid },
+              accessToken: cachedToken.accessToken,
+            }),
+          );
+        }),
+      )
+      .subscribe({
+        next: success => {},
+        error: error => {},
+      });
   }
 }

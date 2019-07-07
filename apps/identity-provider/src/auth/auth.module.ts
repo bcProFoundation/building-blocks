@@ -4,6 +4,7 @@ import { AuthServerVerificationGuard } from './guards/authserver-verification.gu
 import { RoleGuard } from './guards/role.guard';
 import { TokenGuard } from './guards/token.guard';
 import { AuthSchedulers } from './schedulers';
+import { AuthAggregates } from './aggregates';
 
 @Global()
 @Module({
@@ -13,12 +14,14 @@ import { AuthSchedulers } from './schedulers';
     RoleGuard,
     TokenGuard,
     ...AuthSchedulers,
+    ...AuthAggregates,
   ],
   exports: [
     AuthEntitiesModule,
     AuthServerVerificationGuard,
     RoleGuard,
     TokenGuard,
+    ...AuthAggregates,
   ],
 })
 export class AuthModule {}

@@ -1,23 +1,23 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CleanExpiredTokenCacheService } from './clean-expired-token-cache.service';
+import { ClientTokenManagerService } from './client-token-manager.service';
 import { TokenCacheService } from '../../entities/token-cache/token-cache.service';
+import { HttpService } from '@nestjs/common';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 
-describe('CleanExpiredTokenCacheService', () => {
-  let service: CleanExpiredTokenCacheService;
+describe('ClientTokenManagerService', () => {
+  let service: ClientTokenManagerService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        CleanExpiredTokenCacheService,
-        { provide: ServerSettingsService, useValue: {} },
+        ClientTokenManagerService,
         { provide: TokenCacheService, useValue: {} },
+        { provide: ServerSettingsService, useValue: {} },
+        { provide: HttpService, useValue: {} },
       ],
     }).compile();
 
-    service = module.get<CleanExpiredTokenCacheService>(
-      CleanExpiredTokenCacheService,
-    );
+    service = module.get<ClientTokenManagerService>(ClientTokenManagerService);
   });
 
   it('should be defined', () => {

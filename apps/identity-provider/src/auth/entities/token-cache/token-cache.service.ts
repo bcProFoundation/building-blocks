@@ -14,8 +14,8 @@ export class TokenCacheService {
     return await this.tokenCacheRepository.save(params);
   }
 
-  async find(): Promise<TokenCache[]> {
-    return await this.tokenCacheRepository.find();
+  async find(params?): Promise<TokenCache[]> {
+    return await this.tokenCacheRepository.find(params);
   }
 
   async findOne(params) {

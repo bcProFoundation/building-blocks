@@ -11,7 +11,7 @@ export class UploadAvatarMetaDataService {
     private readonly serverSettingsService: ServerSettingsService,
     private readonly http: HttpService,
   ) {}
-  uploadNewAvatarMetaData(avatarFile, clientHttpRequest) {
+  uploadNewAvatarMetaData(clientHttpRequest) {
     let cloudStorage, communicationServerUrl;
     this.authorizationHeader = {
       Authorization: 'Bearer ' + clientHttpRequest.token.accessToken,

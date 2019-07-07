@@ -1,9 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { TokenCacheService } from '../../../auth/entities/token-cache/token-cache.service';
 import { ConnectController } from './connect.controller';
-import { ProfileService } from '../../../profile-management/entities/profile/profile.service';
 import { AuthServerVerificationGuard } from '../../../auth/guards/authserver-verification.guard';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
+import { ConnectService } from './connect.service';
 
 describe('ConnectController', () => {
   let module: TestingModule;
@@ -12,11 +11,7 @@ describe('ConnectController', () => {
       controllers: [ConnectController],
       providers: [
         {
-          provide: TokenCacheService,
-          useValue: {},
-        },
-        {
-          provide: ProfileService,
+          provide: ConnectService,
           useValue: {},
         },
         {
