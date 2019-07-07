@@ -13,7 +13,7 @@ export class UploadFilesCloudBucketHandler
   async execute(command: UploadFilesCloudBucketCommand) {
     const {
       clientUploadedFile,
-      storageSettings,
+      storageUuid,
       clientHttpReq,
       fileUploadedPermissions,
     } = command;
@@ -21,7 +21,7 @@ export class UploadFilesCloudBucketHandler
     const aggregate = this.publisher.mergeObjectContext(this.manager);
     await this.manager.uploadFileToCloudBucket(
       clientUploadedFile,
-      storageSettings,
+      storageUuid,
       clientHttpReq,
       fileUploadedPermissions,
     );
