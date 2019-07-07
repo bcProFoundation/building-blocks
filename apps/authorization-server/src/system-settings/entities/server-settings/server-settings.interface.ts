@@ -10,4 +10,5 @@ export interface ServerSettings extends Document {
   disableSignup?: boolean;
   otpExpiry?: number;
   enableChoosingAccount?: boolean;
+  refreshTokenExpiresInDays?: number;
 }

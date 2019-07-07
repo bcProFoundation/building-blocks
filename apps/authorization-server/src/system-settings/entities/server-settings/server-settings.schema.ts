@@ -12,6 +12,7 @@ export const ServerSettings = new mongoose.Schema(
     disableSignup: Boolean,
     otpExpiry: { type: Number, default: 5 },
     enableChoosingAccount: Boolean,
+    refreshTokenExpiresInDays: { type: Number, default: 30 },
   },
   { collection: 'server_settings', versionKey: false },
 );

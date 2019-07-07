@@ -141,6 +141,14 @@ export class SocialLoginManagementService extends AggregateRoot {
                                   }),
                                 );
                               }
+
+                              if (user.disabled) {
+                                return done(
+                                  new ForbiddenException(
+                                    i18n.__('User Disabled'),
+                                  ),
+                                );
+                              }
                               return of(user);
                             }),
                           );

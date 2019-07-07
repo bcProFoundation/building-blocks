@@ -6,6 +6,9 @@ import { BullOptions } from '../../../constants/bull-queue.options';
 import { ConfigService } from '../../../config/config.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
 import { retry } from 'rxjs/operators';
+import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
+import { THIRTY_DAYS } from '../../../constants/app-strings';
+import { ServerSettings } from '../../../system-settings/entities/server-settings/server-settings.interface';
 
 export const TOKEN_DELETE_QUEUE = 'token_delete';
 
@@ -17,6 +20,7 @@ export class TokenSchedulerService implements OnModuleInit {
     private readonly clientService: ClientService,
     private readonly http: HttpService,
     private readonly configService: ConfigService,
+    private readonly settings: ServerSettingsService,
   ) {
     const bullOptions: BullOptions = {
       redis: {
@@ -37,37 +41,30 @@ export class TokenSchedulerService implements OnModuleInit {
   defineQueueProcess() {
     this.queue.process(TOKEN_DELETE_QUEUE, async (job, done) => {
       const tokens = await this.bearerTokenService.getAll();
+      let settings = {
+        refreshTokenExpiresInDays: THIRTY_DAYS,
+      } as ServerSettings;
+      try {
+        settings = await this.settings.find();
+      } catch (error) {}
+
       for (const token of tokens) {
+        const accessToken = token.accessToken;
+        const now = new Date();
         const exp = new Date(token.creation.getTime() + token.expiresIn * 1000);
-        if (exp.valueOf() < new Date().valueOf() && !token.refreshToken) {
-          const accessToken = token.accessToken;
+        const refreshTokenExp = new Date(token.creation.getTime());
+        refreshTokenExp.setDate(
+          refreshTokenExp.getDate() + settings.refreshTokenExpiresInDays,
+        );
+        if (exp.valueOf() < now.valueOf() && !token.refreshToken) {
           await token.remove();
-          const clientModel = this.clientService.getModel();
-          const clients = await clientModel.find().exec();
-          for (const client of clients) {
-            if (client.tokenDeleteEndpoint) {
-              this.http
-                .post(
-                  client.tokenDeleteEndpoint,
-                  {
-                    message: TOKEN_DELETE_QUEUE,
-                    accessToken,
-                  },
-                  {
-                    auth: {
-                      username: client.clientId,
-                      password: client.clientSecret,
-                    },
-                  },
-                )
-                .pipe(retry(3))
-                .subscribe({
-                  error: error => {
-                    // TODO: Log Error
-                  },
-                });
-            }
-          }
+          await this.informClients(accessToken);
+        } else if (
+          token.refreshToken &&
+          refreshTokenExp.valueOf() < now.valueOf()
+        ) {
+          await token.remove();
+          await this.informClients(accessToken);
         }
       }
       done(null, job.id);
@@ -80,5 +77,34 @@ export class TokenSchedulerService implements OnModuleInit {
       { message: TOKEN_DELETE_QUEUE },
       { repeat: { every } },
     );
+  }
+
+  async informClients(accessToken: string) {
+    const clientModel = this.clientService.getModel();
+    const clients = await clientModel.find().exec();
+    for (const client of clients) {
+      if (client.tokenDeleteEndpoint) {
+        this.http
+          .post(
+            client.tokenDeleteEndpoint,
+            {
+              message: TOKEN_DELETE_QUEUE,
+              accessToken,
+            },
+            {
+              auth: {
+                username: client.clientId,
+                password: client.clientSecret,
+              },
+            },
+          )
+          .pipe(retry(3))
+          .subscribe({
+            error: error => {
+              // TODO: Log Error
+            },
+          });
+      }
+    }
   }
 }
