@@ -6,6 +6,11 @@
         <mat-card-title i18n="@@signIn">Sign in</mat-card-title>
     </mat-card-header>
     <mat-card-content>
+      <div
+        fxLayout="column"
+        fxLayoutAlign="center center">
+        <img class="brand-logo" *ngIf="brandLogo" src="{{ brandLogo }}" alt="logo">
+      </div>
       <form
         fxLayout="column" fxLayoutAlign="space-between default" fxLayoutGap="2em"
         [formGroup]="verifyUserForm">

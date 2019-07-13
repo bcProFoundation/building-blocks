@@ -38,6 +38,7 @@ export class LoginComponent implements OnInit {
   loginChoice: LoginChoice = LoginChoice.Standard;
   disableLoginChoice: boolean = false;
   disableResendOTP: boolean = false;
+  brandLogo: string;
 
   @ViewChild('password', { static: true }) passwordRef: ElementRef;
   @ViewChild('otp', { static: true }) otpRef: ElementRef;

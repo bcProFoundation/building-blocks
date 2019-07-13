@@ -14,7 +14,6 @@ export class AppService {
 
   async info(req?) {
     let settings: ServerSettings, services;
-    this.serverSettings.find();
 
     const message: ServiceMessage = {
       service: i18n.__('Authorization Server'),
@@ -53,13 +52,14 @@ export class AppService {
       if (settings.communicationServerClientId) {
         message.communication = true;
       }
+
+      message.enableChoosingAccount = settings.enableChoosingAccount;
     } catch (error) {
       message.communication = false;
       services = [];
     }
 
     message.services = services;
-    message.enableChoosingAccount = settings.enableChoosingAccount;
 
     return message;
   }
