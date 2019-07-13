@@ -7,6 +7,7 @@ import { SystemSettingsModule } from './system-settings/system-settings.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from './config/config.module';
 import { ServiceManagementModule } from './service-management/service-management.module';
+import { OrganizationSettingsModule } from './organization-settings/organization-settings.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ServiceManagementModule } from './service-management/service-management
     AuthModule,
     SystemSettingsModule,
     ServiceManagementModule,
+    OrganizationSettingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
