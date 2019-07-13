@@ -23,10 +23,11 @@ export class ConnectService {
   async checkAndClearSettings(accessToken: string) {
     const settings = await this.settings.find();
     const token = await this.tokenCacheService.findOne({ accessToken });
-    if (token.uuid === settings.clientTokenUuid) {
+    if (token && token.uuid === settings.clientTokenUuid) {
       settings.clientTokenUuid = undefined;
       await settings.save();
     }
-    await token.remove();
+
+    if (token) await token.remove();
   }
 }
