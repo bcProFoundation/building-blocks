@@ -7,7 +7,7 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
-import { AVAILABLE_TRANSLATIONS } from './constants/app-strings';
+import { AVAILABLE_TRANSLATIONS } from './app/constants/app-strings';
 
 if (environment.production) {
   enableProdMode();

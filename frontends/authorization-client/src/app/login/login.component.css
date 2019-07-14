@@ -22,14 +22,13 @@ mat-card {
     overflow: auto;
 }
 
-mat-card-header {
-    margin: auto;
-}
-
 .spacer {
     margin: 2em;
 }
 
 .brand-logo {
+    margin-top: 1em;
+    max-height: 5em;
     max-width: 10em;
+    overflow: auto;
 }
