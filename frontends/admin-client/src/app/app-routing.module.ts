@@ -18,6 +18,7 @@ import { CommunicationSettingsComponent } from './communication-ui/communication
 import { InfrastructureSettingsComponent } from './infrastructure-ui/infrastructure-settings/infrastructure-settings.component';
 import { IdpSettingsComponent } from './identity-provider-ui/idp-settings/idp-settings.component';
 import { OAuth2ProviderComponent } from './communication-ui/oauth2-provider/oauth2-provider.component';
+import { BrandSettingsComponent } from './infrastructure-ui/brand-settings/brand-settings.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -140,6 +141,11 @@ const routes: Routes = [
   {
     path: 'idp_settings',
     component: IdpSettingsComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'brand_settings',
+    component: BrandSettingsComponent,
     canActivate: [AuthGuard],
   },
 

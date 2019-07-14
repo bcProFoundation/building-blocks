@@ -1,0 +1,17 @@
+<div fxLayout="column" fxLayoutAlign="space-around center">
+  <div fxLayout="row" class="mat-typography">
+    <div class="spacer" [hidden]="!helpURL">
+      <a href="{{helpURL}}">Help</a>
+    </div>
+    <div class="spacer" [hidden]="!privacyURL">
+      <a href="{{privacyURL}}">Privacy</a>
+    </div>
+    <div class="spacer" [hidden]="!termsURL">
+      <a href="{{termsURL}}">Terms</a>
+    </div>
+  </div>
+  <img [hidden]="!logoURL" src="{{logoURL}}" class="footer-logo">
+  <div class="mat-typography" [hidden]="!copyrightMessage">
+    <p>{{copyrightMessage}}</p>
+  </div>
+</div>

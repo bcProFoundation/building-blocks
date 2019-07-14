@@ -7,7 +7,7 @@ import {
   INVALID_VERIFICATION_CODE,
   DURATION,
   NEW_PASSWORD_MISMATCH,
-} from '../../constants/app-strings';
+} from '../constants/app-strings';
 import { isArray } from 'util';
 
 @Component({

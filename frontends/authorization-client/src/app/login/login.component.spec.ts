@@ -7,6 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthService } from '../auth/auth.service';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -31,6 +32,7 @@ describe('LoginComponent', () => {
         BrowserAnimationsModule,
         ReactiveFormsModule,
         RouterTestingModule,
+        HttpClientTestingModule,
       ],
     }).compileComponents();
   }));

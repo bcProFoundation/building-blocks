@@ -11,9 +11,10 @@ import {
   CLOSE,
   PLEASE_CHECK_USERNAME,
   DURATION,
-} from '../../constants/app-strings';
+} from '../constants/app-strings';
 import { LoginChoice } from './login-choice';
 import { stringify } from 'querystring';
+import { BrandInfoService } from '../common/brand-info/brand-info.service';
 
 @Component({
   selector: 'app-login',
@@ -38,6 +39,7 @@ export class LoginComponent implements OnInit {
   loginChoice: LoginChoice = LoginChoice.Standard;
   disableLoginChoice: boolean = false;
   disableResendOTP: boolean = false;
+  logoURL: string;
 
   @ViewChild('password', { static: true }) passwordRef: ElementRef;
   @ViewChild('otp', { static: true }) otpRef: ElementRef;
@@ -63,6 +65,7 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
+    private brandInfoService: BrandInfoService,
     private breakpointObserver: BreakpointObserver,
     private route: ActivatedRoute,
     private router: Router,
@@ -73,6 +76,7 @@ export class LoginComponent implements OnInit {
     this.usernameRef.nativeElement.focus();
     this.redirect = this.route.snapshot.queryParamMap.get('redirect');
     this.getSocialLogins();
+    this.getBrandInfo();
   }
 
   onSubmitOTP() {
@@ -271,5 +275,12 @@ export class LoginComponent implements OnInit {
     const query = { ...this.route.snapshot.queryParams };
     delete query.login_type;
     this.router.navigate(['/account/choose'], { queryParams: query });
+  }
+
+  getBrandInfo() {
+    this.brandInfoService.retrieveBrandInfo().subscribe({
+      next: brand => (this.logoURL = brand.logoURL),
+      error: error => {},
+    });
   }
 }

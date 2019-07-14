@@ -4,7 +4,7 @@ import {
   HandleError,
   HttpErrorHandler,
 } from './common/services/http-error-handler/http-error-handler.service';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { catchError, switchMap, map } from 'rxjs/operators';
 
 @Injectable()
@@ -20,6 +20,9 @@ export class AppService {
   getMessage(): Observable<any> {
     return this.http.get<any>(this.messageUrl).pipe(
       switchMap(appInfo => {
+        if (appInfo.message) {
+          return of(appInfo);
+        }
         return this.http.get<any>(appInfo.authServerURL + '/info').pipe(
           map(authInfo => {
             appInfo.services = authInfo.services;

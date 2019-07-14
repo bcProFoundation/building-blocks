@@ -19,6 +19,7 @@ import {
   MatExpansionModule,
   MatAutocompleteModule,
 } from '@angular/material';
+import { MccColorPickerModule } from 'material-community-components';
 
 @NgModule({
   imports: [
@@ -40,6 +41,7 @@ import {
     MatSelectModule,
     MatExpansionModule,
     MatAutocompleteModule,
+    MccColorPickerModule,
   ],
   exports: [
     MatTableModule,
@@ -60,6 +62,7 @@ import {
     MatSelectModule,
     MatExpansionModule,
     MatAutocompleteModule,
+    MccColorPickerModule,
   ],
 })
 export class MaterialModule {}

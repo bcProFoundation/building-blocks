@@ -11,11 +11,13 @@ import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
 import { AccountComponent } from './account/account.component';
 import { AuthService } from './auth/auth.service';
-import { AVAILABLE_TRANSLATIONS } from '../constants/app-strings';
+import { AVAILABLE_TRANSLATIONS } from './constants/app-strings';
 import { VerifyGeneratePasswordComponent } from './verify-generate-password/verify-generate-password.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ChooseAccountComponent } from './choose-account/choose-account.component';
 import { PasswordRequirementComponent } from './password-requirement/password-requirement.component';
+import { BrandInfoService } from './common/brand-info/brand-info.service';
+import { BrandInfoComponent } from './brand-info/brand-info.component';
 
 let lang = navigator.language;
 if (!AVAILABLE_TRANSLATIONS.includes(lang)) {
@@ -31,6 +33,7 @@ if (!AVAILABLE_TRANSLATIONS.includes(lang)) {
     VerifyGeneratePasswordComponent,
     ChooseAccountComponent,
     PasswordRequirementComponent,
+    BrandInfoComponent,
   ],
   imports: [
     BrowserModule,
@@ -42,7 +45,11 @@ if (!AVAILABLE_TRANSLATIONS.includes(lang)) {
     ReactiveFormsModule,
     FlexLayoutModule,
   ],
-  providers: [AuthService, { provide: LOCALE_ID, useValue: lang }],
+  providers: [
+    AuthService,
+    { provide: LOCALE_ID, useValue: lang },
+    BrandInfoService,
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

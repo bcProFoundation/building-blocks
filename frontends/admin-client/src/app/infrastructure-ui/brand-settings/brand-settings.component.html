@@ -1,0 +1,75 @@
+<div class="card-container">
+  <form (ngSubmit)="updateSettings()" [formGroup]="settingsForm">
+    <mat-card>
+      <mat-card-title>Brand Settings</mat-card-title>
+      <mat-card-content fxLayout="column">
+        <mat-form-field>
+          <input matInput formControlName="logoURL" placeholder="Logo Url">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput formControlName="faviconURL" placeholder="Favicon Url">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput formControlName="helpURL" placeholder="Help Url">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput formControlName="privacyURL" placeholder="Privacy Url">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput formControlName="termsURL" placeholder="Terms Url">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput formControlName="copyrightMessage" placeholder="Copyright Message">
+        </mat-form-field>
+        <!-- <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1em">
+          <mat-form-field class="full-width">
+            <input matInput formControlName="primaryColor" placeholder="Primary Color" readonly>
+          </mat-form-field>
+          <mcc-color-picker
+            [selectedColor]="primaryColor"
+            (selected)="selectPrimaryColor($event)"
+            usedSizeColors="5"></mcc-color-picker>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1em">
+          <mat-form-field class="full-width">
+            <input matInput formControlName="accentColor" placeholder="Accent Color" readonly>
+          </mat-form-field>
+          <mcc-color-picker
+            [selectedColor]="accentColor"
+            (selected)="selectAccentColor($event)"
+            usedSizeColors="5"></mcc-color-picker>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1em">
+          <mat-form-field class="full-width">
+            <input matInput formControlName="warnColor" placeholder="Warn Color" readonly>
+          </mat-form-field>
+          <mcc-color-picker
+            (selected)="selectWarnColor($event)"
+            [selectedColor]="warnColor"
+            usedSizeColors="5"></mcc-color-picker>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1em">
+          <mat-form-field class="full-width">
+            <input matInput formControlName="foregroundColor" placeholder="Foreground Color" readonly>
+          </mat-form-field>
+          <mcc-color-picker
+            (selected)="selectForegroundColor($event)"
+            [selectedColor]="foregroundColor"
+            usedSizeColors="5"></mcc-color-picker>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1em">
+          <mat-form-field class="full-width">
+            <input matInput formControlName="backgroundColor" placeholder="Background Color" readonly>
+          </mat-form-field>
+          <mcc-color-picker
+            (selected)="selectBackgroundColor($event)"
+            [selectedColor]="backgroundColor"
+            usedSizeColors="5"></mcc-color-picker>
+        </div> -->
+      </mat-card-content>
+      <mat-card-actions>
+        <button type="submit" mat-button color="primary" [disabled]="!settingsForm.valid">Update</button>
+      </mat-card-actions>
+    </mat-card>
+  </form>
+</div>

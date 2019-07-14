@@ -22,21 +22,25 @@ export class AppComponent {
   }
 
   setupOIDC(): void {
-    this.appService.getMessage().subscribe(response => {
-      this.storageService.setInfoLocalStorage(response);
-      const authConfig: AuthConfig = {
-        clientId: response.clientId,
-        redirectUri: response.callbackURLs[0],
-        silentRefreshRedirectUri: response.callbackURLs[1],
-        loginUrl: response.authorizationURL,
-        scope: 'openid roles',
-        issuer: response.authServerURL,
-      };
-      if (isDevMode()) authConfig.requireHttps = false;
-      this.oauthService.configure(authConfig);
-      this.oauthService.tokenValidationHandler = new JwksValidationHandler();
-      this.oauthService.setupAutomaticSilentRefresh();
-      this.oauthService.loadDiscoveryDocumentAndLogin();
+    this.appService.getMessage().subscribe({
+      next: response => {
+        if (response.message) return; // { message: PLEASE_RUN_SETUP }
+        this.storageService.setInfoLocalStorage(response);
+        const authConfig: AuthConfig = {
+          clientId: response.clientId,
+          redirectUri: response.callbackURLs[0],
+          silentRefreshRedirectUri: response.callbackURLs[1],
+          loginUrl: response.authorizationURL,
+          scope: 'openid roles',
+          issuer: response.authServerURL,
+        };
+        if (isDevMode()) authConfig.requireHttps = false;
+        this.oauthService.configure(authConfig);
+        this.oauthService.tokenValidationHandler = new JwksValidationHandler();
+        this.oauthService.setupAutomaticSilentRefresh();
+        this.oauthService.loadDiscoveryDocumentAndLogin();
+      },
+      error: error => {},
     });
   }
 }

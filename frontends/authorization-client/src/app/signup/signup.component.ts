@@ -1,14 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { MatSnackBar } from '@angular/material';
-import { SOMETHING_WENT_WRONG } from '../../constants/messages';
+import { SOMETHING_WENT_WRONG } from '../constants/messages';
 import { SignupService } from './signup.service';
-import { ServerInfo } from '../../common/server-info.interface';
-import {
-  CLOSE,
-  PLEASE_CHECK_EMAIL,
-  DURATION,
-} from '../../constants/app-strings';
+import { ServerInfo } from '../common/server-info.interface';
+import { CLOSE, PLEASE_CHECK_EMAIL, DURATION } from '../constants/app-strings';
 import { Router } from '@angular/router';
 
 @Component({
