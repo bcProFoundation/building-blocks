@@ -16,6 +16,9 @@ export class BrandInfoComponent implements OnInit {
   termsURL: string;
   faviconURL: string;
   copyrightMessage: string;
+  primaryColor: string;
+  accentColor: string;
+  warnColor: string;
 
   constructor(
     @Inject(DOCUMENT) private _document: HTMLDocument,
@@ -36,11 +39,34 @@ export class BrandInfoComponent implements OnInit {
         this.termsURL = brand.termsURL;
         this.faviconURL = brand.faviconURL;
         this.copyrightMessage = brand.copyrightMessage;
+        this.primaryColor = brand.primaryColor;
+        this.accentColor = brand.accentColor;
+        this.warnColor = brand.warnColor;
+
         if (this.copyrightMessage) {
-          this.title.setTitle(ACCOUNTS + ' - ' + this.copyrightMessage);
+          this.title.setTitle(ACCOUNTS + ' ' + this.copyrightMessage);
         }
+
         if (this.faviconURL) {
           this.setFavicon(this.faviconURL);
+        }
+
+        if (this.primaryColor) {
+          this._document.body.style.setProperty(
+            '--primary-color',
+            this.primaryColor,
+          );
+        }
+
+        if (this.accentColor) {
+          this._document.body.style.setProperty(
+            '--accent-color',
+            this.accentColor,
+          );
+        }
+
+        if (this.warnColor) {
+          this._document.body.style.setProperty('--warn-color', this.warnColor);
         }
       },
       error: error => {},
@@ -50,7 +76,11 @@ export class BrandInfoComponent implements OnInit {
   setFavicon(faviconURL: string) {
     const nodeList = this._document.getElementsByTagName('link');
     for (const nodeIndex of Object.keys(nodeList)) {
-      if (nodeList[nodeIndex].getAttribute('rel') === 'icon') {
+      if (
+        ['icon', 'shortcut_icon'].includes(
+          nodeList[nodeIndex].getAttribute('rel'),
+        )
+      ) {
         nodeList[nodeIndex].setAttribute('href', faviconURL);
       }
     }

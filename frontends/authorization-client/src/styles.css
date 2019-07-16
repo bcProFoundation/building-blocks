@@ -1,13 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import "theme.css";
+
+html, body { height: 100%; }
+body { margin: 0; font-family: 'Roboto', sans-serif; }
 
 .full-width {
     width: 100%;
 }
-.centered {
-    text-align: center;
-}
 
-.left-margin-30 {
-    margin-left: 30px;
+.card-container {
+    padding: 1em;
 }
