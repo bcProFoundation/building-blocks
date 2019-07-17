@@ -16,7 +16,14 @@ This configuration works on linux machine. You need to make changes as per your 
             "url": "http://accounts.localhost:4210",
             "runtimeExecutable": "/usr/bin/chromium",
             "runtimeArgs": ["--remote-debugging-port=9222", "--user-data-dir=/tmp/bb/authorization-client"],
-            "webRoot": "${workspaceFolder}/frontends/authorization-client"
+            "webRoot": "${workspaceFolder}/frontends/authorization-client",
+            "sourceMapPathOverrides": {
+                "webpack:/*": "${webRoot}/*",
+                "/./*": "${webRoot}/*",
+                "/src/*": "${webRoot}/*",
+                "/*": "*",
+                "/./~/*": "${webRoot}/node_modules/*"
+            }
         },
         {
             "type": "chrome",
@@ -25,7 +32,14 @@ This configuration works on linux machine. You need to make changes as per your 
             "url": "http://admin.localhost:4220",
             "runtimeExecutable": "/usr/bin/chromium",
             "runtimeArgs": ["--remote-debugging-port=9222", "--user-data-dir=/tmp/bb/admin-client"],
-            "webRoot": "${workspaceFolder}/frontends/admin-client"
+            "webRoot": "${workspaceFolder}/frontends/admin-client",
+            "sourceMapPathOverrides": {
+                "webpack:/*": "${webRoot}/*",
+                "/./*": "${webRoot}/*",
+                "/src/*": "${webRoot}/*",
+                "/*": "*",
+                "/./~/*": "${webRoot}/node_modules/*"
+            }
         },
         {
             "type": "chrome",
@@ -34,7 +48,14 @@ This configuration works on linux machine. You need to make changes as per your 
             "url": "http://myaccount.localhost:4420",
             "runtimeExecutable": "/usr/bin/chromium",
             "runtimeArgs": ["--remote-debugging-port=9222", "--user-data-dir=/tmp/bb/identity-client"],
-            "webRoot": "${workspaceFolder}/frontends/identity-client"
+            "webRoot": "${workspaceFolder}/frontends/identity-client",
+            "sourceMapPathOverrides": {
+                "webpack:/*": "${webRoot}/*",
+                "/./*": "${webRoot}/*",
+                "/src/*": "${webRoot}/*",
+                "/*": "*",
+                "/./~/*": "${webRoot}/node_modules/*"
+            }
         }
     ]
 }
