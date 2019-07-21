@@ -1,0 +1,4 @@
+DB_HOST=localhost
+DB_NAME=identity-provider
+DB_USER=identity-provider
+DB_PASSWORD=admin

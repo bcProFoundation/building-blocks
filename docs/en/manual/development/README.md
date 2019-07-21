@@ -14,7 +14,7 @@ add `127.0.0.1 *.localhost` in `/etc/hosts` file or hosts file of your operating
 
 ### Install NodeJS global commands
 
-```
+```sh
 # use nvm for better control and secure node environments for users.
 # DO NOT USE sudo or root privileges
 npm i lerna @angular/cli @nestjs/cli -g
@@ -35,13 +35,9 @@ rm -fr node_modules && npm i && lerna clean -y && lerna bootstrap
 
 ### Setup Environment Variables
 
-```
-code .env # setup required environment variables mentioned below
-```
+Required environment variables to start backing services in `.env` file:
 
-Required environment variables in `.env` file:
-
-```
+```sh
 DB_USER=admin
 DB_PASSWORD=admin
 DB_NAME=test_authorization-server
@@ -49,36 +45,39 @@ MONGODB_ROOT_PASSWORD=admin
 REDIS_PASSWORD=admin
 ```
 
-Setup Development environment. place appropriate `.env` files under each app's package root
+For required environment variables, place appropriate `.env` files under each app's package root
 
-```
-code apps/authorization-server/.env
-```
+- refer [Authorization Server](/authorization-server/README.md) `.env` file
+- refer [Communication Server](/communication-server/README.md) `.env` file
+- refer [Identity Provider](/identity-provider/README.md) `.env` file
+- refer [Infrastructure Console](/infrastructure-console/README.md) `.env` file
 
-refer [Authorization Server](/authorization-server/README.md) `.env` file
+Execute following to copy example env files
 
-```
-code apps/communication-server/.env
-```
-
-refer [Communication Server](/communication-server/README.md) `.env` file
-
-```
-code apps/identity-provider/.env
-```
-
-refer [Identity Provider](/identity-provider/README.md) `.env` file
-
-```
-code apps/infrastructure-console/.env
+```sh
+cp docker/env-example/backing-services-env .env
+cp docker/env-example/authorization-server-env apps/authorization-server/.env
+cp docker/env-example/communication-server-env apps/communication-server/.env
+cp docker/env-example/identity-provider-env apps/identity-provider/.env
+cp docker/env-example/infrastructure-console-env apps/infrastructure-console/.env
 ```
 
-refer [Infrastructure Console](/infrastructure-console/README.md) `.env` file
+### Start Backing Services and initialize dbs
 
-### Start Backing Services
-
-```
+```sh
 docker-compose --project-name bb -f docker/docker-compose.yml up -d
+```
+
+Wait for mongodb to start
+
+```sh
+docker logs bb_mongo_1 --follow
+```
+
+Execute following command to set users and dbs
+
+```sh
+docker exec -it bb_mongo_1 /docker-entrypoint-initdb.d/createdatabases.sh
 ```
 
 ### Start apps and frontends
@@ -107,6 +106,7 @@ Note:
 - The password must contain at least one uppercase letter
 - The password must contain at least one number
 - The password must contain at least one special character
+- The password may not contain sequences of three or more repeated characters
 - phone must be MobileE164. (ie. +911234567890)
 - email must be valid email address
 
@@ -114,7 +114,7 @@ Note:
 # export required environment variables
 export ADMIN_FULL_NAME="Mr Administrator"
 export ADMIN_EMAIL=admin@example.com
-export ADMIN_PASSWORD=Secret@9000
+export ADMIN_PASSWORD=Secret@9876
 export ADMIN_PHONE=+919876543210
 
 # Run script

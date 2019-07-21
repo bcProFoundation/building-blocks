@@ -7,7 +7,7 @@ Complete the [development setup](/development/README.md)
 `.env` file for initializing following variables needs to be setup in project root to configure environment. This file is ignored by git.
 
 ```
-DB_HOST=mongo
+DB_HOST=localhost
 DB_NAME=identity-provider
 DB_USER=identity-provider
 DB_PASSWORD=admin
