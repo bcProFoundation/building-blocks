@@ -25,7 +25,7 @@ kubectl get secret example-user-token-xxxxx -n example -o "jsonpath={.data.token
 ### Get Certificate
 
 ```sh
-kubectl get secret example-user-token-xxxxx -n example -o "jsonpath={.data['ca\.crt']}" | base64 -d
+kubectl get secret example-user-token-xxxxx -n example -o "jsonpath={.data['ca\.crt']}"
 ```
 
 ### Create Kube config
@@ -39,7 +39,7 @@ preferences: {}
 # Define the cluster
 clusters:
 - cluster:
-    certificate-authority-data: PLACE CERTIFICATE HERE
+    certificate-authority-data: PLACE PROVIDER CERTIFICATE HERE
     # You'll need the API endpoint of your Cluster here:
     server: https://YOUR_KUBERNETES_API_ENDPOINT
   name: my-cluster
@@ -49,7 +49,7 @@ users:
 - name: example-user
   user:
     as-user-extra: {}
-    client-key-data: PLACE CERTIFICATE HERE
+    client-key-data: PLACE USER CERTIFICATE HERE
     token: PLACE USER TOKEN HERE
 
 # Define the context: linking a user to a cluster
