@@ -5,7 +5,7 @@
 `.env` file for initializing following variables needs to be setup in project root to configure environment. This file is ignored by git.
 
 ```
-DB_HOST=mongo
+DB_HOST=localhost
 DB_NAME=communication-server
 DB_USER=communication-server
 DB_PASSWORD=admin
