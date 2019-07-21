@@ -411,6 +411,16 @@ deploy_staging:
     name: staging
   only:
     - staging
+  variables:
+    KUBECONFIG: /etc/deploy/config
+  before_script:
+    - mkdir -p /etc/deploy
+    - echo ${kube_config} | base64 -d > ${KUBECONFIG}
+    - kubectl config use-context staging
+    - helm init --service-account staging-user --client-only
+    - helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+    - helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
+    - helm repo update
   script:
     - ./kubernetes/deploy/deploy-staging.sh
 
