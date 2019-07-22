@@ -14,6 +14,5 @@ then
         --tiller-namespace staging \
         --namespace staging \
         --reuse-values \
-        --recreate-pods \
         helm-charts/building-blocks
 fi
