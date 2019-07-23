@@ -21,10 +21,25 @@ stages:
   - setup
   - docs
 
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+  - node_modules/
+  - apps/authorization-server/node_modules/
+  - apps/communication-server/node_modules/
+  - apps/identity-provider/node_modules/
+  - apps/infrastructure-console/node_modules/
+  - frontends/admin-client/node_modules/
+  - frontends/authorization-client/node_modules/
+  - frontends/identity-client/node_modules/
+
 test_authorization_server:
   stage: tests
   except:
     - staging
+  only:
+    changes:
+      - apps/authorization-server/**/*
   variables:
     SESSION_SECRET: "secret"
     EXPIRY_DAYS: "1"
@@ -61,6 +76,9 @@ test_authorization_client:
   stage: tests
   except:
     - staging
+  only:
+    changes:
+      - frontends/authorization-client/**/*
   before_script:
     - cd frontends/authorization-client
     - npm install
@@ -82,6 +100,9 @@ test_communication_server:
   stage: tests
   except:
     - staging
+  only:
+    changes:
+      - apps/communication-server/**/*
   before_script:
     - cd apps/communication-server
     - npm install
@@ -102,6 +123,9 @@ test_identity_provider:
   stage: tests
   except:
     - staging
+  only:
+    changes:
+      - apps/identity-provider/**/*
   before_script:
     - cd apps/identity-provider
     - npm install
@@ -122,6 +146,9 @@ test_identity_client:
   stage: tests
   except:
     - staging
+  only:
+    changes:
+      - frontends/identity-client/**/*
   before_script:
     - cd frontends/identity-client
     - npm install
@@ -143,6 +170,9 @@ test_infrastructure_console:
   stage: tests
   except:
     - staging
+  only:
+    changes:
+      - apps/infrastructure-console/**/*
   before_script:
     - cd apps/infrastructure-console
     - npm install
@@ -163,6 +193,9 @@ test_admin_client:
   stage: tests
   except:
     - staging
+  only:
+    changes:
+      - frontends/admin-client/**/*
   before_script:
     - cd frontends/admin-client
     - npm install
@@ -185,7 +218,10 @@ pack_staging_authorization_server:
   stage: pack
   environment: staging
   only:
-    - staging
+    refs:
+      - staging
+    changes:
+      - apps/authorization-server/**/*
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
@@ -199,7 +235,10 @@ pack_staging_authorization_client:
   stage: pack
   environment: staging
   only:
-    - staging
+    refs:
+      - staging
+    changes:
+      - frontends/authorization-client/**/*
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
@@ -213,7 +252,10 @@ pack_staging_communication_server:
   stage: pack
   environment: staging
   only:
-    - staging
+    refs:
+      - staging
+    changes:
+      - apps/communication-server/**/*
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
@@ -227,7 +269,10 @@ pack_staging_identity_provider:
   stage: pack
   environment: staging
   only:
-    - staging
+    refs:
+      - staging
+    changes:
+      - apps/identity-provider/**/*
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
@@ -241,7 +286,10 @@ pack_staging_identity_client:
   stage: pack
   environment: staging
   only:
-    - staging
+    refs:
+      - staging
+    changes:
+      - frontends/identity-client/**/*
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
@@ -255,7 +303,10 @@ pack_staging_infrastructure_console:
   stage: pack
   environment: staging
   only:
-    - staging
+    refs:
+      - staging
+    changes:
+      - apps/infrastructure-console/**/*
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
@@ -269,7 +320,10 @@ pack_staging_admin_client:
   stage: pack
   environment: staging
   only:
-    - staging
+    refs:
+      - staging
+    changes:
+      - frontends/admin-client/**/*
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
