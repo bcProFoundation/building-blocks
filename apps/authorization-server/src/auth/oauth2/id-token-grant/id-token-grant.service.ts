@@ -1,14 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import * as jose from 'node-jose';
+import * as crypto from 'crypto';
 import { IDTokenClaims } from '../../middlewares/interfaces';
 import { OIDCKeyService } from '../../../auth/entities/oidc-key/oidc-key.service';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { ServerSettings } from '../../../system-settings/entities/server-settings/server-settings.interface';
 import { JWKSNotFound } from '../../../common/filters/exceptions';
 import { ConfigService } from '../../../config/config.service';
-import * as crypto from 'crypto';
 import { User } from '../../../user-management/entities/user/user.interface';
 import { Client } from '../../../client-management/entities/client/client.interface';
+import { ROLES } from '../../../constants/app-strings';
 
 @Injectable()
 export class IDTokenGrantService {
@@ -62,7 +63,7 @@ export class IDTokenGrantService {
       nonce,
     };
 
-    if (scope.includes('roles')) claims.roles = user.roles;
+    if (scope.includes(ROLES)) claims.roles = user.roles;
     if (accessToken) {
       // Thanks https://github.com/mozilla/fxa-oauth-server/pull/598/files
       const atHash = this.generateTokenHash(accessToken);
