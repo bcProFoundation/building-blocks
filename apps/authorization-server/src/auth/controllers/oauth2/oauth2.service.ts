@@ -114,9 +114,10 @@ export class OAuth2Service {
                   sub: user.uuid,
                   name: user.name,
                   email: user.email,
+                  email_verified: user.email ? true : false,
+
+                  // non-standard claims
                   roles: user.roles,
-                  verified_email: user.email,
-                  verified: user.email ? true : false,
                 });
               }),
             );
