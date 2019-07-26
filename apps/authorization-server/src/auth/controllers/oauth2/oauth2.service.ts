@@ -1,12 +1,18 @@
 import { Injectable, HttpService } from '@nestjs/common';
 import { i18n } from '../../../i18n/i18n.config';
-import { ROLES } from '../../../constants/app-strings';
+import {
+  ROLES,
+  SCOPE_EMAIL,
+  SCOPE_PROFILE,
+} from '../../../constants/app-strings';
 import { from, of } from 'rxjs';
 import { switchMap, map, catchError } from 'rxjs/operators';
 import { BearerTokenService } from '../../../auth/entities/bearer-token/bearer-token.service';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
+import { BearerToken } from '../../entities/bearer-token/bearer-token.interface';
+import { User } from '../../../user-management/entities/user/user.interface';
 
 export const PROFILE_USERINFO_ENDPOINT = '/profile/v1/userinfo';
 
@@ -59,14 +65,14 @@ export class OAuth2Service {
       };
 
       if (bearerToken.user) tokenData.sub = bearerToken.user;
+
+      const user = await this.userService.findOne({
+        uuid: tokenData.sub,
+      });
+
       if (bearerToken.scope) {
         tokenData.scope = bearerToken.scope;
-        if (bearerToken.scope.includes(ROLES) && bearerToken.user) {
-          const user = await this.userService.findOne({
-            uuid: bearerToken.user,
-          });
-          tokenData.roles = user.roles;
-        }
+        tokenData = this.appendUserInfo(user, bearerToken, tokenData);
       }
     }
     return tokenData;
@@ -169,6 +175,24 @@ export class OAuth2Service {
         );
       }),
     );
+  }
+
+  appendUserInfo(user: User, bearerToken: BearerToken, tokenData) {
+    if (user) {
+      if (bearerToken.scope.includes(ROLES)) {
+        tokenData.roles = user.roles;
+      }
+
+      if (bearerToken.scope.includes(SCOPE_EMAIL)) {
+        tokenData.email = user.email;
+      }
+
+      if (bearerToken.scope.includes(SCOPE_PROFILE)) {
+        tokenData.name = user.name;
+      }
+    }
+
+    return tokenData;
   }
 
   /**
