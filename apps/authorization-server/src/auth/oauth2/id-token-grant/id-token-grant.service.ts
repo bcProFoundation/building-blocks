@@ -9,7 +9,11 @@ import { JWKSNotFound } from '../../../common/filters/exceptions';
 import { ConfigService } from '../../../config/config.service';
 import { User } from '../../../user-management/entities/user/user.interface';
 import { Client } from '../../../client-management/entities/client/client.interface';
-import { ROLES } from '../../../constants/app-strings';
+import {
+  ROLES,
+  SCOPE_EMAIL,
+  SCOPE_PROFILE,
+} from '../../../constants/app-strings';
 
 @Injectable()
 export class IDTokenGrantService {
@@ -64,6 +68,9 @@ export class IDTokenGrantService {
     };
 
     if (scope.includes(ROLES)) claims.roles = user.roles;
+    if (scope.includes(SCOPE_EMAIL)) claims.email = user.email;
+    if (scope.includes(SCOPE_PROFILE)) claims.name = user.name;
+
     if (accessToken) {
       // Thanks https://github.com/mozilla/fxa-oauth-server/pull/598/files
       const atHash = this.generateTokenHash(accessToken);
