@@ -8,11 +8,11 @@ server {
     root /var/www/html;
 
     location ~* ^/(login|account|signup|forgot) {
-        try_files $uri $uri/ @nodejs;
+        try_files $uri $uri/ @index;
     }
 
     location / {
-        try_files $uri $uri/ @index;
+        try_files $uri $uri/ @nodejs;
     }
 
     location @index {
