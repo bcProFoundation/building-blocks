@@ -8,4 +8,8 @@ RUN cd authorization-client \
 
 FROM nginx:latest
 COPY --from=0 /home/craft/authorization-client/dist/authorization-client /var/www/html
-COPY ./docker/nginx.conf /etc/nginx/conf.d/auth.conf
+COPY ./docker/nginx-default.conf.template /etc/nginx/conf.d/default.conf.template
+COPY ./docker/docker-entrypoint.sh /
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["nginx", "-g", "daemon off;"]

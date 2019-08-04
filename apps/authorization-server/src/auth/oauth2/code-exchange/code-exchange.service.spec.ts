@@ -5,6 +5,7 @@ import { ClientService } from '../../../client-management/entities/client/client
 import { AuthorizationCodeService } from '../../../auth/entities/authorization-code/authorization-code.service';
 import { CodeExchangeService } from './code-exchange.service';
 import { IDTokenGrantService } from '../id-token-grant/id-token-grant.service';
+import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 
 describe('CodeExchangeService', () => {
   let service: CodeExchangeService;
@@ -35,6 +36,10 @@ describe('CodeExchangeService', () => {
         },
         {
           provide: UserService,
+          useValue: {},
+        },
+        {
+          provide: ServerSettingsService,
           useValue: {},
         },
       ],

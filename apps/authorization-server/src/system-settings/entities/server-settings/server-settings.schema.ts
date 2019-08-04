@@ -13,6 +13,7 @@ export const ServerSettings = new mongoose.Schema(
     otpExpiry: { type: Number, default: 5 },
     enableChoosingAccount: Boolean,
     refreshTokenExpiresInDays: { type: Number, default: 30 },
+    authCodeExpiresInMinutes: { type: Number, default: 30 },
   },
   { collection: 'server_settings', versionKey: false },
 );

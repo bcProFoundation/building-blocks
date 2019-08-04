@@ -8,4 +8,8 @@ RUN cd admin-client \
 
 FROM nginx:latest
 COPY --from=0 /home/craft/admin-client/dist/admin-client /var/www/html
-COPY ./docker/nginx.conf /etc/nginx/conf.d/admin.conf
+COPY ./docker/nginx-default.conf.template /etc/nginx/conf.d/default.conf.template
+COPY ./docker/docker-entrypoint.sh /
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["nginx", "-g", "daemon off;"]

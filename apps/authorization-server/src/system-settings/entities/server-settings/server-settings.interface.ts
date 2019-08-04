@@ -11,4 +11,5 @@ export interface ServerSettings extends Document {
   otpExpiry?: number;
   enableChoosingAccount?: boolean;
   refreshTokenExpiresInDays?: number;
+  authCodeExpiresInMinutes?: number;
 }

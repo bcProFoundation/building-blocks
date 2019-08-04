@@ -46,10 +46,10 @@ export class PasswordExchangeService {
         scope,
       );
       // Everything validated, return the token
-      const [
+      const {
         bearerToken,
         extraParams,
-      ] = await this.tokenGeneratorService.getBearerToken(
+      } = await this.tokenGeneratorService.getBearerToken(
         localClient.clientId,
         user.uuid,
         validScope,

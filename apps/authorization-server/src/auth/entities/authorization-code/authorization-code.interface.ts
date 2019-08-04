@@ -9,4 +9,5 @@ export interface AuthorizationCode extends Document {
   nonce?: string;
   codeChallenge?: string;
   codeChallengeMethod?: string;
+  creation?: Date;
 }

@@ -34,10 +34,10 @@ export class TokenGrantService {
         client,
         areq.scope,
       );
-      const [
+      const {
         bearerToken,
         extraParams,
-      ] = await this.tokenGeneratorService.getBearerToken(
+      } = await this.tokenGeneratorService.getBearerToken(
         localClient.clientId,
         localUser.uuid,
         scope,

@@ -10,6 +10,7 @@ export const schema = new mongoose.Schema(
     nonce: String,
     codeChallenge: String,
     codeChallengeMethod: String,
+    creation: { type: Date, default: nowDate },
   },
   { collection: 'authorization_code', versionKey: false },
 );
@@ -22,3 +23,7 @@ export const AuthorizationCodeModel = mongoose.model(
   AUTHORIZATION_CODE,
   AuthorizationCode,
 );
+
+function nowDate() {
+  return new Date();
+}

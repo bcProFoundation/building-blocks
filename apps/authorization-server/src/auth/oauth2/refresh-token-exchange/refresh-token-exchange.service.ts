@@ -40,10 +40,10 @@ export class RefreshTokenExchangeService {
       );
 
       // Everything validated, return the token
-      const [
+      const {
         bearerToken,
         extraParams,
-      ] = await this.tokenGeneratorService.getBearerToken(
+      } = await this.tokenGeneratorService.getBearerToken(
         client.clientId,
         localRefreshToken.user,
         scope,
