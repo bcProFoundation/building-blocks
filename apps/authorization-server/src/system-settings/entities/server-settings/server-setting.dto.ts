@@ -4,8 +4,10 @@ import {
   IsUUID,
   IsBoolean,
   IsNumber,
+  Min,
 } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
+import { THIRTY_NUMBER, TEN_NUMBER } from '../../../constants/app-strings';
 
 export class ServerSettingDto {
   @IsUrl()
@@ -62,5 +64,11 @@ export class ServerSettingDto {
 
   @IsOptional()
   @IsNumber()
+  @Min(THIRTY_NUMBER)
   refreshTokenExpiresInDays?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(TEN_NUMBER)
+  authCodeExpiresInMinutes?: number;
 }

@@ -26,10 +26,10 @@ export class ClientCredentialExchangeService {
       );
       // Everything validated, return the token
       // Pass in a null for user id since there is no user with this grant type
-      const [
+      const {
         bearerToken,
         extraParams,
-      ] = await this.tokenGeneratorService.getBearerToken(
+      } = await this.tokenGeneratorService.getBearerToken(
         client.clientId,
         null,
         validScope,

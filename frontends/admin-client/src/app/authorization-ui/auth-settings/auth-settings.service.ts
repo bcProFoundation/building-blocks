@@ -57,6 +57,7 @@ export class AuthSettingsService {
     identityProviderClientId: string,
     enableChoosingAccount: boolean,
     refreshTokenExpiresInDays: number,
+    authCodeExpiresInMinutes: number,
   ) {
     const requestUrl = localStorage.getItem(ISSUER_URL) + '/settings/v1/update';
     return this.http.post(
@@ -69,6 +70,7 @@ export class AuthSettingsService {
         identityProviderClientId,
         enableChoosingAccount,
         refreshTokenExpiresInDays,
+        authCodeExpiresInMinutes,
       },
       { headers: this.headers },
     );

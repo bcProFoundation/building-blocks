@@ -9,6 +9,9 @@ import { AuthorizationCodeService } from '../../../auth/entities/authorization-c
 import { IDTokenGrantService } from '../id-token-grant/id-token-grant.service';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { AuthorizationCode } from '../../../auth/entities/authorization-code/authorization-code.interface';
+import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
+import { TEN_NUMBER } from '../../../constants/app-strings';
+import { ServerSettings } from '../../../system-settings/entities/server-settings/server-settings.interface';
 
 @Injectable()
 export class CodeExchangeService {
@@ -17,26 +20,46 @@ export class CodeExchangeService {
     private readonly tokenGeneratorService: OAuth2TokenGeneratorService,
     private readonly idTokenGrantService: IDTokenGrantService,
     private readonly userService: UserService,
+    private readonly settings: ServerSettingsService,
   ) {}
 
   async exchangeCode(client, code, redirectUri, body, issued) {
     try {
       const localCode: AuthorizationCode = await this.authorizationCodeService.findOne(
-        {
-          code,
-        },
+        { code },
       );
 
       if (!localCode) {
         issued(invalidAuthorizationCodeException);
         return;
       } else {
+        // Check code expiry
+        let settings = {
+          authCodeExpiresInMinutes: TEN_NUMBER,
+        } as ServerSettings;
+
+        try {
+          settings = await this.settings.find();
+        } catch (error) {}
+
+        const expiry = localCode.creation;
+        expiry.setMinutes(
+          expiry.getMinutes() + settings.authCodeExpiresInMinutes,
+        );
+
+        if (new Date() > expiry) {
+          await localCode.remove();
+          issued(invalidAuthorizationCodeException);
+          return;
+        }
+
+        // Generate Bearer Token
         const user = await this.userService.findOne({ uuid: localCode.user });
         const scope: string[] = localCode.scope;
-        const [
+        const {
           bearerToken,
           extraParams,
-        ] = await this.tokenGeneratorService.getBearerToken(
+        } = await this.tokenGeneratorService.getBearerToken(
           localCode.client,
           localCode.user,
           scope,
@@ -50,6 +73,7 @@ export class CodeExchangeService {
                 await this.authorizationCodeService.delete({
                   code: localCode.code,
                 });
+                await bearerToken.remove();
                 issued(invalidCodeChallengeException);
                 return;
               }
@@ -69,6 +93,7 @@ export class CodeExchangeService {
                 await this.authorizationCodeService.delete({
                   code: localCode.code,
                 });
+                await bearerToken.remove();
                 issued(invalidCodeChallengeException);
                 return;
               }
@@ -79,6 +104,7 @@ export class CodeExchangeService {
                 await this.authorizationCodeService.delete({
                   code: localCode.code,
                 });
+                await bearerToken.remove();
                 issued(invalidCodeChallengeException);
                 return;
               }

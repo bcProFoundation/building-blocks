@@ -34,6 +34,7 @@ export class AuthSettingsComponent implements OnInit {
   disableDeleteTokens: boolean = false;
   enableChoosingAccount: boolean;
   refreshTokenExpiresInDays: number = THIRTY;
+  authCodeExpiresInMinutes: number = THIRTY;
 
   authSettingsForm = new FormGroup({
     issuerUrl: new FormControl(this.issuerUrl),
@@ -50,6 +51,7 @@ export class AuthSettingsComponent implements OnInit {
     ),
     enableChoosingAccount: new FormControl(this.enableChoosingAccount),
     refreshTokenExpiresInDays: new FormControl(this.refreshTokenExpiresInDays),
+    authCodeExpiresInMinutes: new FormControl(this.authCodeExpiresInMinutes),
   });
 
   constructor(
@@ -64,11 +66,15 @@ export class AuthSettingsComponent implements OnInit {
         communicationServerClientId: string;
         disableSignup: boolean;
         enableChoosingAccount: boolean;
+        refreshTokenExpiresInDays: number;
+        authCodeExpiresInMinutes: number;
       }) => {
         this.issuerUrl = response.issuerUrl;
         this.communicationServerClientId = response.communicationServerClientId;
         this.disableSignup = response.disableSignup;
         this.enableChoosingAccount = response.enableChoosingAccount;
+        this.refreshTokenExpiresInDays = response.refreshTokenExpiresInDays;
+        this.authCodeExpiresInMinutes = response.authCodeExpiresInMinutes;
         this.populateForm(response);
       },
       error: error => {},
@@ -102,6 +108,9 @@ export class AuthSettingsComponent implements OnInit {
     this.authSettingsForm.controls.refreshTokenExpiresInDays.setValue(
       response.refreshTokenExpiresInDays,
     );
+    this.authSettingsForm.controls.authCodeExpiresInMinutes.setValue(
+      response.authCodeExpiresInMinutes,
+    );
   }
 
   updateAuthSettings() {
@@ -114,6 +123,7 @@ export class AuthSettingsComponent implements OnInit {
         this.authSettingsForm.controls.identityProviderClientId.value,
         this.authSettingsForm.controls.enableChoosingAccount.value,
         this.authSettingsForm.controls.refreshTokenExpiresInDays.value,
+        this.authSettingsForm.controls.authCodeExpiresInMinutes.value,
       )
       .subscribe({
         next: response => {

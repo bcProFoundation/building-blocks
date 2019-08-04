@@ -7,7 +7,7 @@ import { ConfigService } from '../../../config/config.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
 import { retry } from 'rxjs/operators';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
-import { THIRTY_DAYS } from '../../../constants/app-strings';
+import { THIRTY_NUMBER } from '../../../constants/app-strings';
 import { ServerSettings } from '../../../system-settings/entities/server-settings/server-settings.interface';
 
 export const TOKEN_DELETE_QUEUE = 'token_delete';
@@ -42,7 +42,7 @@ export class TokenSchedulerService implements OnModuleInit {
     this.queue.process(TOKEN_DELETE_QUEUE, async (job, done) => {
       const tokens = await this.bearerTokenService.getAll();
       let settings = {
-        refreshTokenExpiresInDays: THIRTY_DAYS,
+        refreshTokenExpiresInDays: THIRTY_NUMBER,
       } as ServerSettings;
       try {
         settings = await this.settings.find();

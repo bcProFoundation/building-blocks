@@ -27,6 +27,10 @@ export class AuthorizationCodeService {
     return await this.authCodeModel.deleteOne(params);
   }
 
+  async find(params) {
+    return await this.authCodeModel.find(params);
+  }
+
   async clear() {
     return await this.authCodeModel.deleteMany({});
   }

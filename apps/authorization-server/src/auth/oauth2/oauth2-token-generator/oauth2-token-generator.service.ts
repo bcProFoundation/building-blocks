@@ -35,7 +35,7 @@ export class OAuth2TokenGeneratorService {
     scope: string[],
     refresh: boolean = true,
     idToken: boolean = true,
-  ) {
+  ): Promise<{ bearerToken: BearerToken; extraParams: any }> {
     const localClient = await this.clientService.findOne({ clientId: client });
     if (!localClient) throw invalidClientException;
 
@@ -66,7 +66,7 @@ export class OAuth2TokenGeneratorService {
 
     await this.bearerTokenService.save(bearerToken);
 
-    return [bearerToken, extraParams];
+    return { bearerToken, extraParams };
   }
 
   async getValidScopes(client: Client, scope: string[]): Promise<string[]> {
