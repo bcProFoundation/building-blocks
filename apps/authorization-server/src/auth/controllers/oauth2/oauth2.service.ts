@@ -1,5 +1,4 @@
 import { Injectable, HttpService } from '@nestjs/common';
-import { i18n } from '../../../i18n/i18n.config';
 import {
   ROLES,
   SCOPE_EMAIL,
@@ -13,6 +12,8 @@ import { ServerSettingsService } from '../../../system-settings/entities/server-
 import { ClientService } from '../../../client-management/entities/client/client.service';
 import { BearerToken } from '../../entities/bearer-token/bearer-token.interface';
 import { User } from '../../../user-management/entities/user/user.interface';
+import { CommandBus } from '@nestjs/cqrs';
+import { RemoveBearerTokenCommand } from 'auth/commands/remove-bearer-token/remove-bearer-token.command';
 
 export const PROFILE_USERINFO_ENDPOINT = '/profile/v1/userinfo';
 
@@ -24,18 +25,11 @@ export class OAuth2Service {
     private readonly settings: ServerSettingsService,
     private readonly http: HttpService,
     private readonly clientService: ClientService,
+    private readonly commandBus: CommandBus,
   ) {}
 
   async tokenRevoke(token) {
-    const bearerToken = await this.bearerTokenService.findOne({
-      accessToken: token,
-    });
-    if (bearerToken) {
-      await bearerToken.remove();
-      return { message: i18n.__('Bearer Token Revoked Successfully') };
-    } else {
-      return { message: i18n.__('Invalid Bearer Token') };
-    }
+    return await this.commandBus.execute(new RemoveBearerTokenCommand(token));
   }
 
   async tokenIntrospection(token) {

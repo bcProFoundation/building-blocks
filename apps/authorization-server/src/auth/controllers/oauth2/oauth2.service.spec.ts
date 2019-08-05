@@ -5,12 +5,13 @@ import { UserService } from '../../../user-management/entities/user/user.service
 import { BearerTokenService } from '../../../auth/entities/bearer-token/bearer-token.service';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { ClientService } from 'client-management/entities/client/client.service';
+import { CqrsModule } from '@nestjs/cqrs';
 
 describe('OAuth2Service', () => {
   let service: OAuth2Service;
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [HttpModule],
+      imports: [HttpModule, CqrsModule],
       providers: [
         OAuth2Service,
         {
