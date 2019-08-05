@@ -3,7 +3,7 @@ import { BearerTokenRemovedEvent } from './bearer-token-removed.event';
 import { HttpService } from '@nestjs/common';
 import { ClientService } from '../../../client-management/entities/client/client.service';
 import { retry } from 'rxjs/operators';
-import { TOKEN_DELETE_QUEUE } from 'auth/schedulers/token-schedule/token-schedule.service';
+import { TOKEN_DELETE_QUEUE } from '../../schedulers/token-schedule/token-schedule.service';
 
 @EventsHandler(BearerTokenRemovedEvent)
 export class BearerTokenRemovedHandler
