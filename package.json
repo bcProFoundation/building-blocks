@@ -1,7 +1,8 @@
 {
   "private": true,
   "scripts": {
-    "docs": "./scripts/build-docs.sh"
+    "docs": "./scripts/build-docs.sh",
+    "version": "lerna clean --yes && lerna bootstrap --ignore-scripts -- --package-lock-only --no-audit && git add apps/*/package-lock.json frontends/*/package-lock.json"
   },
   "devDependencies": {
     "@types/node": "^12.6.9",
