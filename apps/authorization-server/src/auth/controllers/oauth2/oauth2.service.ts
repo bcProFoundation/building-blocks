@@ -13,7 +13,7 @@ import { ClientService } from '../../../client-management/entities/client/client
 import { BearerToken } from '../../entities/bearer-token/bearer-token.interface';
 import { User } from '../../../user-management/entities/user/user.interface';
 import { CommandBus } from '@nestjs/cqrs';
-import { RemoveBearerTokenCommand } from 'auth/commands/remove-bearer-token/remove-bearer-token.command';
+import { RemoveBearerTokenCommand } from '../../commands/remove-bearer-token/remove-bearer-token.command';
 
 export const PROFILE_USERINFO_ENDPOINT = '/profile/v1/userinfo';
 
