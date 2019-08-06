@@ -40,6 +40,9 @@ export class LoginComponent implements OnInit {
   disableLoginChoice: boolean = false;
   disableResendOTP: boolean = false;
   logoURL: string;
+  disableVerifyUserButton: boolean = false;
+  disableVerifyPasswordButton: boolean = false;
+  disableOnSubmitOTPButton: boolean = false;
 
   @ViewChild('password', { static: true }) passwordRef: ElementRef;
   @ViewChild('otp', { static: true }) otpRef: ElementRef;
@@ -80,6 +83,9 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmitOTP() {
+    this.disableOnSubmitOTPButton = true;
+    this.submitOTPForm.controls.code.disable();
+
     if (this.loginChoice === LoginChoice.PasswordLess) {
       this.sendPasswordLessOTP();
     } else {
@@ -105,6 +111,9 @@ export class LoginComponent implements OnInit {
           }
         },
         error: err => {
+          this.disableOnSubmitOTPButton = false;
+          this.submitOTPForm.controls.code.enable();
+
           this.serverError = err.error.message;
           this.submitOTPForm.controls.code.setErrors({ incorrect: true });
         },
@@ -128,6 +137,9 @@ export class LoginComponent implements OnInit {
           }
         },
         error: err => {
+          this.disableOnSubmitOTPButton = false;
+          this.submitOTPForm.controls.code.enable();
+
           this.serverError = err.error.message;
           this.submitOTPForm.controls.code.setErrors({ incorrect: true });
         },
@@ -135,6 +147,9 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmitPassword() {
+    this.disableVerifyPasswordButton = true;
+    this.loginUserForm.controls.password.disable();
+
     if (this.enable2fa) {
       this.authService
         .verifyPassword(
@@ -146,9 +161,16 @@ export class LoginComponent implements OnInit {
             this.loginUserForm.controls.password.setErrors(null);
             this.hideCode = false;
             this.hidePassword = true;
+
+            this.disableVerifyPasswordButton = false;
+            this.loginUserForm.controls.password.enable();
+
             setTimeout(() => this.otpRef.nativeElement.focus());
           },
           error: err => {
+            this.disableVerifyPasswordButton = false;
+            this.loginUserForm.controls.password.enable();
+
             this.serverError = err.error.message;
             this.loginUserForm.controls.password.setErrors({
               incorrect: true,
@@ -172,6 +194,9 @@ export class LoginComponent implements OnInit {
             }
           },
           error: err => {
+            this.disableVerifyPasswordButton = false;
+            this.loginUserForm.controls.password.enable();
+
             this.serverError = err.error.message;
             this.loginUserForm.controls.password.setErrors({
               incorrect: true,
@@ -182,6 +207,8 @@ export class LoginComponent implements OnInit {
   }
 
   verifyUser() {
+    this.disableVerifyUserButton = true;
+    this.verifyUserForm.controls.username.disable();
     this.authService
       .verifyUser(this.verifyUserForm.controls.username.value)
       .subscribe({
@@ -194,11 +221,15 @@ export class LoginComponent implements OnInit {
           this.hidePassword = false;
           this.enable2fa = response.user.enable2fa;
           this.enablePasswordLess = response.user.enablePasswordLess;
-
           // TODO: https://github.com/angular/angular/issues/12463
           setTimeout(() => this.passwordRef.nativeElement.focus());
+
+          this.disableVerifyUserButton = false;
+          this.verifyUserForm.controls.username.enable();
         },
         error: err => {
+          this.disableVerifyUserButton = false;
+          this.verifyUserForm.controls.username.enable();
           this.serverError = err.error.message;
           this.verifyUserForm.controls.username.setErrors({ incorrect: true });
         },
