@@ -3,6 +3,7 @@ import {
   NotFoundException,
   ForbiddenException,
   BadRequestException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { AggregateRoot } from '@nestjs/cqrs';
 import { ClientService } from '../../../client-management/entities/client/client.service';
@@ -17,6 +18,10 @@ import {
 } from '../../../constants/app-strings';
 import { OAuth2ScopeRemovedEvent } from '../../../client-management/events/oauth2scope-removed/oauth2scope-removed.event';
 import { ScopeService } from '../../../client-management/entities/scope/scope.service';
+import { CreateClientDto } from '../../../client-management/entities/client/create-client.dto';
+import { ClientAddedEvent } from '../../../client-management/events/client-added/client-added.event';
+import { ClientModifiedEvent } from '../../../client-management/events/client-modified/client-modified.event';
+import { OnlyAllowValidScopeService } from '../../../client-management/policies';
 
 @Injectable()
 export class ClientManagementAggregateService extends AggregateRoot {
@@ -25,6 +30,7 @@ export class ClientManagementAggregateService extends AggregateRoot {
     private readonly bearerToken: BearerTokenService,
     private readonly scope: ScopeService,
     private readonly user: UserService,
+    private readonly onlyAllowValidScopeService: OnlyAllowValidScopeService,
   ) {
     super();
   }
@@ -73,5 +79,45 @@ export class ClientManagementAggregateService extends AggregateRoot {
     }
 
     this.apply(new OAuth2ScopeRemovedEvent(scope, actorUuid));
+  }
+
+  async addClient(payload: CreateClientDto, actorUuid: string) {
+    const ClientModel = this.client.getModel();
+    const params: any = payload;
+    if (!(await this.user.checkAdministrator(actorUuid))) {
+      payload.isTrusted = 0;
+    }
+
+    await this.onlyAllowValidScopeService.validate(payload.allowedScopes);
+
+    params.createdBy = actorUuid;
+    params.modifiedBy = actorUuid;
+    params.creation = new Date();
+    params.modified = params.creation;
+    const client = new ClientModel(params);
+    this.apply(new ClientAddedEvent(client));
+    return client;
+  }
+
+  async modifyClient(
+    clientId: string,
+    payload: CreateClientDto,
+    actorUuid: string,
+  ) {
+    const client = await this.client.findOne({ clientId });
+    if (
+      (await this.user.checkAdministrator(actorUuid)) ||
+      client.createdBy === actorUuid
+    ) {
+      await this.onlyAllowValidScopeService.validate(payload.allowedScopes);
+
+      Object.assign(client, payload);
+      client.modified = new Date();
+      client.modifiedBy = actorUuid;
+      this.apply(new ClientModifiedEvent(client));
+      return client;
+    } else {
+      throw new UnauthorizedException();
+    }
   }
 }

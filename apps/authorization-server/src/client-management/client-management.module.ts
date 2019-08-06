@@ -7,7 +7,8 @@ import { ClientManagementEntitiesModule } from './entities/entities.module';
 import { CqrsModule } from '@nestjs/cqrs';
 import { ClientManagementCommandHandlers } from './commands';
 import { ClientManagementEventHandlers } from './events';
-import { ClientManagementAggregateService } from './aggregates/client-management-aggregate/client-management-aggregate.service';
+import { ClientManagementPolicies } from './policies';
+import { ClientManagementAggregates } from './aggregates';
 
 @Global()
 @Module({
@@ -18,7 +19,8 @@ import { ClientManagementAggregateService } from './aggregates/client-management
     // CQRS
     ...ClientManagementCommandHandlers,
     ...ClientManagementEventHandlers,
-    ClientManagementAggregateService,
+    ...ClientManagementAggregates,
+    ...ClientManagementPolicies,
   ],
   controllers: [ClientController, ScopeController],
   imports: [ClientManagementEntitiesModule, CqrsModule],

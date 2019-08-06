@@ -11,8 +11,6 @@ import {
   ValidationPipe,
   Res,
   SerializeOptions,
-  Put,
-  Delete,
 } from '@nestjs/common';
 import { ScopeService } from '../../../client-management/entities/scope/scope.service';
 import { Roles } from '../../../common/decorators/roles.decorator';
@@ -62,7 +60,7 @@ export class ScopeController {
     return this.scopeService.find({});
   }
 
-  @Put('v1/update/:uuid')
+  @Post('v1/update/:uuid')
   @Roles(ADMINISTRATOR)
   @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   async update(@Param('uuid') uuid, @Body() payload, @Req() req, @Res() res) {
@@ -91,7 +89,7 @@ export class ScopeController {
     return await this.scopeService.findOne({ uuid });
   }
 
-  @Delete('v1/delete/:scopeName')
+  @Post('v1/delete/:scopeName')
   @Roles(ADMINISTRATOR)
   @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   async deleteScope(@Param('scopeName') scopeName, @Req() req) {

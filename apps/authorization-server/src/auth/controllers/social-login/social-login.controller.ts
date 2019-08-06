@@ -7,11 +7,9 @@ import {
   Body,
   Req,
   Res,
-  Put,
   Param,
   Get,
   Query,
-  Delete,
   ForbiddenException,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
@@ -47,7 +45,7 @@ export class SocialLoginController {
     res.json(socialLogin);
   }
 
-  @Put('v1/update/:uuid')
+  @Post('v1/update/:uuid')
   @Roles(ADMINISTRATOR)
   @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   async update(
@@ -102,7 +100,7 @@ export class SocialLoginController {
     return socialLogin;
   }
 
-  @Delete('v1/delete/:uuid')
+  @Post('v1/delete/:uuid')
   @Roles(ADMINISTRATOR)
   @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   async deleteByUUID(@Param('uuid') uuid, @Req() req) {

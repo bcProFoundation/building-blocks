@@ -21,6 +21,7 @@
           <div fxLayout="row" fxLayoutAlign="space-between center">
             <button
               (click)="verifyUser()"
+              [disabled]="disableVerifyUserButton"
               mat-raised-button
               color="primary"
               i18n="@@next">Next</button>
@@ -45,6 +46,7 @@
           <div class="spacer"></div>
           <div fxLayout="row" fxLayoutAlign="space-between center">
             <button (click)="onSubmitPassword()"
+              [disabled]="disableVerifyPasswordButton"
               mat-raised-button color="primary"
               i18n="@@login">Login</button>
             <a (click)="forgotPassword()" mat-button href="#" class="left-margin-30" i18n="@@forgot">Forgot?</a>
@@ -61,6 +63,7 @@
           <div class="spacer"></div>
           <div fxLayout="row" fxLayoutAlign="space-between center">
             <button (click)="onSubmitOTP()"
+              [disabled]="disableOnSubmitOTPButton"
               mat-raised-button
               color="primary"
               i18n="@@login">Login</button>

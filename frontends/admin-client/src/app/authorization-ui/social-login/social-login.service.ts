@@ -70,7 +70,7 @@ export class SocialLoginService {
     const url = `${this.storageService.getInfo(
       ISSUER_URL,
     )}/social_login/v1/update/${uuid}`;
-    return this.http.put(url, {
+    return this.http.post(url, {
       name,
       description,
       clientId,

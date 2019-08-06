@@ -140,7 +140,7 @@ export class ProfileService {
   }
 
   deleteAvatar() {
-    return this.http.delete(
+    return this.http.post(
       localStorage.getItem(APP_URL) + DELETE_AVATAR_ENDPOINT,
       {
         headers: this.authorizationHeader,

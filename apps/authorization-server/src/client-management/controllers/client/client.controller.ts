@@ -7,13 +7,10 @@ import {
   Query,
   Param,
   Req,
-  Res,
   SerializeOptions,
   UsePipes,
   ValidationPipe,
   UnauthorizedException,
-  Delete,
-  Put,
   NotFoundException,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
@@ -28,6 +25,8 @@ import { UserService } from '../../../user-management/entities/user/user.service
 import { CRUDOperationService } from '../../../common/services/crudoperation/crudoperation.service';
 import { randomBytes32 } from '../../../client-management/entities/client/client.schema';
 import { RemoveOAuth2ClientCommand } from '../../../client-management/commands/remove-oauth2client/remove-oauth2client.command';
+import { AddClientCommand } from '../../../client-management/commands/add-client/add-client.command';
+import { ModifyClientCommand } from '../../../client-management/commands/modify-client/modify-client.command';
 
 @Controller('client')
 @SerializeOptions({ excludePrefixes: ['_'] })
@@ -42,20 +41,12 @@ export class ClientController {
   @Post('v1/create')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
   @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
-  async create(@Body() body: CreateClientDto, @Req() req, @Res() res) {
-    const payload: any = body;
-    if (!(await this.userService.checkAdministrator(req.user.user))) {
-      payload.isTrusted = 0;
-    }
-    payload.createdBy = req.user.user;
-    payload.modifiedBy = req.user.user;
-    payload.creation = new Date();
-    payload.modified = payload.creation;
-    const client = await this.clientService.save(payload);
-    res.json(client);
+  async create(@Body() body: CreateClientDto, @Req() req) {
+    const actorUuid = req.user.user;
+    return await this.commandBus.execute(new AddClientCommand(actorUuid, body));
   }
 
-  @Put('v1/update/:clientId')
+  @Post('v1/update/:clientId')
   @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
   async update(
@@ -63,22 +54,13 @@ export class ClientController {
     @Param('clientId') clientId: string,
     @Req() req,
   ) {
-    const client = await this.clientService.findOne({ clientId });
-    if (
-      (await this.userService.checkAdministrator(req.user.user)) ||
-      client.createdBy === req.user.user
-    ) {
-      Object.assign(client, payload);
-      client.modified = new Date();
-      client.modifiedBy = req.user.user;
-      await client.save();
-      return client;
-    } else {
-      throw new UnauthorizedException();
-    }
+    const actorUuid = req.user.user;
+    return await this.commandBus.execute(
+      new ModifyClientCommand(actorUuid, clientId, payload),
+    );
   }
 
-  @Put('v1/update_secret/:clientId')
+  @Post('v1/update_secret/:clientId')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
   async updateSecret(@Param('clientId') clientId: string, @Req() req) {
     const client = await this.clientService.findOne({ clientId });
@@ -151,7 +133,7 @@ export class ClientController {
     return client;
   }
 
-  @Get('v1/getClientId/:clientId')
+  @Get('v1/get_by_client_id/:clientId')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
   async getClientId(@Param('clientId') clientId: string, @Req() req) {
     let client;
@@ -167,7 +149,7 @@ export class ClientController {
     return client;
   }
 
-  @Delete('v1/delete/:clientId')
+  @Post('v1/delete/:clientId')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
   async deleteByUUID(@Param('clientId') clientId, @Req() req) {
     const actorUserUuid = req.user.user;

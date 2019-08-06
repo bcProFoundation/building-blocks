@@ -6,8 +6,6 @@ import {
   UseGuards,
   Req,
   Param,
-  Put,
-  Delete,
   Query,
   Get,
   Body,
@@ -71,7 +69,7 @@ export class CloudStorageController {
     return this.commandBus.execute(new AddCloudStorageCommand(payload));
   }
 
-  @Put('v1/modify/:uuid')
+  @Post('v1/modify/:uuid')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Roles(ADMINISTRATOR)
   @UseGuards(TokenGuard, RoleGuard)
@@ -81,7 +79,7 @@ export class CloudStorageController {
     );
   }
 
-  @Delete('v1/remove/:uuid')
+  @Post('v1/remove/:uuid')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Roles(ADMINISTRATOR)
   @UseGuards(TokenGuard, RoleGuard)

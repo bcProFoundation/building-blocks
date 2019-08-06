@@ -7,7 +7,7 @@ server {
     server_name localhost;
     root /var/www/html;
 
-    location ~* ^/(info|settings/v1|setup|connect/v1|profile/v1) {
+    location ~* ^/(info|settings/v1|setup|connect/v1|profile/v1|api) {
         try_files $uri $uri/ @nodejs;
     }
 
