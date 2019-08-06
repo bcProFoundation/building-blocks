@@ -10,8 +10,6 @@ import {
   Param,
   UsePipes,
   ValidationPipe,
-  Put,
-  Delete,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { UserService } from '../../entities/user/user.service';
@@ -110,7 +108,7 @@ export class UserController {
     );
   }
 
-  @Put('v1/update/:userUuidToBeModified')
+  @Post('v1/update/:userUuidToBeModified')
   @Roles(ADMINISTRATOR)
   @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   async update(
@@ -128,7 +126,7 @@ export class UserController {
     );
   }
 
-  @Delete('v1/delete/:userUuidToBeDeleted')
+  @Post('v1/delete/:userUuidToBeDeleted')
   @Roles(ADMINISTRATOR)
   @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   async deleteUser(

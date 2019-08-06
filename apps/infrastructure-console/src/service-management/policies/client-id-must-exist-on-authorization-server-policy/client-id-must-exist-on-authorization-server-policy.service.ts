@@ -7,7 +7,7 @@ import {
 import { TokenCache } from '../../../auth/entities/token-cache/token-cache.entity';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 
-export const GET_CLIENT_ENDPOINT = '/client/v1/getClientId';
+export const GET_CLIENT_ENDPOINT = '/client/v1/get_by_client_id';
 export const AUTHORIZATION_SERVER_CONNECTION_ERROR =
   'AUTHORIZATION_SERVER_CONNECTION_ERROR';
 

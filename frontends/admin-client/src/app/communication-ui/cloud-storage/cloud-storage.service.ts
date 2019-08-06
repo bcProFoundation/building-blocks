@@ -56,7 +56,7 @@ export class CloudStorageService {
       basePath,
     };
 
-    return this.http.put(requestUrl, updateCloudStorageCredentials, {
+    return this.http.post(requestUrl, updateCloudStorageCredentials, {
       headers: this.headers,
     });
   }

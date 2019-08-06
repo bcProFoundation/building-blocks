@@ -12,7 +12,6 @@ import {
   UnauthorizedException,
   UseInterceptors,
   UploadedFile,
-  Delete,
 } from '@nestjs/common';
 import { QueryBus, CommandBus } from '@nestjs/cqrs';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -115,7 +114,7 @@ export class ProfileController {
     return await this.commandBus.execute(new UploadNewAvatarCommand(file, req));
   }
 
-  @Delete('v1/delete_avatar')
+  @Post('v1/delete_avatar')
   @UseGuards(TokenGuard)
   async deleteAvatar(@Req() req) {
     return await this.commandBus.execute(

@@ -11,8 +11,6 @@ import {
   UsePipes,
   ValidationPipe,
   UnauthorizedException,
-  Delete,
-  Put,
   NotFoundException,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
@@ -48,7 +46,7 @@ export class ClientController {
     return await this.commandBus.execute(new AddClientCommand(actorUuid, body));
   }
 
-  @Put('v1/update/:clientId')
+  @Post('v1/update/:clientId')
   @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
   async update(
@@ -62,7 +60,7 @@ export class ClientController {
     );
   }
 
-  @Put('v1/update_secret/:clientId')
+  @Post('v1/update_secret/:clientId')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
   async updateSecret(@Param('clientId') clientId: string, @Req() req) {
     const client = await this.clientService.findOne({ clientId });
@@ -135,7 +133,7 @@ export class ClientController {
     return client;
   }
 
-  @Get('v1/getClientId/:clientId')
+  @Get('v1/get_by_client_id/:clientId')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
   async getClientId(@Param('clientId') clientId: string, @Req() req) {
     let client;
@@ -151,7 +149,7 @@ export class ClientController {
     return client;
   }
 
-  @Delete('v1/delete/:clientId')
+  @Post('v1/delete/:clientId')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
   async deleteByUUID(@Param('clientId') clientId, @Req() req) {
     const actorUserUuid = req.user.user;

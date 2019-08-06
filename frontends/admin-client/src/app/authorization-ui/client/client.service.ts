@@ -75,7 +75,7 @@ export class ClientService {
     const url = `${this.storageService.getInfo(
       ISSUER_URL,
     )}/client/v1/update/${clientId}`;
-    return this.http.put(url, {
+    return this.http.post(url, {
       name: clientName,
       authenticationMethod,
       tokenDeleteEndpoint,

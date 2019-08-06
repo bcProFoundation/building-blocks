@@ -8,8 +8,6 @@ import {
   Post,
   Body,
   Res,
-  Put,
-  Delete,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { ADMINISTRATOR } from '../../../constants/app-strings';
@@ -61,7 +59,7 @@ export class RoleController {
     res.json(role);
   }
 
-  @Put('v1/update/:uuid')
+  @Post('v1/update/:uuid')
   @Roles(ADMINISTRATOR)
   @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   async update(@Param('uuid') uuid, @Body() payload, @Req() req, @Res() res) {
@@ -89,7 +87,7 @@ export class RoleController {
     return await this.roleService.findOne({ uuid });
   }
 
-  @Delete('v1/delete/:roleName')
+  @Post('v1/delete/:roleName')
   @Roles(ADMINISTRATOR)
   @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   async deleteRole(@Param('roleName') roleName: string, @Req() req) {
