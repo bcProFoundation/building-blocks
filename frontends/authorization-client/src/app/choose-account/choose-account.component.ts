@@ -12,6 +12,7 @@ import { FormGroup, FormArray, FormControl } from '@angular/forms';
 })
 export class ChooseAccountComponent implements OnInit {
   sessionUsers: any[];
+  disableChoice: boolean = false;
 
   userForm = new FormArray([]);
   userSelectionForm = new FormGroup({
@@ -51,10 +52,12 @@ export class ChooseAccountComponent implements OnInit {
   }
 
   chooseUser(index: number) {
+    this.disableChoice = true;
     this.chooseAccountService
       .chooseUser(this.sessionUsers[index].uuid)
       .subscribe({
         next: success => {
+          this.disableChoice = false;
           const query = { ...this.activeRoute.snapshot.queryParams };
           if (query.prompt) {
             delete query.prompt;
@@ -64,19 +67,21 @@ export class ChooseAccountComponent implements OnInit {
             window.location.href = '/';
           }
         },
-        error: error => {},
+        error: error => (this.disableChoice = false),
       });
   }
 
   logoutUser(index: number) {
+    this.disableChoice = true;
     this.chooseAccountService
       .logoutUser(this.sessionUsers[index].uuid)
       .subscribe({
         next: success => {
+          this.disableChoice = false;
           this.sessionUsers.splice(index, 1);
           this.userForm.removeAt(index);
         },
-        error: error => {},
+        error: error => (this.disableChoice = true),
       });
   }
 

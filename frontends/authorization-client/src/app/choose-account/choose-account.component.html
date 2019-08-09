@@ -16,11 +16,16 @@
           formArrayName="users">
           <div [formGroupName]="i">
             <button
+              [disabled]="disableChoice"
               class="email-button"
               fxFlex="90"
               (click)="chooseUser(i)"
               mat-stroked-button>{{ user.value.email }}</button>
-            <button mat-icon-button matSuffix (click)="logoutUser(i)">
+            <button
+              mat-icon-button
+              matSuffix
+              [disabled]="disableChoice"
+              (click)="logoutUser(i)">
               <mat-icon>close</mat-icon>
             </button>
           </div>
@@ -29,6 +34,7 @@
       <mat-card-actions fxLayout="column" fxLayoutAlign="center center">
         <button
           (click)="addAccount()"
+          [disabled]="disableChoice"
           mat-stroked-button>Add Account</button>
       </mat-card-actions>
     </form>
