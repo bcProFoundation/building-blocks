@@ -207,9 +207,9 @@ export class ClientComponent implements OnInit {
     this.clientForm.controls.clientSecret.setValue(client.clientSecret);
     this.clientForm.controls.clientName.setValue(client.name);
     this.clientForm.controls.isTrusted.setValue(client.isTrusted);
-    this.clientForm.controls.autoApprove.setValue(client.autoApprove);
     this.clientForm.controls.clientScopes.setValue(client.allowedScopes);
     this.toggleTrustedAutoApprove(client.isTrusted);
+    this.clientForm.controls.autoApprove.setValue(client.autoApprove);
   }
 
   setupFieldObservables() {
