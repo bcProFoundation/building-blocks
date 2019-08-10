@@ -57,7 +57,6 @@ export class ChooseAccountComponent implements OnInit {
       .chooseUser(this.sessionUsers[index].uuid)
       .subscribe({
         next: success => {
-          this.disableChoice = false;
           const query = { ...this.activeRoute.snapshot.queryParams };
           if (query.prompt) {
             delete query.prompt;
