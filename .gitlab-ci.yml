@@ -350,7 +350,10 @@ pack_production_authorization_server:
   stage: pack
   environment: production
   only:
-    - master
+    refs:
+      - master
+    changes:
+      - apps/authorization-server/**/*
   before_script:
     - apk add git
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
@@ -368,7 +371,10 @@ pack_production_authorization_client:
   stage: pack
   environment: production
   only:
-    - master
+    refs:
+      - master
+    changes:
+      - frontends/authorization-client/**/*
   before_script:
     - apk add git
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
@@ -386,7 +392,10 @@ pack_production_communication_server:
   stage: pack
   environment: production
   only:
-    - master
+    refs:
+      - master
+    changes:
+      - apps/communication-server/**/*
   before_script:
     - apk add git
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
@@ -404,7 +413,10 @@ pack_production_identity_provider:
   stage: pack
   environment: production
   only:
-    - master
+    refs:
+      - master
+    changes:
+      - apps/identity-provider/**/*
   before_script:
     - apk add git
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
@@ -422,13 +434,16 @@ pack_production_identity_client:
   stage: pack
   environment: production
   only:
-    - master
+    refs:
+      - master
+    changes:
+      - frontends/identity-client/**/*
   before_script:
     - apk add git
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
     # get latest tag for app in master branch
-    # Idenitiy Client
+    # Identity Client
     - export VERSION=$(git tag --list "identity-client@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
     - docker build -t identity-client frontends/identity-client
     - docker tag identity-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-client:$VERSION
@@ -440,7 +455,10 @@ pack_production_infrastructure_console:
   stage: pack
   environment: production
   only:
-    - master
+    refs:
+      - master
+    changes:
+      - apps/infrastructure-console/**/*
   before_script:
     - apk add git
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
@@ -458,7 +476,10 @@ pack_production_admin_client:
   stage: pack
   environment: production
   only:
-    - master
+    refs:
+      - master
+    changes:
+      - frontends/admin-client/**/*
   before_script:
     - apk add git
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
