@@ -3,10 +3,25 @@
 Run following commands
 
 ```sh
-kubectl create -f https://gitlab.com/castlecraft/building-blocks/raw/develop/kubernetes/deploy/gitlab-kubernetes/rbac-config-helm-tiller.yaml
-
-helm init --service-account tiller
+helm init --service-account namespace-user --tiller-namespace namespace
 
 # If your cluster previously had Helm/Tiller installed
-helm init --upgrade --service-account tiller
+helm init --upgrade --service-account namespace-user --tiller-namespace namespace
+```
+
+### Secure Tiller
+
+```sh
+kubectl -n namespace delete service tiller-deploy
+
+kubectl -n namespace patch deployment tiller-deploy --patch '
+spec:
+  template:
+    spec:
+      containers:
+        - name: tiller
+          ports: []
+          command: ["/tiller"]
+          args: ["--listen=localhost:44134"]
+'
 ```
