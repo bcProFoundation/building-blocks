@@ -14,10 +14,9 @@ const config = new ConfigService();
 export const TYPEORM_CONNECTION: MongoConnectionOptions = {
   type: 'mongodb',
   name: 'default',
-  host: config.get('DB_HOST'),
-  database: config.get('DB_NAME'),
-  username: config.get('DB_USER'),
-  password: config.get('DB_PASSWORD'),
+  url: `mongodb://${config.get('DB_USER')}:${config.get(
+    'DB_PASSWORD',
+  )}@${config.get('DB_HOST')}/${config.get('DB_NAME')}?useUnifiedTopology=true`,
   logging: false,
   synchronize: true,
   entities: [
