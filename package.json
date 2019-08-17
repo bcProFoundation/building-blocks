@@ -5,7 +5,7 @@
     "version": "lerna clean --yes && lerna bootstrap --ignore-scripts -- --package-lock-only --no-audit && git add apps/*/package-lock.json frontends/*/package-lock.json"
   },
   "devDependencies": {
-    "@types/node": "^12.6.9",
+    "@types/node": "^12.7.2",
     "lerna": "^3.16.4",
     "npm-check": "^5.9.0",
     "typedoc": "^0.15.0"

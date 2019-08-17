@@ -55,7 +55,7 @@ export class ExpressServer {
       'DB_USER',
     )}:${this.configService.get('DB_PASSWORD')}@${this.configService.get(
       'DB_HOST',
-    )}/${this.configService.get('DB_NAME')}`;
+    )}/${this.configService.get('DB_NAME')}?useUnifiedTopology=true`;
 
     const store = new MongoStore({
       url,

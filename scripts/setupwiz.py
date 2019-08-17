@@ -104,7 +104,7 @@ def add_client():
                     client_url + '/index.html',
                     client_url + '/silent-refresh.html',
                 ],
-                'allowedScopes': ['openid', 'email', 'roles'],
+                'allowedScopes': ['openid', 'email', 'roles', 'profile'],
                 'isTrusted': 1,
                 'tokenDeleteEndpoint': client_url + '/connect/v1/token_delete',
                 'userDeleteEndpoint': client_url + '/connect/v1/user_delete',
