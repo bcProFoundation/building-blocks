@@ -22,6 +22,7 @@ import { SystemSettingsModule } from './system-settings/system-settings.module';
         return {
           uri,
           useNewUrlParser: true,
+          useUnifiedTopology: true,
         };
       },
       inject: [ConfigService],
