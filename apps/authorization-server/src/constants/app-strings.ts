@@ -16,3 +16,4 @@ export const SWAGGER_ROUTE = 'api-docs';
 export const SUCCESS = 'Success';
 export const THIRTY_NUMBER = 30;
 export const TEN_NUMBER = 10;
+export const SERVICE = 'authorization-server';

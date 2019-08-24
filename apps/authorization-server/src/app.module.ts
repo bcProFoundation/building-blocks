@@ -17,6 +17,7 @@ import { UserManagementModule } from './user-management/user-management.module';
 import { ClientManagementModule } from './client-management/client-management.module';
 import { SystemSettingsModule } from './system-settings/system-settings.module';
 import { TerminusOptionsService } from './system-settings/aggregates/terminus-options/terminus-options.service';
+import { EventStoreModule } from './event-store/event-store.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { TerminusOptionsService } from './system-settings/aggregates/terminus-op
     UserManagementModule,
     ClientManagementModule,
     SystemSettingsModule,
+    EventStoreModule,
   ],
   controllers: [AppController],
   providers: [AppService],

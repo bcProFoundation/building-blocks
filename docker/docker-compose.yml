@@ -34,6 +34,18 @@ services:
     volumes:
       - redis-vol:/data
 
+  eventstore:
+    image: eventstore/eventstore:latest
+    restart: unless-stopped
+    ports:
+      - "1112:1112"
+      - "1113:1113"
+      - "2112:2112"
+      - "2113:2113"
+    volumes:
+      - redis-vol:/data
+
 volumes:
   mongo-vol:
   redis-vol:
+  eventstore-vol:

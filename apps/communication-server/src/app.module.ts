@@ -13,6 +13,7 @@ import { connectTypeorm } from './constants/typeorm.connection';
 import { CloudStorageModule } from './cloud-storage/cloud-storage.module';
 import { ConfigService } from './config/config.service';
 import { TerminusOptionsService } from './system-settings/aggregates/terminus-options/terminus-options.service';
+import { EventStoreModule } from './event-store/event-store.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { TerminusOptionsService } from './system-settings/aggregates/terminus-op
     SmsmessageModule,
     SystemSettingsModule,
     CloudStorageModule,
+    EventStoreModule,
   ],
   controllers: [AppController],
   providers: [AppService],

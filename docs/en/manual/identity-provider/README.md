@@ -11,6 +11,10 @@ DB_HOST=localhost
 DB_NAME=identity-provider
 DB_USER=identity-provider
 DB_PASSWORD=admin
+ES_HOST=localhost
+ES_USER=bb-dev-idp
+ES_PASSWORD=admin
+ES_STREAM=bb-dev
 ```
 
 Note: It is important to change the secrets and password. DO NOT USE development passwords or secrets in production.

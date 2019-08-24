@@ -80,4 +80,12 @@ export class ConfigService {
         return this.envConfig[key];
     }
   }
+
+  getEventStoreConfig() {
+    const hostname = this.get(ES_HOST);
+    const username = this.get(ES_USER);
+    const password = this.get(ES_PASSWORD);
+    const stream = this.get(ES_STREAM);
+    return { hostname, username, password, stream };
+  }
 }

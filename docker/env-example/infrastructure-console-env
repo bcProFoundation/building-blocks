@@ -2,3 +2,7 @@ DB_HOST=localhost
 DB_NAME=infrastructure-console
 DB_USER=infrastructure-console
 DB_PASSWORD=admin
+ES_HOST=localhost
+ES_USER=admin
+ES_PASSWORD=changeit
+ES_STREAM=bb-dev
