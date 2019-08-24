@@ -5,5 +5,6 @@
   "/service/v1": { "target": "http://admin.localhost:5000", "secure": false, "logLevel": "debug" },
   "/service_type/v1": { "target": "http://admin.localhost:5000", "secure": false, "logLevel": "debug" },
   "/settings/v1": { "target": "http://admin.localhost:5000", "secure": false, "logLevel": "debug" },
-  "/brand/v1": { "target": "http://admin.localhost:5000", "secure": false, "logLevel": "debug" }
+  "/brand/v1": { "target": "http://admin.localhost:5000", "secure": false, "logLevel": "debug" },
+  "/api": { "target": "http://admin.localhost:5000", "secure": false, "logLevel": "debug" }
 }

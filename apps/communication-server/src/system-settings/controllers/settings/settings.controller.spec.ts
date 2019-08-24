@@ -3,7 +3,7 @@ import { HttpModule } from '@nestjs/common';
 import { SettingsController } from './settings.controller';
 import { TokenCacheService } from '../../../auth/entities/token-cache/token-cache.service';
 import { TokenGuard } from '../../../auth/guards/token.guard';
-import { SettingsService } from '../../aggregates/settings.service';
+import { SettingsService } from '../../aggregates/settings/settings.service';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 
 describe('SettingsController', () => {

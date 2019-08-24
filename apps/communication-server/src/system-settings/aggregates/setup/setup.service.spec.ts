@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SetupService } from './setup.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { ServerSettings } from '../../system-settings/entities/server-settings/server-settings.entity';
-import { ServerSettingsService } from '../../system-settings/entities/server-settings/server-settings.service';
+import { ServerSettings } from '../../entities/server-settings/server-settings.entity';
+import { ServerSettingsService } from '../../entities/server-settings/server-settings.service';
 import { HttpService } from '@nestjs/common';
 import { from } from 'rxjs';
 

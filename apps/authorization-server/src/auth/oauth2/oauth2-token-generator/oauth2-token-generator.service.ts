@@ -9,7 +9,7 @@ import { ClientService } from '../../../client-management/entities/client/client
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { Client } from '../../../client-management/entities/client/client.interface';
 import { BearerToken } from '../../../auth/entities/bearer-token/bearer-token.interface';
-import { ConfigService } from '../../../config/config.service';
+import { ConfigService, TOKEN_VALIDITY } from '../../../config/config.service';
 
 @Injectable()
 export class OAuth2TokenGeneratorService {
@@ -58,7 +58,7 @@ export class OAuth2TokenGeneratorService {
     const extraParams: any = {
       // list of scopes to space separated string
       scope: scope.join(' '),
-      expires_in: Number(this.configService.get('TOKEN_VALIDITY')),
+      expires_in: Number(this.configService.get(TOKEN_VALIDITY)),
     };
 
     bearerToken.scope = scope;

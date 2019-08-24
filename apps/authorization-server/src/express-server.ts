@@ -4,13 +4,23 @@ import * as expressSession from 'express-session';
 import * as passport from 'passport';
 import * as helmet from 'helmet';
 import * as connectMongoDBSession from 'connect-mongo';
-import { ConfigService } from './config/config.service';
+import {
+  ConfigService,
+  SESSION_SECRET,
+  COOKIE_MAX_AGE,
+  DB_USER,
+  DB_PASSWORD,
+  DB_HOST,
+  DB_NAME,
+  SESSION_NAME,
+} from './config/config.service';
 import { join } from 'path';
 import { INestApplication } from '@nestjs/common';
 import { i18n } from './i18n/i18n.config';
 import * as fs from 'fs';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { VIEWS_DIR, SWAGGER_ROUTE } from './constants/app-strings';
+import { SESSION_COLLECTION } from 'auth/entities/session/session.schema';
 
 // import * as rateLimit from 'express-rate-limit';
 
@@ -42,30 +52,30 @@ export class ExpressServer {
   }
 
   setupSession() {
-    this.server.use(cookieParser(this.configService.get('SESSION_SECRET')));
+    this.server.use(cookieParser(this.configService.get(SESSION_SECRET)));
 
     const cookie = {
-      maxAge: Number(this.configService.get('COOKIE_MAX_AGE')),
+      maxAge: Number(this.configService.get(COOKIE_MAX_AGE)),
       httpOnly: false,
       secure: true,
     };
 
     if (process.env.NODE_ENV !== 'production') cookie.secure = false;
     const url = `mongodb://${this.configService.get(
-      'DB_USER',
-    )}:${this.configService.get('DB_PASSWORD')}@${this.configService.get(
-      'DB_HOST',
-    )}/${this.configService.get('DB_NAME')}?useUnifiedTopology=true`;
+      DB_USER,
+    )}:${this.configService.get(DB_PASSWORD)}@${this.configService.get(
+      DB_HOST,
+    )}/${this.configService.get(DB_NAME)}?useUnifiedTopology=true`;
 
     const store = new MongoStore({
       url,
       touchAfter: 24 * 3600, // 24 hours * 3600 secs
-      collection: 'session',
+      collection: SESSION_COLLECTION,
       stringify: false,
     });
     const sessionConfig = {
-      name: this.configService.get('SESSION_NAME'),
-      secret: this.configService.get('SESSION_SECRET'),
+      name: this.configService.get(SESSION_NAME),
+      secret: this.configService.get(SESSION_SECRET),
       store,
       cookie,
       saveUninitialized: false,

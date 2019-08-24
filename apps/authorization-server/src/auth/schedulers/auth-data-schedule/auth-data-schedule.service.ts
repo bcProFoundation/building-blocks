@@ -2,7 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { OnModuleInit } from '@nestjs/common';
 import * as Bull from 'bull';
 import { BullOptions } from '../../../constants/bull-queue.options';
-import { ConfigService } from '../../../config/config.service';
+import {
+  ConfigService,
+  BULL_QUEUE_REDIS_HOST,
+  BULL_QUEUE_REDIS_PORT,
+  BULL_QUEUE_REDIS_PASSWORD,
+} from '../../../config/config.service';
 import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
 
 export const AUTH_DATA_DELETE_QUEUE = 'auth_data_delete_queue';
@@ -16,12 +21,11 @@ export class AuthDataScheduleService implements OnModuleInit {
   ) {
     const bullOptions: BullOptions = {
       redis: {
-        host: this.configService.get('BULL_QUEUE_REDIS_HOST'),
-        port: Number(this.configService.get('BULL_QUEUE_REDIS_PORT')),
-        password: this.configService.get('BULL_QUEUE_REDIS_PASSWORD'),
+        host: this.configService.get(BULL_QUEUE_REDIS_HOST),
+        port: Number(this.configService.get(BULL_QUEUE_REDIS_PORT)),
+        password: this.configService.get(BULL_QUEUE_REDIS_PASSWORD),
       },
     };
-    configService.get('BULL_QUEUE_REDIS_PORT');
     this.queue = new Bull(AUTH_DATA_DELETE_QUEUE, bullOptions);
   }
 

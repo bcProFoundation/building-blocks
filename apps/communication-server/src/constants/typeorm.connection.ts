@@ -1,5 +1,10 @@
-import { ConfigService } from '../config/config.service';
 import { MongoConnectionOptions } from 'typeorm/driver/mongodb/MongoConnectionOptions';
+import {
+  DB_USER,
+  DB_PASSWORD,
+  DB_HOST,
+  DB_NAME,
+} from '../config/config.service';
 import { TokenCache } from '../auth/entities/token-cache/token-cache.entity';
 import { EmailAccount } from '../email/entities/email-account/email-account.entity';
 import { OAuth2Provider } from '../oauth2-client/entities/oauth2-provider/oauth2-provider.entity';
@@ -9,25 +14,25 @@ import { ServerSettings } from '../system-settings/entities/server-settings/serv
 import { QueueLog } from '../system-settings/entities/queue-log/queue-log.entity';
 import { Storage } from '../cloud-storage/entities/storage/storage.entity';
 
-const config = new ConfigService();
-
-export const TYPEORM_CONNECTION: MongoConnectionOptions = {
-  type: 'mongodb',
-  name: 'default',
-  url: `mongodb://${config.get('DB_USER')}:${config.get(
-    'DB_PASSWORD',
-  )}@${config.get('DB_HOST')}/${config.get('DB_NAME')}?useUnifiedTopology=true`,
-  logging: false,
-  synchronize: true,
-  entities: [
-    TokenCache,
-    EmailAccount,
-    OAuth2Provider,
-    OAuth2Token,
-    SMSGateway,
-    ServerSettings,
-    QueueLog,
-    Storage,
-  ],
-  useNewUrlParser: true,
-};
+export function connectTypeorm(config): MongoConnectionOptions {
+  return {
+    url: `mongodb://${config.get(DB_USER)}:${config.get(
+      DB_PASSWORD,
+    )}@${config.get(DB_HOST)}/${config.get(DB_NAME)}?useUnifiedTopology=true`,
+    type: 'mongodb',
+    name: 'default',
+    logging: false,
+    synchronize: true,
+    entities: [
+      TokenCache,
+      EmailAccount,
+      OAuth2Provider,
+      OAuth2Token,
+      SMSGateway,
+      ServerSettings,
+      QueueLog,
+      Storage,
+    ],
+    useNewUrlParser: true,
+  };
+}

@@ -1,4 +1,5 @@
 import { Module, Global, HttpModule } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
 import { SystemSettingsEntitiesModule } from './entities/entities.module';
 import { SetupService } from './controllers/setup/setup.service';
 import { SetupController } from './controllers/setup/setup.controller';
@@ -7,7 +8,6 @@ import { SystemSettingsManagementService } from './aggregates/system-settings-ma
 import { SystemSettingsCommandHandlers } from './commands';
 import { SystemSettingsEventHandlers } from './events';
 import { AuthEntitiesModule } from '../auth/entities/entities.module';
-import { CqrsModule } from '@nestjs/cqrs';
 
 @Global()
 @Module({

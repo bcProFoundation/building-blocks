@@ -1,7 +1,12 @@
 import { Injectable, OnModuleInit, HttpService } from '@nestjs/common';
 import * as Bull from 'bull';
 import { BullOptions } from '../../../constants/bull-queue.options';
-import { ConfigService } from '../../../config/config.service';
+import {
+  ConfigService,
+  BULL_QUEUE_REDIS_HOST,
+  BULL_QUEUE_REDIS_PORT,
+  BULL_QUEUE_REDIS_PASSWORD,
+} from '../../../config/config.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
 import { retry } from 'rxjs/operators';
 
@@ -18,12 +23,11 @@ export class UserDeleteRequestService implements OnModuleInit {
   ) {
     const bullOptions: BullOptions = {
       redis: {
-        host: this.configService.get('BULL_QUEUE_REDIS_HOST'),
-        port: Number(this.configService.get('BULL_QUEUE_REDIS_PORT')),
-        password: this.configService.get('BULL_QUEUE_REDIS_PASSWORD'),
+        host: this.configService.get(BULL_QUEUE_REDIS_HOST),
+        port: Number(this.configService.get(BULL_QUEUE_REDIS_PORT)),
+        password: this.configService.get(BULL_QUEUE_REDIS_PASSWORD),
       },
     };
-    configService.get('BULL_QUEUE_REDIS_PORT');
     this.queue = new Bull(USER_DELETE_REQUEST, bullOptions);
   }
 
