@@ -1,7 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import * as Bull from 'bull';
 import { BullOptions } from '../../../constants/bull-queue.options';
-import { ConfigService } from '../../../config/config.service';
+import {
+  ConfigService,
+  BULL_QUEUE_REDIS_HOST,
+  BULL_QUEUE_REDIS_PORT,
+  BULL_QUEUE_REDIS_PASSWORD,
+} from '../../../config/config.service';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { AuthorizationCodeService } from '../../entities/authorization-code/authorization-code.service';
 import { ServerSettings } from '../../../system-settings/entities/server-settings/server-settings.interface';
@@ -20,9 +25,9 @@ export class AuthCodeSchedulerService {
   ) {
     const bullOptions: BullOptions = {
       redis: {
-        host: this.config.get('BULL_QUEUE_REDIS_HOST'),
-        port: Number(this.config.get('BULL_QUEUE_REDIS_PORT')),
-        password: this.config.get('BULL_QUEUE_REDIS_PASSWORD'),
+        host: this.config.get(BULL_QUEUE_REDIS_HOST),
+        port: Number(this.config.get(BULL_QUEUE_REDIS_PORT)),
+        password: this.config.get(BULL_QUEUE_REDIS_PASSWORD),
       },
     };
     this.queue = new Bull(AUTH_CODE_DELETE_QUEUE, bullOptions);

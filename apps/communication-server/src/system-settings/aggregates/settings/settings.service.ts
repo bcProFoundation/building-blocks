@@ -1,6 +1,6 @@
 import { Injectable, HttpService } from '@nestjs/common';
-import { ServerSettingsService } from '../../system-settings/entities/server-settings/server-settings.service';
-import { ServerSettings } from '../../system-settings/entities/server-settings/server-settings.entity';
+import { ServerSettingsService } from '../../entities/server-settings/server-settings.service';
+import { ServerSettings } from '../../entities/server-settings/server-settings.entity';
 import { Observable, from, of } from 'rxjs';
 import { switchMap, catchError } from 'rxjs/operators';
 

@@ -6,7 +6,7 @@ import { OIDCKeyService } from '../../../auth/entities/oidc-key/oidc-key.service
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { ServerSettings } from '../../../system-settings/entities/server-settings/server-settings.interface';
 import { JWKSNotFound } from '../../../common/filters/exceptions';
-import { ConfigService } from '../../../config/config.service';
+import { ConfigService, TOKEN_VALIDITY } from '../../../config/config.service';
 import { User } from '../../../user-management/entities/user/user.interface';
 import { Client } from '../../../client-management/entities/client/client.interface';
 import {
@@ -62,7 +62,7 @@ export class IDTokenGrantService {
       aud: clientId,
       iat: Math.trunc(issuedAt),
       exp:
-        Math.trunc(issuedAt) + Number(this.configService.get('TOKEN_VALIDITY')),
+        Math.trunc(issuedAt) + Number(this.configService.get(TOKEN_VALIDITY)),
       sub: user.uuid,
       nonce,
     };

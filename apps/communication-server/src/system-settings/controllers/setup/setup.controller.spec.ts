@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SetupController } from './setup.controller';
-import { SetupService } from '../../aggregates/setup.service';
+import { SetupService } from '../../aggregates/setup/setup.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { ServerSettings } from '../../../system-settings/entities/server-settings/server-settings.entity';

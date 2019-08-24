@@ -1,10 +1,30 @@
 import * as Joi from 'joi';
 import * as dotenv from 'dotenv';
+import { Injectable } from '@nestjs/common';
 
 export interface EnvConfig {
   [prop: string]: string;
 }
 
+export const NODE_ENV = 'NODE_ENV';
+export const SESSION_SECRET = 'SESSION_SECRET';
+export const EXPIRY_DAYS = 'EXPIRY_DAYS';
+export const COOKIE_MAX_AGE = 'COOKIE_MAX_AGE';
+export const SESSION_NAME = 'SESSION_NAME';
+export const TOKEN_VALIDITY = 'TOKEN_VALIDITY';
+export const DB_NAME = 'DB_NAME';
+export const DB_HOST = 'DB_HOST';
+export const DB_USER = 'DB_USER';
+export const DB_PASSWORD = 'DB_PASSWORD';
+export const BULL_QUEUE_REDIS_HOST = 'BULL_QUEUE_REDIS_HOST';
+export const BULL_QUEUE_REDIS_PORT = 'BULL_QUEUE_REDIS_PORT';
+export const BULL_QUEUE_REDIS_PASSWORD = 'BULL_QUEUE_REDIS_PASSWORD';
+export const ES_HOST = 'ES_HOST';
+export const ES_USER = 'ES_USER';
+export const ES_PASSWORD = 'ES_PASSWORD';
+export const ES_STREAM = 'ES_STREAM';
+
+@Injectable()
 export class ConfigService {
   private readonly envConfig: EnvConfig;
 
@@ -34,6 +54,10 @@ export class ConfigService {
       BULL_QUEUE_REDIS_HOST: Joi.string().required(),
       BULL_QUEUE_REDIS_PORT: Joi.number().required(),
       BULL_QUEUE_REDIS_PASSWORD: Joi.string().required(),
+      ES_HOST: Joi.string().optional(),
+      ES_USER: Joi.string().optional(),
+      ES_PASSWORD: Joi.string().optional(),
+      ES_STREAM: Joi.string().optional(),
     });
 
     const { error, value: validatedEnvConfig } = Joi.validate(

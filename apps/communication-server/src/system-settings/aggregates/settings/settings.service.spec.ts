@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { HttpService } from '@nestjs/common';
 import { from } from 'rxjs';
 import { SettingsService } from './settings.service';
-import { ServerSettingsService } from '../entities/server-settings/server-settings.service';
+import { ServerSettingsService } from '../../entities/server-settings/server-settings.service';
 
 describe('SettingsService', () => {
   let service: SettingsService;

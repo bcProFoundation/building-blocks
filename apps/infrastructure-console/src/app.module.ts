@@ -1,18 +1,26 @@
 import { Module, HttpModule } from '@nestjs/common';
+import { TerminusModule } from '@nestjs/terminus';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { TYPEORM_CONNECTION } from './constants/typeorm.connection';
+import { connectTypeorm } from './constants/typeorm.connection';
 import { SystemSettingsModule } from './system-settings/system-settings.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from './config/config.module';
 import { ServiceManagementModule } from './service-management/service-management.module';
 import { OrganizationSettingsModule } from './organization-settings/organization-settings.module';
+import { TerminusOptionsService } from './system-settings/aggregates/terminus-options/terminus-options.service';
+import { ConfigService } from './config/config.service';
 
 @Module({
   imports: [
     HttpModule,
-    TypeOrmModule.forRoot(TYPEORM_CONNECTION),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: connectTypeorm,
+      inject: [ConfigService],
+    }),
+    TerminusModule.forRootAsync({ useClass: TerminusOptionsService }),
     ConfigModule,
     AuthModule,
     SystemSettingsModule,

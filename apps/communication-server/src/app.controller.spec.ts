@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { HttpService } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { SetupService } from './system-settings/aggregates/setup.service';
+import { SetupService } from './system-settings/aggregates/setup/setup.service';
 import { ServerSettingsService } from './system-settings/entities/server-settings/server-settings.service';
 
 describe('AppController', () => {

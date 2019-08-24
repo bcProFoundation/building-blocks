@@ -14,7 +14,7 @@ import { ADMINISTRATOR } from '../../../constants/app-strings';
 import { TokenGuard } from '../../../auth/guards/token.guard';
 import { RoleGuard } from '../../../auth/guards/role.guard';
 import { Roles } from '../../../auth/decorators/roles.decorator';
-import { SettingsService } from '../../aggregates/settings.service';
+import { SettingsService } from '../../aggregates/settings/settings.service';
 
 @Controller('settings')
 export class SettingsController {
