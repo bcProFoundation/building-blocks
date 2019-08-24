@@ -20,7 +20,7 @@ import { i18n } from './i18n/i18n.config';
 import * as fs from 'fs';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { VIEWS_DIR, SWAGGER_ROUTE } from './constants/app-strings';
-import { SESSION_COLLECTION } from 'auth/entities/session/session.schema';
+import { SESSION_COLLECTION } from './auth/entities/session/session.schema';
 
 // import * as rateLimit from 'express-rate-limit';
 

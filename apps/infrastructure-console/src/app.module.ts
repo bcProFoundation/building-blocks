@@ -11,6 +11,7 @@ import { ServiceManagementModule } from './service-management/service-management
 import { OrganizationSettingsModule } from './organization-settings/organization-settings.module';
 import { TerminusOptionsService } from './system-settings/aggregates/terminus-options/terminus-options.service';
 import { ConfigService } from './config/config.service';
+import { EventStoreModule } from './event-store/event-store.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ConfigService } from './config/config.service';
     SystemSettingsModule,
     ServiceManagementModule,
     OrganizationSettingsModule,
+    EventStoreModule,
   ],
   controllers: [AppController],
   providers: [AppService],

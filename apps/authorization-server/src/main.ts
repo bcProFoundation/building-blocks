@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { ExpressServer } from './express-server';
 import { ConfigService } from './config/config.service';
+import { setupEventStore } from './event-store';
 
 async function bootstrap() {
   const authServer = new ExpressServer(new ConfigService());
@@ -25,6 +26,10 @@ async function bootstrap() {
 
   // Setup Session
   authServer.setupSession();
+
+  // Setup Event Store
+  setupEventStore(app);
+
   await app.listen(3000);
 }
 

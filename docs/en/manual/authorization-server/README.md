@@ -17,6 +17,10 @@ DB_PASSWORD=admin
 BULL_QUEUE_REDIS_HOST=localhost
 BULL_QUEUE_REDIS_PORT=6379
 BULL_QUEUE_REDIS_PASSWORD=admin
+ES_HOST=localhost
+ES_USER=bb-dev-as
+ES_PASSWORD=admin
+ES_STREAM=bb-dev
 ```
 
 Note: It is important to change the secrets and password. DO NOT USE development passwords or secrets.

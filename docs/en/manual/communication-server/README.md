@@ -9,6 +9,10 @@ DB_HOST=localhost
 DB_NAME=communication-server
 DB_USER=communication-server
 DB_PASSWORD=admin
+ES_HOST=localhost
+ES_USER=bb-dev-cs
+ES_PASSWORD=admin
+ES_STREAM=bb-dev
 ```
 
 Note: It is important to change the secrets and password. DO NOT USE development passwords or secrets in production.
