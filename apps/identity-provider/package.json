@@ -36,7 +36,7 @@
     "form-data": "^2.5.0",
     "geteventstore-promise": "^3.1.2",
     "joi": "^14.3.1",
-    "mongodb": "^3.3.0",
+    "mongodb": "^3.3.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^6.5.2",
     "saslprep": "^1.0.3",
@@ -45,8 +45,8 @@
   },
   "devDependencies": {
     "@nestjs/testing": "^6.5.3",
-    "@types/express": "^4.17.0",
-    "@types/jest": "^24.0.17",
+    "@types/express": "^4.17.1",
+    "@types/jest": "^24.0.18",
     "@types/node": "^12.7.2",
     "@types/supertest": "^2.0.8",
     "jest": "^24.9.0",
@@ -58,7 +58,7 @@
     "ts-loader": "^6.0.4",
     "ts-node": "^8.3.0",
     "tsconfig-paths": "^3.8.0",
-    "tslint": "^5.18.0",
+    "tslint": "^5.19.0",
     "typescript": "^3.5.3"
   },
   "jest": {
