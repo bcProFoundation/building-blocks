@@ -37,7 +37,7 @@ export class TerminusOptionsService implements TerminusOptionsFactory {
             transport: Transport.TCP,
             options: {
               host: this.config.get(BULL_QUEUE_REDIS_HOST),
-              port: Number(BULL_QUEUE_REDIS_PORT),
+              port: Number(this.config.get(BULL_QUEUE_REDIS_PORT)),
             },
           }),
       ],
