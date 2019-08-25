@@ -33,6 +33,7 @@ export class EventStoreAggregateService
     length: number,
     direction: ReadDirection = 'forward',
     type?: string[],
+    stream?: string,
   ) {
     if (!this.client.connection) {
       throw new BadGatewayException({ connection: false });
@@ -46,7 +47,7 @@ export class EventStoreAggregateService
 
     if (type && type.length > 0) {
       docs = await this.client.connection.getEventsByType(
-        this.client.stream,
+        stream || this.client.stream,
         type,
         page,
         length,
@@ -57,7 +58,7 @@ export class EventStoreAggregateService
     }
 
     docs = await this.client.connection.getEvents(
-      this.client.stream,
+      stream || this.client.stream,
       page,
       length,
       direction,

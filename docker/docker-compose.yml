@@ -43,7 +43,7 @@ services:
       - "2112:2112"
       - "2113:2113"
     volumes:
-      - redis-vol:/data
+      - eventstore-vol:/var/lib/eventstore
 
 volumes:
   mongo-vol:

@@ -19,4 +19,8 @@ export class EventListQueryDto {
   @IsString({ each: true })
   @IsOptional()
   type: string[];
+
+  @IsString()
+  @IsOptional()
+  stream: string;
 }

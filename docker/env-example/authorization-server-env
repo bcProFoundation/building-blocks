@@ -13,4 +13,4 @@ BULL_QUEUE_REDIS_PASSWORD=admin
 ES_HOST=localhost
 ES_USER=admin
 ES_PASSWORD=changeit
-ES_STREAM=bb-dev
+ES_STREAM=$bb-dev

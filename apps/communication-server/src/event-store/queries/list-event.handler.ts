@@ -13,6 +13,7 @@ export class ListEventsHandler implements IQueryHandler<ListEventsQuery> {
       Number(query.length),
       query.direction as ReadDirection,
       query.type,
+      query.stream,
     );
   }
 }
