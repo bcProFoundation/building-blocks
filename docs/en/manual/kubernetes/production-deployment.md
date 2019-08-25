@@ -8,24 +8,28 @@
 
 Refer Kubernetes [section](./create-namespace-for-repo.md) of documentation to setup namespaces.
 
-MongoDB helm chart is installed in global-mongo namespace (refer mongodb helm chart docs)
+### MongoDB
 
-Connect to mongo locally to created databases.
+MongoDB helm chart is installed in mongodb namespace as global-mongo (refer mongodb helm chart docs)
+
+Connect to mongo locally to create users for databases.
 
 ```sh
 # export root password
 export MONGODB_ROOT_PASSWORD=$(kubectl get secret --namespace mongodb global-mongodb -o jsonpath="{.data.mongodb-root-password}" | base64 --decode)
 
-# port-forward database from cluster locally
+# port-forward database from cluster for local access
 kubectl port-forward --namespace mongodb svc/global-mongodb 27017:27017 &
 
-# connect database using mongo client
+# to connect to mongo service using mongo client
 mongo --host 127.0.0.1 --authenticationDatabase admin -p $MONGODB_ROOT_PASSWORD -u root
 ```
 
-Create databases using mongo shell, we need four dbs for authorization-server, communication-server, identity-provider and infrastructure-console. Following is example command for creating a database.
+Create users for databases using mongo shell, we need users for four dbs; `authorization-server`, `communication-server`, `identity-provider` and `infrastructure-console`. Following is example command for creating a user for database.
 
-```
+Example command :
+
+``` sh
 mongo accounts-example-com \
     --host localhost \
     --port 27017 \
@@ -36,6 +40,24 @@ mongo accounts-example-com \
 ```
 
 Note: In case of managed db, you need to provide hostnames as env variables. No need to setup databases on cluster. Refer mongodb docs to create databases with user and password access.
+
+### Eventstore
+
+Eventstore helm chart is installed in eventstore namespace as global-eventstore (refer eventstore helm chart docs)
+
+Connect to eventstore locally to create users and give them access to streams.
+
+```sh
+# port-forward eventstore from cluster for local access
+kubectl port-forward --namespace eventstore svc/global-eventstore 2113:2113 &
+```
+
+Proceed using Web UI available at http://localhost:2113. Refer Event store documentation for details.
+
+- Add Users for each app, viz. `authorization-server`, `communication-server`, `identity-provider`, and `infrastructure-console`
+- Share a common stream between the apps or separate them, decide as per your architecture.
+- `communication-server` needs access to read the streams to list them via administrator only endpoint. (used for development, debugging, operations)
+- In case of shared development cluster, use your development kubeconfig to port-forward eventstore and use it to listen to streams during development
 
 ### Clone helm charts repository
 
@@ -89,6 +111,12 @@ Note:
 - Use environment variables instead of hard coded string in commands in case of automated deployments
 - Make manual post request in case you dont need any other service e.g. infrastructure-console
 
-Setup initializes everything, adds administrator, basic client.
+### Setup Details
 
-It starts generating public private keys every 15 days for jwks.
+- Setup initializes everything, adds administrator and first oauth client called infrastructure-console
+- Authentication, Authorization and setting up infrastructure is fairly synchronous
+- Resource intensive jobs like clean ups, key pair generation during setup and fortnightly key pair refresh schedule is handled by redis based queue
+- All apps in building blocks use eventstore only to log events
+- `communication-server` exposes endpoint to list streams for administrators
+- eventstore can be used as audit log
+- Events from building block related streams can be used by other event driven microservice

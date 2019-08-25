@@ -11,6 +11,8 @@ helm init --upgrade --service-account namespace-user --tiller-namespace namespac
 
 ### Secure Tiller
 
+read more: https://engineering.bitnami.com/articles/helm-security.html
+
 ```sh
 kubectl -n namespace delete service tiller-deploy
 
