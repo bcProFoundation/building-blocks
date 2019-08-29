@@ -2,15 +2,15 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from './passport.strategy';
 import { PassportOAuth2ClientStrategy } from './passport-oauth2-client.strategy';
 import { Request } from 'express';
-import { SocialLoginManagementService } from '../../aggregates/social-login-management/social-login-management.service';
 import { bindCallback } from 'rxjs';
+import { SocialLoginCallbackService } from '../../aggregates/social-login-callback/social-login-callback.service';
 
 @Injectable()
 export class OAuth2ClientStrategy extends PassportStrategy(
   PassportOAuth2ClientStrategy,
 ) {
   constructor(
-    private readonly socialLoginService: SocialLoginManagementService,
+    private readonly socialLoginCallback: SocialLoginCallbackService,
   ) {
     super();
   }
@@ -25,7 +25,7 @@ export class OAuth2ClientStrategy extends PassportStrategy(
       const socialLogin = req.params.socialLogin;
       const redirect = req.query.redirect;
       const state = req.query.state;
-      this.socialLoginService
+      this.socialLoginCallback
         .requestTokenAndProfile(
           code,
           state,
