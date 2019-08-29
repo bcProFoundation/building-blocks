@@ -1,9 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SocialLoginManagementService } from './social-login-management.service';
-import { UserService } from '../../../user-management/entities/user/user.service';
 import { SocialLoginService } from '../../entities/social-login/social-login.service';
-import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
-import { HttpService } from '@nestjs/common';
+import { UserService } from '../../../user-management/entities/user/user.service';
 
 describe('SocialLoginManagementService', () => {
   let service: SocialLoginManagementService;
@@ -13,19 +11,11 @@ describe('SocialLoginManagementService', () => {
       providers: [
         SocialLoginManagementService,
         {
-          provide: UserService,
-          useValue: {},
-        },
-        {
           provide: SocialLoginService,
           useValue: {},
         },
         {
-          provide: ServerSettingsService,
-          useValue: {},
-        },
-        {
-          provide: HttpService,
+          provide: UserService,
           useValue: {},
         },
       ],

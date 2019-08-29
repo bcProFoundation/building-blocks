@@ -6,6 +6,7 @@ import {
   HttpModule,
 } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
+import { APP_FILTER } from '@nestjs/core';
 import { OAuth2orizeSetup } from './middlewares/oauth2orize.setup';
 import { OAuth2ConfirmationMiddleware } from './middlewares/oauth2-confirmation.middleware';
 import { OAuth2AuthorizationMiddleware } from './middlewares/oauth2-authorization.middleware';
@@ -27,7 +28,6 @@ import { AuthAggregates } from './aggregates';
 import { AuthCommandHandlers } from './commands';
 import { AuthEventHandlers } from './events';
 import { AuthSchedulers } from './schedulers';
-import { APP_FILTER } from '@nestjs/core';
 import { AuthorizationErrorFilter } from '../common/filters/authorization-error.filter';
 import { TokenErrorFilter } from '../common/filters/token-error.filter';
 import { OAuth2ErrorFilter } from '../common/filters/oauth2-error.filter';
