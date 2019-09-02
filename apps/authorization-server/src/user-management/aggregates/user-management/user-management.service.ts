@@ -22,7 +22,7 @@ import { randomBytes } from 'crypto';
 import { ForgottenPasswordGeneratedEvent } from '../../../user-management/events/forgotten-password-generated/forgotten-password-generated.event';
 import { UserAccountDto } from '../../policies';
 import { i18n } from '../../../i18n/i18n.config';
-import { CryptographerService } from '../../../common/cryptographer.service';
+import { CryptographerService } from '../../../common/services/cryptographer/cryptographer.service';
 import { PasswordChangedEvent } from '../../events/password-changed/password-changed.event';
 import { UserAccountModifiedEvent } from '../../events/user-account-modified/user-account-modified.event';
 import { UserAccountAddedEvent } from '../../events/user-account-added/user-account-added.event';

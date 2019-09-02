@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CryptographerService } from '../../../common/cryptographer.service';
+import { CryptographerService } from '../../../common/services/cryptographer/cryptographer.service';
 import { BearerTokenService } from '../../../auth/entities/bearer-token/bearer-token.service';
 import {
   invalidScopeException,

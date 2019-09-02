@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  OnModuleInit,
-  OnApplicationBootstrap,
-} from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import * as oauth2orize from 'oauth2orize';
 import * as openidConnect from 'oauth2orize-openid';
 import * as pkce from 'oauth2orize-pkce';
@@ -19,7 +15,7 @@ import { CodeGrantService } from '../oauth2/code-grant/code-grant.service';
 import { codeNonceExtension } from '../oauth2/custom-extensions/code-nonce';
 
 @Injectable()
-export class OAuth2orizeSetup implements OnModuleInit, OnApplicationBootstrap {
+export class OAuth2orizeSetup implements OnModuleInit {
   public server;
   constructor(
     private readonly clientService: ClientService,
@@ -35,8 +31,6 @@ export class OAuth2orizeSetup implements OnModuleInit, OnApplicationBootstrap {
     // Initialize server
     this.server = oauth2orize.createServer();
   }
-
-  onApplicationBootstrap() {} // App boot fails if not implemented
 
   onModuleInit() {
     // Serialize Client

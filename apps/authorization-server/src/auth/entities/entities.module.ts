@@ -1,5 +1,4 @@
 import { Module, HttpModule } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
 import { AuthorizationCodeService } from './authorization-code/authorization-code.service';
 import { BearerTokenService } from './bearer-token/bearer-token.service';
 import { OIDCKeyService } from './oidc-key/oidc-key.service';
@@ -8,8 +7,9 @@ import { SessionService } from './session/session.service';
 import { AuthModuleEntities } from './entities';
 
 @Module({
-  imports: [MongooseModule.forFeature(AuthModuleEntities), HttpModule],
+  imports: [HttpModule],
   providers: [
+    ...AuthModuleEntities,
     AuthorizationCodeService,
     BearerTokenService,
     OIDCKeyService,
@@ -17,7 +17,7 @@ import { AuthModuleEntities } from './entities';
     SessionService,
   ],
   exports: [
-    MongooseModule.forFeature(AuthModuleEntities),
+    ...AuthModuleEntities,
     AuthorizationCodeService,
     BearerTokenService,
     OIDCKeyService,

@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './user.service';
-import { CryptographerService } from '../../../common/cryptographer.service';
-import { getModelToken } from '@nestjs/mongoose';
+import { CryptographerService } from '../../../common/services/cryptographer/cryptographer.service';
 import { USER } from './user.schema';
 import { AUTH_DATA } from '../auth-data/auth-data.schema';
 
@@ -12,15 +11,15 @@ describe('UserService', () => {
       providers: [
         UserService,
         {
-          provide: 'CryptographerService',
-          useClass: CryptographerService,
+          provide: CryptographerService,
+          useValue: {},
         },
         {
-          provide: getModelToken(USER),
+          provide: USER,
           useValue: {}, // provide mock values
         },
         {
-          provide: getModelToken(AUTH_DATA),
+          provide: AUTH_DATA,
           useValue: {}, // provide mock values
         },
       ],

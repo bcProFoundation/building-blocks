@@ -1,13 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { SCOPE } from './scope.schema';
-import { InjectModel } from '@nestjs/mongoose';
 import { Scope } from './scope.interface';
 import { invalidScopeException } from '../../../common/filters/exceptions';
 import { Model } from 'mongoose';
 
 @Injectable()
 export class ScopeService {
-  constructor(@InjectModel(SCOPE) private readonly scopeModel: Model<Scope>) {}
+  constructor(@Inject(SCOPE) private readonly scopeModel: Model<Scope>) {}
 
   async save(params) {
     params.name = params.name.toLowerCase().trim();

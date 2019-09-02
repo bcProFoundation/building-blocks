@@ -15,7 +15,7 @@ import {
   passwordLessLoginAlreadyEnabledException,
   passwordLessLoginNotEnabledException,
 } from '../../../common/filters/exceptions';
-import { CryptographerService } from '../../../common/cryptographer.service';
+import { CryptographerService } from '../../../common/services/cryptographer/cryptographer.service';
 import { AggregateRoot } from '@nestjs/cqrs';
 import { ChangePasswordDto, VerifyEmailDto } from '../../policies';
 import { PasswordChangedEvent } from '../../events/password-changed/password-changed.event';

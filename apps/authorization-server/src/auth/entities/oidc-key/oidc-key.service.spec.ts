@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { OIDCKeyService } from './oidc-key.service';
 import { OIDC_KEY } from './oidc-key.schema';
-import { getModelToken } from '@nestjs/mongoose';
 
 describe('OIDCKey', () => {
   let service: OIDCKeyService;
@@ -10,7 +9,7 @@ describe('OIDCKey', () => {
       providers: [
         OIDCKeyService,
         {
-          provide: getModelToken(OIDC_KEY),
+          provide: OIDC_KEY,
           useValue: {}, // use mock values
         },
       ],

@@ -1,10 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { Model } from 'mongoose';
 import {
   invalidUserException,
   userAlreadyExistsException,
 } from '../../../common/filters/exceptions';
-import { InjectModel } from '@nestjs/mongoose';
 import { USER } from './user.schema';
 import { User } from './user.interface';
 import { i18n } from '../../../i18n/i18n.config';
@@ -12,7 +11,7 @@ import { ADMINISTRATOR } from '../../../constants/app-strings';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(USER) private readonly userModel: Model<User>) {}
+  constructor(@Inject(USER) private readonly userModel: Model<User>) {}
 
   public async save(params) {
     let localUser: User;

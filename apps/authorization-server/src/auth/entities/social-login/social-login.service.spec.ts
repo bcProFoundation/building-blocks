@@ -1,5 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getModelToken } from '@nestjs/mongoose';
 import { SocialLoginService } from './social-login.service';
 import { SOCIAL_LOGIN } from './social-login.schema';
 
@@ -10,7 +9,7 @@ describe('SocialLoginService', () => {
       providers: [
         SocialLoginService,
         {
-          provide: getModelToken(SOCIAL_LOGIN),
+          provide: SOCIAL_LOGIN,
           useValue: {}, // provide mock values
         },
       ],
