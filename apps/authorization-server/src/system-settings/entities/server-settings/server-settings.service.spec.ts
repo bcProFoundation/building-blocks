@@ -1,5 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getModelToken } from '@nestjs/mongoose';
 import { ServerSettingsService } from './server-settings.service';
 import { SERVER_SETTINGS } from './server-settings.schema';
 
@@ -10,7 +9,7 @@ describe('ServerSettings', () => {
       providers: [
         ServerSettingsService,
         {
-          provide: getModelToken(SERVER_SETTINGS),
+          provide: SERVER_SETTINGS,
           useValue: {}, // provide mock values
         },
       ],

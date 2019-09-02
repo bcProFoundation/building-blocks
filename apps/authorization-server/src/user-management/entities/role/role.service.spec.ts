@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { RoleService } from './role.service';
-import { getModelToken } from '@nestjs/mongoose';
 import { ROLE } from './role.schema';
 
 describe('RoleService', () => {
@@ -10,7 +9,7 @@ describe('RoleService', () => {
       providers: [
         RoleService,
         {
-          provide: getModelToken(ROLE),
+          provide: ROLE,
           useValue: {}, // provide mock values
         },
       ],

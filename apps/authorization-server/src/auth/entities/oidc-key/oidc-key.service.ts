@@ -1,14 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { Model } from 'mongoose';
 import * as jose from 'node-jose';
-import { InjectModel } from '@nestjs/mongoose';
 import { OIDC_KEY } from './oidc-key.schema';
 import { OIDCKey } from './oidc-key.interface';
 
 @Injectable()
 export class OIDCKeyService {
   constructor(
-    @InjectModel(OIDC_KEY) private readonly oidcKeyModel: Model<OIDCKey>,
+    @Inject(OIDC_KEY) private readonly oidcKeyModel: Model<OIDCKey>,
   ) {}
 
   async save(oidcKey) {

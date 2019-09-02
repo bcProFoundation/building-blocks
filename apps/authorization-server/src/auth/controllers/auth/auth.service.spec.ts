@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
-import { CryptographerService } from '../../../common/cryptographer.service';
+import { CryptographerService } from '../../../common/services/cryptographer/cryptographer.service';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
 import { AuthGuard } from '../../../auth/guards/auth.guard';

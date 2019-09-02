@@ -1,5 +1,4 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { Injectable, Inject } from '@nestjs/common';
 import { SESSION } from './session.schema';
 import { Model } from 'mongoose';
 import { Session } from './session.interface';
@@ -7,7 +6,7 @@ import { Session } from './session.interface';
 @Injectable()
 export class SessionService {
   constructor(
-    @InjectModel(SESSION)
+    @Inject(SESSION)
     private readonly sessionModel: Model<Session>,
   ) {}
 

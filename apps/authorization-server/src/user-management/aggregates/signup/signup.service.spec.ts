@@ -4,7 +4,7 @@ import { HttpService } from '@nestjs/common';
 import { UserService } from '../../entities/user/user.service';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
-import { CryptographerService } from '../../../common/cryptographer.service';
+import { CryptographerService } from '../../../common/services/cryptographer/cryptographer.service';
 import { AuthDataService } from '../../entities/auth-data/auth-data.service';
 
 describe('SignupService', () => {

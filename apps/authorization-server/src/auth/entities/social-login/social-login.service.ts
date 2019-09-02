@@ -1,5 +1,4 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { Injectable, Inject } from '@nestjs/common';
 import { SOCIAL_LOGIN } from './social-login.schema';
 import { Model } from 'mongoose';
 import { SocialLogin } from './social-login.interface';
@@ -7,7 +6,7 @@ import { SocialLogin } from './social-login.interface';
 @Injectable()
 export class SocialLoginService {
   constructor(
-    @InjectModel(SOCIAL_LOGIN)
+    @Inject(SOCIAL_LOGIN)
     private readonly socialLoginModel: Model<SocialLogin>,
   ) {}
 

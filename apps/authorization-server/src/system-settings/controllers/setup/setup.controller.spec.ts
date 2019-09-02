@@ -5,7 +5,7 @@ import { ClientService } from '../../../client-management/entities/client/client
 import { ScopeService } from '../../../client-management/entities/scope/scope.service';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { AuthService } from '../../../auth/controllers/auth/auth.service';
-import { CryptographerService } from '../../../common/cryptographer.service';
+import { CryptographerService } from '../../../common/services/cryptographer/cryptographer.service';
 import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
 import { RoleService } from '../../../user-management/entities/role/role.service';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';

@@ -1,5 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { Injectable, UnauthorizedException, Inject } from '@nestjs/common';
 import { CLIENT } from './client.schema';
 import { Client } from './client.interface';
 import { Model } from 'mongoose';
@@ -7,9 +6,7 @@ import { AUTHORIZATION } from '../../../constants/app-strings';
 
 @Injectable()
 export class ClientService {
-  constructor(
-    @InjectModel(CLIENT) private readonly clientModel: Model<Client>,
-  ) {}
+  constructor(@Inject(CLIENT) private readonly clientModel: Model<Client>) {}
 
   async findOne(params) {
     return await this.clientModel.findOne(params);

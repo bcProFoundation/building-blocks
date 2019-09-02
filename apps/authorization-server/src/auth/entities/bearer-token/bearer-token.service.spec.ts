@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BearerTokenService } from './bearer-token.service';
-import { getModelToken } from '@nestjs/mongoose';
 import { BEARER_TOKEN } from './bearer-token.schema';
 
 describe('BearerTokenService', () => {
@@ -10,7 +9,7 @@ describe('BearerTokenService', () => {
       providers: [
         BearerTokenService,
         {
-          provide: getModelToken(BEARER_TOKEN),
+          provide: BEARER_TOKEN,
           useValue: {}, // use mock values
         },
       ],

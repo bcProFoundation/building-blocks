@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { OAuth2TokenGeneratorService } from '../oauth2-token-generator/oauth2-token-generator.service';
-import { CryptographerService } from '../../../common/cryptographer.service';
+import { CryptographerService } from '../../../common/services/cryptographer/cryptographer.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
 import { PasswordExchangeService } from './password-exchange.service';
 import { BearerTokenService } from '../../../auth/entities/bearer-token/bearer-token.service';

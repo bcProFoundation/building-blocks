@@ -1,6 +1,5 @@
 import { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { Injectable, Inject } from '@nestjs/common';
 import { AUTHORIZATION_CODE } from './authorization-code.schema';
 import { AuthorizationCode } from './authorization-code.interface';
 import { invalidAuthorizationCodeException } from '../../../common/filters/exceptions';
@@ -8,7 +7,7 @@ import { invalidAuthorizationCodeException } from '../../../common/filters/excep
 @Injectable()
 export class AuthorizationCodeService {
   constructor(
-    @InjectModel(AUTHORIZATION_CODE)
+    @Inject(AUTHORIZATION_CODE)
     private readonly authCodeModel: Model<AuthorizationCode>,
   ) {}
 

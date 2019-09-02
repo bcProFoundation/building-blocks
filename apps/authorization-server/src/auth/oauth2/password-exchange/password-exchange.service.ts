@@ -4,7 +4,7 @@ import { invalidScopeException } from '../../../common/filters/exceptions';
 import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
 import { UserService } from '../../../user-management/entities/user/user.service';
-import { CryptographerService } from '../../../common/cryptographer.service';
+import { CryptographerService } from '../../../common/services/cryptographer/cryptographer.service';
 
 @Injectable()
 export class PasswordExchangeService {

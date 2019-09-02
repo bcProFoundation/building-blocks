@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthDataService } from './auth-data.service';
-import { getModelToken } from '@nestjs/mongoose';
 import { AUTH_DATA } from './auth-data.schema';
 
 describe('AuthDataService', () => {
@@ -10,7 +9,7 @@ describe('AuthDataService', () => {
       providers: [
         AuthDataService,
         {
-          provide: getModelToken(AUTH_DATA),
+          provide: AUTH_DATA,
           useValue: {}, // provide mock values
         },
       ],

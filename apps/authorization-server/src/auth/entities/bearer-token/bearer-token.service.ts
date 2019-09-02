@@ -1,6 +1,5 @@
 import { Model } from 'mongoose';
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { Injectable, HttpException, HttpStatus, Inject } from '@nestjs/common';
 import { BEARER_TOKEN } from './bearer-token.schema';
 import { BearerToken } from './bearer-token.interface';
 import { i18n } from '../../../i18n/i18n.config';
@@ -8,7 +7,7 @@ import { i18n } from '../../../i18n/i18n.config';
 @Injectable()
 export class BearerTokenService {
   constructor(
-    @InjectModel(BEARER_TOKEN)
+    @Inject(BEARER_TOKEN)
     private readonly bearerTokenModel: Model<BearerToken>,
   ) {}
   async save(params) {

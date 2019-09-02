@@ -1,13 +1,12 @@
 import { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { Injectable, Inject } from '@nestjs/common';
 import { AUTH_DATA } from './auth-data.schema';
 import { AuthData } from './auth-data.interface';
 
 @Injectable()
 export class AuthDataService {
   constructor(
-    @InjectModel(AUTH_DATA) private readonly authDataModel: Model<AuthData>,
+    @Inject(AUTH_DATA) private readonly authDataModel: Model<AuthData>,
   ) {}
 
   async save(authData) {

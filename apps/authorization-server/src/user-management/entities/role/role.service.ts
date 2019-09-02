@@ -1,5 +1,4 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { Injectable, Inject } from '@nestjs/common';
 import { ROLE } from './role.schema';
 import { Role } from './role.interface';
 import { invalidRoleException } from '../../../common/filters/exceptions';
@@ -7,7 +6,7 @@ import { Model } from 'mongoose';
 
 @Injectable()
 export class RoleService {
-  constructor(@InjectModel(ROLE) private readonly roleModel: Model<Role>) {}
+  constructor(@Inject(ROLE) private readonly roleModel: Model<Role>) {}
 
   async save(params) {
     params.name = params.name.toLowerCase().trim();

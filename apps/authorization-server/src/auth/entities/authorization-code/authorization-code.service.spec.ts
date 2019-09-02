@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthorizationCodeService } from './authorization-code.service';
-import { getModelToken } from '@nestjs/mongoose';
 import { AUTHORIZATION_CODE } from './authorization-code.schema';
 
 describe('AuthorizationCodeService', () => {
@@ -10,7 +9,7 @@ describe('AuthorizationCodeService', () => {
       providers: [
         AuthorizationCodeService,
         {
-          provide: getModelToken(AUTHORIZATION_CODE),
+          provide: AUTHORIZATION_CODE,
           useValue: {}, // use mock values
         },
       ],

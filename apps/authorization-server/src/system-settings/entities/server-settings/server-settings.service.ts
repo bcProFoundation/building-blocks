@@ -1,7 +1,6 @@
-import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
+import { Injectable, HttpStatus, HttpException, Inject } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { settingsNotFoundException } from '../../../common/filters/exceptions';
-import { InjectModel } from '@nestjs/mongoose';
 import { SERVER_SETTINGS } from './server-settings.schema';
 import { ServerSettings } from './server-settings.interface';
 import { i18n } from '../../../i18n/i18n.config';
@@ -9,7 +8,7 @@ import { i18n } from '../../../i18n/i18n.config';
 @Injectable()
 export class ServerSettingsService {
   constructor(
-    @InjectModel(SERVER_SETTINGS)
+    @Inject(SERVER_SETTINGS)
     private readonly settingsModel: Model<ServerSettings>,
   ) {}
 
