@@ -1,9 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ClientController } from './client.controller';
-import { ClientService } from '../../../client-management/entities/client/client.service';
-import { UserService } from '../../../user-management/entities/user/user.service';
-import { CRUDOperationService } from '../../../common/services/crudoperation/crudoperation.service';
-import { CommandBus } from '@nestjs/cqrs';
+import { RoleGuard } from '../../../auth/guards/role.guard';
 
 describe('ClientController', () => {
   let module: TestingModule;
@@ -12,23 +10,18 @@ describe('ClientController', () => {
       controllers: [ClientController],
       providers: [
         {
-          provide: ClientService,
-          useValue: {}, // provide mock values
-        },
-        {
-          provide: UserService,
-          useValue: {}, // provide mock values
-        },
-        {
-          provide: CRUDOperationService,
-          useValue: {}, // provide mock values
-        },
-        {
           provide: CommandBus,
           useFactory: () => jest.fn(),
         },
+        {
+          provide: QueryBus,
+          useFactory: () => jest.fn(),
+        },
       ],
-    }).compile();
+    })
+      .overrideGuard(RoleGuard)
+      .useValue({})
+      .compile();
   });
   it('should be defined', () => {
     const controller: ClientController = module.get<ClientController>(

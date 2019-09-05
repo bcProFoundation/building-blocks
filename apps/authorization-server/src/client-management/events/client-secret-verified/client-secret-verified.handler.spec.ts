@@ -1,13 +1,13 @@
 import { Test } from '@nestjs/testing';
 import { CqrsModule, EventBus } from '@nestjs/cqrs';
 import { Client } from '../../entities/client/client.interface';
-import { ClientModifiedHandler } from './client-modified.handler';
-import { ClientModifiedEvent } from './client-modified.event';
+import { ClientSecretVerifiedHandler } from './client-secret-verified.handler';
+import { ClientSecretVerifiedEvent } from './client-secret-verified.event';
 import { ClientService } from '../../entities/client/client.service';
 
-describe('Event: ClientModifiedHandler', () => {
+describe('Event: ClientSecretUpdatedHandler', () => {
   let eventBus$: EventBus;
-  let eventHandler: ClientModifiedHandler;
+  let eventHandler: ClientSecretVerifiedHandler;
 
   let client: ClientService;
 
@@ -15,7 +15,7 @@ describe('Event: ClientModifiedHandler', () => {
     const module = await Test.createTestingModule({
       imports: [CqrsModule],
       providers: [
-        ClientModifiedHandler,
+        ClientSecretVerifiedHandler,
         {
           provide: EventBus,
           useFactory: () => jest.fn(),
@@ -28,7 +28,9 @@ describe('Event: ClientModifiedHandler', () => {
     }).compile();
 
     eventBus$ = module.get<EventBus>(EventBus);
-    eventHandler = module.get<ClientModifiedHandler>(ClientModifiedHandler);
+    eventHandler = module.get<ClientSecretVerifiedHandler>(
+      ClientSecretVerifiedHandler,
+    );
     client = module.get<ClientService>(ClientService);
   });
 
@@ -40,7 +42,7 @@ describe('Event: ClientModifiedHandler', () => {
   it('should modify Client using ClientService', async () => {
     client.save = jest.fn((...args) => Promise.resolve({} as Client));
     eventBus$.publish = jest.fn(() => {});
-    await eventHandler.handle(new ClientModifiedEvent({} as Client));
+    await eventHandler.handle(new ClientSecretVerifiedEvent({} as Client));
     expect(client.save).toHaveBeenCalledTimes(1);
   });
 });

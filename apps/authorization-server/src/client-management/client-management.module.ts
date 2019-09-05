@@ -9,6 +9,7 @@ import { ClientManagementCommandHandlers } from './commands';
 import { ClientManagementEventHandlers } from './events';
 import { ClientManagementPolicies } from './policies';
 import { ClientManagementAggregates } from './aggregates';
+import { ClientManagementQueryHandlers } from './queries';
 
 @Global()
 @Module({
@@ -21,6 +22,7 @@ import { ClientManagementAggregates } from './aggregates';
     ...ClientManagementEventHandlers,
     ...ClientManagementAggregates,
     ...ClientManagementPolicies,
+    ...ClientManagementQueryHandlers,
   ],
   controllers: [ClientController, ScopeController],
   imports: [ClientManagementEntitiesModule, CqrsModule],

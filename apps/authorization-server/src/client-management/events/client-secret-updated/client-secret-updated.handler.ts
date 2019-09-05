@@ -1,15 +1,17 @@
 import { IEventHandler, EventsHandler } from '@nestjs/cqrs';
-import { ClientAddedEvent } from './client-added.event';
+import { ClientSecretUpdatedEvent } from './client-secret-updated.event';
 import { ClientService } from '../../entities/client/client.service';
 
-@EventsHandler(ClientAddedEvent)
-export class ClientAddedHandler implements IEventHandler<ClientAddedEvent> {
+@EventsHandler(ClientSecretUpdatedEvent)
+export class ClientSecretUpdatedHandler
+  implements IEventHandler<ClientSecretUpdatedEvent> {
   constructor(private readonly client: ClientService) {}
-  handle(command: ClientAddedEvent) {
+
+  handle(command: ClientSecretUpdatedEvent) {
     const { client } = command;
     this.client
       .save(client)
-      .then(modified => {})
+      .then(secretUpdated => {})
       .catch(error => {});
   }
 }

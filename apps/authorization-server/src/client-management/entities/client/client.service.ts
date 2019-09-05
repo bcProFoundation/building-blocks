@@ -1,8 +1,7 @@
-import { Injectable, UnauthorizedException, Inject } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { CLIENT } from './client.schema';
 import { Client } from './client.interface';
 import { Model } from 'mongoose';
-import { AUTHORIZATION } from '../../../constants/app-strings';
 
 @Injectable()
 export class ClientService {
@@ -43,33 +42,38 @@ export class ClientService {
     return await this.clientModel.deleteOne({ clientId });
   }
 
-  async verifyChangedSecret(req) {
-    const authorizationHeader = req.headers[AUTHORIZATION];
-    try {
-      const basicAuthHeader = authorizationHeader.split(' ')[1];
-      const [clientId, changedClientSecret] = Buffer.from(
-        basicAuthHeader,
-        'base64',
-      )
-        .toString()
-        .split(':');
-      const client = await this.findOne({ clientId });
-      if (client.changedClientSecret === changedClientSecret) {
-        client.clientSecret = changedClientSecret;
-        client.modified = new Date();
-        await client.save();
-        delete client.changedClientSecret;
-        await this.clientModel.updateOne(
-          { clientId },
-          { $unset: { changedClientSecret: 1 } },
-        );
-        return client;
-      } else throw new UnauthorizedException();
-    } catch (error) {
-      throw new UnauthorizedException();
-    }
+  async updateOne(query, params) {
+    return await this.clientModel.updateOne(query, params);
   }
-  getModel() {
-    return this.clientModel;
+
+  async list(
+    offset: number,
+    limit: number,
+    search: string,
+    query: any,
+    sortQuery?: any,
+  ) {
+    if (search) {
+      // Search through multiple keys
+      // https://stackoverflow.com/a/41390870
+      const nameExp = new RegExp(search, 'i');
+      query.$or = ['name', 'clientId', 'uuid'].map(field => {
+        const out = {};
+        out[field] = nameExp;
+        return out;
+      });
+    }
+
+    const data = this.clientModel
+      .find(query)
+      .skip(Number(offset))
+      .limit(Number(limit))
+      .sort(sortQuery);
+
+    return {
+      docs: await data.exec(),
+      length: await this.clientModel.countDocuments(query),
+      offset: Number(offset),
+    };
   }
 }
