@@ -24,6 +24,10 @@ export class ServerSettingsService {
     return await createdSettings.save();
   }
 
+  async update(settings: ServerSettings) {
+    return await settings.save();
+  }
+
   async find() {
     const settings = await this.settingsModel.find().exec();
     if (!settings.length) {
@@ -32,19 +36,16 @@ export class ServerSettingsService {
     return settings[0];
   }
 
+  async findWithoutError() {
+    const settings = await this.settingsModel.find().exec();
+    return settings.length > 0 ? settings[0] : undefined;
+  }
+
   async findOne(params) {
     return await this.settingsModel.findOne(params);
   }
 
-  async update(query, params) {
-    return await this.settingsModel.update(query, params);
-  }
-
   async count() {
     return await this.settingsModel.estimatedDocumentCount();
-  }
-
-  getModel() {
-    return this.settingsModel;
   }
 }

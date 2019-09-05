@@ -24,7 +24,7 @@ export class SystemSettingsManagementService extends AggregateRoot {
     if (payload.disableSignup) settings.disableSignup = payload.disableSignup;
     if (
       payload.communicationServerClientId &&
-      ['production', 'development'].includes(process.env.NODE_ENV)
+      ['production', 'development', 'test-e2e'].includes(process.env.NODE_ENV)
     ) {
       await this.checkValidClientId(payload.communicationServerClientId);
       settings.communicationServerClientId =

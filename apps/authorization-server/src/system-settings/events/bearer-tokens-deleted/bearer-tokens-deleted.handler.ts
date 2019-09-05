@@ -24,14 +24,13 @@ export class BearerTokensDeletedHandler
   async deleteTokens() {
     const tokens = await this.bearerToken.getAll();
     for (const token of tokens) {
-      await token.remove();
+      await this.bearerToken.remove(token);
       await this.informClients(token.accessToken);
     }
   }
 
   async informClients(accessToken: string) {
-    const clientModel = this.client.getModel();
-    const clients = await clientModel.find().exec();
+    const clients = await this.client.findAll();
     for (const client of clients) {
       if (client.tokenDeleteEndpoint) {
         this.http

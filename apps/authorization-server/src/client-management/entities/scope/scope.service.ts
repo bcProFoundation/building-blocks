@@ -31,4 +31,8 @@ export class ScopeService {
   public async find(params) {
     return await this.scopeModel.find(params);
   }
+
+  async insertMany(scopes: { name: string; description?: string }[]) {
+    return await this.scopeModel.insertMany(scopes);
+  }
 }

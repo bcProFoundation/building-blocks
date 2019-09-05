@@ -76,17 +76,16 @@ export class SetupService {
     const tokenDeleteEndpoint =
       infrastructureConsoleUrl + '/connect/v1/token_delete';
 
-    const ScopeModel = this.scopeService.getModel();
-    const scope: Scope[] = await ScopeModel.insertMany([
+    const scope: Scope[] = await this.scopeService.insertMany([
       { name: SCOPE_OPENID },
       { name: SCOPE_ROLES },
       { name: SCOPE_EMAIL },
       { name: SCOPE_PROFILE },
     ]);
+
     const createdBy = await this.userService.findOne({ email });
     const allowedScopes: string[] = scope.map(r => r.name);
-    const ClientModel = this.clientService.getModel();
-    const client: Client = new ClientModel();
+    const client = {} as Client;
     client.redirectUris = callbackUrls;
     client.name = i18n.__('Infrastructure Console');
     client.allowedScopes = allowedScopes;
