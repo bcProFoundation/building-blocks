@@ -18,18 +18,19 @@ import { CreateSocialLoginDto } from './social-login-create.dto';
 import { ADMINISTRATOR } from '../../../constants/app-strings';
 import { SocialLoginService } from '../../../auth/entities/social-login/social-login.service';
 import { UserService } from '../../../user-management/entities/user/user.service';
-import { CRUDOperationService } from '../../../common/services/crudoperation/crudoperation.service';
 import { AuthGuard } from '../../../auth/guards/auth.guard';
 import { Roles } from '../../../common/decorators/roles.decorator';
 import { RoleGuard } from '../../../auth/guards/role.guard';
 import { RemoveSocialLoginCommand } from '../../../auth/commands/remove-social-login/remove-social-login.command';
+import { AddSocialLoginCommand } from '../../commands/add-social-login/add-social-login.command';
+import { ModifySocialLoginCommand } from '../../commands/modify-social-login/modify-social-login.command';
+import { ListQueryDto } from '../../../common/policies/list-query/list-query';
 
 @Controller('social_login')
 export class SocialLoginController {
   constructor(
     private readonly socialLoginService: SocialLoginService,
     private readonly userService: UserService,
-    private readonly crudService: CRUDOperationService,
     private readonly commandBus: CommandBus,
   ) {}
 
@@ -37,12 +38,11 @@ export class SocialLoginController {
   @Roles(ADMINISTRATOR)
   @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  async create(@Body() body: CreateSocialLoginDto, @Req() req, @Res() res) {
-    const payload: any = body;
-    payload.createdBy = req.user.user;
-    payload.creation = new Date();
-    const socialLogin = await this.socialLoginService.save(payload);
-    res.json(socialLogin);
+  async create(@Body() body: CreateSocialLoginDto, @Req() req) {
+    const createdBy = req.user.user;
+    return await this.commandBus.execute(
+      new AddSocialLoginCommand(body, createdBy),
+    );
   }
 
   @Post('v1/update/:uuid')
@@ -51,34 +51,25 @@ export class SocialLoginController {
   async update(
     @Body() payload: CreateSocialLoginDto,
     @Param('uuid') uuid: string,
-    @Req() req,
   ) {
-    const socialLogin = await this.socialLoginService.findOne({ uuid });
-    Object.assign(socialLogin, payload);
-    socialLogin.modified = new Date();
-    await socialLogin.save();
-    return socialLogin;
+    return await this.commandBus.execute(
+      new ModifySocialLoginCommand(payload, uuid),
+    );
   }
 
   @Get('v1/list')
+  @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
   @Roles(ADMINISTRATOR)
   @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
-  async list(
-    @Req() req,
-    @Query('offset') offset: number,
-    @Query('limit') limit: number,
-    @Query('search') search?: string,
-    @Query('sort') sort?: string,
-  ) {
-    const query: { createdBy?: string } = {};
+  async list(@Query() query: ListQueryDto) {
+    const { offset, limit, search, sort } = query;
+    const where: { createdBy?: string } = {};
     const sortQuery = { name: sort };
-    return this.crudService.listPaginate(
-      this.socialLoginService.getModel(),
+    return await this.socialLoginService.list(
       offset,
       limit,
       search,
-      query,
-      ['name', 'uuid'],
+      where,
       sortQuery,
     );
   }
@@ -112,26 +103,16 @@ export class SocialLoginController {
 
   @Get('callback/:socialLogin')
   @UseGuards(AuthGuard('oauth2-client', { session: true }))
-  oauth2Callback(
-    @Param('socialLogin') socialLogin,
-    @Query('redirect') redirect,
-    @Req() req,
-    @Res() res,
-  ) {
+  oauth2Callback(@Req() req, @Res() res) {
     const parsedState = JSON.parse(
       Buffer.from(req.session.state, 'base64').toString(),
     );
-    const out: any = { user: req.user.email };
-    out.path = parsedState.redirect;
-    res.redirect(out.path);
+    res.redirect(parsedState.redirect);
   }
 
   @Get('v1/list_logins')
   async listLogins() {
-    const logins = await this.socialLoginService
-      .getModel()
-      .where('clientId')
-      .ne(null);
+    const logins = await this.socialLoginService.getAllWithClientId();
     return logins.map(login => ({
       name: login.name,
       uuid: login.uuid,

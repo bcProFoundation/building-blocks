@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { SocialLoginController } from './social-login.controller';
 import { SocialLoginService } from '../../../auth/entities/social-login/social-login.service';
 import { UserService } from '../../../user-management/entities/user/user.service';
-import { CRUDOperationService } from '../../../common/services/crudoperation/crudoperation.service';
 import { CqrsModule } from '@nestjs/cqrs';
 
 describe('SocialLogin Controller', () => {
@@ -19,10 +18,6 @@ describe('SocialLogin Controller', () => {
         },
         {
           provide: UserService,
-          useValue: {},
-        },
-        {
-          provide: CRUDOperationService,
           useValue: {},
         },
       ],

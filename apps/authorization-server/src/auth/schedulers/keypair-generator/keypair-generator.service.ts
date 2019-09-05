@@ -49,7 +49,7 @@ export class KeyPairGeneratorService implements OnModuleInit {
           const timePastCreation = now - creation;
 
           if (timePastCreation > MONTH_IN_MILLISECONDS) {
-            await key.remove();
+            await this.keyService.remove(key);
             await this.keyService.generateKey();
           } else if (
             // Keep NUMBER_OF_KEYPAIRS in array

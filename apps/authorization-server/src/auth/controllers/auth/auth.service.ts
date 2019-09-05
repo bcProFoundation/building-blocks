@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import * as speakeasy from 'speakeasy';
+import * as uuidv4 from 'uuid/v4';
 import {
   userAlreadyExistsException,
   invalidOTPException,
@@ -23,7 +24,6 @@ import {
   AuthData,
   AuthDataType,
 } from '../../../user-management/entities/auth-data/auth-data.interface';
-import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { PasswordPolicyService } from '../../../user-management/policies/password-policy/password-policy.service';
 import { SendLoginOTPCommand } from '../../commands/send-login-otp/send-login-otp.command';
 import { USER } from '../../../user-management/entities/user/user.schema';
@@ -37,33 +37,9 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly authDataService: AuthDataService,
     private readonly cryptoService: CryptographerService,
-    private readonly settings: ServerSettingsService,
     private readonly passwordPolicy: PasswordPolicyService,
     private readonly commandBus: CommandBus,
   ) {}
-
-  /**
-   * Creates User with hash password
-   * @param user
-   * @param roles
-   */
-  public async signUp(user: UserAccountDto) {
-    const settings = await this.settings
-      .getModel()
-      .find()
-      .exec();
-    if (
-      (settings.length === 1 && settings[0].communicationServerClientId) ||
-      process.env.NODE_ENV === 'production'
-    ) {
-      throw new BadRequestException({
-        communicationEnabled: true,
-        message: 'SIGNUP_VIA_EMAIL_OR_PHONE',
-      });
-    }
-    this.validatePassword(user);
-    return this.saveUser(user);
-  }
 
   async setupAdministrator(user: UserAccountDto, roles: Role[]) {
     this.validatePassword(user);
@@ -237,10 +213,10 @@ export class AuthService {
         });
         if (!code) throw invalidOTPException;
         if (code.expiry <= new Date()) {
-          await code.remove();
+          this.authDataService.remove(code);
           throw invalidOTPException;
         } else {
-          await code.remove();
+          await this.authDataService.remove(code);
           return user;
         }
       }
@@ -249,18 +225,17 @@ export class AuthService {
   }
 
   async saveUser(user: UserAccountDto, roles?: Role[]) {
-    const UserModel = this.userService.getModel();
-    const userEntity: User = new UserModel();
+    const userEntity = {} as User;
     userEntity.name = user.name;
 
     // process email field
     userEntity.email = user.email.toLowerCase().trim();
     userEntity.phone = user.phone;
 
-    const AuthDataModel = this.authDataService.getModel();
-    const authData: AuthData = new AuthDataModel();
+    const authData = {} as AuthData;
+    authData.uuid = uuidv4();
     authData.password = await this.cryptoService.hashPassword(user.password);
-    await authData.save();
+    await this.authDataService.save(authData);
     userEntity.password = authData.uuid;
 
     if (roles && roles.length) {
@@ -270,7 +245,7 @@ export class AuthService {
     const checkUser = await this.checkExistingUser(userEntity);
 
     if (checkUser) {
-      await AuthDataModel.deleteOne(authData);
+      await this.authDataService.remove(authData);
       throw userAlreadyExistsException;
     } else {
       return await this.userService.save(userEntity);

@@ -6,6 +6,7 @@ import { AuthorizationCodeService } from '../../../auth/entities/authorization-c
 import { CodeExchangeService } from './code-exchange.service';
 import { IDTokenGrantService } from '../id-token-grant/id-token-grant.service';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
+import { BearerTokenService } from '../../entities/bearer-token/bearer-token.service';
 
 describe('CodeExchangeService', () => {
   let service: CodeExchangeService;
@@ -40,6 +41,10 @@ describe('CodeExchangeService', () => {
         },
         {
           provide: ServerSettingsService,
+          useValue: {},
+        },
+        {
+          provide: BearerTokenService,
           useValue: {},
         },
       ],

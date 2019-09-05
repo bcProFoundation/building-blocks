@@ -40,8 +40,7 @@ export class OAuth2TokenGeneratorService {
     if (!localClient) throw invalidClientException;
 
     const localUser = await this.userService.findOne({ uuid: user });
-    const BearerTokenModel = this.bearerTokenService.getModel();
-    const bearerToken: BearerToken = new BearerTokenModel();
+    const bearerToken = {} as BearerToken;
     bearerToken.accessToken = this.cryptographerService.getUid(64);
     bearerToken.redirectUris = localClient.redirectUris;
 

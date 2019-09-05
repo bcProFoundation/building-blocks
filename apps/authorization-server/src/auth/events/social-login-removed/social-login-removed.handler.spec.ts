@@ -2,11 +2,13 @@ import { Test } from '@nestjs/testing';
 import { CqrsModule, EventBus } from '@nestjs/cqrs';
 import { SocialLoginRemovedHandler } from './social-login-removed.handler';
 import { SocialLoginRemovedEvent } from './social-login-removed.event';
-import { SocialLogin } from 'auth/entities/social-login/social-login.interface';
+import { SocialLogin } from '../../entities/social-login/social-login.interface';
+import { SocialLoginService } from '../../entities/social-login/social-login.service';
 
 describe('Event: SocialLoginRemovedHandler', () => {
   let eventBus$: EventBus;
   let eventHandler: SocialLoginRemovedHandler;
+  let socialLogin: SocialLoginService;
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
@@ -17,6 +19,10 @@ describe('Event: SocialLoginRemovedHandler', () => {
           provide: EventBus,
           useFactory: () => jest.fn(),
         },
+        {
+          provide: SocialLoginService,
+          useFactory: () => jest.fn(),
+        },
       ],
     }).compile();
 
@@ -24,6 +30,7 @@ describe('Event: SocialLoginRemovedHandler', () => {
     eventHandler = module.get<SocialLoginRemovedHandler>(
       SocialLoginRemovedHandler,
     );
+    socialLogin = module.get<SocialLoginService>(SocialLoginService);
   });
 
   it('should be defined', () => {
@@ -31,9 +38,9 @@ describe('Event: SocialLoginRemovedHandler', () => {
     expect(eventHandler).toBeDefined();
   });
 
-  it('should remove SocialLogin using Mongoose', async () => {
+  it('should remove SocialLogin using SocialLoginService', async () => {
     const mockSocialLogin = {} as SocialLogin;
-    mockSocialLogin.remove = jest.fn(() => Promise.resolve(mockSocialLogin));
+    socialLogin.remove = jest.fn(() => Promise.resolve(mockSocialLogin));
     eventBus$.publish = jest.fn(() => {});
     await eventHandler.handle(
       new SocialLoginRemovedEvent(
@@ -41,6 +48,6 @@ describe('Event: SocialLoginRemovedHandler', () => {
         mockSocialLogin,
       ),
     );
-    expect(mockSocialLogin.remove).toHaveBeenCalledTimes(1);
+    expect(socialLogin.remove).toHaveBeenCalledTimes(1);
   });
 });
