@@ -1,8 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
+import { Model } from 'mongoose';
 import { ROLE } from './role.schema';
 import { Role } from './role.interface';
-import { invalidRoleException } from '../../../common/filters/exceptions';
-import { Model } from 'mongoose';
 
 @Injectable()
 export class RoleService {
@@ -10,8 +9,6 @@ export class RoleService {
 
   async save(params) {
     params.name = params.name.toLowerCase().trim();
-    const checkRole = await this.findOne({ name: params.name });
-    if (checkRole) throw invalidRoleException;
     const createdRole = new this.roleModel(params);
     return await createdRole.save();
   }
@@ -24,11 +21,42 @@ export class RoleService {
     return await this.roleModel.deleteMany({});
   }
 
-  async find() {
-    return await this.roleModel.find().exec();
+  async find(params?) {
+    return await this.roleModel.find(params).exec();
   }
 
-  getModel() {
-    return this.roleModel;
+  async remove(role: Role) {
+    return await role.remove();
+  }
+
+  async list(
+    offset: number,
+    limit: number,
+    search: string,
+    query: any,
+    sortQuery?: any,
+  ) {
+    if (search) {
+      // Search through multiple keys
+      // https://stackoverflow.com/a/41390870
+      const nameExp = new RegExp(search, 'i');
+      query.$or = ['name', 'uuid'].map(field => {
+        const out = {};
+        out[field] = nameExp;
+        return out;
+      });
+    }
+
+    const data = this.roleModel
+      .find(query)
+      .skip(Number(offset))
+      .limit(Number(limit))
+      .sort(sortQuery);
+
+    return {
+      docs: await data.exec(),
+      length: await this.roleModel.countDocuments(query),
+      offset: Number(offset),
+    };
   }
 }

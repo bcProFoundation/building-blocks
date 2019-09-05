@@ -22,7 +22,7 @@ export class AuthDataService {
     return await this.authDataModel.find(params).exec();
   }
 
-  getModel() {
-    return this.authDataModel;
+  async remove(authData: AuthData) {
+    return await authData.remove();
   }
 }

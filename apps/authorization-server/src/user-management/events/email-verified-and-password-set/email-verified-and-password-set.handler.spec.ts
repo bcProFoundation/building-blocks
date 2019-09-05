@@ -5,6 +5,8 @@ import { EmailVerifiedAndPasswordSetHandler } from './email-verified-and-passwor
 import { UserAggregateService } from '../../aggregates/user-aggregate/user-aggregate.service';
 import { EmailVerifiedAndPasswordSetEvent } from './email-verified-and-password-set.event';
 import { AuthData } from '../../entities/auth-data/auth-data.interface';
+import { UserService } from '../../entities/user/user.service';
+import { AuthDataService } from '../../entities/auth-data/auth-data.service';
 
 describe('Event: EmailVerifiedAndPasswordSetHandler', () => {
   let eventBus$: EventBus;
@@ -32,6 +34,9 @@ describe('Event: EmailVerifiedAndPasswordSetHandler', () => {
     password: 'hash$salt',
   } as AuthData;
 
+  let userService: UserService;
+  let authDataService: AuthDataService;
+
   beforeEach(async () => {
     const module = await Test.createTestingModule({
       imports: [CqrsModule],
@@ -45,6 +50,14 @@ describe('Event: EmailVerifiedAndPasswordSetHandler', () => {
           provide: UserAggregateService,
           useFactory: () => jest.fn(),
         },
+        {
+          provide: AuthDataService,
+          useFactory: () => jest.fn(),
+        },
+        {
+          provide: UserService,
+          useFactory: () => jest.fn(),
+        },
       ],
     }).compile();
 
@@ -53,6 +66,9 @@ describe('Event: EmailVerifiedAndPasswordSetHandler', () => {
     eventHandler = module.get<EmailVerifiedAndPasswordSetHandler>(
       EmailVerifiedAndPasswordSetHandler,
     );
+
+    userService = module.get<UserService>(UserService);
+    authDataService = module.get<AuthDataService>(AuthDataService);
   });
 
   it('should be defined', () => {
@@ -61,14 +77,14 @@ describe('Event: EmailVerifiedAndPasswordSetHandler', () => {
     expect(eventHandler).toBeDefined();
   });
 
-  it('should save User and AuthData using Mongoose', async () => {
-    mockUser.save = jest.fn(() => Promise.resolve(mockUser));
-    mockAuthData.save = jest.fn(() => Promise.resolve(mockAuthData));
+  it('should save User with UserService and AuthData with AuthDataService', async () => {
+    userService.update = jest.fn(() => Promise.resolve(mockUser));
+    authDataService.save = jest.fn(() => Promise.resolve(mockAuthData));
     eventBus$.publish = jest.fn(() => {});
     await eventHandler.handle(
       new EmailVerifiedAndPasswordSetEvent(mockUser, mockAuthData),
     );
-    expect(mockUser.save).toHaveBeenCalledTimes(1);
-    expect(mockAuthData.save).toHaveBeenCalledTimes(1);
+    expect(userService.update).toHaveBeenCalledTimes(1);
+    expect(authDataService.save).toHaveBeenCalledTimes(1);
   });
 });

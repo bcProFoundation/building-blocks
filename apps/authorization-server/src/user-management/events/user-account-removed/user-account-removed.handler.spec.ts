@@ -5,6 +5,8 @@ import { UserAccountRemovedHandler } from './user-account-removed.handler';
 import { User } from '../../entities/user/user.interface';
 import { UserAccountRemovedEvent } from './user-account-removed';
 import { AuthData } from '../../entities/auth-data/auth-data.interface';
+import { UserService } from '../../entities/user/user.service';
+import { AuthDataService } from '../../entities/auth-data/auth-data.service';
 
 describe('Event: UserAccountRemovedHandler', () => {
   let eventBus$: EventBus;
@@ -47,6 +49,9 @@ describe('Event: UserAccountRemovedHandler', () => {
     password: 'hash$salt',
   } as AuthData;
 
+  let userService: UserService;
+  let authDataService: AuthDataService;
+
   beforeEach(async () => {
     const module = await Test.createTestingModule({
       imports: [CqrsModule],
@@ -60,6 +65,14 @@ describe('Event: UserAccountRemovedHandler', () => {
           provide: UserDeleteRequestService,
           useFactory: () => jest.fn(),
         },
+        {
+          provide: UserService,
+          useFactory: () => jest.fn(),
+        },
+        {
+          provide: AuthDataService,
+          useFactory: () => jest.fn(),
+        },
       ],
     }).compile();
 
@@ -68,6 +81,8 @@ describe('Event: UserAccountRemovedHandler', () => {
     eventHandler = module.get<UserAccountRemovedHandler>(
       UserAccountRemovedHandler,
     );
+    userService = module.get<UserService>(UserService);
+    authDataService = module.get<AuthDataService>(AuthDataService);
   });
 
   it('should be defined', () => {
@@ -80,13 +95,8 @@ describe('Event: UserAccountRemovedHandler', () => {
     manager.informClients = jest.fn(() =>
       Promise.resolve({ id: 420, data: {} }),
     );
-    mockUser.remove = jest.fn(() => Promise.resolve(mockUser));
-    password.remove = jest.fn(() => Promise.resolve(password));
-    sharedSecret.remove = jest.fn(() => Promise.resolve(sharedSecret));
-    otpCounter.remove = jest.fn(() => Promise.resolve(otpCounter));
-    twoFactorTempSecret.remove = jest.fn(() =>
-      Promise.resolve(twoFactorTempSecret),
-    );
+    userService.remove = jest.fn(() => Promise.resolve({} as User));
+    authDataService.remove = jest.fn(() => Promise.resolve({} as AuthData));
 
     eventBus$.publish = jest.fn(() => {});
     await eventHandler.handle(

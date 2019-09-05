@@ -17,7 +17,7 @@ export class SignupService {
   ) {}
 
   async initSignup(payload, res) {
-    const unverifiedUser = new (this.userService.getModel())();
+    const unverifiedUser = {} as User;
     unverifiedUser.name = payload.name;
     unverifiedUser.email = payload.email;
     unverifiedUser.disabled = true;
@@ -70,7 +70,7 @@ export class SignupService {
           return response;
         },
         error: async err => {
-          await unverifiedUser.remove();
+          await this.userService.remove(unverifiedUser);
         },
       });
   }

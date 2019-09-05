@@ -37,8 +37,7 @@ export class UserDeleteRequestService implements OnModuleInit {
 
   async defineQueueProcess() {
     this.queue.process(USER_DELETE_REQUEST, async (job, done) => {
-      const clientModel = this.clientService.getModel();
-      const clients = await clientModel.find().exec();
+      const clients = await this.clientService.findAll();
       for (const client of clients) {
         if (client.userDeleteEndpoint) {
           const baseEncodedCred = Buffer.from(

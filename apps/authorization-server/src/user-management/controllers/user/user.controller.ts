@@ -6,7 +6,6 @@ import {
   Req,
   Query,
   Get,
-  Res,
   Param,
   UsePipes,
   ValidationPipe,
@@ -18,7 +17,6 @@ import { callback } from '../../../auth/passport/strategies/local.strategy';
 import { Roles } from '../../../common/decorators/roles.decorator';
 import { ADMINISTRATOR } from '../../../constants/app-strings';
 import { RoleGuard } from '../../../auth/guards/role.guard';
-import { CRUDOperationService } from '../../../common/services/crudoperation/crudoperation.service';
 import { RemoveUserAccountCommand } from '../../commands/remove-user-account/remove-user-account.command';
 import { GenerateForgottenPasswordCommand } from '../../commands/generate-forgotten-password/generate-forgotten-password.command';
 import {
@@ -27,7 +25,7 @@ import {
   UserAccountDto,
 } from '../../policies';
 import { ChangePasswordCommand } from '../../commands/change-password/change-password.command';
-import { VerifyEmailAndSetPasswordCommand } from '../../commands/verify-email-and-set-passsword/verify-email-and-set-password.command';
+import { VerifyEmailAndSetPasswordCommand } from '../../commands/verify-email-and-set-password/verify-email-and-set-password.command';
 import { AddUserAccountCommand } from '../../commands/add-user-account/add-user-account.command';
 import { ModifyUserAccountCommand } from '../../commands/modify-user-account/modify-user-account.command';
 import { SendLoginOTPCommand } from '../../../auth/commands/send-login-otp/send-login-otp.command';
@@ -39,12 +37,13 @@ import { Initialize2FACommand } from '../../commands/initialize-2fa/initialize-2
 import { Verify2FACommand } from '../../commands/verify-2fa/verify-2fa.command';
 import { Disable2FACommand } from '../../commands/disable-2fa/disable-2fa.command';
 import { ListSessionUsersQuery } from '../../queries/list-session-users/list-session-users.query';
+import { UpdateUserFullNameCommand } from '../../commands/update-user-full-name/update-user-full-name.command';
+import { ListQueryDto } from '../../../common/policies/list-query/list-query';
 
 @Controller('user')
 export class UserController {
   constructor(
     private readonly userService: UserService,
-    private readonly crudService: CRUDOperationService,
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
   ) {}
@@ -61,11 +60,11 @@ export class UserController {
 
   @Post('v1/update_full_name')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
-  async updateFullName(@Req() req, @Body('name') name, @Res() res) {
-    const user = await this.userService.findOne({ uuid: req.user.user });
-    user.name = name;
-    await user.save();
-    res.json(user);
+  async updateFullName(@Req() req, @Body('name') name) {
+    const actorUserUuid = req.user.user;
+    return await this.commandBus.execute(
+      new UpdateUserFullNameCommand(actorUserUuid, name),
+    );
   }
 
   @Post('v1/initialize_2fa')
@@ -140,25 +139,14 @@ export class UserController {
   }
 
   @Get('v1/list')
+  @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
   @Roles(ADMINISTRATOR)
   @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
-  async list(
-    @Query('offset') offset: number,
-    @Query('limit') limit: number,
-    @Query('search') search?: string,
-    @Query('sort') sort?: string,
-  ) {
-    const query = { deleted: { $eq: false } };
+  async list(@Query() query: ListQueryDto) {
+    const { offset, limit, search, sort } = query;
+    const where = { deleted: { $eq: false } };
     const sortQuery = { name: sort || 'asc' };
-    return this.crudService.listPaginate(
-      this.userService.getModel(),
-      offset,
-      limit,
-      search,
-      query,
-      ['name', 'phone', 'email'],
-      sortQuery,
-    );
+    return await this.userService.list(offset, limit, search, where, sortQuery);
   }
 
   @Get('v1/get/:uuid')

@@ -7,84 +7,73 @@ import {
   Param,
   Post,
   Body,
-  Res,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ADMINISTRATOR } from '../../../constants/app-strings';
-import { RoleService } from '../../../user-management/entities/role/role.service';
-import { CRUDOperationService } from '../../../common/services/crudoperation/crudoperation.service';
 import { callback } from '../../../auth/passport/strategies/local.strategy';
 import { AuthGuard } from '../../../auth/guards/auth.guard';
 import { RoleGuard } from '../../../auth/guards/role.guard';
 import { Roles } from '../../../common/decorators/roles.decorator';
-import { invalidRoleException } from '../../../common/filters/exceptions';
-import { RemoveUserRoleCommand } from '../../../user-management/commands/remove-user-role/remove-user-role.command';
+import { RemoveUserRoleCommand } from '../../commands/remove-user-role/remove-user-role.command';
+import { ListRolesQuery } from '../../queries/list-roles/list-roles.query';
+import { AddUserRoleCommand } from '../../commands/add-user-role/add-user-role.command';
+import { ModifyUserRoleCommand } from '../../commands/modify-user-role/modify-user-role.command';
+import { GetRolesQuery } from '../../queries/get-roles/get-roles.query';
+import { RetrieveRolesQuery } from '../../queries/retrieve-role/retrieve-role.query';
+import { ListQueryDto } from '../../../common/policies/list-query/list-query';
 
 @Controller('role')
 export class RoleController {
   constructor(
-    private readonly roleService: RoleService,
-    private readonly crudService: CRUDOperationService,
     private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
   ) {}
 
   @Get('v1/list')
+  @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
   @Roles(ADMINISTRATOR)
   @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
-  async list(
-    @Req() req,
-    @Query('offset') offset: number,
-    @Query('limit') limit: number,
-    @Query('search') search?: string,
-    @Query('sort') sort?: string,
-  ) {
-    const sortQuery = { name: sort };
-    const query: any = {};
-    return this.crudService.listPaginate(
-      this.roleService.getModel(),
-      offset,
-      limit,
-      search,
-      query,
-      ['name'],
-      sortQuery,
+  async list(@Query() query: ListQueryDto) {
+    const { offset, limit, search, sort } = query;
+    return await this.queryBus.execute(
+      new ListRolesQuery(offset, limit, search, sort),
     );
   }
 
   @Post('v1/create')
   @Roles(ADMINISTRATOR)
   @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
-  async create(@Body() body, @Req() req, @Res() res) {
-    const role = await this.roleService.save(body);
-    res.json(role);
+  async create(@Body('name') roleName: string, @Req() req) {
+    const actorUserUuid = req.user.user;
+    return await this.commandBus.execute(
+      new AddUserRoleCommand(actorUserUuid, roleName),
+    );
   }
 
   @Post('v1/update/:uuid')
   @Roles(ADMINISTRATOR)
   @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
-  async update(@Param('uuid') uuid, @Body() payload, @Req() req, @Res() res) {
-    const existingRole = await this.roleService.findOne({ uuid });
-    if (!existingRole) throw invalidRoleException;
-    existingRole.name = payload.name;
-    await existingRole.save();
-    res.json({
-      uuid: existingRole.uuid,
-      name: existingRole.name,
-    });
+  async update(@Param('uuid') uuid, @Body('name') name, @Req() req) {
+    const actorUserUuid = req.user.user;
+    return await this.commandBus.execute(
+      new ModifyUserRoleCommand(actorUserUuid, uuid, name),
+    );
   }
 
   @Get('v1/find')
   @Roles(ADMINISTRATOR)
   @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
   async findAll() {
-    return await this.roleService.find();
+    return await this.queryBus.execute(new GetRolesQuery());
   }
 
   @Get('v1/:uuid')
   @Roles(ADMINISTRATOR)
   @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
-  async findOne(@Param('uuid') uuid: string, @Req() req) {
-    return await this.roleService.findOne({ uuid });
+  async findOne(@Param('uuid') uuid: string) {
+    return await this.queryBus.execute(new RetrieveRolesQuery(uuid));
   }
 
   @Post('v1/delete/:roleName')

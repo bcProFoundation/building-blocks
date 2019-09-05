@@ -2,11 +2,17 @@ import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { UserAccountRemovedEvent } from './user-account-removed';
 import { UserDeleteRequestService } from '../../schedulers/user-delete-request/user-delete-request.service';
 import { from } from 'rxjs';
+import { AuthDataService } from '../../entities/auth-data/auth-data.service';
+import { UserService } from '../../entities/user/user.service';
 
 @EventsHandler(UserAccountRemovedEvent)
 export class UserAccountRemovedHandler
   implements IEventHandler<UserAccountRemovedEvent> {
-  constructor(private readonly requestUserDelete: UserDeleteRequestService) {}
+  constructor(
+    private readonly requestUserDelete: UserDeleteRequestService,
+    private readonly authData: AuthDataService,
+    private readonly user: UserService,
+  ) {}
 
   handle(event: UserAccountRemovedEvent) {
     const {
@@ -18,34 +24,34 @@ export class UserAccountRemovedHandler
     } = event;
 
     if (password) {
-      from(password.remove()).subscribe({
+      from(this.authData.remove(password)).subscribe({
         next: success => {},
         error: error => {},
       });
     }
 
     if (sharedSecret) {
-      from(sharedSecret.remove()).subscribe({
+      from(this.authData.remove(sharedSecret)).subscribe({
         next: success => {},
         error: error => {},
       });
     }
 
     if (otpCounter) {
-      from(otpCounter.remove()).subscribe({
+      from(this.authData.remove(otpCounter)).subscribe({
         next: success => {},
         error: error => {},
       });
     }
 
     if (twoFactorTempSecret) {
-      from(twoFactorTempSecret.remove()).subscribe({
+      from(this.authData.remove(twoFactorTempSecret)).subscribe({
         next: success => {},
         error: error => {},
       });
     }
 
-    from(deletedUser.remove()).subscribe({
+    from(this.user.remove(deletedUser)).subscribe({
       next: success => {},
       error: error => {},
     });

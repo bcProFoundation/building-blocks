@@ -1,9 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { RoleController } from './role.controller';
-import { RoleService } from '../../../user-management/entities/role/role.service';
-import { UserService } from '../../../user-management/entities/user/user.service';
-import { CRUDOperationService } from '../../../common/services/crudoperation/crudoperation.service';
-import { CommandBus } from '@nestjs/cqrs';
+import { RoleGuard } from '../../../auth/guards/role.guard';
 
 describe('RoleController', () => {
   let module: TestingModule;
@@ -12,23 +10,18 @@ describe('RoleController', () => {
       controllers: [RoleController],
       providers: [
         {
-          provide: RoleService,
-          useValue: {},
-        },
-        {
-          provide: UserService,
-          useValue: {},
-        },
-        {
-          provide: CRUDOperationService,
-          useValue: {},
+          provide: QueryBus,
+          useFactory: () => jest.fn(),
         },
         {
           provide: CommandBus,
           useFactory: () => jest.fn(),
         },
       ],
-    }).compile();
+    })
+      .overrideGuard(RoleGuard)
+      .useValue({})
+      .compile();
   });
   it('should be defined', () => {
     const controller: RoleController = module.get<RoleController>(

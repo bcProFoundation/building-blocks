@@ -4,6 +4,8 @@ import { UserAccountAddedHandler } from './user-account-added.handler';
 import { AuthData } from '../../../user-management/entities/auth-data/auth-data.interface';
 import { User } from '../../../user-management/entities/user/user.interface';
 import { UserAccountAddedEvent } from './user-account-added.event';
+import { UserService } from '../../entities/user/user.service';
+import { AuthDataService } from '../../entities/auth-data/auth-data.service';
 
 describe('Event: UserAccountAddedHandler', () => {
   let eventBus$: EventBus;
@@ -30,6 +32,9 @@ describe('Event: UserAccountAddedHandler', () => {
     sharedSecret: null,
   } as User;
 
+  let authDataService: AuthDataService;
+  let userService: UserService;
+
   beforeEach(async () => {
     const module = await Test.createTestingModule({
       imports: [CqrsModule],
@@ -39,11 +44,21 @@ describe('Event: UserAccountAddedHandler', () => {
           provide: EventBus,
           useFactory: () => jest.fn(),
         },
+        {
+          provide: UserService,
+          useFactory: () => jest.fn(),
+        },
+        {
+          provide: AuthDataService,
+          useFactory: () => jest.fn(),
+        },
       ],
     }).compile();
 
     eventBus$ = module.get<EventBus>(EventBus);
     eventHandler = module.get<UserAccountAddedHandler>(UserAccountAddedHandler);
+    userService = module.get<UserService>(UserService);
+    authDataService = module.get<AuthDataService>(AuthDataService);
   });
 
   it('should be defined', () => {
@@ -51,14 +66,14 @@ describe('Event: UserAccountAddedHandler', () => {
     expect(eventHandler).toBeDefined();
   });
 
-  it('should save AuthData and User using Mongoose', async () => {
-    mockAuthData.save = jest.fn(() => Promise.resolve(mockAuthData));
-    mockUser.save = jest.fn(() => Promise.resolve(mockUser));
+  it('should save AuthData and User using UserService and AuthDataService', async () => {
+    authDataService.save = jest.fn(() => Promise.resolve(mockAuthData));
+    userService.save = jest.fn(() => Promise.resolve(mockUser));
     eventBus$.publish = jest.fn(() => {});
     await eventHandler.handle(
       new UserAccountAddedEvent(mockUser, mockAuthData),
     );
-    expect(mockAuthData.save).toHaveBeenCalledTimes(1);
-    expect(mockUser.save).toHaveBeenCalledTimes(1);
+    expect(authDataService.save).toHaveBeenCalledTimes(1);
+    expect(userService.save).toHaveBeenCalledTimes(1);
   });
 });

@@ -6,8 +6,7 @@ export class RoleValidationPolicyService {
   constructor(private readonly role: RoleService) {}
 
   async validateRoles(roles: string[]) {
-    const RoleModel = this.role.getModel();
-    const validRoles = await RoleModel.find({ name: { $in: roles } }).exec();
+    const validRoles = await this.role.find({ name: { $in: roles } });
     if (validRoles.length === roles.length) {
       return true;
     }
@@ -15,8 +14,7 @@ export class RoleValidationPolicyService {
   }
 
   async getValidRoles(roles: string[]) {
-    const RoleModel = this.role.getModel();
-    const validRoles = await RoleModel.find({ name: { $in: roles } }).exec();
+    const validRoles = await this.role.find({ name: { $in: roles } });
     return validRoles.map(role => role.name);
   }
 }

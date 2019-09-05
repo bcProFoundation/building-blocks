@@ -1,13 +1,22 @@
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { EmailVerifiedAndPasswordSetEvent } from './email-verified-and-password-set.event';
 import { forkJoin, from } from 'rxjs';
+import { AuthDataService } from '../../entities/auth-data/auth-data.service';
+import { UserService } from '../../entities/user/user.service';
 
 @EventsHandler(EmailVerifiedAndPasswordSetEvent)
 export class EmailVerifiedAndPasswordSetHandler
   implements IEventHandler<EmailVerifiedAndPasswordSetEvent> {
+  constructor(
+    private readonly user: UserService,
+    private readonly authData: AuthDataService,
+  ) {}
   handle(event: EmailVerifiedAndPasswordSetEvent) {
     const { verifiedUser, userPassword } = event;
-    forkJoin(from(verifiedUser.save()), from(userPassword.save())).subscribe({
+    forkJoin(
+      from(this.user.update(verifiedUser)),
+      from(this.authData.save(userPassword)),
+    ).subscribe({
       next: success => {},
       error: error => {},
     });
