@@ -39,8 +39,7 @@ export class OTPAggregateService {
     this.otp = await this.checkLocalOTP(user);
 
     if (!this.otp) {
-      const AuthDataModel = this.authData.getModel();
-      this.otp = new AuthDataModel();
+      this.otp = {} as AuthData;
 
       await this.generateLoginOTP(user);
     } else if (this.otp) {
@@ -115,6 +114,6 @@ export class OTPAggregateService {
     expiry.setMinutes(expiry.getMinutes() + this.settings.otpExpiry);
     this.otp.expiry = expiry;
 
-    await this.otp.save();
+    await this.authData.save(this.otp);
   }
 }

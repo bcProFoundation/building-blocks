@@ -1,8 +1,9 @@
 import { Test } from '@nestjs/testing';
 import { CqrsModule, EventBus } from '@nestjs/cqrs';
 import { SystemSettingsChangedHandler } from './server-settings-changed.handler';
-import { ServerSettings } from '../../../system-settings/entities/server-settings/server-settings.interface';
+import { ServerSettings } from '../../entities/server-settings/server-settings.interface';
 import { SystemSettingsChangedEvent } from './server-settings-changed.event';
+import { ServerSettingsService } from '../../entities/server-settings/server-settings.service';
 
 describe('Event: SystemSettingsChangedHandler', () => {
   let eventBus$: EventBus;
@@ -15,6 +16,8 @@ describe('Event: SystemSettingsChangedHandler', () => {
     communicationServerClientId: 'c95d2a1c-e185-491f-b7b7-55476524a01a',
   } as ServerSettings;
 
+  let settings: ServerSettingsService;
+
   beforeEach(async () => {
     const module = await Test.createTestingModule({
       imports: [CqrsModule],
@@ -24,6 +27,10 @@ describe('Event: SystemSettingsChangedHandler', () => {
           provide: EventBus,
           useFactory: () => jest.fn(),
         },
+        {
+          provide: ServerSettingsService,
+          useFactory: () => jest.fn(),
+        },
       ],
     }).compile();
 
@@ -31,6 +38,7 @@ describe('Event: SystemSettingsChangedHandler', () => {
     eventHandler = module.get<SystemSettingsChangedHandler>(
       SystemSettingsChangedHandler,
     );
+    settings = module.get<ServerSettingsService>(ServerSettingsService);
   });
 
   it('should be defined', () => {
@@ -38,15 +46,13 @@ describe('Event: SystemSettingsChangedHandler', () => {
     expect(eventHandler).toBeDefined();
   });
 
-  it('should save ServerSettings using Mongoose', async () => {
-    mockServerSettings.save = jest.fn(() =>
-      Promise.resolve(mockServerSettings),
-    );
+  it('should save ServerSettings using ServerSettingsService', async () => {
+    settings.update = jest.fn(() => Promise.resolve(mockServerSettings));
     eventBus$.publish = jest.fn(() => {});
     const actorUserUuid = '5e86afd6-7058-408b-b856-2ecfc9d91fb7';
     await eventHandler.handle(
       new SystemSettingsChangedEvent(actorUserUuid, mockServerSettings),
     );
-    expect(mockServerSettings.save).toHaveBeenCalledTimes(1);
+    expect(settings.update).toHaveBeenCalledTimes(1);
   });
 });

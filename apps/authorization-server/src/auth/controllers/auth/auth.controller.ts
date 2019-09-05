@@ -17,10 +17,7 @@ import { callback } from '../../passport/strategies/local.strategy';
 import { AuthGuard } from '../../../auth/guards/auth.guard';
 import { ApiOperation } from '@nestjs/swagger';
 import { i18n } from '../../../i18n/i18n.config';
-import {
-  LoginUserDto,
-  UserAccountDto,
-} from '../../../user-management/policies';
+import { LoginUserDto } from '../../../user-management/policies';
 import { PasswordLessDto } from '../../policies/password-less/password-less.dto';
 
 @Controller('auth')
@@ -43,20 +40,6 @@ export class AuthController {
     const out: any = { user: req.user.email };
     if (body.redirect) out.path = body.redirect;
     res.json(out);
-  }
-
-  @Post('signup')
-  @UsePipes(new ValidationPipe({ whitelist: true }))
-  @ApiOperation({
-    title: i18n.__('Signup'),
-    description: i18n.__('Sign up a new user'),
-  })
-  async signup(@Body() body: UserAccountDto, @Res() res) {
-    await this.authService.signUp(body);
-    res.json({
-      user: body.email,
-      message: i18n.__('Signed up successfully'),
-    });
   }
 
   @Get('logout')

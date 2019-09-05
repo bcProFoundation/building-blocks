@@ -3,7 +3,6 @@ import { UserController } from './user.controller';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { CryptographerService } from '../../../common/services/cryptographer/cryptographer.service';
 import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
-import { CRUDOperationService } from '../../../common/services/crudoperation/crudoperation.service';
 import { UserAggregateService } from '../../../user-management/aggregates/user-aggregate/user-aggregate.service';
 import { CqrsModule } from '@nestjs/cqrs';
 
@@ -24,10 +23,6 @@ describe('User Controller', () => {
         },
         {
           provide: AuthDataService,
-          useValue: {},
-        },
-        {
-          provide: CRUDOperationService,
           useValue: {},
         },
         {

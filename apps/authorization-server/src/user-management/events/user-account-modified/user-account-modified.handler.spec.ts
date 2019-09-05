@@ -1,8 +1,9 @@
 import { Test } from '@nestjs/testing';
 import { CqrsModule, EventBus } from '@nestjs/cqrs';
-import { User } from '../../../user-management/entities/user/user.interface';
+import { User } from '../../entities/user/user.interface';
 import { UserAccountModifiedHandler } from './user-account-modified.handler';
 import { UserAccountModifiedEvent } from './user-account-modified.event';
+import { UserService } from '../../entities/user/user.service';
 
 describe('Event: UserAccountModifiedHandler', () => {
   let eventBus$: EventBus;
@@ -24,6 +25,8 @@ describe('Event: UserAccountModifiedHandler', () => {
     sharedSecret: null,
   } as User;
 
+  let user: UserService;
+
   beforeEach(async () => {
     const module = await Test.createTestingModule({
       imports: [CqrsModule],
@@ -33,6 +36,10 @@ describe('Event: UserAccountModifiedHandler', () => {
           provide: EventBus,
           useFactory: () => jest.fn(),
         },
+        {
+          provide: UserService,
+          useFactory: () => jest.fn(),
+        },
       ],
     }).compile();
 
@@ -40,6 +47,7 @@ describe('Event: UserAccountModifiedHandler', () => {
     eventHandler = module.get<UserAccountModifiedHandler>(
       UserAccountModifiedHandler,
     );
+    user = module.get<UserService>(UserService);
   });
 
   it('should be defined', () => {
@@ -47,10 +55,10 @@ describe('Event: UserAccountModifiedHandler', () => {
     expect(eventHandler).toBeDefined();
   });
 
-  it('should save modified User using Mongoose', async () => {
-    mockUser.save = jest.fn(() => Promise.resolve(mockUser));
+  it('should save modified User using UserService', async () => {
+    user.update = jest.fn(() => Promise.resolve(mockUser));
     eventBus$.publish = jest.fn(() => {});
     await eventHandler.handle(new UserAccountModifiedEvent(mockUser));
-    expect(mockUser.save).toHaveBeenCalledTimes(1);
+    expect(user.update).toHaveBeenCalledTimes(1);
   });
 });

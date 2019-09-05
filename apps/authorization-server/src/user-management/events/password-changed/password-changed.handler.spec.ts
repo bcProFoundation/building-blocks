@@ -3,6 +3,7 @@ import { CqrsModule, EventBus } from '@nestjs/cqrs';
 import { AuthData } from '../../entities/auth-data/auth-data.interface';
 import { PasswordChangedHandler } from './password-changed.handler';
 import { PasswordChangedEvent } from './password-changed.event';
+import { AuthDataService } from '../../entities/auth-data/auth-data.service';
 
 describe('Event: PasswordChangedHandler', () => {
   let eventBus$: EventBus;
@@ -13,6 +14,8 @@ describe('Event: PasswordChangedHandler', () => {
     password: 'hash$salt',
   } as AuthData;
 
+  let authData: AuthDataService;
+
   beforeEach(async () => {
     const module = await Test.createTestingModule({
       imports: [CqrsModule],
@@ -22,11 +25,16 @@ describe('Event: PasswordChangedHandler', () => {
           provide: EventBus,
           useFactory: () => jest.fn(),
         },
+        {
+          provide: AuthDataService,
+          useFactory: () => jest.fn(),
+        },
       ],
     }).compile();
 
     eventBus$ = module.get<EventBus>(EventBus);
     eventHandler = module.get<PasswordChangedHandler>(PasswordChangedHandler);
+    authData = module.get<AuthDataService>(AuthDataService);
   });
 
   it('should be defined', () => {
@@ -34,10 +42,10 @@ describe('Event: PasswordChangedHandler', () => {
     expect(eventHandler).toBeDefined();
   });
 
-  it('should save AuthData using Mongoose', async () => {
-    mockAuthData.save = jest.fn(() => Promise.resolve(mockAuthData));
+  it('should save AuthData using AuthDataService', async () => {
+    authData.save = jest.fn(() => Promise.resolve(mockAuthData));
     eventBus$.publish = jest.fn(() => {});
     await eventHandler.handle(new PasswordChangedEvent(mockAuthData));
-    expect(mockAuthData.save).toHaveBeenCalledTimes(1);
+    expect(authData.save).toHaveBeenCalledTimes(1);
   });
 });

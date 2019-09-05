@@ -10,32 +10,32 @@ import {
   SerializeOptions,
   UsePipes,
   ValidationPipe,
-  UnauthorizedException,
-  NotFoundException,
+  Headers,
 } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
-import { ClientService } from '../../../client-management/entities/client/client.service';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { callback } from '../../../auth/passport/strategies/local.strategy';
 import { AuthGuard } from '../../../auth/guards/auth.guard';
-import { CreateClientDto } from '../../../client-management/entities/client/create-client.dto';
+import { CreateClientDto } from '../../entities/client/create-client.dto';
 import { Roles } from '../../../common/decorators/roles.decorator';
-import { ADMINISTRATOR } from '../../../constants/app-strings';
+import { ADMINISTRATOR, AUTHORIZATION } from '../../../constants/app-strings';
 import { RoleGuard } from '../../../auth/guards/role.guard';
-import { UserService } from '../../../user-management/entities/user/user.service';
-import { CRUDOperationService } from '../../../common/services/crudoperation/crudoperation.service';
-import { randomBytes32 } from '../../../client-management/entities/client/client.schema';
-import { RemoveOAuth2ClientCommand } from '../../../client-management/commands/remove-oauth2client/remove-oauth2client.command';
-import { AddClientCommand } from '../../../client-management/commands/add-client/add-client.command';
-import { ModifyClientCommand } from '../../../client-management/commands/modify-client/modify-client.command';
+import { RemoveOAuth2ClientCommand } from '../../commands/remove-oauth2client/remove-oauth2client.command';
+import { AddClientCommand } from '../../commands/add-client/add-client.command';
+import { ModifyClientCommand } from '../../commands/modify-client/modify-client.command';
+import { UpdateClientSecretCommand } from '../../commands/update-client-secret/update-client-secret.command';
+import { VerifyChangedClientSecretCommand } from '../../commands/verify-changed-client-secret/verify-changed-client-secret.command';
+import { GetClientByUuidQuery } from '../../queries/get-client-by-uuid/get-client-by-uuid.query';
+import { GetClientByClientIdQuery } from '../../queries/get-client-by-client-id/get-client-by-client-id.query';
+import { GetTrustedClientsQuery } from '../../queries/get-trusted-clients/get-trusted-clients.query';
+import { ListClientsQuery } from '../../queries/list-clients/list-clients.query';
+import { ListQueryDto } from '../../../common/policies/list-query/list-query';
 
 @Controller('client')
 @SerializeOptions({ excludePrefixes: ['_'] })
 export class ClientController {
   constructor(
-    private readonly clientService: ClientService,
-    private readonly userService: UserService,
-    private readonly crudService: CRUDOperationService,
     private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
   ) {}
 
   @Post('v1/create')
@@ -63,90 +63,53 @@ export class ClientController {
   @Post('v1/update_secret/:clientId')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
   async updateSecret(@Param('clientId') clientId: string, @Req() req) {
-    const client = await this.clientService.findOne({ clientId });
-    if (
-      (await this.userService.checkAdministrator(req.user.user)) ||
-      client.createdBy === req.user.user
-    ) {
-      client.changedClientSecret = randomBytes32();
-      client.modifiedBy = req.user.user;
-      client.modified = new Date();
-      await client.save();
-      return client;
-    } else {
-      throw new UnauthorizedException();
-    }
+    const userUuid = req.user.user;
+    return await this.commandBus.execute(
+      new UpdateClientSecretCommand(clientId, userUuid),
+    );
   }
 
   @Post('v1/verify_changed_secret')
-  async verifyChangedSecret(@Req() req) {
-    return await this.clientService.verifyChangedSecret(req);
+  async verifyChangedSecret(@Headers(AUTHORIZATION) authorization) {
+    return await this.commandBus.execute(
+      new VerifyChangedClientSecretCommand(authorization),
+    );
   }
 
   @Get('v1/list')
+  @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
-  async list(
-    @Req() req,
-    @Query('offset') offset: number,
-    @Query('limit') limit: number,
-    @Query('search') search?: string,
-    @Query('sort') sort?: string,
-  ) {
-    const query: { createdBy?: string } = {};
-
-    if (!(await this.userService.checkAdministrator(req.user.user))) {
-      query.createdBy = req.user.user;
-    }
-
-    const sortQuery = { name: sort };
-    return this.crudService.listPaginate(
-      this.clientService.getModel(),
-      offset,
-      limit,
-      search,
-      query,
-      ['name', 'clientId'],
-      sortQuery,
+  async list(@Query() query: ListQueryDto, @Req() req) {
+    const { offset, limit, search, sort } = query;
+    const userUuid = req.user.user;
+    return await this.queryBus.execute(
+      new ListClientsQuery(userUuid, offset, limit, search, sort),
     );
   }
 
   @Get('v1/trusted_clients')
   @Roles(ADMINISTRATOR)
   @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
-  async findAllTrustedClients(@Req() req) {
-    return await this.clientService.find({ isTrusted: 1 });
+  async findAllTrustedClients() {
+    return await this.queryBus.execute(new GetTrustedClientsQuery());
   }
 
   @Get('v1/get/:uuid')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
   async findOne(@Param('uuid') uuid: string, @Req() req) {
-    let client;
-    if (await this.userService.checkAdministrator(req.user.user)) {
-      client = await this.clientService.findOne({ uuid });
-    } else {
-      client = await this.clientService.findOne({
-        uuid,
-        createdBy: req.user.user,
-      });
-    }
-    if (!client) throw new NotFoundException({ uuid });
-    return client;
+    const userUuid = req.user.user;
+    return await this.queryBus.execute(
+      new GetClientByUuidQuery(uuid, userUuid),
+    );
   }
 
   @Get('v1/get_by_client_id/:clientId')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
   async getClientId(@Param('clientId') clientId: string, @Req() req) {
-    let client;
-    if (await this.userService.checkAdministrator(req.user.user)) {
-      client = await this.clientService.findOne({ clientId });
-    } else {
-      client = await this.clientService.findOne({
-        clientId,
-        createdBy: req.user.user,
-      });
-    }
-    if (!client) throw new NotFoundException({ clientId });
-    return client;
+    const userUuid = req.user.user;
+    return await this.queryBus.execute(
+      new GetClientByClientIdQuery(clientId, userUuid),
+    );
   }
 
   @Post('v1/delete/:clientId')

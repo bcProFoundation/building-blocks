@@ -1,9 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Model } from 'mongoose';
-import {
-  invalidUserException,
-  userAlreadyExistsException,
-} from '../../../common/filters/exceptions';
+import { invalidUserException } from '../../../common/filters/exceptions';
 import { USER } from './user.schema';
 import { User } from './user.interface';
 import { i18n } from '../../../i18n/i18n.config';
@@ -14,20 +11,12 @@ export class UserService {
   constructor(@Inject(USER) private readonly userModel: Model<User>) {}
 
   public async save(params) {
-    let localUser: User;
-
-    if (params.email) {
-      localUser = await this.findOne({ email: params.email });
-      if (localUser) throw userAlreadyExistsException;
-    }
-
-    if (params.phone) {
-      localUser = await this.findOne({ phone: params.phone });
-      if (localUser) throw userAlreadyExistsException;
-    }
-
     const createdUser = new this.userModel(params);
     return await createdUser.save();
+  }
+
+  public async update(user: User) {
+    return await user.save();
   }
 
   async findAll(): Promise<User[]> {
@@ -43,8 +32,12 @@ export class UserService {
     return { message: i18n.__('User deleted') };
   }
 
-  public async find() {
-    return await this.userModel.find().exec();
+  public async remove(user: User) {
+    return await user.remove();
+  }
+
+  public async find(params?) {
+    return await this.userModel.find(params).exec();
   }
 
   public async deleteByEmail(email) {
@@ -108,7 +101,34 @@ export class UserService {
     return user;
   }
 
-  getModel() {
-    return this.userModel;
+  async list(
+    offset: number,
+    limit: number,
+    search: string,
+    query: any,
+    sortQuery?: any,
+  ) {
+    if (search) {
+      // Search through multiple keys
+      // https://stackoverflow.com/a/41390870
+      const nameExp = new RegExp(search, 'i');
+      query.$or = ['email', 'phone', 'name', 'uuid'].map(field => {
+        const out = {};
+        out[field] = nameExp;
+        return out;
+      });
+    }
+
+    const data = this.userModel
+      .find(query)
+      .skip(Number(offset))
+      .limit(Number(limit))
+      .sort(sortQuery);
+
+    return {
+      docs: await data.exec(),
+      length: await this.userModel.countDocuments(query),
+      offset: Number(offset),
+    };
   }
 }

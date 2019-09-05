@@ -72,7 +72,7 @@ export class ConfigService {
 
   get(key: string): string {
     switch (key) {
-      case 'DB_NAME':
+      case DB_NAME:
         return process.env.NODE_ENV === 'test-e2e'
           ? `test_${this.envConfig[key]}`
           : this.envConfig[key];

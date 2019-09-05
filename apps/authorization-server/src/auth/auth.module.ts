@@ -1,10 +1,4 @@
-import {
-  Module,
-  NestModule,
-  MiddlewareConsumer,
-  Global,
-  HttpModule,
-} from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer, Global } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { APP_FILTER } from '@nestjs/core';
 import { OAuth2orizeSetup } from './middlewares/oauth2orize.setup';
@@ -35,13 +29,7 @@ import { OpenIDAuthorizationErrorFilter } from '../common/filters/openid-authori
 
 @Global()
 @Module({
-  imports: [
-    CqrsModule,
-    AuthEntitiesModule,
-    OAuth2Module,
-    PassportModule,
-    HttpModule,
-  ],
+  imports: [CqrsModule, AuthEntitiesModule, OAuth2Module, PassportModule],
   providers: [
     ...authServices,
 

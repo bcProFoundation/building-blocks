@@ -3,6 +3,7 @@ import { CqrsModule, EventBus } from '@nestjs/cqrs';
 import { AuthData } from '../../entities/auth-data/auth-data.interface';
 import { AuthDataRemovedHandler } from './auth-data-removed.handler';
 import { AuthDataRemovedEvent } from './auth-data-removed.event';
+import { AuthDataService } from '../../entities/auth-data/auth-data.service';
 
 describe('Event: AuthDataRemovedHandler', () => {
   let eventBus$: EventBus;
@@ -13,6 +14,8 @@ describe('Event: AuthDataRemovedHandler', () => {
     password: 'hash$salt',
   } as AuthData;
 
+  let authData: AuthDataService;
+
   beforeEach(async () => {
     const module = await Test.createTestingModule({
       imports: [CqrsModule],
@@ -22,11 +25,13 @@ describe('Event: AuthDataRemovedHandler', () => {
           provide: EventBus,
           useFactory: () => jest.fn(),
         },
+        { provide: AuthDataService, useValue: {} },
       ],
     }).compile();
 
     eventBus$ = module.get<EventBus>(EventBus);
     eventHandler = module.get<AuthDataRemovedHandler>(AuthDataRemovedHandler);
+    authData = module.get<AuthDataService>(AuthDataService);
   });
 
   it('should be defined', () => {
@@ -35,9 +40,9 @@ describe('Event: AuthDataRemovedHandler', () => {
   });
 
   it('should remove AuthData using Mongoose', async () => {
-    mockAuthData.remove = jest.fn(() => Promise.resolve(mockAuthData));
+    authData.remove = jest.fn(() => Promise.resolve(mockAuthData));
     eventBus$.publish = jest.fn(() => {});
     await eventHandler.handle(new AuthDataRemovedEvent(mockAuthData));
-    expect(mockAuthData.remove).toHaveBeenCalledTimes(1);
+    expect(authData.remove).toHaveBeenCalledTimes(1);
   });
 });

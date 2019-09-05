@@ -7,19 +7,21 @@ import {
 import { AggregateRoot } from '@nestjs/cqrs';
 import * as uuidv4 from 'uuid/v4';
 import { UserService } from '../../entities/user/user.service';
-import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
+import { AuthDataService } from '../../entities/auth-data/auth-data.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
 import { BearerTokenService } from '../../../auth/entities/bearer-token/bearer-token.service';
 import {
   invalidUserException,
   cannotDeleteAdministratorException,
+  invalidRoleException,
+  userAlreadyExistsException,
 } from '../../../common/filters/exceptions';
-import { UserAccountRemovedEvent } from '../../../user-management/events/user-account-removed/user-account-removed';
-import { RoleService } from '../../../user-management/entities/role/role.service';
-import { UserRoleRemovedEvent } from '../../../user-management/events/user-role-removed/user-role-removed.event';
+import { UserAccountRemovedEvent } from '../../events/user-account-removed/user-account-removed';
+import { RoleService } from '../../entities/role/role.service';
+import { UserRoleRemovedEvent } from '../../events/user-role-removed/user-role-removed.event';
 import { ADMINISTRATOR } from '../../../constants/app-strings';
 import { randomBytes } from 'crypto';
-import { ForgottenPasswordGeneratedEvent } from '../../../user-management/events/forgotten-password-generated/forgotten-password-generated.event';
+import { ForgottenPasswordGeneratedEvent } from '../../events/forgotten-password-generated/forgotten-password-generated.event';
 import { UserAccountDto } from '../../policies';
 import { i18n } from '../../../i18n/i18n.config';
 import { CryptographerService } from '../../../common/services/cryptographer/cryptographer.service';
@@ -28,6 +30,11 @@ import { UserAccountModifiedEvent } from '../../events/user-account-modified/use
 import { UserAccountAddedEvent } from '../../events/user-account-added/user-account-added.event';
 import { PasswordPolicyService } from '../../policies/password-policy/password-policy.service';
 import { RoleValidationPolicyService } from '../../policies/role-validation-policy/role-validation-policy.service';
+import { AuthData } from '../../entities/auth-data/auth-data.interface';
+import { Role } from '../../entities/role/role.interface';
+import { UserRoleAddedEvent } from '../../events/user-role-added/user-role-added.event';
+import { UserRoleModifiedEvent } from '../../events/user-role-modified/user-role-modified.event';
+import { User } from '../../entities/user/user.interface';
 
 @Injectable()
 export class UserManagementService extends AggregateRoot {
@@ -95,8 +102,7 @@ export class UserManagementService extends AggregateRoot {
   async deleteRole(roleName: string, actorUuid: string) {
     const role = await this.roleService.findOne({ name: roleName });
     if (!role) throw new NotFoundException({ invalidRole: roleName });
-    const UserModel = this.userService.getModel();
-    const usersWithRole = await UserModel.find({ roles: role.name }).exec();
+    const usersWithRole = await this.userService.find({ roles: role.name });
 
     if (role.name === ADMINISTRATOR) {
       throw new BadRequestException({
@@ -126,6 +132,7 @@ export class UserManagementService extends AggregateRoot {
   }
 
   async addUserAccount(userData: UserAccountDto, createdBy?: string) {
+    await this.validateExistingUser(userData);
     const result = this.passwordPolicy.validatePassword(userData.password);
     if (result.errors.length > 0) {
       throw new BadRequestException({
@@ -133,7 +140,7 @@ export class UserManagementService extends AggregateRoot {
         message: i18n.__('Password not secure'),
       });
     }
-    const user = new (this.userService.getModel())();
+    const user = {} as User;
     user.email = userData.email;
     user.name = userData.name;
     user.phone = userData.phone;
@@ -143,7 +150,8 @@ export class UserManagementService extends AggregateRoot {
     user.roles = userData.roles;
 
     // create Password
-    const authData = new (this.authDataService.getModel())();
+    const authData = {} as AuthData;
+    authData.uuid = uuidv4();
     authData.password = this.crypto.hashPassword(userData.password);
 
     // link password with user
@@ -191,7 +199,7 @@ export class UserManagementService extends AggregateRoot {
       });
 
       if (!authData) {
-        authData = new (this.authDataService.getModel())();
+        authData = {} as AuthData;
         authData.uuid = uuidv4();
       }
 
@@ -213,6 +221,65 @@ export class UserManagementService extends AggregateRoot {
         message: i18n.__('Invalid Roles'),
         validRoles,
       });
+    }
+  }
+
+  async addRole(name: string, actorUserUuid: string) {
+    const role = { name } as Role;
+    const localRole = await this.roleService.findOne({ name });
+    if (localRole) throw new BadRequestException({ role });
+    role.uuid = uuidv4();
+    this.apply(new UserRoleAddedEvent(role, actorUserUuid));
+    return role;
+  }
+
+  async modifyRole(uuid: string, name: string, actorUserUuid: string) {
+    const role = await this.roleService.findOne({ uuid });
+    if (!role) throw invalidRoleException;
+
+    if (role.name !== name) {
+      const existingUsersWithRole = await this.userService.find({
+        roles: role.name,
+      });
+
+      const existingRole = await this.roleService.findOne({ name });
+      if (existingRole) throw invalidRoleException;
+      if (existingUsersWithRole.length > 0) {
+        throw new BadRequestException({
+          existingUsersWithRole: existingUsersWithRole.map(user => ({
+            email: user.email,
+            phone: user.phone,
+            roles: user.roles,
+            uuid: user.uuid,
+          })),
+        });
+      }
+    }
+
+    role.name = name;
+    this.apply(new UserRoleModifiedEvent(role, actorUserUuid));
+    return role;
+  }
+
+  async updateUserFullName(fullName: string, actorUserUuid: string) {
+    const user = await this.userService.findOne({ uuid: actorUserUuid });
+    if (!user) new NotFoundException({ userUuid: actorUserUuid });
+    user.name = fullName;
+    this.apply(new UserAccountModifiedEvent(user));
+    return user;
+  }
+
+  async validateExistingUser(userData: User | UserAccountDto) {
+    let localUser: User;
+
+    if (userData.email) {
+      localUser = await this.userService.findOne({ email: userData.email });
+      if (localUser) throw userAlreadyExistsException;
+    }
+
+    if (userData.phone) {
+      localUser = await this.userService.findOne({ phone: userData.phone });
+      if (localUser) throw userAlreadyExistsException;
     }
   }
 }

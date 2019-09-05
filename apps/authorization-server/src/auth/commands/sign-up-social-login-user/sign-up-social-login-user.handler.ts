@@ -12,7 +12,12 @@ export class SignUpSocialLoginUserHandler
   async execute(command: SignUpSocialLoginUserCommand) {
     const { email, name, socialLogin } = command;
     const aggregate = this.publisher.mergeObjectContext(this.manager);
-    await aggregate.signUpSocialLoginUser(email, name, socialLogin);
+    const user = await aggregate.signUpSocialLoginUser(
+      email,
+      name,
+      socialLogin,
+    );
     aggregate.commit();
+    return user;
   }
 }

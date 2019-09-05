@@ -1,4 +1,4 @@
-import { Module, Global, HttpModule } from '@nestjs/common';
+import { Module, Global } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { UserManagementEntitiesModule } from './entities/entities.module';
 import { UserManagementEventHandlers } from './events';
@@ -14,7 +14,6 @@ import { UserManagementQueryHandlers } from './queries';
 @Module({
   imports: [
     CqrsModule,
-    HttpModule,
     // Entities
     UserManagementEntitiesModule,
   ],

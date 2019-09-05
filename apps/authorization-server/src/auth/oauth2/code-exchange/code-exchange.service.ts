@@ -12,6 +12,7 @@ import { AuthorizationCode } from '../../../auth/entities/authorization-code/aut
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { TEN_NUMBER } from '../../../constants/app-strings';
 import { ServerSettings } from '../../../system-settings/entities/server-settings/server-settings.interface';
+import { BearerTokenService } from '../../entities/bearer-token/bearer-token.service';
 
 @Injectable()
 export class CodeExchangeService {
@@ -21,6 +22,7 @@ export class CodeExchangeService {
     private readonly idTokenGrantService: IDTokenGrantService,
     private readonly userService: UserService,
     private readonly settings: ServerSettingsService,
+    private readonly token: BearerTokenService,
   ) {}
 
   async exchangeCode(client, code, redirectUri, body, issued) {
@@ -48,7 +50,7 @@ export class CodeExchangeService {
         );
 
         if (new Date() > expiry) {
-          await localCode.remove();
+          this.authorizationCodeService.delete({ code: localCode.code });
           issued(invalidAuthorizationCodeException);
           return;
         }
@@ -73,7 +75,7 @@ export class CodeExchangeService {
                 await this.authorizationCodeService.delete({
                   code: localCode.code,
                 });
-                await bearerToken.remove();
+                await this.token.remove(bearerToken);
                 issued(invalidCodeChallengeException);
                 return;
               }
@@ -93,7 +95,7 @@ export class CodeExchangeService {
                 await this.authorizationCodeService.delete({
                   code: localCode.code,
                 });
-                await bearerToken.remove();
+                await this.token.remove(bearerToken);
                 issued(invalidCodeChallengeException);
                 return;
               }
@@ -104,7 +106,7 @@ export class CodeExchangeService {
                 await this.authorizationCodeService.delete({
                   code: localCode.code,
                 });
-                await bearerToken.remove();
+                await this.token.remove(bearerToken);
                 issued(invalidCodeChallengeException);
                 return;
               }

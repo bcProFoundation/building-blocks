@@ -57,7 +57,7 @@ export class AuthCodeSchedulerService {
         );
 
         if (new Date() > expiry) {
-          await code.remove();
+          await this.authCode.delete({ code: code.code });
         }
       }
       done(null, job.id);

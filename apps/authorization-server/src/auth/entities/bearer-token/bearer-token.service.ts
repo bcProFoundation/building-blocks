@@ -53,7 +53,7 @@ export class BearerTokenService {
     return await this.bearerTokenModel.deleteMany(params);
   }
 
-  getModel() {
-    return this.bearerTokenModel;
+  async remove(token: BearerToken) {
+    return await token.remove();
   }
 }

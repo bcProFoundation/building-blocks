@@ -43,11 +43,4 @@ describe('Auth Controller', () => {
     );
     expect(controller.login).toBeDefined();
   });
-
-  it('should be defined', () => {
-    const controller: AuthController = module.get<AuthController>(
-      AuthController,
-    );
-    expect(controller.signup).toBeDefined();
-  });
 });

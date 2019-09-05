@@ -6,6 +6,8 @@ import { UserAccountAddedHandler } from './user-account-added/user-account-added
 import { UserAccountModifiedHandler } from './user-account-modified/user-account-modified.handler';
 import { EmailVerifiedAndPasswordSetHandler } from './email-verified-and-password-set/email-verified-and-password-set.handler';
 import { AuthDataRemovedHandler } from './auth-data-removed/auth-data-removed.handler';
+import { UserRoleAddedHandler } from './user-role-added/user-role-added.handler';
+import { UserRoleModifiedHandler } from './user-role-modified/user-role-modified.handler';
 
 export const UserManagementEventHandlers = [
   UserAccountRemovedHandler,
@@ -16,4 +18,6 @@ export const UserManagementEventHandlers = [
   UserAccountModifiedHandler,
   EmailVerifiedAndPasswordSetHandler,
   AuthDataRemovedHandler,
+  UserRoleAddedHandler,
+  UserRoleModifiedHandler,
 ];

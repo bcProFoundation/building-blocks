@@ -1,3 +1,7 @@
+import { UserService } from '../src/user-management/entities/user/user.service';
+import { AuthDataService } from '../src/user-management/entities/auth-data/auth-data.service';
+import 'jest';
+
 export function getParameterByName(url, name) {
   name = name.replace(/[\[\]]/g, '\\$&');
   const regex = new RegExp('[?&#]' + name + '(=([^&#]*)|&|#|$)'),
@@ -35,3 +39,15 @@ export const OIDCKey = {
   },
 };
 /* tslint:enable */
+
+export async function validateUsersAndAuthData(
+  user: UserService,
+  authData: AuthDataService,
+  expectUserCount: number,
+  expectAuthDataCount: number,
+) {
+  const users = await user.findAll();
+  const authDataList = await authData.find();
+  expect(users.length).toEqual(expectUserCount);
+  expect(authDataList.length).toEqual(expectAuthDataCount);
+}

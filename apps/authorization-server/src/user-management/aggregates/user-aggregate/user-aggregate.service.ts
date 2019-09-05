@@ -1,12 +1,17 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
+import { AggregateRoot } from '@nestjs/cqrs';
 import * as speakeasy from 'speakeasy';
 import * as QRCode from 'qrcode';
+import * as uuidv4 from 'uuid/v4';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { UserService } from '../../entities/user/user.service';
 import { User } from '../../entities/user/user.interface';
 import { ADMINISTRATOR } from '../../../constants/app-strings';
 import { AuthDataService } from '../../entities/auth-data/auth-data.service';
-import { AuthDataType } from '../../entities/auth-data/auth-data.interface';
+import {
+  AuthDataType,
+  AuthData,
+} from '../../entities/auth-data/auth-data.interface';
 import {
   twoFactorEnabledException,
   twoFactorNotEnabledException,
@@ -16,7 +21,6 @@ import {
   passwordLessLoginNotEnabledException,
 } from '../../../common/filters/exceptions';
 import { CryptographerService } from '../../../common/services/cryptographer/cryptographer.service';
-import { AggregateRoot } from '@nestjs/cqrs';
 import { ChangePasswordDto, VerifyEmailDto } from '../../policies';
 import { PasswordChangedEvent } from '../../events/password-changed/password-changed.event';
 import { PasswordPolicyService } from '../../policies/password-policy/password-policy.service';
@@ -183,7 +187,8 @@ export class UserAggregateService extends AggregateRoot {
       uuid: verifiedUser.password,
     });
     if (!userPassword) {
-      userPassword = new (this.authData.getModel())();
+      userPassword = {} as AuthData;
+      userPassword.uuid = uuidv4();
     }
     userPassword.password = this.crypto.hashPassword(payload.password);
     verifiedUser.password = userPassword.uuid;
@@ -241,8 +246,8 @@ export class UserAggregateService extends AggregateRoot {
   }
 
   async getNewAuthData(userEntityUuid: string, authDataType: AuthDataType) {
-    const AuthDataModel = this.authData.getModel();
-    const authData = new AuthDataModel();
+    const authData = {} as AuthData;
+    authData.uuid = uuidv4();
     authData.entityUuid = userEntityUuid;
     authData.entity = USER;
     authData.authDataType = authDataType;

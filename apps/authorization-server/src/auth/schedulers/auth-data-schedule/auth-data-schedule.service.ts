@@ -40,7 +40,7 @@ export class AuthDataScheduleService implements OnModuleInit {
         expiry: { $lt: new Date() },
       });
       for (const authData of authDataCollection) {
-        await authData.remove();
+        await this.authData.remove(authData);
       }
       done(null, job.id);
     });

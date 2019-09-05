@@ -1,4 +1,4 @@
-import { Module, HttpModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TerminusModule } from '@nestjs/terminus';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -13,7 +13,6 @@ import { EventStoreModule } from './event-store/event-store.module';
 
 @Module({
   imports: [
-    HttpModule,
     TerminusModule.forRootAsync({ useClass: TerminusOptionsService }),
     ConfigModule,
     CommonModule,

@@ -35,4 +35,8 @@ export class OIDCKeyService {
   async count() {
     return await this.oidcKeyModel.estimatedDocumentCount();
   }
+
+  async remove(oidcKey: OIDCKey) {
+    return await oidcKey.remove();
+  }
 }

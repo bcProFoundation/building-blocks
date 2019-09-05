@@ -61,13 +61,13 @@ export class TokenSchedulerService implements OnModuleInit {
           refreshTokenExp.getDate() + settings.refreshTokenExpiresInDays,
         );
         if (exp.valueOf() < now.valueOf() && !token.refreshToken) {
-          await token.remove();
+          await this.bearerTokenService.remove(token);
           await this.informClients(accessToken);
         } else if (
           token.refreshToken &&
           refreshTokenExp.valueOf() < now.valueOf()
         ) {
-          await token.remove();
+          await this.bearerTokenService.remove(token);
           await this.informClients(accessToken);
         }
       }
@@ -84,8 +84,7 @@ export class TokenSchedulerService implements OnModuleInit {
   }
 
   async informClients(accessToken: string) {
-    const clientModel = this.clientService.getModel();
-    const clients = await clientModel.find().exec();
+    const clients = await this.clientService.findAll();
     for (const client of clients) {
       if (client.tokenDeleteEndpoint) {
         this.http
