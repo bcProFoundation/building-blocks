@@ -14,13 +14,13 @@ import { UserService } from '../src/user-management/entities/user/user.service';
 import { OIDCKeyService } from '../src/auth/entities/oidc-key/oidc-key.service';
 import { ConfigService } from '../src/config/config.service';
 import { KeyPairGeneratorService } from '../src/auth/schedulers';
-// import { RoleService } from '../src/user-management/entities/role/role.service';
-// import { Role } from '../src/user-management/entities/role/role.interface';
-// import { ADMINISTRATOR, SCOPE_EMAIL } from '../src/constants/app-strings';
-// import { Scope } from '../src/client-management/entities/scope/scope.interface';
-// import { ScopeService } from '../src/client-management/entities/scope/scope.service';
-// import { AuthDataType } from '../src/user-management/entities/auth-data/auth-data.interface';
-// import { USER } from '../src/user-management/entities/user/user.schema';
+import { RoleService } from '../src/user-management/entities/role/role.service';
+import { Role } from '../src/user-management/entities/role/role.interface';
+import { ADMINISTRATOR, SCOPE_EMAIL } from '../src/constants/app-strings';
+import { Scope } from '../src/client-management/entities/scope/scope.interface';
+import { ScopeService } from '../src/client-management/entities/scope/scope.service';
+import { AuthDataType } from '../src/user-management/entities/auth-data/auth-data.interface';
+import { USER } from '../src/user-management/entities/user/user.schema';
 import { User } from '../src/user-management/entities/user/user.interface';
 import { AuthDataService } from '../src/user-management/entities/auth-data/auth-data.service';
 import 'jest';
@@ -39,17 +39,17 @@ describe('AppModule (e2e)', () => {
   let clientAccessToken: string;
   let refreshToken: string;
   let authDataService: AuthDataService;
-  // let roleService: RoleService;
+  let roleService: RoleService;
   let userService: UserService;
-  // let scopeService: ScopeService;
+  let scopeService: ScopeService;
   let codePKCE: string;
   let userAccessToken: string;
   let clientUuid: string;
-  // let adminRole: Role;
-  // let emailScope: Scope;
+  let adminRole: Role;
+  let emailScope: Scope;
   let testUser: User;
   let sharedSecret: string;
-  // let forgottenPasswordVerificationCode: string;
+  let forgottenPasswordVerificationCode: string;
   const adminEmail = 'admin@user.org';
   const adminPassword = '14CharP@ssword';
   const adminPhone = '+919876543210';
@@ -72,8 +72,8 @@ describe('AppModule (e2e)', () => {
     const oidcKeyService = moduleFixture.get(OIDCKeyService);
 
     userService = moduleFixture.get(UserService);
-    // roleService = moduleFixture.get(RoleService);
-    // scopeService = moduleFixture.get(ScopeService);
+    roleService = moduleFixture.get(RoleService);
+    scopeService = moduleFixture.get(ScopeService);
     authDataService = moduleFixture.get(AuthDataService);
 
     await oidcKeyService.save(OIDCKey);
@@ -97,8 +97,8 @@ describe('AppModule (e2e)', () => {
         clientSecret = res.body.clientSecret;
         redirectUris = res.body.redirectUris;
         allowedScopes = res.body.allowedScopes;
-        // adminRole = await roleService.findOne({ name: ADMINISTRATOR });
-        // emailScope = await scopeService.findOne({ name: SCOPE_EMAIL });
+        adminRole = await roleService.findOne({ name: ADMINISTRATOR });
+        emailScope = await scopeService.findOne({ name: SCOPE_EMAIL });
         done();
       });
   });
@@ -491,28 +491,28 @@ describe('AppModule (e2e)', () => {
       });
   });
 
-  // it('/POST /role/v1/update (Fail update of user used role name)', done => {
-  //   return request(app.getHttpServer())
-  //     .post('/role/v1/update/' + adminRole.uuid)
-  //     .set('Authorization', 'Bearer ' + userAccessToken)
-  //     .send({ name: 'admin' })
-  //     .expect(400)
-  //     .end((err, res) => {
-  //       if (err) return done(err);
-  //       done();
-  //     });
-  // });
+  it('/POST /role/v1/update (Fail update of user used role name)', done => {
+    return request(app.getHttpServer())
+      .post('/role/v1/update/' + adminRole.uuid)
+      .set('Authorization', 'Bearer ' + userAccessToken)
+      .send({ name: 'admin' })
+      .expect(400)
+      .end((err, res) => {
+        if (err) return done(err);
+        done();
+      });
+  });
 
-  // it('/POST /role/v1/delete (Fail delete of user used role name)', done => {
-  //   return request(app.getHttpServer())
-  //     .post('/role/v1/delete/' + adminRole.name)
-  //     .set('Authorization', 'Bearer ' + userAccessToken)
-  //     .expect(400)
-  //     .end((err, res) => {
-  //       if (err) return done(err);
-  //       done();
-  //     });
-  // });
+  it('/POST /role/v1/delete (Fail delete of user used role name)', done => {
+    return request(app.getHttpServer())
+      .post('/role/v1/delete/' + adminRole.name)
+      .set('Authorization', 'Bearer ' + userAccessToken)
+      .expect(400)
+      .end((err, res) => {
+        if (err) return done(err);
+        done();
+      });
+  });
 
   it('/POST /user/v1/delete (Fail delete of user with role "administrator")', async () => {
     const admin = await userService.findUserByEmailOrPhone(adminEmail);
@@ -523,45 +523,45 @@ describe('AppModule (e2e)', () => {
       .expect(403);
   });
 
-  // it('/POST /user/v1/create (Fail existing email creation)', done => {
-  //   const userReq = {
-  //     roles: ['administrator'],
-  //     phone: '+919999999999',
-  //     password: 'Br@ndNewP@ss1234',
-  //     name: 'Tester',
-  //     email: adminEmail,
-  //   };
-  //   return request(app.getHttpServer())
-  //     .post('/user/v1/create')
-  //     .set('Authorization', 'Bearer ' + userAccessToken)
-  //     .send(userReq)
-  //     .expect(400)
-  //     .end((err, res) => {
-  //       expect(res.body.message).toEqual('User already exists');
-  //       if (err) return done(err);
-  //       done();
-  //     });
-  // });
+  it('/POST /user/v1/create (Fail existing email creation)', done => {
+    const userReq = {
+      roles: ['administrator'],
+      phone: '+919999999999',
+      password: 'Br@ndNewP@ss1234',
+      name: 'Tester',
+      email: adminEmail,
+    };
+    return request(app.getHttpServer())
+      .post('/user/v1/create')
+      .set('Authorization', 'Bearer ' + userAccessToken)
+      .send(userReq)
+      .expect(400)
+      .end((err, res) => {
+        expect(res.body.message).toEqual('User already exists');
+        if (err) return done(err);
+        done();
+      });
+  });
 
-  // it('/POST /user/v1/create (Fail existing phone creation)', done => {
-  //   const userReq = {
-  //     roles: ['administrator'],
-  //     phone: adminPhone,
-  //     password: 'Br@ndNewP@ss1234',
-  //     name: 'Tester',
-  //     email: 'test@user.org',
-  //   };
-  //   return request(app.getHttpServer())
-  //     .post('/user/v1/create')
-  //     .set('Authorization', 'Bearer ' + userAccessToken)
-  //     .send(userReq)
-  //     .expect(400)
-  //     .end((err, res) => {
-  //       expect(res.body.message).toEqual('User already exists');
-  //       if (err) return done(err);
-  //       done();
-  //     });
-  // });
+  it('/POST /user/v1/create (Fail existing phone creation)', done => {
+    const userReq = {
+      roles: ['administrator'],
+      phone: adminPhone,
+      password: 'Br@ndNewP@ss1234',
+      name: 'Tester',
+      email: 'test@user.org',
+    };
+    return request(app.getHttpServer())
+      .post('/user/v1/create')
+      .set('Authorization', 'Bearer ' + userAccessToken)
+      .send(userReq)
+      .expect(400)
+      .end((err, res) => {
+        expect(res.body.message).toEqual('User already exists');
+        if (err) return done(err);
+        done();
+      });
+  });
 
   it('/POST /user/v1/create (Create User)', async () => {
     const userReq = {
@@ -582,9 +582,9 @@ describe('AppModule (e2e)', () => {
       .then(user => (testUser = user));
   });
 
-  // it('Validate: Number of User 2, AuthData 2', async () => {
-  //   validateUsersAndAuthData(userService, authDataService, 2, 2);
-  // });
+  it('Validate: Number of User 2, AuthData 2', async () => {
+    validateUsersAndAuthData(userService, authDataService, 2, 2);
+  });
 
   it('/POST /user/v1/update (Change Password)', async () => {
     const userReq = {
@@ -600,9 +600,9 @@ describe('AppModule (e2e)', () => {
       .expect(201);
   });
 
-  // it('Validate: Number of User 2, AuthData 2', async () => {
-  //   validateUsersAndAuthData(userService, authDataService, 2, 2);
-  // });
+  it('Validate: Number of User 2, AuthData 2', async () => {
+    validateUsersAndAuthData(userService, authDataService, 2, 2);
+  });
 
   it('/POST /scope/v1/create (Fail to add Scope with existing name)', done => {
     return request(app.getHttpServer())
@@ -616,31 +616,31 @@ describe('AppModule (e2e)', () => {
       });
   });
 
-  // it('/POST /scope/v1/update (Fail update of client used scope name)', done => {
-  //   return request(app.getHttpServer())
-  //     .post('/scope/v1/update/' + emailScope.uuid)
-  //     .set('Authorization', 'Bearer ' + userAccessToken)
-  //     .send({ name: 'email_address' })
-  //     .expect(400)
-  //     .end((err, res) => {
-  //       expect(res.body.existingClientsWithScope.length).toBeGreaterThan(0);
-  //       if (err) return done(err);
-  //       done();
-  //     });
-  // });
+  it('/POST /scope/v1/update (Fail update of client used scope name)', done => {
+    return request(app.getHttpServer())
+      .post('/scope/v1/update/' + emailScope.uuid)
+      .set('Authorization', 'Bearer ' + userAccessToken)
+      .send({ name: 'email_address' })
+      .expect(400)
+      .end((err, res) => {
+        expect(res.body.existingClientsWithScope.length).toBeGreaterThan(0);
+        if (err) return done(err);
+        done();
+      });
+  });
 
-  // it('/POST /scope/v1/delete (Fail delete of client used scope name)', done => {
-  //   return request(app.getHttpServer())
-  //     .post('/scope/v1/delete/' + emailScope.name)
-  //     .set('Authorization', 'Bearer ' + userAccessToken)
-  //     .send({ name: 'admin' })
-  //     .expect(400)
-  //     .end((err, res) => {
-  //       expect(res.body.cannotDeleteScope).toEqual(emailScope.name);
-  //       if (err) return done(err);
-  //       done();
-  //     });
-  // });
+  it('/POST /scope/v1/delete (Fail delete of client used scope name)', done => {
+    return request(app.getHttpServer())
+      .post('/scope/v1/delete/' + emailScope.name)
+      .set('Authorization', 'Bearer ' + userAccessToken)
+      .send({ name: 'admin' })
+      .expect(400)
+      .end((err, res) => {
+        expect(res.body.cannotDeleteScope).toEqual(emailScope.name);
+        if (err) return done(err);
+        done();
+      });
+  });
 
   it('/POST /settings/v1/update (Update settings)', done => {
     return request(app.getHttpServer())
@@ -706,9 +706,9 @@ describe('AppModule (e2e)', () => {
       });
   });
 
-  // it('Validate: Number of User 1, AuthData 1', async () => {
-  //   validateUsersAndAuthData(userService, authDataService, 1, 1);
-  // });
+  it('Validate: Number of User 1, AuthData 1', async () => {
+    validateUsersAndAuthData(userService, authDataService, 1, 1);
+  });
 
   it('Initialize & Verify 2FA', done => {
     return request(app.getHttpServer())
@@ -732,9 +732,9 @@ describe('AppModule (e2e)', () => {
       });
   });
 
-  // it('Validate: Number of User 1, AuthData 2', async () => {
-  //   validateUsersAndAuthData(userService, authDataService, 1, 2);
-  // });
+  it('Validate: Number of User 1, AuthData 2', async () => {
+    validateUsersAndAuthData(userService, authDataService, 1, 2);
+  });
 
   it('/POST /auth/login (2FA TOTP Login)', done => {
     const otp = speakeasy.totp({
@@ -757,89 +757,89 @@ describe('AppModule (e2e)', () => {
       });
   });
 
-  // it('Validate: Number of User 1, AuthData 2', async () => {
-  //   validateUsersAndAuthData(userService, authDataService, 1, 2);
-  // });
+  it('Validate: Number of User 1, AuthData 2', async () => {
+    validateUsersAndAuthData(userService, authDataService, 1, 2);
+  });
 
-  // it('/POST /auth/login (2FA HOTP Login)', async () => {
-  //   return request(app.getHttpServer())
-  //     .post('/auth/verify_password')
-  //     .send({
-  //       username: adminEmail,
-  //       password: '14Ch@rPassword',
-  //     })
-  //     .expect(201)
-  //     .then(loggedIn => {
-  //       return userService.findUserByEmailOrPhone(adminEmail);
-  //     })
-  //     .then(admin => {
-  //       return authDataService.findOne({
-  //         entity: USER,
-  //         entityUuid: admin.uuid,
-  //         authDataType: AuthDataType.LoginOTP,
-  //       });
-  //     })
-  //     .then(otpCounter => {
-  //       const otp = speakeasy.hotp({
-  //         secret: sharedSecret,
-  //         encoding: 'base32',
-  //         counter: otpCounter.password,
-  //       });
+  it('/POST /auth/login (2FA HOTP Login)', async () => {
+    return request(app.getHttpServer())
+      .post('/auth/verify_password')
+      .send({
+        username: adminEmail,
+        password: '14Ch@rPassword',
+      })
+      .expect(201)
+      .then(loggedIn => {
+        return userService.findUserByEmailOrPhone(adminEmail);
+      })
+      .then(admin => {
+        return authDataService.findOne({
+          entity: USER,
+          entityUuid: admin.uuid,
+          authDataType: AuthDataType.LoginOTP,
+        });
+      })
+      .then(otpCounter => {
+        const otp = speakeasy.hotp({
+          secret: sharedSecret,
+          encoding: 'base32',
+          counter: otpCounter.password,
+        });
 
-  //       return request(app.getHttpServer())
-  //         .post('/auth/login')
-  //         .send({
-  //           username: adminEmail,
-  //           password: '14Ch@rPassword',
-  //           code: otp,
-  //           redirect: '/account',
-  //         })
-  //         .expect(200);
-  //     });
-  // });
+        return request(app.getHttpServer())
+          .post('/auth/login')
+          .send({
+            username: adminEmail,
+            password: '14Ch@rPassword',
+            code: otp,
+            redirect: '/account',
+          })
+          .expect(200);
+      });
+  });
 
-  // it('Validate: Number of User 1, AuthData 3', async () => {
-  //   validateUsersAndAuthData(userService, authDataService, 1, 3);
-  // });
+  it('Validate: Number of User 1, AuthData 3', async () => {
+    validateUsersAndAuthData(userService, authDataService, 1, 3);
+  });
 
-  // it('/POST /user/v1/disable_2fa (Disable 2FA)', async () => {
-  //   return request(app.getHttpServer())
-  //     .post('/user/v1/disable_2fa')
-  //     .set('Authorization', 'Bearer ' + userAccessToken)
-  //     .expect(201);
-  // });
+  it('/POST /user/v1/disable_2fa (Disable 2FA)', async () => {
+    return request(app.getHttpServer())
+      .post('/user/v1/disable_2fa')
+      .set('Authorization', 'Bearer ' + userAccessToken)
+      .expect(201);
+  });
 
-  // it('Validate: Number of User 1, AuthData 2', async () => {
-  //   validateUsersAndAuthData(userService, authDataService, 1, 2);
-  // });
+  it('Validate: Number of User 1, AuthData 2', async () => {
+    validateUsersAndAuthData(userService, authDataService, 1, 2);
+  });
 
-  // it('/POST /user/v1/forgot_password (Reset Forgotten Password)', async () => {
-  //   return request(app.getHttpServer())
-  //     .post('/user/v1/forgot_password')
-  //     .send({ emailOrPhone: adminEmail })
-  //     .expect(201)
-  //     .then(res => {
-  //       return userService.findUserByEmailOrPhone(adminEmail);
-  //     })
-  //     .then(user => {
-  //       forgottenPasswordVerificationCode = user.verificationCode;
-  //     });
-  // });
+  it('/POST /user/v1/forgot_password (Reset Forgotten Password)', async () => {
+    return request(app.getHttpServer())
+      .post('/user/v1/forgot_password')
+      .send({ emailOrPhone: adminEmail })
+      .expect(201)
+      .then(res => {
+        return userService.findUserByEmailOrPhone(adminEmail);
+      })
+      .then(user => {
+        forgottenPasswordVerificationCode = user.verificationCode;
+      });
+  });
 
-  // it('/POST /user/v1/generate_password (Verify email and set password)', done => {
-  //   return request(app.getHttpServer())
-  //     .post('/user/v1/generate_password')
-  //     .set('Authorization', 'Bearer ' + userAccessToken)
-  //     .send({
-  //       verificationCode: forgottenPasswordVerificationCode,
-  //       password: adminPassword,
-  //     })
-  //     .expect(201)
-  //     .end((err, res) => {
-  //       if (err) return done(err);
-  //       done();
-  //     });
-  // });
+  it('/POST /user/v1/generate_password (Verify email and set password)', done => {
+    return request(app.getHttpServer())
+      .post('/user/v1/generate_password')
+      .set('Authorization', 'Bearer ' + userAccessToken)
+      .send({
+        verificationCode: forgottenPasswordVerificationCode,
+        password: adminPassword,
+      })
+      .expect(201)
+      .end((err, res) => {
+        if (err) return done(err);
+        done();
+      });
+  });
 
   it('/GET /auth/logout', done => {
     return request(app.getHttpServer())
