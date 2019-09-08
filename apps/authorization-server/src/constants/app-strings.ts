@@ -17,3 +17,4 @@ export const SUCCESS = 'Success';
 export const THIRTY_NUMBER = 30;
 export const TEN_NUMBER = 10;
 export const SERVICE = 'authorization-server';
+export const INFRASTRUCTURE_CONSOLE = 'Infrastructure Console';

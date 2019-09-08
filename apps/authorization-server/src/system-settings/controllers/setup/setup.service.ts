@@ -15,6 +15,7 @@ import {
   SCOPE_ROLES,
   SCOPE_EMAIL,
   SCOPE_PROFILE,
+  INFRASTRUCTURE_CONSOLE,
 } from '../../../constants/app-strings';
 import { KeyPairGeneratorService } from '../../../auth/schedulers';
 
@@ -87,7 +88,7 @@ export class SetupService {
     const allowedScopes: string[] = scope.map(r => r.name);
     const client = {} as Client;
     client.redirectUris = callbackUrls;
-    client.name = i18n.__('Infrastructure Console');
+    client.name = i18n.__(INFRASTRUCTURE_CONSOLE);
     client.allowedScopes = allowedScopes;
     client.createdBy = createdBy.uuid;
     client.modifiedBy = createdBy.uuid;

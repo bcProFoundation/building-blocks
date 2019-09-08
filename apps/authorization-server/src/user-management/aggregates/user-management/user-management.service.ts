@@ -104,11 +104,7 @@ export class UserManagementService extends AggregateRoot {
     if (!role) throw new NotFoundException({ invalidRole: roleName });
     const usersWithRole = await this.userService.find({ roles: role.name });
 
-    if (role.name === ADMINISTRATOR) {
-      throw new BadRequestException({
-        cannotDeleteRole: role.name,
-      });
-    }
+    this.disallowChangeOfAdminRole(role);
 
     if (usersWithRole.length > 0) {
       throw new BadRequestException({
@@ -237,6 +233,8 @@ export class UserManagementService extends AggregateRoot {
     const role = await this.roleService.findOne({ uuid });
     if (!role) throw invalidRoleException;
 
+    this.disallowChangeOfAdminRole(role);
+
     if (role.name !== name) {
       const existingUsersWithRole = await this.userService.find({
         roles: role.name,
@@ -280,6 +278,14 @@ export class UserManagementService extends AggregateRoot {
     if (userData.phone) {
       localUser = await this.userService.findOne({ phone: userData.phone });
       if (localUser) throw userAlreadyExistsException;
+    }
+  }
+
+  disallowChangeOfAdminRole(role: Role) {
+    if (role.name === ADMINISTRATOR) {
+      throw new BadRequestException({
+        cannotChangeRole: role.name,
+      });
     }
   }
 }
