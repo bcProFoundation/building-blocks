@@ -38,6 +38,7 @@ export class SetupService {
     infrastructureConsoleUrl: string,
     adminPassword: string,
     issuerUrl: string,
+    organizationName: string,
   ) {
     const existingClients = await this.clientService.find({});
     const existingUsers = await this.userService.find();
@@ -55,6 +56,7 @@ export class SetupService {
 
     await this.settingsService.save({
       issuerUrl,
+      organizationName,
       infrastructureConsoleClientId: client.clientId,
     });
     return client;

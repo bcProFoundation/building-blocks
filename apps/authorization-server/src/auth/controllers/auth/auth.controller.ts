@@ -17,7 +17,7 @@ import { callback } from '../../passport/strategies/local.strategy';
 import { AuthGuard } from '../../../auth/guards/auth.guard';
 import { ApiOperation } from '@nestjs/swagger';
 import { i18n } from '../../../i18n/i18n.config';
-import { LoginUserDto } from '../../../user-management/policies';
+import { LoginUserDto } from '../../policies/login-user/login-user.dto';
 import { PasswordLessDto } from '../../policies/password-less/password-less.dto';
 
 @Controller('auth')

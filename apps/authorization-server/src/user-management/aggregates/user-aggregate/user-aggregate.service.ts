@@ -1,4 +1,8 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { AggregateRoot } from '@nestjs/cqrs';
 import * as speakeasy from 'speakeasy';
 import * as QRCode from 'qrcode';
@@ -19,6 +23,7 @@ import {
   invalidUserException,
   passwordLessLoginAlreadyEnabledException,
   passwordLessLoginNotEnabledException,
+  NoAuthKeysOrSharedSecretFoundException,
 } from '../../../common/filters/exceptions';
 import { CryptographerService } from '../../../common/services/cryptographer/cryptographer.service';
 import { ChangePasswordDto, VerifyEmailDto } from '../../policies';
@@ -29,6 +34,7 @@ import { UserAccountModifiedEvent } from '../../events/user-account-modified/use
 import { USER } from '../../entities/user/user.schema';
 import { AuthDataRemovedEvent } from '../../events/auth-data-removed/auth-data-removed.event';
 import { i18n } from '../../../i18n/i18n.config';
+import { UserAuthenticatorService } from '../../entities/user-authenticator/user-authenticator.service';
 
 @Injectable()
 export class UserAggregateService extends AggregateRoot {
@@ -38,6 +44,7 @@ export class UserAggregateService extends AggregateRoot {
     private readonly settings: ServerSettingsService,
     private readonly crypto: CryptographerService,
     private readonly passwordPolicy: PasswordPolicyService,
+    private readonly authenticator: UserAuthenticatorService,
   ) {
     super();
   }
@@ -147,9 +154,14 @@ export class UserAggregateService extends AggregateRoot {
   async disable2fa(uuid: string) {
     const user = await this.user.findOne({ uuid });
     if (!user.enable2fa) throw twoFactorNotEnabledException;
-
     user.enable2fa = false;
-    user.enablePasswordLess = false;
+
+    const authenticators = await this.authenticator.find({
+      userUuid: user.uuid,
+    });
+    if (authenticators.length === 0) {
+      user.enablePasswordLess = false;
+    }
 
     const sharedSecret = await this.checkLocalAuthData(
       user.uuid,
@@ -218,19 +230,24 @@ export class UserAggregateService extends AggregateRoot {
     }
   }
 
-  async enablePasswordLessLogin(userUuid: string) {
+  async enablePasswordLessLogin(actorUuid: string, userUuid: string) {
     const user = await this.user.findOne({ uuid: userUuid });
     if (!user) throw invalidUserException;
-    if (!user.enable2fa) throw twoFactorNotEnabledException;
+    await this.validateAdminActor(actorUuid, userUuid);
     if (user.enablePasswordLess) throw passwordLessLoginAlreadyEnabledException;
+    const authenticators = await this.authenticator.find({ userUuid });
+    if (authenticators.length === 0 && !user.enable2fa) {
+      throw new NoAuthKeysOrSharedSecretFoundException();
+    }
     user.enablePasswordLess = true;
     this.apply(new UserAccountModifiedEvent(user));
     return user;
   }
 
-  async disablePasswordLessLogin(userUuid: string) {
+  async disablePasswordLessLogin(actorUuid: string, userUuid: string) {
     const user = await this.user.findOne({ uuid: userUuid });
     if (!user) throw invalidUserException;
+    await this.validateAdminActor(actorUuid, userUuid);
     if (!user.enablePasswordLess) throw passwordLessLoginNotEnabledException;
     user.enablePasswordLess = false;
     this.apply(new UserAccountModifiedEvent(user));
@@ -252,5 +269,12 @@ export class UserAggregateService extends AggregateRoot {
     authData.entity = USER;
     authData.authDataType = authDataType;
     return authData;
+  }
+
+  async validateAdminActor(actorUuid: string, userUuid: string) {
+    const isAdmin = await this.user.checkAdministrator(actorUuid);
+    if (!isAdmin && actorUuid !== userUuid) {
+      throw new ForbiddenException();
+    }
   }
 }

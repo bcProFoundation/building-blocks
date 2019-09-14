@@ -14,13 +14,19 @@ export class TogglePasswordLessLoginHandler
   ) {}
 
   async execute(command: TogglePasswordLessLoginCommand) {
-    const { userUuid, toggle } = command;
+    const { actorUuid, userUuid, toggle } = command;
     const aggregate = this.publisher.mergeObjectContext(this.manager);
     if (toggle === TogglePasswordLessLogin.Enable) {
-      await aggregate.enablePasswordLessLogin(userUuid);
+      await aggregate.enablePasswordLessLogin(
+        actorUuid,
+        userUuid ? userUuid : actorUuid,
+      );
       aggregate.commit();
     } else if (toggle === TogglePasswordLessLogin.Disable) {
-      await aggregate.disablePasswordLessLogin(userUuid);
+      await aggregate.disablePasswordLessLogin(
+        actorUuid,
+        userUuid ? userUuid : actorUuid,
+      );
       aggregate.commit();
     }
   }

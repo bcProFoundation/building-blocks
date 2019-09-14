@@ -4,6 +4,12 @@ import { RemoveBearerTokenHandler } from './remove-bearer-token/remove-bearer-to
 import { SignUpSocialLoginUserHandler } from './sign-up-social-login-user/sign-up-social-login-user.handler';
 import { AddSocialLoginHandler } from './add-social-login/add-social-login.handler';
 import { ModifySocialLoginHandler } from './modify-social-login/modify-social-login.handler';
+import { RequestWebAuthnKeyRegistrationHandler } from './request-webauthn-key-registration/request-webauthn-key-registration.handler';
+import { WebAuthnRequestLoginHandler } from './webauthn-request-login/webauthn-request-login.handler';
+import { RegisterWebAuthnKeyHandler } from './register-webauthn-key/register-webauthn-key.handler';
+import { WebAuthnLoginHandler } from './webauthn-login/webauthn-login.handler';
+import { RemoveUserAuthenticatorHandler } from './remove-user-authenticator/remove-user-authenticator.handler';
+import { RenameUserAuthenticatorHandler } from './rename-user-authenticator/rename-user-authenticator.handler';
 
 export const AuthCommandHandlers = [
   RemoveSocialLoginHandler,
@@ -12,4 +18,10 @@ export const AuthCommandHandlers = [
   SignUpSocialLoginUserHandler,
   AddSocialLoginHandler,
   ModifySocialLoginHandler,
+  RequestWebAuthnKeyRegistrationHandler,
+  WebAuthnRequestLoginHandler,
+  RegisterWebAuthnKeyHandler,
+  WebAuthnLoginHandler,
+  RemoveUserAuthenticatorHandler,
+  RenameUserAuthenticatorHandler,
 ];

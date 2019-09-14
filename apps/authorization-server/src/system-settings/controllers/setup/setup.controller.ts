@@ -13,7 +13,7 @@ export class SetupController {
   constructor(private readonly setupService: SetupService) {}
 
   @Post()
-  @UsePipes(new ValidationPipe())
+  @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
   async setupInfrastructure(@Body() setupForm: SetupFormDTO) {
     return await this.setupService.setupInfrastructureClient(
       setupForm.fullName,
@@ -22,6 +22,7 @@ export class SetupController {
       setupForm.infrastructureConsoleUrl,
       setupForm.adminPassword,
       setupForm.issuerUrl,
+      setupForm.organizationName,
     );
   }
 }

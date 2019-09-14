@@ -25,4 +25,8 @@ export class AuthDataService {
   async remove(authData: AuthData) {
     return await authData.remove();
   }
+
+  async deleteMany(params) {
+    return await this.authDataModel.deleteMany(params);
+  }
 }
