@@ -1,0 +1,45 @@
+<div fxLayout="column" fxLayoutAlign="start center" class="authentication-keys-container">
+  <mat-card
+    fxLayout="column"
+    fxLayoutAlign="start center"
+    class="authentication-keys-card mat-elevation-z2">
+    <mat-card-header>
+      <mat-card-title i18n="@@manageAuthKeys">Authentication Keys</mat-card-title>
+    </mat-card-header>
+    <form [formGroup]="keySelectionForm">
+      <mat-card-content
+        fxLayout="column"
+        fxLayoutAlign="start stretch"
+        fxLayoutGap="5px">
+        <div
+          *ngFor="let key of keySelectionForm.get('keys')['controls']; let i = index;"
+          formArrayName="keys">
+          <div [formGroupName]="i">
+            <button
+              [disabled]="disableChoice"
+              class="auth-key-button"
+              fxFlex="90"
+              (click)="renameAuthKey(i)"
+              mat-stroked-button>{{ key.value.name || 'Tap to rename' }}</button>
+            <button
+              mat-icon-button
+              matSuffix
+              [disabled]="disableChoice"
+              (click)="removeAuthKey(i)">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        </div>
+      </mat-card-content>
+      <mat-card-actions fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="1em">
+        <button
+          (click)="navigateBack()"
+          mat-stroked-button>Back</button>
+        <button
+          (click)="addAuthKey()"
+          [disabled]="disableChoice"
+          mat-stroked-button>Add Key</button>
+      </mat-card-actions>
+    </form>
+  </mat-card>
+</div>

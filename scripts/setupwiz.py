@@ -29,7 +29,8 @@ def print_setup_as_usage():
         admin@example.com \\
         secretPassword \\
         +919876543210 \\
-        https://admin.example.com
+        https://admin.example.com \\
+        "Organization Name"
     """.format(command=sys.argv[0]))
 
 
@@ -60,6 +61,7 @@ def setup_as():
         password = sys.argv[5]
         mobile = sys.argv[6]
         infrastructure_console = sys.argv[7]
+        organization_name = sys.argv[8]
         response = requests.post(
             auth_server + '/setup',
             data={
@@ -69,6 +71,7 @@ def setup_as():
                 'adminPassword': password,
                 'phone': mobile,
                 'infrastructureConsoleUrl': infrastructure_console,
+                'organizationName': organization_name,
             }
         )
         setup_infrastructure_console(

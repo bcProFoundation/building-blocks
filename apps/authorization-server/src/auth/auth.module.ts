@@ -21,6 +21,7 @@ import { EnsureLoginGuard } from './guards/ensure-login.guard';
 import { AuthAggregates } from './aggregates';
 import { AuthCommandHandlers } from './commands';
 import { AuthEventHandlers } from './events';
+import { AuthQueryHandlers } from './queries';
 import { AuthSchedulers } from './schedulers';
 import { AuthorizationErrorFilter } from '../common/filters/authorization-error.filter';
 import { TokenErrorFilter } from '../common/filters/token-error.filter';
@@ -55,6 +56,7 @@ import { OpenIDAuthorizationErrorFilter } from '../common/filters/openid-authori
     ...AuthAggregates,
     ...AuthCommandHandlers,
     ...AuthEventHandlers,
+    ...AuthQueryHandlers,
 
     // oauth2orize Error Filters
     { provide: APP_FILTER, useClass: AuthorizationErrorFilter },

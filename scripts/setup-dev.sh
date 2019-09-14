@@ -15,6 +15,10 @@ if [[ -z "$ADMIN_PHONE" ]]; then
     echo "ADMIN_PHONE is not set"
     exit 1
 fi
+if [[ -z "$ORGANIZATION_NAME" ]]; then
+    echo "ORGANIZATION_NAME is not set"
+    exit 1
+fi
 
 export AUTH_SERVER="http://accounts.localhost:4210"
 export INFRASTRUCTURE_CONSOLE="http://admin.localhost:4220"
@@ -29,7 +33,8 @@ $script_dir/setupwiz.py setup-as\
     $ADMIN_EMAIL\
     $ADMIN_PASSWORD\
     $ADMIN_PHONE\
-    $INFRASTRUCTURE_CONSOLE
+    $INFRASTRUCTURE_CONSOLE\
+    "$ORGANIZATION_NAME"
 
 echo "Setting Up Identity Provider"
 $script_dir/setupwiz.py add-client\

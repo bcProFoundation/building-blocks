@@ -10,6 +10,7 @@ export interface AuthData extends Document {
 }
 
 export enum AuthDataType {
+  Challenge = 'Challenge',
   LoginOTP = 'LoginOTP',
   Password = 'Password',
   PhoneVerificationCode = 'PhoneVerificationCode',

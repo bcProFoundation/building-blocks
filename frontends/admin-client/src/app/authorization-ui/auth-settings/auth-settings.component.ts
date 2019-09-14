@@ -35,6 +35,7 @@ export class AuthSettingsComponent implements OnInit {
   enableChoosingAccount: boolean;
   refreshTokenExpiresInDays: number = THIRTY;
   authCodeExpiresInMinutes: number = THIRTY;
+  organizationName: string;
 
   authSettingsForm = new FormGroup({
     issuerUrl: new FormControl(this.issuerUrl),
@@ -52,6 +53,7 @@ export class AuthSettingsComponent implements OnInit {
     enableChoosingAccount: new FormControl(this.enableChoosingAccount),
     refreshTokenExpiresInDays: new FormControl(this.refreshTokenExpiresInDays),
     authCodeExpiresInMinutes: new FormControl(this.authCodeExpiresInMinutes),
+    organizationName: new FormControl(this.organizationName),
   });
 
   constructor(
@@ -111,6 +113,10 @@ export class AuthSettingsComponent implements OnInit {
     this.authSettingsForm.controls.authCodeExpiresInMinutes.setValue(
       response.authCodeExpiresInMinutes,
     );
+    this.authSettingsForm.controls.organizationName.setValue(
+      response.organizationName,
+    );
+    this.authSettingsForm.controls.organizationName.disable();
   }
 
   updateAuthSettings() {
@@ -124,6 +130,7 @@ export class AuthSettingsComponent implements OnInit {
         this.authSettingsForm.controls.enableChoosingAccount.value,
         this.authSettingsForm.controls.refreshTokenExpiresInDays.value,
         this.authSettingsForm.controls.authCodeExpiresInMinutes.value,
+        this.authSettingsForm.controls.organizationName.value,
       )
       .subscribe({
         next: response => {
@@ -213,6 +220,12 @@ export class AuthSettingsComponent implements OnInit {
       },
       error: error => {},
     });
+  }
+
+  toggleOrgName() {
+    if (this.authSettingsForm.controls.organizationName.disabled) {
+      this.authSettingsForm.controls.organizationName.enable();
+    }
   }
 
   logout() {

@@ -7,6 +7,9 @@
           <input matInput formControlName="issuerUrl" placeholder="Server Url" readonly>
           <mat-checkbox formControlName="disableSignup" matSuffix>Disable Sign Up</mat-checkbox>
         </mat-form-field>
+        <mat-form-field (click)="toggleOrgName()">
+          <input matInput formControlName="organizationName" placeholder="Organization Name">
+        </mat-form-field>
         <mat-form-field>
           <mat-select
             placeholder="Communication Server Client ID"

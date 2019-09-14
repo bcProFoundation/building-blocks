@@ -27,6 +27,8 @@ import {
   AVATAR_UPDATED,
   AVATAR_UPDATED_FAILED,
   UPDATE_FAILED,
+  PASSWORD_LESS_LOGIN_ENABLED,
+  PASSWORD_LESS_LOGIN_DISABLED,
 } from '../constants/messages';
 import { isArray } from 'util';
 import {
@@ -73,6 +75,7 @@ export class ProfileComponent implements OnInit {
   sentForgotPasswordEmail: boolean = false;
   email: string;
   phone: string;
+  enablePasswordLess: boolean;
 
   personalForm = new FormGroup({
     fullName: new FormControl(this.fullName),
@@ -138,9 +141,38 @@ export class ProfileComponent implements OnInit {
           this.checked2fa = response.enable2fa;
           this.uuid = response.uuid;
           this.isPasswordSet = response.isPasswordSet;
+          this.enablePasswordLess = response.enablePasswordLess;
         },
         error: error => {},
       });
+  }
+
+  enablePasswordLessLogin() {
+    this.profileService.enablePasswordLess().subscribe({
+      next: success => {
+        this.enablePasswordLess = true;
+        this.snackBar.open(PASSWORD_LESS_LOGIN_ENABLED, CLOSE, {
+          duration: DURATION,
+        });
+      },
+      error: ({ error }) => {
+        this.snackBar.open(error.message, CLOSE, {
+          duration: DURATION,
+        });
+      },
+    });
+  }
+
+  disablePasswordLess() {
+    this.profileService.disablePasswordLess().subscribe({
+      next: success => {
+        this.enablePasswordLess = false;
+        this.snackBar.open(PASSWORD_LESS_LOGIN_DISABLED, CLOSE, {
+          duration: DURATION,
+        });
+      },
+      error: error => {},
+    });
   }
 
   subscribeGetProfilePersonal() {
@@ -353,5 +385,11 @@ export class ProfileComponent implements OnInit {
 
   checkIfAdmin() {
     return this.roles.includes(ADMINISTRATOR);
+  }
+
+  manageKeys() {
+    let url = localStorage.getItem(ISSUER_URL) + '/account/keys/';
+    url += this.uuid + '?access_token=' + this.oauthService.getAccessToken();
+    window.location.href = url;
   }
 }

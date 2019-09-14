@@ -179,11 +179,12 @@ export class UserController {
 
   @Post('v1/enable_password_less_login')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
-  async enablePasswordLess(@Req() req) {
+  async enablePasswordLess(@Req() req, @Body('userUuid') userUuid) {
     const actorUserUuid = req.user.user;
     await this.commandBus.execute(
       new TogglePasswordLessLoginCommand(
         actorUserUuid,
+        userUuid,
         TogglePasswordLessLogin.Enable,
       ),
     );
@@ -191,11 +192,12 @@ export class UserController {
 
   @Post('v1/disable_password_less_login')
   @UseGuards(AuthGuard('bearer', { session: false, callback }))
-  async disablePasswordLess(@Req() req) {
+  async disablePasswordLess(@Req() req, @Body('userUuid') userUuid) {
     const actorUserUuid = req.user.user;
     await this.commandBus.execute(
       new TogglePasswordLessLoginCommand(
         actorUserUuid,
+        userUuid,
         TogglePasswordLessLogin.Disable,
       ),
     );

@@ -11,6 +11,7 @@ import {
   CLOSE,
   PLEASE_CHECK_USERNAME,
   DURATION,
+  NO_KEYS_REGISTERED,
 } from '../constants/app-strings';
 import { LoginChoice } from './login-choice';
 import { stringify } from 'querystring';
@@ -186,12 +187,7 @@ export class LoginComponent implements OnInit {
         .subscribe({
           next: (response: any) => {
             this.loginUserForm.controls.password.setErrors(null);
-            const loginType = this.route.snapshot.queryParams.login_type;
-            if (!loginType) {
-              window.location.href = response.path;
-            } else if (loginType === 'add_account') {
-              this.chooseAccount();
-            }
+            this.redirectAsPerQuery(response.path);
           },
           error: err => {
             this.disableVerifyPasswordButton = false;
@@ -220,6 +216,7 @@ export class LoginComponent implements OnInit {
           this.hideUsername = true;
           this.hidePassword = false;
           this.enable2fa = response.user.enable2fa;
+          this.disableLoginChoice = this.enable2fa;
           this.enablePasswordLess = response.user.enablePasswordLess;
           // TODO: https://github.com/angular/angular/issues/12463
           setTimeout(() => this.passwordRef.nativeElement.focus());
@@ -295,11 +292,25 @@ export class LoginComponent implements OnInit {
   }
 
   showPasswordLessLogin() {
-    this.disableLoginChoice = true;
     this.loginChoice = LoginChoice.PasswordLess;
     this.hidePassword = true;
     this.hideCode = false;
     this.resendOTP();
+  }
+
+  webAuthnLogin() {
+    this.authService
+      .webAuthnLogin(this.loginUserForm.controls.username.value, this.redirect)
+      .subscribe({
+        next: response => {
+          this.redirectAsPerQuery(response.redirect);
+        },
+        error: ({ error }) => {
+          this.snackBar.open(error.message || NO_KEYS_REGISTERED, CLOSE, {
+            duration: DURATION,
+          });
+        },
+      });
   }
 
   chooseAccount() {
@@ -313,5 +324,14 @@ export class LoginComponent implements OnInit {
       next: brand => (this.logoURL = brand.logoURL),
       error: error => {},
     });
+  }
+
+  redirectAsPerQuery(redirectPath: string) {
+    const loginType = this.route.snapshot.queryParams.login_type;
+    if (!loginType) {
+      window.location.href = redirectPath;
+    } else if (loginType === 'add_account') {
+      this.chooseAccount();
+    }
   }
 }

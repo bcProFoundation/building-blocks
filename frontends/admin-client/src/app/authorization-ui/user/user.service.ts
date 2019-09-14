@@ -97,6 +97,20 @@ export class UserService {
     return this.http.post(url, payload);
   }
 
+  enablePasswordLessLogin(userUuid: string) {
+    const url = `${this.storageService.getInfo(
+      ISSUER_URL,
+    )}/user/v1/enable_password_less_login`;
+    return this.http.post(url, { userUuid });
+  }
+
+  disablePasswordLessLogin(userUuid: string) {
+    const url = `${this.storageService.getInfo(
+      ISSUER_URL,
+    )}/user/v1/disable_password_less_login`;
+    return this.http.post(url, { userUuid });
+  }
+
   getRoles() {
     const url = `${this.storageService.getInfo(ISSUER_URL)}/role/v1/find`;
     return this.http.get<string>(url);

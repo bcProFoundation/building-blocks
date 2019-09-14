@@ -3,7 +3,6 @@ import { RoleValidationPolicyService } from './role-validation-policy/role-valid
 
 export { CreateScopeDto } from './create-scope/create-scope.dto';
 export { UserAccountDto } from './user-account/user-account.dto';
-export { LoginUserDto } from './login-user/login-user.dto';
 export { SignupViaEmailDto } from './signup-via-email/signup-via-email.dto';
 export { VerifyEmailDto } from './verify-email/verify-email.dto';
 export { ChangePasswordDto } from './change-password/change-password.dto';

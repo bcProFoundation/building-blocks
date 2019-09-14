@@ -88,3 +88,9 @@ export const AVAILABLE_TRANSLATIONS = [
 export const INVALID_VERIFICATION_CODE = 'Invalid Verification Code';
 export const DURATION = 5000;
 export const NEW_PASSWORD_MISMATCH = 'Please check repeated password';
+export const NO_KEYS_REGISTERED =
+  'No hardware keys are registered for the user';
+export const DELETING = 'Deleting...';
+export const UNDO = 'Undo';
+export const UNDO_DURATION = 10000;
+export const REMOVE_USER_FROM_SESSION = 'User will be removed from session...';

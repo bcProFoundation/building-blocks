@@ -53,7 +53,7 @@ export class UserService {
   }
 
   async checkAdministrator(uuid) {
-    const user: User = await this.findOne({ uuid });
+    const user = (await this.findOne({ uuid })) || ({ roles: [] } as User);
     if (user.roles.includes(ADMINISTRATOR)) {
       return true;
     }

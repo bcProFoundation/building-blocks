@@ -41,10 +41,8 @@ export class SystemSettingsManagementService extends AggregateRoot {
       settings.infrastructureConsoleClientId =
         payload.infrastructureConsoleClientId;
     }
-    settings.disableSignup = payload.disableSignup;
-    settings.enableChoosingAccount = payload.enableChoosingAccount;
-    settings.refreshTokenExpiresInDays = payload.refreshTokenExpiresInDays;
-    settings.authCodeExpiresInMinutes = payload.authCodeExpiresInMinutes;
+
+    Object.assign(settings, payload);
 
     this.apply(new SystemSettingsChangedEvent(actorUserUuid, settings));
   }

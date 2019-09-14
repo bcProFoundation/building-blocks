@@ -80,3 +80,12 @@ export const passwordLessLoginAlreadyEnabledException = new HttpException(
   i18n.__('Password less login is already enabled'),
   HttpStatus.BAD_REQUEST,
 );
+
+export class NoAuthKeysOrSharedSecretFoundException extends HttpException {
+  constructor() {
+    super(
+      i18n.__('No Auth Keys or Shared Secret Found'),
+      HttpStatus.BAD_REQUEST,
+    );
+  }
+}

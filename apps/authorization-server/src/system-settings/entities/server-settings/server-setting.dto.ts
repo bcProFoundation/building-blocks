@@ -5,6 +5,7 @@ import {
   IsBoolean,
   IsNumber,
   Min,
+  IsString,
 } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 import { THIRTY_NUMBER, TEN_NUMBER } from '../../../constants/app-strings';
@@ -71,4 +72,12 @@ export class ServerSettingDto {
   @IsNumber()
   @Min(TEN_NUMBER)
   authCodeExpiresInMinutes?: number;
+
+  @IsString()
+  @IsOptional()
+  @ApiModelProperty({
+    description: 'The name of host organization.',
+    type: 'string',
+  })
+  organizationName: string;
 }

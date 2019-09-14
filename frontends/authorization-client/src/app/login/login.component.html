@@ -80,7 +80,8 @@
   </mat-card>
   <div class="spacer" [hidden]="!enablePasswordLess">
     <mat-button-toggle-group>
-      <mat-button-toggle  [disabled]="disableLoginChoice" (click)="showPasswordLessLogin()">Password-less Login</mat-button-toggle>
+      <mat-button-toggle  *ngIf="disableLoginChoice" (click)="showPasswordLessLogin()">Password-less OTP</mat-button-toggle>
+      <mat-button-toggle  *ngIf="enablePasswordLess" (click)="webAuthnLogin()">Password-less Key</mat-button-toggle>
     </mat-button-toggle-group>
   </div>
   <div class="spacer" [hidden]="enablePasswordLess">

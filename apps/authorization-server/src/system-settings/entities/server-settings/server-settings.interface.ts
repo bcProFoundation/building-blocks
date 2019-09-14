@@ -12,4 +12,5 @@ export interface ServerSettings extends Document {
   enableChoosingAccount?: boolean;
   refreshTokenExpiresInDays?: number;
   authCodeExpiresInMinutes?: number;
+  organizationName?: string;
 }

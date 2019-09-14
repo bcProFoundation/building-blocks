@@ -58,8 +58,11 @@ export class AuthSettingsService {
     enableChoosingAccount: boolean,
     refreshTokenExpiresInDays: number,
     authCodeExpiresInMinutes: number,
+    organizationName?: string,
   ) {
     const requestUrl = localStorage.getItem(ISSUER_URL) + '/settings/v1/update';
+    if (!organizationName) organizationName = undefined;
+
     return this.http.post(
       requestUrl,
       {
@@ -71,6 +74,7 @@ export class AuthSettingsService {
         enableChoosingAccount,
         refreshTokenExpiresInDays,
         authCodeExpiresInMinutes,
+        organizationName,
       },
       { headers: this.headers },
     );
