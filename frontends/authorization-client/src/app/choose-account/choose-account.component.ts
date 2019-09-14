@@ -4,6 +4,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { stringify } from 'querystring';
 import { environment } from '../../environments/environment.prod';
 import { FormGroup, FormArray, FormControl } from '@angular/forms';
+import {
+  UNDO,
+  DURATION,
+  REMOVE_USER_FROM_SESSION,
+} from '../constants/app-strings';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-choose-account',
@@ -13,7 +19,7 @@ import { FormGroup, FormArray, FormControl } from '@angular/forms';
 export class ChooseAccountComponent implements OnInit {
   sessionUsers: any[];
   disableChoice: boolean = false;
-
+  flagLogoutUser: boolean;
   userForm = new FormArray([]);
   userSelectionForm = new FormGroup({
     users: this.userForm,
@@ -23,6 +29,7 @@ export class ChooseAccountComponent implements OnInit {
     private activeRoute: ActivatedRoute,
     private chooseAccountService: ChooseAccountService,
     private router: Router,
+    private snackBar: MatSnackBar,
   ) {}
 
   ngOnInit() {
@@ -72,16 +79,39 @@ export class ChooseAccountComponent implements OnInit {
 
   logoutUser(index: number) {
     this.disableChoice = true;
-    this.chooseAccountService
-      .logoutUser(this.sessionUsers[index].uuid)
-      .subscribe({
-        next: success => {
-          this.disableChoice = false;
-          this.sessionUsers.splice(index, 1);
-          this.userForm.removeAt(index);
-        },
-        error: error => (this.disableChoice = true),
-      });
+    this.flagLogoutUser = true;
+    const snackBar = this.snackBar.open(REMOVE_USER_FROM_SESSION, UNDO, {
+      duration: DURATION,
+    });
+
+    snackBar.afterDismissed().subscribe({
+      next: dismissed => {
+        if (this.flagLogoutUser) {
+          this.chooseAccountService
+            .logoutUser(this.sessionUsers[index].uuid)
+            .subscribe({
+              next: success => {
+                this.disableChoice = false;
+                this.sessionUsers.splice(index, 1);
+                this.userForm.removeAt(index);
+              },
+              error: error => (this.disableChoice = true),
+            });
+        }
+      },
+      error: error => (this.disableChoice = false),
+    });
+
+    snackBar.onAction().subscribe({
+      next: success => {
+        this.flagLogoutUser = false;
+        this.disableChoice = false;
+      },
+      error: error => {
+        this.flagLogoutUser = false;
+        this.disableChoice = false;
+      },
+    });
   }
 
   addAccount() {

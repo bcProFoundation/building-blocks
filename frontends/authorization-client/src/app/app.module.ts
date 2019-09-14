@@ -18,6 +18,9 @@ import { ChooseAccountComponent } from './choose-account/choose-account.componen
 import { PasswordRequirementComponent } from './password-requirement/password-requirement.component';
 import { BrandInfoService } from './common/brand-info/brand-info.service';
 import { BrandInfoComponent } from './brand-info/brand-info.component';
+import { AuthenticationKeysComponent } from './authentication-keys/authentication-keys.component';
+import { AuthenticationKeysService } from './authentication-keys/authentication-keys.service';
+import { RenameAuthKeyDialog } from './authentication-keys/rename-key-dialog.component';
 
 let lang = navigator.language;
 if (!AVAILABLE_TRANSLATIONS.includes(lang)) {
@@ -34,7 +37,10 @@ if (!AVAILABLE_TRANSLATIONS.includes(lang)) {
     ChooseAccountComponent,
     PasswordRequirementComponent,
     BrandInfoComponent,
+    AuthenticationKeysComponent,
+    RenameAuthKeyDialog,
   ],
+  entryComponents: [RenameAuthKeyDialog],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -49,6 +55,7 @@ if (!AVAILABLE_TRANSLATIONS.includes(lang)) {
     AuthService,
     { provide: LOCALE_ID, useValue: lang },
     BrandInfoService,
+    AuthenticationKeysService,
   ],
   bootstrap: [AppComponent],
 })

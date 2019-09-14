@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Observable, from } from 'rxjs';
+import { map, delay, switchMap } from 'rxjs/operators';
+import { solveLoginChallenge } from '@webauthn/client';
 import { environment } from '../../environments/environment';
-import { Observable } from 'rxjs';
-import { map, delay } from 'rxjs/operators';
 
 interface InfoResponse {
   session?: false;
@@ -120,5 +121,35 @@ export class AuthService {
 
   selectUser<T>(uuid) {
     return this.http.post<T>(environment.routes.CHOOSE_USER, { uuid });
+  }
+
+  webAuthnLogin(username: string, redirect?: string) {
+    return this.http
+      .post<any>(
+        environment.routes.WEBAUTHN_LOGIN,
+        { username },
+        {
+          headers: {
+            'content-type': 'Application/Json',
+          },
+        },
+      )
+      .pipe(
+        switchMap(challenge => from(solveLoginChallenge(challenge))),
+        switchMap(credentials => {
+          let params;
+          if (redirect) params = { redirect };
+          return this.http.post<{ redirect: string; loggedIn: boolean }>(
+            environment.routes.WEBAUTHN_LOGIN_CHALLENGE,
+            credentials,
+            {
+              headers: {
+                'content-type': 'application/Json',
+              },
+              params,
+            },
+          );
+        }),
+      );
   }
 }

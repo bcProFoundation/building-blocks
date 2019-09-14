@@ -12,5 +12,6 @@
   "/scope/v1": { "target": "http://accounts.localhost:3000", "secure": false, "logLevel": "debug" },
   "/setup": { "target": "http://accounts.localhost:3000", "secure": false, "logLevel": "debug" },
   "/settings": { "target": "http://accounts.localhost:3000", "secure": false, "logLevel": "debug" },
+  "/webauthn": { "target": "http://accounts.localhost:3000", "secure": false, "logLevel": "debug" },
   "/api": { "target": "http://accounts.localhost:3000", "secure": false, "logLevel": "debug" }
 }
