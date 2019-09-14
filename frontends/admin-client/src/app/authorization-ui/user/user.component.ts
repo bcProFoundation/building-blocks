@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
+import { OAuthService } from 'angular-oauth2-oidc';
 import { NEW_ID, DURATION } from '../../constants/common';
 import { UserService } from './user.service';
 import {
@@ -12,6 +13,7 @@ import {
   UPDATE_ERROR,
 } from '../../constants/messages';
 import { RoleService } from '../role/role.service';
+import { ISSUER_URL } from '../../constants/storage';
 
 export const USER_LIST_ROUTE = '/user/list';
 
@@ -29,6 +31,7 @@ export class UserComponent implements OnInit {
   userEmail: string;
   userPhone: number;
   userPassword: string;
+  enablePasswordLess: boolean;
   roles: string[] = [];
   hide: boolean = true;
 
@@ -48,6 +51,7 @@ export class UserComponent implements OnInit {
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private router: Router,
+    private readonly oauth2: OAuthService,
   ) {
     this.uuid =
       this.route.snapshot.params.id === NEW_ID
@@ -66,6 +70,7 @@ export class UserComponent implements OnInit {
     this.userService.getUser(uuid).subscribe({
       next: response => {
         if (response) {
+          this.enablePasswordLess = response.enablePasswordLess;
           this.populateUserForm(response);
         }
       },
@@ -120,6 +125,37 @@ export class UserComponent implements OnInit {
         error: error =>
           this.snackBar.open(UPDATE_ERROR, CLOSE, { duration: DURATION }),
       });
+  }
+
+  manageAuthUser() {
+    let url = localStorage.getItem(ISSUER_URL);
+    url += '/account/keys/' + this.uuid;
+    url += '?access_token=' + this.oauth2.getAccessToken();
+    window.location.href = url;
+  }
+
+  enablePasswordLessLogin() {
+    this.userService.enablePasswordLessLogin(this.uuid).subscribe({
+      next: success => {
+        this.enablePasswordLess = true;
+        this.snackBar.open(UPDATE_SUCCESSFUL, CLOSE, { duration: DURATION });
+      },
+      error: ({ error }) => {
+        this.snackBar.open(error.message, CLOSE, { duration: DURATION });
+      },
+    });
+  }
+
+  disablePasswordLessLogin() {
+    this.userService.disablePasswordLessLogin(this.uuid).subscribe({
+      next: success => {
+        this.enablePasswordLess = false;
+        this.snackBar.open(UPDATE_SUCCESSFUL, CLOSE, { duration: DURATION });
+      },
+      error: ({ error }) => {
+        this.snackBar.open(error.message, CLOSE, { duration: DURATION });
+      },
+    });
   }
 
   populateUserForm(user) {

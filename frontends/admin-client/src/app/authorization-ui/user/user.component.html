@@ -22,9 +22,12 @@
             </mat-select>
           </mat-form-field>
       </mat-card-content>
-      <mat-card-actions>
-        <button (click)="createUser()" mat-flat-button color="primary" [disabled]="!userForm.valid" *ngIf="!uuid">Create</button>
-        <button (click)="updateUser()" mat-flat-button color="primary" [disabled]="!userForm.valid" *ngIf="uuid">Update</button>
+      <mat-card-actions fxLayout="row">
+          <button (click)="createUser()" mat-flat-button color="primary" [disabled]="!userForm.valid" *ngIf="!uuid">Create</button>
+          <button (click)="updateUser()" mat-flat-button color="primary" [disabled]="!userForm.valid" *ngIf="uuid">Update</button>
+          <button (click)="manageAuthUser()" mat-flat-button [disabled]="!userForm.valid" *ngIf="uuid">Manage Keys</button>
+          <button *ngIf="!enablePasswordLess && uuid" (click)="enablePasswordLessLogin()" mat-flat-button [disabled]="!userForm.valid">Enable Password-less</button>
+          <button *ngIf="enablePasswordLess && uuid" (click)="disablePasswordLessLogin()" mat-flat-button [disabled]="!userForm.valid">Disable Password-less</button>
       </mat-card-actions>
     </mat-card>
   </form>
