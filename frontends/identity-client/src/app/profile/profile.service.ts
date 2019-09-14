@@ -73,6 +73,18 @@ export class ProfileService {
     );
   }
 
+  disablePasswordLess() {
+    const url =
+      localStorage.getItem(ISSUER_URL) + '/user/v1/disable_password_less_login';
+    return this.http.post(url, {}, { headers: this.authorizationHeader });
+  }
+
+  enablePasswordLess() {
+    const url =
+      localStorage.getItem(ISSUER_URL) + '/user/v1/enable_password_less_login';
+    return this.http.post(url, {}, { headers: this.authorizationHeader });
+  }
+
   getPersonalDetails(uuid) {
     return this.http.get(GET_PERSONAL_DETAILS_URL + '/' + uuid, {
       headers: this.authorizationHeader,

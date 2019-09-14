@@ -135,6 +135,11 @@
         {{ checked2fa ? 'Enabled' : 'Disabled' }}
       </mat-slide-toggle>
     </mat-card-content>
+    <mat-card-actions>
+      <button (click)="manageKeys()" mat-button color="primary">Manage Keys</button>
+      <button *ngIf="!enablePasswordLess" (click)="enablePasswordLessLogin()" mat-button>Enable Password-less</button>
+      <button *ngIf="enablePasswordLess" (click)="disablePasswordLess()" mat-button>Disable Password-less</button>
+    </mat-card-actions>
   </mat-card>
 </div>
 

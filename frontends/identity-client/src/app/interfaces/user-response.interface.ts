@@ -8,4 +8,5 @@ export interface UserResponse {
   roles?: string[];
   uuid?: string;
   isPasswordSet?: boolean;
+  enablePasswordLess: boolean;
 }
