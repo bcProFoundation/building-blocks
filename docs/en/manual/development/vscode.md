@@ -9,6 +9,30 @@ This configuration works on linux machine. You need to make changes as per your 
 {
     "version": "0.2.0",
     "configurations": [
+                {
+            "type": "node",
+            "request": "attach",
+            "name": "authorization-server",
+            "port": 9221
+        },
+        {
+            "type": "node",
+            "request": "attach",
+            "name": "communication-server",
+            "port": 9223
+        },
+        {
+            "type": "node",
+            "request": "attach",
+            "name": "identity-provider",
+            "port": 9224
+        },
+        {
+            "type": "node",
+            "request": "attach",
+            "name": "infrastructure-console",
+            "port": 9225
+        },
         {
             "type": "chrome",
             "request": "launch",

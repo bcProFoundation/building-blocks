@@ -116,6 +116,7 @@ export ADMIN_FULL_NAME="Mr Administrator"
 export ADMIN_EMAIL=admin@example.com
 export ADMIN_PASSWORD=Secret@9876
 export ADMIN_PHONE=+919876543210
+export ORGANIZATION_NAME="Example Inc"
 
 # Run script
 ./scripts/setup-dev.sh
