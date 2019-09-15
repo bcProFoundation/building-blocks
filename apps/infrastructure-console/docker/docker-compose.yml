@@ -32,14 +32,15 @@ services:
       - eventstore-vol:/var/lib/eventstore
 
   infrastructure-console:
-    # image: registry.gitlab.com/castlecraft/building-blocks/infrastructure-console:latest
-    image: infrastructure-console:latest
+    image: registry.gitlab.com/castlecraft/building-blocks/infrastructure-console:edge
     ports:
       - "5000:5000"
     depends_on:
       - mongo
+      - eventstore
     links:
       - mongo
+      - eventstore
     environment:
       - NODE_ENV=${NODE_ENV}
       - DB_HOST=${DB_HOST}

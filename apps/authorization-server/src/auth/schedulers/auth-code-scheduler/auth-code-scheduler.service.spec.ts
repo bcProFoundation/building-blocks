@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthCodeSchedulerService } from './auth-code-scheduler.service';
-import { ConfigService } from '../../../config/config.service';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { AuthorizationCodeService } from '../../entities/authorization-code/authorization-code.service';
+import { AGENDA_CONNECTION } from '../../../common/database.provider';
 
 describe('AuthCodeSchedulerService', () => {
   let service: AuthCodeSchedulerService;
@@ -12,10 +12,8 @@ describe('AuthCodeSchedulerService', () => {
       providers: [
         AuthCodeSchedulerService,
         {
-          provide: ConfigService,
-          useValue: {
-            get: (...args) => jest.fn(),
-          },
+          provide: AGENDA_CONNECTION,
+          useValue: {},
         },
         { provide: ServerSettingsService, useValue: {} },
         { provide: AuthorizationCodeService, useValue: {} },

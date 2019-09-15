@@ -34,6 +34,7 @@ import { WebAuthnKeyRegisteredEvent } from '../../events/webauthn-key-registered
 import { UserLoggedInWithWebAuthnEvent } from '../../events/user-logged-in-with-webauthn-key/user-logged-in-with-webauthn-key.event';
 import { UserAccountModifiedEvent } from '../../../user-management/events/user-account-modified/user-account-modified.event';
 import { UserAuthenticatorRemovedEvent } from '../../events/user-authenticator-removed/user-authenticator-removed.event';
+import { ConfigService, NODE_ENV } from '../../../config/config.service';
 
 @Injectable()
 export class WebAuthnAggregateService extends AggregateRoot {
@@ -42,6 +43,7 @@ export class WebAuthnAggregateService extends AggregateRoot {
     private readonly authData: AuthDataService,
     private readonly authenticator: UserAuthenticatorService,
     private readonly settings: ServerSettingsService,
+    private readonly config: ConfigService,
   ) {
     super();
   }
@@ -49,7 +51,13 @@ export class WebAuthnAggregateService extends AggregateRoot {
   async requestRegister(actorUuid: string, userUuid: string) {
     const settings = await this.settings.findWithoutError();
     const partyName = settings.organizationName || SERVICE;
-
+    const issuerUrl = settings.issuerUrl;
+    const relyingParty: { name: string; id?: string } = { name: partyName };
+    if (issuerUrl && this.config.get(NODE_ENV) === 'production') {
+      try {
+        relyingParty.id = new URL(issuerUrl).hostname;
+      } catch (error) {}
+    }
     await this.validateAuthorizedUser(actorUuid, userUuid);
 
     if (!userUuid) userUuid = actorUuid;
@@ -62,7 +70,7 @@ export class WebAuthnAggregateService extends AggregateRoot {
     });
 
     const challengeResponse: any = generateRegistrationChallenge({
-      relyingParty: { name: partyName },
+      relyingParty,
       user: { id: user.uuid, name: user.email, displayName: user.name },
     });
 

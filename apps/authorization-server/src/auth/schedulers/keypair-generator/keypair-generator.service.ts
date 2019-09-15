@@ -1,13 +1,7 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
-import * as Bull from 'bull';
-import { BullOptions } from '../../../constants/bull-queue.options';
-import {
-  ConfigService,
-  BULL_QUEUE_REDIS_HOST,
-  BULL_QUEUE_REDIS_PORT,
-  BULL_QUEUE_REDIS_PASSWORD,
-} from '../../../config/config.service';
+import { Injectable, OnModuleInit, Inject } from '@nestjs/common';
+import * as Agenda from 'agenda';
 import { OIDCKeyService } from '../../entities/oidc-key/oidc-key.service';
+import { AGENDA_CONNECTION } from '../../../common/database.provider';
 
 export const KEYGEN_QUEUE = 'keygen_queue';
 export const NUMBER_OF_KEYPAIRS = 2;
@@ -16,21 +10,11 @@ export const FIFTEEN_DAYS_IN_MILLISECONDS = 1.296e9;
 
 @Injectable()
 export class KeyPairGeneratorService implements OnModuleInit {
-  protected queue: Bull.Queue;
-
   constructor(
+    @Inject(AGENDA_CONNECTION)
+    private readonly agenda: Agenda,
     private readonly keyService: OIDCKeyService,
-    private readonly configService: ConfigService,
-  ) {
-    const bullOptions: BullOptions = {
-      redis: {
-        host: this.configService.get(BULL_QUEUE_REDIS_HOST),
-        port: Number(this.configService.get(BULL_QUEUE_REDIS_PORT)),
-        password: this.configService.get(BULL_QUEUE_REDIS_PASSWORD),
-      },
-    };
-    this.queue = new Bull(KEYGEN_QUEUE, bullOptions);
-  }
+  ) {}
 
   async onModuleInit() {
     await this.defineQueueProcess();
@@ -38,7 +22,7 @@ export class KeyPairGeneratorService implements OnModuleInit {
   }
 
   async defineQueueProcess() {
-    this.queue.process(KEYGEN_QUEUE, async (job, done) => {
+    this.agenda.define(KEYGEN_QUEUE, async job => {
       const keys = await this.keyService.find();
       if (keys.length === 0) {
         await this.keyService.generateKey();
@@ -60,32 +44,18 @@ export class KeyPairGeneratorService implements OnModuleInit {
           }
         }
       }
-      done(null, job.id);
     });
   }
 
   async generateKeyPair() {
     const countOfKeys = await this.keyService.count();
     if (countOfKeys === 0) {
-      const { id, data } = await this.queue.add(KEYGEN_QUEUE, {
-        message: KEYGEN_QUEUE,
-      });
-      return { id, data };
+      await this.agenda.now(KEYGEN_QUEUE);
     }
   }
 
-  async getQueue(id: Bull.JobId) {
-    return await this.queue.getJob(id);
-  }
-
   async addQueue() {
-    const every = 8.64e7; // every day in milliseconds
-    await this.queue.add(
-      KEYGEN_QUEUE,
-      {
-        message: KEYGEN_QUEUE,
-      },
-      { repeat: { every } },
-    );
+    const every = '1 day';
+    await this.agenda.every(every, KEYGEN_QUEUE);
   }
 }

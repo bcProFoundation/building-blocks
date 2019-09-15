@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpService } from '@nestjs/common';
-import { ConfigService } from '../../../config/config.service';
 import { UserDeleteRequestService } from './user-delete-request.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
+import { AGENDA_CONNECTION } from '../../../common/database.provider';
 
 describe('UserDeleteRequestService', () => {
   let service: UserDeleteRequestService;
@@ -20,10 +20,8 @@ describe('UserDeleteRequestService', () => {
           useValue: {}, // mock
         },
         {
-          provide: ConfigService,
-          useValue: {
-            get(...args) {},
-          },
+          provide: AGENDA_CONNECTION,
+          useValue: {},
         },
       ],
     }).compile();

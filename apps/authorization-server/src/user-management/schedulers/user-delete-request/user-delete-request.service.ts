@@ -1,42 +1,26 @@
-import { Injectable, OnModuleInit, HttpService } from '@nestjs/common';
-import * as Bull from 'bull';
-import { BullOptions } from '../../../constants/bull-queue.options';
-import {
-  ConfigService,
-  BULL_QUEUE_REDIS_HOST,
-  BULL_QUEUE_REDIS_PORT,
-  BULL_QUEUE_REDIS_PASSWORD,
-} from '../../../config/config.service';
-import { ClientService } from '../../../client-management/entities/client/client.service';
+import { Injectable, OnModuleInit, HttpService, Inject } from '@nestjs/common';
 import { retry } from 'rxjs/operators';
+import * as Agenda from 'agenda';
+import { ClientService } from '../../../client-management/entities/client/client.service';
+import { AGENDA_CONNECTION } from '../../../common/database.provider';
 
 export const USER_DELETE_REQUEST = 'user_delete_request';
 
 @Injectable()
 export class UserDeleteRequestService implements OnModuleInit {
-  protected queue: Bull.Queue;
-
   constructor(
+    @Inject(AGENDA_CONNECTION)
+    private readonly agenda: Agenda,
     private readonly clientService: ClientService,
-    private readonly configService: ConfigService,
     private readonly http: HttpService,
-  ) {
-    const bullOptions: BullOptions = {
-      redis: {
-        host: this.configService.get(BULL_QUEUE_REDIS_HOST),
-        port: Number(this.configService.get(BULL_QUEUE_REDIS_PORT)),
-        password: this.configService.get(BULL_QUEUE_REDIS_PASSWORD),
-      },
-    };
-    this.queue = new Bull(USER_DELETE_REQUEST, bullOptions);
-  }
+  ) {}
 
   async onModuleInit() {
     await this.defineQueueProcess();
   }
 
   async defineQueueProcess() {
-    this.queue.process(USER_DELETE_REQUEST, async (job, done) => {
+    this.agenda.define(USER_DELETE_REQUEST, async job => {
       const clients = await this.clientService.findAll();
       for (const client of clients) {
         if (client.userDeleteEndpoint) {
@@ -47,8 +31,8 @@ export class UserDeleteRequestService implements OnModuleInit {
             .post(
               client.userDeleteEndpoint,
               {
-                message: job.data.message,
-                user: job.data.uuid,
+                message: job.attrs.data.message,
+                user: job.attrs.data.uuid,
               },
               {
                 headers: {
@@ -64,7 +48,6 @@ export class UserDeleteRequestService implements OnModuleInit {
             });
         }
       }
-      done(null, job.id);
     });
   }
 
@@ -73,10 +56,9 @@ export class UserDeleteRequestService implements OnModuleInit {
    * @param uuid of user deleted
    */
   async informClients(uuid) {
-    const { id, data } = await this.queue.add(USER_DELETE_REQUEST, {
+    await this.agenda.now(USER_DELETE_REQUEST, {
       message: USER_DELETE_REQUEST,
       uuid,
     });
-    return { id, data };
   }
 }

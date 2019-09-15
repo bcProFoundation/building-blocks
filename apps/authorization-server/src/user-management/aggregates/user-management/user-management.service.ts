@@ -30,11 +30,16 @@ import { UserAccountModifiedEvent } from '../../events/user-account-modified/use
 import { UserAccountAddedEvent } from '../../events/user-account-added/user-account-added.event';
 import { PasswordPolicyService } from '../../policies/password-policy/password-policy.service';
 import { RoleValidationPolicyService } from '../../policies/role-validation-policy/role-validation-policy.service';
-import { AuthData } from '../../entities/auth-data/auth-data.interface';
+import {
+  AuthData,
+  AuthDataType,
+} from '../../entities/auth-data/auth-data.interface';
 import { Role } from '../../entities/role/role.interface';
 import { UserRoleAddedEvent } from '../../events/user-role-added/user-role-added.event';
 import { UserRoleModifiedEvent } from '../../events/user-role-modified/user-role-modified.event';
 import { User } from '../../entities/user/user.interface';
+import { UserAuthenticatorService } from '../../entities/user-authenticator/user-authenticator.service';
+import { USER } from '../../entities/user/user.schema';
 
 @Injectable()
 export class UserManagementService extends AggregateRoot {
@@ -47,6 +52,7 @@ export class UserManagementService extends AggregateRoot {
     private readonly crypto: CryptographerService,
     private readonly passwordPolicy: PasswordPolicyService,
     private readonly roleValidationPolicy: RoleValidationPolicyService,
+    private readonly authenticator: UserAuthenticatorService,
   ) {
     super();
   }
@@ -80,8 +86,22 @@ export class UserManagementService extends AggregateRoot {
       uuid: user.twoFactorTempSecret,
     });
 
+    // Remove non-trusted OAuth 2.0 Clients created by user
     await this.clientService.deleteClientsByUser(user.uuid);
+
+    // Remove user's bearer tokens
     await this.bearerTokenService.deleteMany({ user: user.uuid });
+
+    // Remove user's authenticator keys
+    await this.authenticator.deleteMany({ userUuid: user.uuid });
+
+    // Remove user's authenticator challenges
+    await this.authDataService.deleteMany({
+      authDataType: AuthDataType.Challenge,
+      entity: USER,
+      entityUuid: user.uuid,
+    });
+
     user.deleted = true;
     this.apply(
       new UserAccountRemovedEvent(

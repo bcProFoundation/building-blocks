@@ -16,9 +16,6 @@ export const DB_NAME = 'DB_NAME';
 export const DB_HOST = 'DB_HOST';
 export const DB_USER = 'DB_USER';
 export const DB_PASSWORD = 'DB_PASSWORD';
-export const BULL_QUEUE_REDIS_HOST = 'BULL_QUEUE_REDIS_HOST';
-export const BULL_QUEUE_REDIS_PORT = 'BULL_QUEUE_REDIS_PORT';
-export const BULL_QUEUE_REDIS_PASSWORD = 'BULL_QUEUE_REDIS_PASSWORD';
 export const ES_HOST = 'ES_HOST';
 export const ES_USER = 'ES_USER';
 export const ES_PASSWORD = 'ES_PASSWORD';
@@ -51,9 +48,6 @@ export class ConfigService {
       DB_HOST: Joi.string().required(),
       DB_USER: Joi.string().required(),
       DB_PASSWORD: Joi.string().required(),
-      BULL_QUEUE_REDIS_HOST: Joi.string().required(),
-      BULL_QUEUE_REDIS_PORT: Joi.number().required(),
-      BULL_QUEUE_REDIS_PASSWORD: Joi.string().required(),
       ES_HOST: Joi.string().optional(),
       ES_USER: Joi.string().optional(),
       ES_PASSWORD: Joi.string().optional(),

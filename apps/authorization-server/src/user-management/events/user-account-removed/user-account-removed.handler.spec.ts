@@ -92,9 +92,7 @@ describe('Event: UserAccountRemovedHandler', () => {
   });
 
   it('should inform client the User is deleted using the UserDeleteRequestService', async () => {
-    manager.informClients = jest.fn(() =>
-      Promise.resolve({ id: 420, data: {} }),
-    );
+    manager.informClients = jest.fn(() => Promise.resolve());
     userService.remove = jest.fn(() => Promise.resolve({} as User));
     authDataService.remove = jest.fn(() => Promise.resolve({} as AuthData));
 

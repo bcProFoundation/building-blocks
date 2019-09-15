@@ -6,11 +6,13 @@ add `127.0.0.1 *.localhost` in `/etc/hosts` file or hosts file of your operating
 
 ### Install Prerequisites
 
-- Docker (to run backing services containers for redis and mongo)
+- Docker (to run backing services containers for eventstore and mongo)
 - Docker compose (easy bootstrap of development setup)
 - NVM / NodeJS (use nvm to manage different node versions required)
 - Python and Python Requests (to setup backend apps on first run)
 - VS Code (Editor and NodeJS/TypeScript IDE)
+
+Note: All requirements can run native on Linux, Mac or Windows.
 
 ### Install NodeJS global commands
 
@@ -42,7 +44,6 @@ DB_USER=admin
 DB_PASSWORD=admin
 DB_NAME=test_authorization-server
 MONGODB_ROOT_PASSWORD=admin
-REDIS_PASSWORD=admin
 ```
 
 For required environment variables, place appropriate `.env` files under each app's package root

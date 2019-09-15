@@ -115,7 +115,7 @@ Note:
 
 - Setup initializes everything, adds administrator and first oauth client called infrastructure-console
 - Authentication, Authorization and setting up infrastructure is fairly synchronous
-- Resource intensive jobs like clean ups, key pair generation during setup and fortnightly key pair refresh schedule is handled by redis based queue
+- Resource intensive jobs like clean ups, key pair generation during setup and fortnightly key pair refresh schedule is handled by mongo based queue
 - All apps in building blocks use eventstore only to log events
 - `communication-server` exposes endpoint to list streams for administrators
 - eventstore can be used as audit log
