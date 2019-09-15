@@ -12,6 +12,8 @@ add `127.0.0.1 *.localhost` in `/etc/hosts` file or hosts file of your operating
 - Python and Python Requests (to setup backend apps on first run)
 - VS Code (Editor and NodeJS/TypeScript IDE)
 
+Note: All requirements can run native on Linux, Mac or Windows.
+
 ### Install NodeJS global commands
 
 ```sh

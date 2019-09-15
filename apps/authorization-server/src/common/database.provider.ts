@@ -18,13 +18,13 @@ export const databaseProviders = [
   {
     provide: MONGOOSE_CONNECTION,
     useFactory: async (config: ConfigService): Promise<typeof mongoose> => {
+      // Remove Deprecation Warnings https://mongoosejs.com/docs/deprecations.html
+      mongoose.set('useUnifiedTopology', true);
       return await defer(() =>
         mongoose.connect(
           `mongodb://${config.get(DB_USER)}:${config.get(
             DB_PASSWORD,
-          )}@${config.get(DB_HOST)}/${config.get(
-            DB_NAME,
-          )}?useUnifiedTopology=true`,
+          )}@${config.get(DB_HOST)}/${config.get(DB_NAME)}`,
           { useNewUrlParser: true },
         ),
       )
