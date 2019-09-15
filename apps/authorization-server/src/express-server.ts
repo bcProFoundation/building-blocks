@@ -13,6 +13,7 @@ import {
   DB_HOST,
   DB_NAME,
   SESSION_NAME,
+  NODE_ENV,
 } from './config/config.service';
 import { join } from 'path';
 import { INestApplication } from '@nestjs/common';
@@ -60,7 +61,10 @@ export class ExpressServer {
       secure: true,
     };
 
-    if (process.env.NODE_ENV !== 'production') cookie.secure = false;
+    if (this.configService.get(NODE_ENV) !== 'production') {
+      cookie.secure = false;
+    }
+
     const url = `mongodb://${this.configService.get(
       DB_USER,
     )}:${this.configService.get(DB_PASSWORD)}@${this.configService.get(

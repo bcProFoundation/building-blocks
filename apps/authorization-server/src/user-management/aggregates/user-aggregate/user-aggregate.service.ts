@@ -35,6 +35,7 @@ import { USER } from '../../entities/user/user.schema';
 import { AuthDataRemovedEvent } from '../../events/auth-data-removed/auth-data-removed.event';
 import { i18n } from '../../../i18n/i18n.config';
 import { UserAuthenticatorService } from '../../entities/user-authenticator/user-authenticator.service';
+import { ConfigService, NODE_ENV } from '../../../config/config.service';
 
 @Injectable()
 export class UserAggregateService extends AggregateRoot {
@@ -45,19 +46,17 @@ export class UserAggregateService extends AggregateRoot {
     private readonly crypto: CryptographerService,
     private readonly passwordPolicy: PasswordPolicyService,
     private readonly authenticator: UserAuthenticatorService,
+    private readonly config: ConfigService,
   ) {
     super();
   }
 
   async initializeMfa(uuid: string, restart: boolean = false) {
     const user: User = await this.user.findOne({ uuid });
-
+    const environment = this.config.get(NODE_ENV);
     // Disable 2FA for admin in env staging
-    if (
-      process.env.NODE_ENV === 'staging' &&
-      user.roles.includes(ADMINISTRATOR)
-    ) {
-      return { environment: process.env.NODE_ENV };
+    if (environment === 'staging' && user.roles.includes(ADMINISTRATOR)) {
+      return { environment };
     }
 
     if (restart || !user.enable2fa) {

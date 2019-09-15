@@ -8,12 +8,14 @@ import { SystemSettingsChangedEvent } from '../../events/server-settings-changed
 import { ServerSettingDto } from '../../entities/server-settings/server-setting.dto';
 import { BearerTokensDeletedEvent } from '../../events/bearer-tokens-deleted/bearer-tokens-deleted.event';
 import { UserSessionsDeletedEvent } from '../../events/user-sessions-deleted/user-sessions-deleted.event';
+import { ConfigService, NODE_ENV } from '../../../config/config.service';
 
 @Injectable()
 export class SystemSettingsManagementService extends AggregateRoot {
   constructor(
     private readonly settingsService: ServerSettingsService,
     private readonly clientService: ClientService,
+    private readonly config: ConfigService,
   ) {
     super();
   }
@@ -24,7 +26,9 @@ export class SystemSettingsManagementService extends AggregateRoot {
     if (payload.disableSignup) settings.disableSignup = payload.disableSignup;
     if (
       payload.communicationServerClientId &&
-      ['production', 'development', 'test-e2e'].includes(process.env.NODE_ENV)
+      ['production', 'development', 'test-e2e'].includes(
+        this.config.get(NODE_ENV),
+      )
     ) {
       await this.checkValidClientId(payload.communicationServerClientId);
       settings.communicationServerClientId =
