@@ -32,16 +32,15 @@ services:
       - eventstore-vol:/var/lib/eventstore
 
   communication-server:
-    # image: registry.gitlab.com/castlecraft/building-blocks/communication-server:latest
-    image: communication-server:latest
+    image: registry.gitlab.com/castlecraft/building-blocks/communication-server:edge
     ports:
       - "4100:4100"
     depends_on:
       - mongo
-      - rabbitmq
+      - eventstore
     links:
       - mongo
-      - rabbitmq
+      - eventstore
     environment:
       - NODE_ENV=${NODE_ENV}
       - DB_HOST=${DB_HOST}

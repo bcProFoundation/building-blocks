@@ -32,14 +32,15 @@ services:
       - eventstore-vol:/var/lib/eventstore
 
   identity-provider:
-    # image: registry.gitlab.com/castlecraft/building-blocks/identity-provider:latest
-    image: identity-provider:latest
+    image: registry.gitlab.com/castlecraft/building-blocks/identity-provider:edge
     ports:
       - "3200:3200"
     depends_on:
       - mongo
+      - eventstore
     links:
       - mongo
+      - eventstore
     environment:
       - NODE_ENV=${NODE_ENV}
       - DB_HOST=${DB_HOST}
