@@ -1,6 +1,6 @@
 # Backing Services
 
-Backing services like `mongodb` and `redis` need to be attached to app container.
+Backing services like `MongoDB` and `EventStore` need to be attached to app container.
 
 `.env` config stores the setting based on environment variables.
 

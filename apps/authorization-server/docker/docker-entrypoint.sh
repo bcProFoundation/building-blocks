@@ -37,18 +37,6 @@ function checkEnv() {
     echo "DB_PASSWORD is not set"
     exit 1
   fi
-  if [[ -z "$BULL_QUEUE_REDIS_HOST" ]]; then
-    echo "BULL_QUEUE_REDIS_HOST is not set"
-    exit 1
-  fi
-    if [[ -z "$BULL_QUEUE_REDIS_PORT" ]]; then
-    echo "BULL_QUEUE_REDIS_HOST is not set"
-    exit 1
-  fi
-  if [[ -z "$BULL_QUEUE_REDIS_PASSWORD" ]]; then
-    echo "BULL_QUEUE_REDIS_PASSWORD is not set"
-    exit 1
-  fi
   if [[ -z "$NODE_ENV" ]]; then
     echo "NODE_ENV is not set"
     exit 1
@@ -58,9 +46,6 @@ function checkEnv() {
 function checkConnection() {
   # Wait for mongodb
   dockerize -wait tcp://$DB_HOST:27017 -timeout 30s
-
-  # Wait for redis for bull queue
-  dockerize -wait tcp://$BULL_QUEUE_REDIS_HOST:$BULL_QUEUE_REDIS_PORT -timeout 30s
 }
 
 function configureServer() {

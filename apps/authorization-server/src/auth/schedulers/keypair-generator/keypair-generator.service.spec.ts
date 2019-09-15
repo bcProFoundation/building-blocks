@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { KeyPairGeneratorService } from './keypair-generator.service';
 import { OIDCKeyService } from '../../entities/oidc-key/oidc-key.service';
-import { ConfigService } from '../../../config/config.service';
+import { AGENDA_CONNECTION } from '../../../common/database.provider';
 
 describe('KeyPairGeneratorService', () => {
   let service: KeyPairGeneratorService;
@@ -15,10 +15,8 @@ describe('KeyPairGeneratorService', () => {
           useValue: {}, // mock
         },
         {
-          provide: ConfigService,
-          useValue: {
-            get(...args) {},
-          },
+          provide: AGENDA_CONNECTION,
+          useValue: {},
         },
       ],
     }).compile();

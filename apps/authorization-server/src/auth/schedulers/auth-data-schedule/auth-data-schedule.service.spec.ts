@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthDataScheduleService } from './auth-data-schedule.service';
 import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
-import { ConfigService } from '../../../config/config.service';
+import { AGENDA_CONNECTION } from '../../../common/database.provider';
 
 describe('AuthDataScheduleService', () => {
   let service: AuthDataScheduleService;
@@ -12,10 +12,8 @@ describe('AuthDataScheduleService', () => {
         AuthDataScheduleService,
         { provide: AuthDataService, useValue: {} },
         {
-          provide: ConfigService,
-          useValue: {
-            get: (...args) => jest.fn(),
-          },
+          provide: AGENDA_CONNECTION,
+          useValue: {},
         },
       ],
     }).compile();

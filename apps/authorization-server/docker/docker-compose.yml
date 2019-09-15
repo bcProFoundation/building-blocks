@@ -21,15 +21,6 @@ services:
     depends_on:
       - fix-mongodb-permissions
 
-  redis:
-    image: bitnami/redis:latest
-    environment:
-      - REDIS_PASSWORD=${BULL_QUEUE_REDIS_PASSWORD}
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis-vol:/data
-
   eventstore:
     image: eventstore/eventstore:latest
     ports:
@@ -46,10 +37,10 @@ services:
       - "3000:3000"
     depends_on:
       - mongo
-      - redis
+      - eventstore
     links:
       - mongo
-      - redis
+      - eventstore
     environment:
       - SESSION_SECRET=${SESSION_SECRET}
       - EXPIRY_DAYS=${EXPIRY_DAYS}
@@ -60,9 +51,6 @@ services:
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
-      - BULL_QUEUE_REDIS_HOST=${BULL_QUEUE_REDIS_HOST}
-      - BULL_QUEUE_REDIS_PORT=${BULL_QUEUE_REDIS_PORT}
-      - BULL_QUEUE_REDIS_PASSWORD=${BULL_QUEUE_REDIS_PASSWORD}
       - NODE_ENV=${NODE_ENV}
       - ES_HOST=${ES_HOST}
       - ES_USER=${ES_USER}
@@ -70,6 +58,5 @@ services:
       - ES_STREAM=${ES_STREAM}
 
 volumes:
-  redis-vol:
   mongo-vol:
   eventstore-vol:

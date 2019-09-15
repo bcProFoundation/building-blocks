@@ -1,41 +1,26 @@
-import { Injectable, HttpService } from '@nestjs/common';
+import { Injectable, HttpService, Inject } from '@nestjs/common';
 import { OnModuleInit } from '@nestjs/common';
-import { BearerTokenService } from '../../entities/bearer-token/bearer-token.service';
-import * as Bull from 'bull';
-import { BullOptions } from '../../../constants/bull-queue.options';
-import {
-  ConfigService,
-  BULL_QUEUE_REDIS_HOST,
-  BULL_QUEUE_REDIS_PORT,
-  BULL_QUEUE_REDIS_PASSWORD,
-} from '../../../config/config.service';
-import { ClientService } from '../../../client-management/entities/client/client.service';
 import { retry } from 'rxjs/operators';
+import * as Agenda from 'agenda';
+import { BearerTokenService } from '../../entities/bearer-token/bearer-token.service';
+import { ClientService } from '../../../client-management/entities/client/client.service';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { THIRTY_NUMBER } from '../../../constants/app-strings';
 import { ServerSettings } from '../../../system-settings/entities/server-settings/server-settings.interface';
+import { AGENDA_CONNECTION } from '../../../common/database.provider';
 
 export const TOKEN_DELETE_QUEUE = 'token_delete';
 
 @Injectable()
 export class TokenSchedulerService implements OnModuleInit {
-  protected queue: Bull.Queue;
   constructor(
+    @Inject(AGENDA_CONNECTION)
+    private readonly agenda: Agenda,
     private readonly bearerTokenService: BearerTokenService,
     private readonly clientService: ClientService,
     private readonly http: HttpService,
-    private readonly configService: ConfigService,
     private readonly settings: ServerSettingsService,
-  ) {
-    const bullOptions: BullOptions = {
-      redis: {
-        host: this.configService.get(BULL_QUEUE_REDIS_HOST),
-        port: Number(this.configService.get(BULL_QUEUE_REDIS_PORT)),
-        password: this.configService.get(BULL_QUEUE_REDIS_PASSWORD),
-      },
-    };
-    this.queue = new Bull(TOKEN_DELETE_QUEUE, bullOptions);
-  }
+  ) {}
 
   async onModuleInit() {
     this.defineQueueProcess();
@@ -43,7 +28,7 @@ export class TokenSchedulerService implements OnModuleInit {
   }
 
   defineQueueProcess() {
-    this.queue.process(TOKEN_DELETE_QUEUE, async (job, done) => {
+    this.agenda.define(TOKEN_DELETE_QUEUE, async job => {
       const tokens = await this.bearerTokenService.getAll();
       let settings = {
         refreshTokenExpiresInDays: THIRTY_NUMBER,
@@ -71,16 +56,11 @@ export class TokenSchedulerService implements OnModuleInit {
           await this.informClients(accessToken);
         }
       }
-      done(null, job.id);
     });
   }
   async addQueue() {
-    const every = 3.6e6; // every one hour in milliseconds
-    await this.queue.add(
-      TOKEN_DELETE_QUEUE,
-      { message: TOKEN_DELETE_QUEUE },
-      { repeat: { every } },
-    );
+    const every = '1 hour'; // every one hour in milliseconds
+    await this.agenda.every(every, TOKEN_DELETE_QUEUE);
   }
 
   async informClients(accessToken: string) {

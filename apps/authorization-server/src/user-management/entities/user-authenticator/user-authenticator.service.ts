@@ -61,4 +61,8 @@ export class UserAuthenticatorService {
       offset: Number(offset),
     };
   }
+
+  async deleteMany(params) {
+    return await this.userAuthenticatorModel.deleteMany(params);
+  }
 }

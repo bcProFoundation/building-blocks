@@ -26,11 +26,12 @@ It allows dynamic client registration and client registration for third party ap
 - Frontend for all services are decoupled, can be replaced by whitelabeled containers
 - Frequent upgrades to dependencies for security
 - Easy backups, restores and disaster recovery based on kubernetes, velero
-- Easy connectivity to data stores like mongodb, redis, mariadb, postgresql
+- Easy connectivity to data stores
 - All IO intensive resource servers are built using NodeJS
 - Resource server can be made using preferred language for optimized tasks
 - Rolling updates to core service, no downtime during upgrades
 - Code structure influenced by Domain Driven Design
+- Optional EventStore connection
 
 ### Development
 

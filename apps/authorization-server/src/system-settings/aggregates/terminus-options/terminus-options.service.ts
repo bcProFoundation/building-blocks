@@ -10,8 +10,6 @@ import {
   ConfigService,
   ES_HOST,
   DB_HOST,
-  BULL_QUEUE_REDIS_HOST,
-  BULL_QUEUE_REDIS_PORT,
 } from '../../../config/config.service';
 
 export const HEALTH_ENDPOINT = '/api/healthz';
@@ -31,14 +29,6 @@ export class TerminusOptionsService implements TerminusOptionsFactory {
           this.microservice.pingCheck('database', {
             transport: Transport.TCP,
             options: { host: this.config.get(DB_HOST), port: 27017 },
-          }),
-        async () =>
-          this.microservice.pingCheck('background-queue', {
-            transport: Transport.TCP,
-            options: {
-              host: this.config.get(BULL_QUEUE_REDIS_HOST),
-              port: Number(this.config.get(BULL_QUEUE_REDIS_PORT)),
-            },
           }),
       ],
     };
