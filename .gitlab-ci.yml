@@ -18,20 +18,12 @@ stages:
   - setup
   - docs
 
-cache:
-  key: ${CI_COMMIT_REF_SLUG}
-  paths:
-  - node_modules/
-  - apps/authorization-server/node_modules/
-  - apps/communication-server/node_modules/
-  - apps/identity-provider/node_modules/
-  - apps/infrastructure-console/node_modules/
-  - frontends/admin-client/node_modules/
-  - frontends/authorization-client/node_modules/
-  - frontends/identity-client/node_modules/
-
 test_authorization_server:
   stage: tests
+  cache:
+    key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
+    paths:
+      - apps/authorization-server/node_modules/
   only:
     refs:
       - merge_requests
@@ -69,6 +61,10 @@ test_authorization_server:
 
 test_authorization_client:
   stage: tests
+  cache:
+    key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
+    paths:
+      - frontends/authorization-client/node_modules/
   only:
     refs:
       - merge_requests
@@ -95,6 +91,10 @@ test_authorization_client:
 
 test_communication_server:
   stage: tests
+  cache:
+    key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
+    paths:
+      - apps/communication-server/node_modules/
   only:
     refs:
       - merge_requests
@@ -120,6 +120,10 @@ test_communication_server:
 
 test_identity_provider:
   stage: tests
+  cache:
+    key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
+    paths:
+      - apps/identity-provider/node_modules/
   only:
     refs:
       - merge_requests
@@ -145,6 +149,10 @@ test_identity_provider:
 
 test_identity_client:
   stage: tests
+  cache:
+    key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
+    paths:
+      - frontends/identity-client/node_modules/
   only:
     refs:
       - merge_requests
@@ -171,6 +179,10 @@ test_identity_client:
 
 test_infrastructure_console:
   stage: tests
+  cache:
+    key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
+    paths:
+      - apps/infrastructure-console/node_modules/
   only:
     refs:
       - merge_requests
@@ -196,6 +208,10 @@ test_infrastructure_console:
 
 test_admin_client:
   stage: tests
+  cache:
+    key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
+    paths:
+      - frontends/admin-client/node_modules/
   only:
     refs:
       - merge_requests
@@ -514,7 +530,7 @@ pages:
     - npm install -g lerna
     - npm install
     - lerna clean -y
-    - lerna bootstrap --scope={authorization-server,communication-server,identity-provider,infrastructure-console}
+    - lerna bootstrap
   script:
     - npm install gitbook-cli -g
     - npm install typedoc -g
