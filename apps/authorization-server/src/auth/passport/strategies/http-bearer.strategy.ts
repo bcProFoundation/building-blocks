@@ -31,9 +31,9 @@ export class HttpBearerStrategy extends PassportStrategy(Strategy) {
       const now = new Date();
       if (now > expires) {
         done(unauthorizedError);
-      } else done(null, { user: localToken.user });
+      } else return done(null, { user: localToken.user });
     } catch (error) {
-      done(error);
+      return done(error);
     }
   }
 }

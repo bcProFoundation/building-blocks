@@ -51,7 +51,7 @@ export class CodeGrantService {
             codePayload.codeChallengeMethod.toLowerCase(),
           )
         ) {
-          done(invalidCodeChallengeException, null);
+          return done(invalidCodeChallengeException, null);
         }
         codePayload.codeChallenge = areq.codeChallenge;
       }
@@ -59,9 +59,9 @@ export class CodeGrantService {
       if (areq && areq.nonce) codePayload.nonce = areq.nonce;
 
       await this.authorizationCodeService.save(codePayload);
-      done(null, code);
+      return done(null, code);
     } catch (error) {
-      done(error, null);
+      return done(error, null);
     }
   }
 }
