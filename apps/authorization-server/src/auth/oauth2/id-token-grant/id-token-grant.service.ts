@@ -40,9 +40,9 @@ export class IDTokenGrantService {
         accessToken,
         req.nonce,
       );
-      done(null, signedToken);
+      return done(null, signedToken);
     } catch (error) {
-      done(error, null);
+      return done(error, null);
     }
   }
 

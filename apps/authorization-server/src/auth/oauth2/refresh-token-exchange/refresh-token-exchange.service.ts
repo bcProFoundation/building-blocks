@@ -18,7 +18,7 @@ export class RefreshTokenExchangeService {
       const localRefreshToken = await this.bearerTokenService.findOne({
         refreshToken,
       });
-      if (!localRefreshToken) done(null, false);
+      if (!localRefreshToken) return done(null, false);
 
       // Validate Client
       let localClient: Client;
@@ -26,7 +26,7 @@ export class RefreshTokenExchangeService {
         localClient = await this.clientService.findOne({
           clientId: client.clientId,
         });
-        if (!localClient) done(null, false);
+        if (!localClient) return done(null, false);
       } else {
         localClient = await this.clientService.findOne({
           uuid: localRefreshToken.client,
@@ -56,7 +56,7 @@ export class RefreshTokenExchangeService {
         extraParams,
       );
     } catch (error) {
-      done(error);
+      return done(error);
     }
   }
 }

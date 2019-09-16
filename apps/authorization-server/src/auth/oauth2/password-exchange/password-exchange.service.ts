@@ -17,7 +17,7 @@ export class PasswordExchangeService {
   ) {}
 
   async exchangePassword(client, username, password, scope, done) {
-    if (!scope) done(invalidScopeException);
+    if (!scope) return done(invalidScopeException);
     // Validate the client
     try {
       const localClient = await this.clientService.findOne({

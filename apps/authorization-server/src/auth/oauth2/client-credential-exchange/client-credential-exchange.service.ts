@@ -11,17 +11,20 @@ export class ClientCredentialExchangeService {
   ) {}
 
   async exchangeClientCredentials(client, scope, done) {
-    if (!scope) done(invalidScopeException);
+    if (!scope) return done(invalidScopeException);
     // Validate the client
     try {
-      const c = await this.clientService.findOne({
+      const localClient = await this.clientService.findOne({
         clientId: client.clientId,
       });
-      if (!c) done(null, false);
-      if (c.clientSecret !== client.clientSecret) return done(null, false);
+      if (!localClient) return done(null, false);
+      if (localClient.clientSecret !== client.clientSecret) {
+        return done(null, false);
+      }
+
       // Validate Scope
       const validScope = await this.tokenGeneratorService.getValidScopes(
-        c,
+        localClient,
         scope,
       );
       // Everything validated, return the token
@@ -43,7 +46,7 @@ export class ClientCredentialExchangeService {
         extraParams,
       );
     } catch (error) {
-      done(error);
+      return done(error);
     }
   }
 }

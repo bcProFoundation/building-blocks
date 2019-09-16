@@ -23,7 +23,7 @@ export class CookieSerializer {
     });
   }
   deserializeUser(payload: any, done: (err, payload) => any): any {
-    // remove user from array of users for logout one of the user?
+    // remove user from users for logout
     done(null, payload);
   }
 }

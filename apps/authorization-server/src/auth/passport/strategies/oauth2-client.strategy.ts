@@ -39,7 +39,7 @@ export class OAuth2ClientStrategy extends PassportStrategy(
           error: err => done(err, null),
         });
     } catch (error) {
-      done(error, null);
+      return done(error, null);
     }
   }
 }
