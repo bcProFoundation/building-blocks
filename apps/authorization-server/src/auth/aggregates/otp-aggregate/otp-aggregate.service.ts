@@ -1,4 +1,5 @@
 import { Injectable, HttpService } from '@nestjs/common';
+import { AggregateRoot } from '@nestjs/cqrs';
 import { retry } from 'rxjs/operators';
 import * as speakeasy from 'speakeasy';
 import { i18n } from '../../../i18n/i18n.config';
@@ -12,9 +13,11 @@ import {
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { ServerSettings } from '../../../system-settings/entities/server-settings/server-settings.interface';
 import { ClientService } from '../../../client-management/entities/client/client.service';
+import { Client } from '../../../client-management/entities/client/client.interface';
+import { UserLogInHOTPGeneratedEvent } from '../../events/user-login-hotp-generated/user-login-hotp-generated.event';
 
 @Injectable()
-export class OTPAggregateService {
+export class OTPAggregateService extends AggregateRoot {
   private settings: ServerSettings;
   private otp: AuthData;
 
@@ -23,7 +26,9 @@ export class OTPAggregateService {
     private readonly authData: AuthDataService,
     private readonly serverSettings: ServerSettingsService,
     private readonly clientService: ClientService,
-  ) {}
+  ) {
+    super();
+  }
 
   async sendLoginOTP(user: User) {
     this.settings = await this.serverSettings.find();
@@ -33,10 +38,21 @@ export class OTPAggregateService {
     });
     if (!communicationClient) return Promise.resolve();
 
-    const requestUrl =
-      new URL(communicationClient.redirectUris[0]).origin + '/email/v1/system';
+    const hotp = await this.generateHOTP(user);
 
-    this.otp = await this.checkLocalOTP(user);
+    // Send Email
+    this.sendEmail(communicationClient, user, hotp);
+
+    // Broadcast Event for SMS Services
+    this.apply(new UserLogInHOTPGeneratedEvent(user, hotp));
+  }
+
+  async checkLocalOTP(user: User) {
+    this.otp = await this.authData.findOne({
+      entity: USER,
+      entityUuid: user.uuid,
+      authDataType: AuthDataType.LoginOTP,
+    });
 
     if (!this.otp) {
       this.otp = {} as AuthData;
@@ -49,20 +65,44 @@ export class OTPAggregateService {
         await this.generateLoginOTP(user);
       }
     }
+  }
 
-    const sharedSecret = await this.authData.findOne({
-      uuid: user.sharedSecret,
+  async generateLoginOTP(user: User) {
+    const secret = speakeasy.generateSecret({
+      name: user.email || user.phone,
     });
-    const hotp = speakeasy.hotp({
-      secret: sharedSecret.password,
+
+    this.otp.password = {
+      counter: Math.floor(Math.random() * 100),
+      secret: secret.base32,
+    };
+    this.otp.entity = USER;
+    this.otp.entityUuid = user.uuid;
+    this.otp.authDataType = AuthDataType.LoginOTP;
+
+    const expiry = new Date();
+    expiry.setMinutes(expiry.getMinutes() + this.settings.otpExpiry);
+    this.otp.expiry = expiry;
+
+    await this.authData.save(this.otp);
+  }
+
+  async generateHOTP(user: User): Promise<string> {
+    await this.checkLocalOTP(user);
+    return speakeasy.hotp({
+      secret: this.otp.password.secret,
       encoding: 'base32',
-      counter: this.otp.password,
+      counter: this.otp.password.counter,
     });
+  }
+
+  sendEmail(communicationClient: Client, user: User, hotp: string) {
+    const communicationUrl = new URL(communicationClient.redirectUris[0]);
+    const requestUrl = communicationUrl.origin + '/email/v1/system';
 
     let txtMessage = 'OTP for login for ' + user.email + ' is ' + hotp + '\n';
-    txtMessage += 'OTP expires at ' + this.otp.expiry;
+    txtMessage += 'OTP expires at ' + this.otp.expiry + '. Do not share otp.';
 
-    // Send Email
     this.http
       .post(
         requestUrl,
@@ -84,36 +124,5 @@ export class OTPAggregateService {
         next: success => {},
         error: error => {},
       });
-
-    // Send SMS
-    // if(user.phone) {
-    //     this.http.post('', { otp: this.otp.password, phone: user.phone })
-    //         .pipe(retry(3))
-    //         .subscribe({
-    //             next: success => {},
-    //             error: error => {},
-    //         });
-    // }
-  }
-
-  async checkLocalOTP(user: User) {
-    return await this.authData.findOne({
-      entity: USER,
-      entityUuid: user.uuid,
-      authDataType: AuthDataType.LoginOTP,
-    });
-  }
-
-  async generateLoginOTP(user: User) {
-    this.otp.password = Math.floor(Math.random() * 100);
-    this.otp.entity = USER;
-    this.otp.entityUuid = user.uuid;
-    this.otp.authDataType = AuthDataType.LoginOTP;
-
-    const expiry = new Date();
-    expiry.setMinutes(expiry.getMinutes() + this.settings.otpExpiry);
-    this.otp.expiry = expiry;
-
-    await this.authData.save(this.otp);
   }
 }

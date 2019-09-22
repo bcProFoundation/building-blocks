@@ -2,7 +2,7 @@ import { Document } from 'mongoose';
 
 export interface AuthData extends Document {
   uuid?: string;
-  password?: string | number;
+  password?: string | number | any;
   entity?: string;
   entityUuid?: string;
   expiry?: Date;

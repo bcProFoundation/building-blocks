@@ -33,6 +33,8 @@ import { addSessionUser } from '../../guards/auth.guard';
 
 @Injectable()
 export class AuthService {
+  loginOTP: AuthData;
+
   constructor(
     private readonly userService: UserService,
     private readonly authDataService: AuthDataService,
@@ -89,11 +91,14 @@ export class AuthService {
       if (verified) {
         return user;
       } else {
-        const hotp = await this.getUserHOTP(user, sharedSecret);
-        if (hotp === code) return user;
-        else if (hotp !== code) throw invalidOTPException;
+        const hotp = await this.getUserHOTP(user);
+        if (hotp === code) {
+          await this.removeLoginHOTP();
+          return user;
+        } else if (hotp !== code) throw invalidOTPException;
       }
     } else {
+      await this.removeLoginHOTP();
       return user;
     }
   }
@@ -161,29 +166,34 @@ export class AuthService {
     return { user };
   }
 
-  async getUserHOTP(user: User, sharedSecret: AuthData) {
-    const otpCounter = await this.authDataService.findOne({
+  async getUserHOTP(user: User) {
+    this.loginOTP = await this.authDataService.findOne({
       entity: USER,
       entityUuid: user.uuid,
       authDataType: AuthDataType.LoginOTP,
     });
 
-    if (!otpCounter) throw invalidOTPException;
+    if (!this.loginOTP) throw invalidOTPException;
+
+    const secret = this.loginOTP.password.secret;
+    const counter = this.loginOTP.password.counter;
 
     return speakeasy.hotp({
-      secret: sharedSecret.password,
+      secret,
       encoding: 'base32',
-      counter: otpCounter.password,
+      counter,
     });
   }
 
   isUserTOTPValid(sharedSecret: AuthData, code: string) {
-    return speakeasy.totp.verify({
-      secret: sharedSecret.password,
-      encoding: 'base32',
-      token: code,
-      window: 2,
-    });
+    if (sharedSecret) {
+      return speakeasy.totp.verify({
+        secret: sharedSecret.password,
+        encoding: 'base32',
+        token: code,
+        window: 2,
+      });
+    }
   }
 
   async passwordLessLogin(payload: PasswordLessDto) {
@@ -204,7 +214,7 @@ export class AuthService {
     if (verified) {
       return user;
     } else {
-      const htop = await this.getUserHOTP(user, sharedSecret);
+      const htop = await this.getUserHOTP(user);
       if (htop === payload.code) {
         const code = await this.authDataService.findOne({
           entity: USER,
@@ -344,5 +354,11 @@ export class AuthService {
       user: user.email,
       path: payload.redirect,
     };
+  }
+
+  async removeLoginHOTP() {
+    if (this.loginOTP) {
+      await this.authDataService.remove(this.loginOTP);
+    }
   }
 }

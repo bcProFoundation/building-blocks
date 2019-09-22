@@ -40,11 +40,13 @@ describe('Command: SendLoginOTPHandler', () => {
   });
 
   it('should remove sendLoginOTP using the OTPAggregateService', async () => {
-    manager.sendLoginOTP = jest.fn(() => Promise.resolve());
+    const sendLoginOTP = jest.fn(() => Promise.resolve());
+    manager.sendLoginOTP = sendLoginOTP;
     commandBus$.execute = jest.fn(() => Promise.resolve());
-    publisher.mergeObjectContext = jest
-      .fn()
-      .mockImplementation((...args) => ({ commit: () => {} }));
+    publisher.mergeObjectContext = jest.fn().mockImplementation((...args) => ({
+      commit: () => {},
+      sendLoginOTP,
+    }));
     await commandHandler.execute(
       new SendLoginOTPCommand({ enable2fa: true } as User),
     );

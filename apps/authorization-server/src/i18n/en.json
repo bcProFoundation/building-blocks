@@ -79,5 +79,5 @@
 	"Skips the Allow/Deny screen if value is true": "Skips the Allow/Deny screen if value is true",
 	"Type of method to authenticate client during authorization code exchange": "Type of method to authenticate client during authorization code exchange",
 	"Disable User": "Disable User",
-	"No Auth Keys or Shared Secret Found": "No Auth Keys or Shared Secret Found"
+	"Communication Server not found": "Communication Server not found"
 }

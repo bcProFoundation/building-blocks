@@ -23,7 +23,7 @@ import {
   invalidUserException,
   passwordLessLoginAlreadyEnabledException,
   passwordLessLoginNotEnabledException,
-  NoAuthKeysOrSharedSecretFoundException,
+  CommunicationServerNotFoundException,
 } from '../../../common/filters/exceptions';
 import { CryptographerService } from '../../../common/services/cryptographer/cryptographer.service';
 import { ChangePasswordDto, VerifyEmailDto } from '../../policies';
@@ -230,14 +230,15 @@ export class UserAggregateService extends AggregateRoot {
   }
 
   async enablePasswordLessLogin(actorUuid: string, userUuid: string) {
+    const settings = await this.settings.find();
+    if (!settings.communicationServerClientId) {
+      throw new CommunicationServerNotFoundException();
+    }
+
     const user = await this.user.findOne({ uuid: userUuid });
     if (!user) throw invalidUserException;
     await this.validateAdminActor(actorUuid, userUuid);
     if (user.enablePasswordLess) throw passwordLessLoginAlreadyEnabledException;
-    const authenticators = await this.authenticator.find({ userUuid });
-    if (authenticators.length === 0 && !user.enable2fa) {
-      throw new NoAuthKeysOrSharedSecretFoundException();
-    }
     user.enablePasswordLess = true;
     this.apply(new UserAccountModifiedEvent(user));
     return user;
