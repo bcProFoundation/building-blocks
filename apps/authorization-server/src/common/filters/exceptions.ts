@@ -81,11 +81,11 @@ export const passwordLessLoginAlreadyEnabledException = new HttpException(
   HttpStatus.BAD_REQUEST,
 );
 
-export class NoAuthKeysOrSharedSecretFoundException extends HttpException {
+export class CommunicationServerNotFoundException extends HttpException {
   constructor() {
     super(
-      i18n.__('No Auth Keys or Shared Secret Found'),
-      HttpStatus.BAD_REQUEST,
+      i18n.__('Communication Server not found'),
+      HttpStatus.NOT_IMPLEMENTED,
     );
   }
 }

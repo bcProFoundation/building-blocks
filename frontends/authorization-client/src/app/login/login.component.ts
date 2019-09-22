@@ -216,8 +216,8 @@ export class LoginComponent implements OnInit {
           this.hideUsername = true;
           this.hidePassword = false;
           this.enable2fa = response.user.enable2fa;
-          this.disableLoginChoice = this.enable2fa;
           this.enablePasswordLess = response.user.enablePasswordLess;
+          this.disableLoginChoice = this.enablePasswordLess;
           // TODO: https://github.com/angular/angular/issues/12463
           setTimeout(() => this.passwordRef.nativeElement.focus());
 

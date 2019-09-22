@@ -8,6 +8,7 @@ import { WebAuthnKeyRegisteredHandler } from './webauthn-key-registered/webauthn
 import { UserLoggedInWithWebAuthnHandler } from './user-logged-in-with-webauthn-key/user-logged-in-with-webauthn-key.handler';
 import { UserAuthenticatorRemovedHandler } from './user-authenticator-removed/user-authenticator-removed.handler';
 import { UserAuthenticatorModifiedEvent } from './user-authenticator-modified/user-authenticator-modified.event';
+import { UserLogInHOTPGeneratedHandler } from './user-login-hotp-generated/user-login-hotp-generated.handler';
 
 export {
   SocialLoginUserSignedUpEvent,
@@ -24,4 +25,5 @@ export const AuthEventHandlers = [
   UserLoggedInWithWebAuthnHandler,
   UserAuthenticatorRemovedHandler,
   UserAuthenticatorModifiedEvent,
+  UserLogInHOTPGeneratedHandler,
 ];

@@ -401,9 +401,9 @@ describe('AppModule (e2e)', () => {
       })
       .then(otpCounter => {
         const otp = speakeasy.hotp({
-          secret: sharedSecret,
+          secret: otpCounter.password.secret,
           encoding: 'base32',
-          counter: otpCounter.password,
+          counter: otpCounter.password.counter,
         });
 
         return request(app.getHttpServer())
@@ -418,8 +418,8 @@ describe('AppModule (e2e)', () => {
       });
   });
 
-  it('Validate: Number of User 1, AuthData 3', async () => {
-    validateUsersAndAuthData(userService, authDataService, 1, 3);
+  it('Validate: Number of User 1, AuthData 2', async () => {
+    validateUsersAndAuthData(userService, authDataService, 1, 2);
   });
 
   it('/POST /user/v1/disable_2fa (Disable 2FA)', async () => {
@@ -429,8 +429,8 @@ describe('AppModule (e2e)', () => {
       .expect(201);
   });
 
-  it('Validate: Number of User 1, AuthData 2', async () => {
-    validateUsersAndAuthData(userService, authDataService, 1, 2);
+  it('Validate: Number of User 1, AuthData 1', async () => {
+    validateUsersAndAuthData(userService, authDataService, 1, 1);
   });
 
   it('/POST /user/v1/forgot_password (Reset Forgotten Password)', async () => {
