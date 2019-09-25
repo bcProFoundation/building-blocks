@@ -15,3 +15,5 @@ export const DELETE_AVATAR_ENDPOINT = '/profile/v1/delete_avatar';
 export const DELETE_ME_ENDPOINT = '/user/v1/delete_me';
 export const FORGOT_PASSWORD = '/user/v1/forgot_password';
 export const USER_INFO = '/oauth2/profile';
+export const ADD_UNVERIFIED_PHONE = '/user/v1/add_unverified_phone';
+export const VERIFY_PHONE = '/user/v1/verify_phone';

@@ -39,6 +39,10 @@ import { Disable2FACommand } from '../../commands/disable-2fa/disable-2fa.comman
 import { ListSessionUsersQuery } from '../../queries/list-session-users/list-session-users.query';
 import { UpdateUserFullNameCommand } from '../../commands/update-user-full-name/update-user-full-name.command';
 import { ListQueryDto } from '../../../common/policies/list-query/list-query';
+import { AddUnverifiedMobileCommand } from '../../../auth/commands/add-unverified-phone/add-unverified-phone.command';
+import { UnverifiedPhoneDto } from '../../policies/unverified-phone/unverified-phone.dto';
+import { VerifyPhoneDto } from '../../policies/verify-phone/verify-phone.dto';
+import { VerifyPhoneCommand } from '../../../auth/commands/verify-phone/verify-phone.command';
 
 @Controller('user')
 export class UserController {
@@ -214,5 +218,25 @@ export class UserController {
   @Get('v1/list_session_users')
   async listSessionUsers(@Req() req) {
     return await this.queryBus.execute(new ListSessionUsersQuery(req));
+  }
+
+  @Post('v1/add_unverified_phone')
+  @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
+  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  async addUnverifiedPhone(@Body() payload: UnverifiedPhoneDto, @Req() req) {
+    const userUuid = req.user.user;
+    const { unverifiedPhone } = payload;
+    return await this.commandBus.execute(
+      new AddUnverifiedMobileCommand(userUuid, unverifiedPhone),
+    );
+  }
+
+  @Post('v1/verify_phone')
+  @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
+  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  async verifyPhone(@Body() payload: VerifyPhoneDto, @Req() req) {
+    const userUuid = req.user.user;
+    const { otp } = payload;
+    return await this.commandBus.execute(new VerifyPhoneCommand(userUuid, otp));
   }
 }

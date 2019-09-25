@@ -4,6 +4,8 @@ import { HttpService } from '@nestjs/common';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
 import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
+import { UserService } from '../../../user-management/entities/user/user.service';
+import { ConfigService } from '../../../config/config.service';
 
 describe('OTPAggregateService', () => {
   let service: OTPAggregateService;
@@ -26,6 +28,14 @@ describe('OTPAggregateService', () => {
         },
         {
           provide: AuthDataService,
+          useValue: {},
+        },
+        {
+          provide: UserService,
+          useValue: {},
+        },
+        {
+          provide: ConfigService,
           useValue: {},
         },
       ],

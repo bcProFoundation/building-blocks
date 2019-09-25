@@ -175,8 +175,8 @@ export class AuthService {
 
     if (!this.loginOTP) throw invalidOTPException;
 
-    const secret = this.loginOTP.password.secret;
-    const counter = this.loginOTP.password.counter;
+    const secret = this.loginOTP.metaData.secret;
+    const counter = this.loginOTP.metaData.counter;
 
     return speakeasy.hotp({
       secret,

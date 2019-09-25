@@ -2,11 +2,16 @@ import { Document } from 'mongoose';
 
 export interface AuthData extends Document {
   uuid?: string;
-  password?: string | number | any;
+  password?: string;
+  metaData?: AuthMetaData;
   entity?: string;
   entityUuid?: string;
   expiry?: Date;
   authDataType?: AuthDataType;
+}
+
+export interface AuthMetaData {
+  [key: string]: string | number;
 }
 
 export enum AuthDataType {

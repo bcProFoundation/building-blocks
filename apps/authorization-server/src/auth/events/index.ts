@@ -9,6 +9,8 @@ import { UserLoggedInWithWebAuthnHandler } from './user-logged-in-with-webauthn-
 import { UserAuthenticatorRemovedHandler } from './user-authenticator-removed/user-authenticator-removed.handler';
 import { UserAuthenticatorModifiedEvent } from './user-authenticator-modified/user-authenticator-modified.event';
 import { UserLogInHOTPGeneratedHandler } from './user-login-hotp-generated/user-login-hotp-generated.handler';
+import { UnverifiedPhoneAddedHandler } from './unverified-phone-added/unverified-phone-added.handler';
+import { PhoneVerifiedHandler } from './phone-verified/phone-verified.handler';
 
 export {
   SocialLoginUserSignedUpEvent,
@@ -26,4 +28,6 @@ export const AuthEventHandlers = [
   UserAuthenticatorRemovedHandler,
   UserAuthenticatorModifiedEvent,
   UserLogInHOTPGeneratedHandler,
+  UnverifiedPhoneAddedHandler,
+  PhoneVerifiedHandler,
 ];
