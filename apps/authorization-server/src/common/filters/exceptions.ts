@@ -89,3 +89,15 @@ export class CommunicationServerNotFoundException extends HttpException {
     );
   }
 }
+
+export class PhoneAlreadyRegisteredException extends HttpException {
+  constructor() {
+    super(i18n.__('Phone number already registered'), HttpStatus.BAD_REQUEST);
+  }
+}
+
+export class EventStoreNotConnectedException extends HttpException {
+  constructor() {
+    super(i18n.__('EventStore not connected'), HttpStatus.NOT_IMPLEMENTED);
+  }
+}

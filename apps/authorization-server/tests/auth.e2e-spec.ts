@@ -401,9 +401,9 @@ describe('AppModule (e2e)', () => {
       })
       .then(otpCounter => {
         const otp = speakeasy.hotp({
-          secret: otpCounter.password.secret,
+          secret: otpCounter.metaData.secret,
           encoding: 'base32',
-          counter: otpCounter.password.counter,
+          counter: otpCounter.metaData.counter,
         });
 
         return request(app.getHttpServer())

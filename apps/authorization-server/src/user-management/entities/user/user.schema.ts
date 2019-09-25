@@ -11,6 +11,7 @@ export const schema = new mongoose.Schema(
     disabled: { type: Boolean, default: false },
     name: String,
     phone: String,
+    unverifiedPhone: String,
     email: String,
     password: String, // uuid of auth-data
     roles: [String],

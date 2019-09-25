@@ -71,7 +71,7 @@ export class UserAggregateService extends AggregateRoot {
         AuthDataType.TwoFactorTempSecret,
       );
       if (!twoFactorTempSecret) {
-        twoFactorTempSecret = await this.getNewAuthData(
+        twoFactorTempSecret = this.getNewAuthData(
           user.uuid,
           AuthDataType.TwoFactorTempSecret,
         );
@@ -262,7 +262,7 @@ export class UserAggregateService extends AggregateRoot {
     });
   }
 
-  async getNewAuthData(userEntityUuid: string, authDataType: AuthDataType) {
+  getNewAuthData(userEntityUuid: string, authDataType: AuthDataType) {
     const authData = {} as AuthData;
     authData.uuid = uuidv4();
     authData.entityUuid = userEntityUuid;

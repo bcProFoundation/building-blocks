@@ -10,6 +10,8 @@ import { RegisterWebAuthnKeyHandler } from './register-webauthn-key/register-web
 import { WebAuthnLoginHandler } from './webauthn-login/webauthn-login.handler';
 import { RemoveUserAuthenticatorHandler } from './remove-user-authenticator/remove-user-authenticator.handler';
 import { RenameUserAuthenticatorHandler } from './rename-user-authenticator/rename-user-authenticator.handler';
+import { AddUnverifiedMobileHandler } from './add-unverified-phone/add-unverified-phone.handler';
+import { VerifyPhoneHandler } from './verify-phone/verify-phone.handler';
 
 export const AuthCommandHandlers = [
   RemoveSocialLoginHandler,
@@ -24,4 +26,6 @@ export const AuthCommandHandlers = [
   WebAuthnLoginHandler,
   RemoveUserAuthenticatorHandler,
   RenameUserAuthenticatorHandler,
+  AddUnverifiedMobileHandler,
+  VerifyPhoneHandler,
 ];

@@ -15,6 +15,16 @@ import { ServerSettings } from '../../../system-settings/entities/server-setting
 import { ClientService } from '../../../client-management/entities/client/client.service';
 import { Client } from '../../../client-management/entities/client/client.interface';
 import { UserLogInHOTPGeneratedEvent } from '../../events/user-login-hotp-generated/user-login-hotp-generated.event';
+import { UserService } from '../../../user-management/entities/user/user.service';
+import {
+  PhoneAlreadyRegisteredException,
+  invalidUserException,
+  EventStoreNotConnectedException,
+  invalidOTPException,
+} from '../../../common/filters/exceptions';
+import { UnverifiedPhoneAddedEvent } from '../../events/unverified-phone-added/unverified-phone-added.event';
+import { ConfigService } from '../../../config/config.service';
+import { PhoneVerifiedEvent } from '../../events/phone-verified/phone-verified.event';
 
 @Injectable()
 export class OTPAggregateService extends AggregateRoot {
@@ -26,6 +36,8 @@ export class OTPAggregateService extends AggregateRoot {
     private readonly authData: AuthDataService,
     private readonly serverSettings: ServerSettingsService,
     private readonly clientService: ClientService,
+    private readonly user: UserService,
+    private readonly config: ConfigService,
   ) {
     super();
   }
@@ -72,7 +84,7 @@ export class OTPAggregateService extends AggregateRoot {
       name: user.email || user.phone,
     });
 
-    this.otp.password = {
+    this.otp.metaData = {
       counter: Math.floor(Math.random() * 100),
       secret: secret.base32,
     };
@@ -90,9 +102,9 @@ export class OTPAggregateService extends AggregateRoot {
   async generateHOTP(user: User): Promise<string> {
     await this.checkLocalOTP(user);
     return speakeasy.hotp({
-      secret: this.otp.password.secret,
+      secret: this.otp.metaData.secret,
       encoding: 'base32',
-      counter: this.otp.password.counter,
+      counter: this.otp.metaData.counter,
     });
   }
 
@@ -124,5 +136,108 @@ export class OTPAggregateService extends AggregateRoot {
         next: success => {},
         error: error => {},
       });
+  }
+
+  async addUnverifiedPhone(userUuid: string, unverifiedPhone: string) {
+    this.verifyConnectedEventStore();
+    await this.checkPhoneAlreadyRegistered(unverifiedPhone);
+
+    const user = await this.user.findOne({ uuid: userUuid });
+    if (!user) throw invalidUserException;
+
+    // Generate OTP and broadcast Event
+    const phoneOTP = await this.getPhoneVerificationCode(user, unverifiedPhone);
+
+    const hotp = speakeasy.hotp({
+      secret: phoneOTP.metaData.secret,
+      encoding: 'base32',
+      counter: phoneOTP.metaData.counter,
+    });
+
+    this.apply(new UnverifiedPhoneAddedEvent(user, phoneOTP, hotp));
+  }
+
+  async checkLocalPhoneVerificationCode(user: User) {
+    return await this.authData.findOne({
+      entity: USER,
+      entityUuid: user.uuid,
+      authDataType: AuthDataType.PhoneVerificationCode,
+    });
+  }
+
+  verifyConnectedEventStore() {
+    const {
+      hostname,
+      username,
+      password,
+      stream,
+    } = this.config.getEventStoreConfig();
+
+    if (!hostname || !username || !password || !stream) {
+      throw new EventStoreNotConnectedException();
+    }
+  }
+
+  async checkPhoneAlreadyRegistered(unverifiedPhone: string) {
+    const existingPhoneUser = await this.user.findOne({
+      phone: unverifiedPhone,
+    });
+    if (existingPhoneUser) {
+      throw new PhoneAlreadyRegisteredException();
+    }
+  }
+
+  async getPhoneVerificationCode(user: User, unverifiedPhone: string) {
+    this.settings = await this.serverSettings.find();
+    const secret = speakeasy.generateSecret({
+      name: user.email,
+    });
+
+    let phoneOTP = await this.checkLocalPhoneVerificationCode(user);
+    if (!phoneOTP) {
+      phoneOTP = {} as AuthData;
+    }
+    phoneOTP.metaData = {
+      counter: Math.floor(Math.random() * 100),
+      secret: secret.base32,
+      phone: unverifiedPhone,
+    };
+    phoneOTP.entity = USER;
+    phoneOTP.entityUuid = user.uuid;
+    phoneOTP.authDataType = AuthDataType.PhoneVerificationCode;
+
+    const expiry = new Date();
+    expiry.setMinutes(expiry.getMinutes() + this.settings.otpExpiry);
+    phoneOTP.expiry = expiry;
+
+    return phoneOTP;
+  }
+
+  async verifyPhone(userUuid: string, otp: string) {
+    // Check user
+    const user = await this.user.findOne({ uuid: userUuid });
+    if (!user) throw invalidUserException;
+
+    // check local otp
+    const phoneOTP = await this.checkLocalPhoneVerificationCode(user);
+    if (!phoneOTP) throw invalidOTPException;
+    const phone = phoneOTP.metaData.phone as string;
+
+    // validate otp with payload otp
+    const hotp = speakeasy.hotp({
+      secret: phoneOTP.metaData.secret,
+      encoding: 'base32',
+      counter: phoneOTP.metaData.counter,
+    });
+    if (hotp !== otp) {
+      throw invalidOTPException;
+    }
+
+    // check already registered phone
+    await this.checkPhoneAlreadyRegistered(phone);
+
+    // set phone
+    user.phone = phone;
+    this.apply(new PhoneVerifiedEvent(user, phoneOTP));
   }
 }

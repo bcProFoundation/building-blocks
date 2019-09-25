@@ -187,6 +187,7 @@ export class UserManagementService extends AggregateRoot {
     modifiedBy?: string,
   ) {
     const user = await this.userService.findOne({ uuid });
+    if (!user) throw invalidUserException;
 
     await this.validateRoles(payload.roles);
 
