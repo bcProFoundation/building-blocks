@@ -1,5 +1,5 @@
 <div class="profile-container">
-  <form (ngSubmit)="updatePersonal()" [formGroup]="personalForm">
+  <form [formGroup]="personalForm">
     <mat-card>
       <mat-card-title>Personal Details</mat-card-title>
       <mat-card-content fxLayout="column">
@@ -44,7 +44,8 @@
         </mat-form-field>
       </mat-card-content>
       <mat-card-actions>
-        <button type="submit" mat-button color="primary" [disabled]="!personalForm.valid">Update</button>
+        <button (click)="updatePersonal()" mat-button color="primary" [disabled]="!personalForm.valid">Update</button>
+        <button (click)="updatePhone()" mat-button>Update Phone</button>
       </mat-card-actions>
     </mat-card>
   </form>

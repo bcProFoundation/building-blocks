@@ -142,6 +142,7 @@ export class ProfileComponent implements OnInit {
           this.uuid = response.uuid;
           this.isPasswordSet = response.isPasswordSet;
           this.enablePasswordLess = response.enablePasswordLess;
+          this.phone = response.phone;
         },
         error: error => {},
       });
@@ -295,6 +296,10 @@ export class ProfileComponent implements OnInit {
 
   enableDisable2fa() {
     this.router.navigate(['mfa']);
+  }
+
+  updatePhone() {
+    this.router.navigate(['update_phone']);
   }
 
   updateBirthdate(type: string, event: MatDatepickerInputEvent<Date>) {

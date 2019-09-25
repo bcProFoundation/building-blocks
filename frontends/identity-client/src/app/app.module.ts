@@ -21,6 +21,8 @@ import { NavigationService } from './navigation/navigation.service';
 import { ProfileService } from './profile/profile.service';
 import { MultifactorComponent } from './multifactor/multifactor.component';
 import { PasswordRequirementComponent } from './password-requirement/password-requirement.component';
+import { UpdatePhoneComponent } from './update-phone/update-phone.component';
+import { UpdatePhoneService } from './update-phone/update-phone.service';
 
 @NgModule({
   declarations: [
@@ -31,6 +33,7 @@ import { PasswordRequirementComponent } from './password-requirement/password-re
     AppsComponent,
     MultifactorComponent,
     PasswordRequirementComponent,
+    UpdatePhoneComponent,
   ],
   imports: [
     BrowserModule,
@@ -53,6 +56,7 @@ import { PasswordRequirementComponent } from './password-requirement/password-re
     { provide: OAuthStorage, useValue: sessionStorage },
     ProfileService,
     NavigationService,
+    UpdatePhoneService,
   ],
   bootstrap: [AppComponent],
 })
