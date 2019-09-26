@@ -54,6 +54,7 @@ export class AppService {
       }
 
       message.enableChoosingAccount = settings.enableChoosingAccount;
+      message.enableUserPhone = settings.enableUserPhone;
     } catch (error) {
       message.communication = false;
       services = [];

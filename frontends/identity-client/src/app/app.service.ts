@@ -17,10 +17,10 @@ import {
   COMMUNICATION_SERVER_URL,
   ENABLE_CHOOSING_ACCOUNT,
 } from './constants/storage';
+import { INFO_ENDPOINT } from './constants/url-paths';
 
 @Injectable()
 export class AppService {
-  messageUrl = '/info'; // URL to web api
   private handleError: HandleError;
 
   constructor(private http: HttpClient, httpErrorHandler: HttpErrorHandler) {
@@ -29,9 +29,9 @@ export class AppService {
 
   /** GET message from the server */
   getMessage(): Observable<any> {
-    return this.http.get<any>(this.messageUrl).pipe(
+    return this.http.get<any>(INFO_ENDPOINT).pipe(
       switchMap(response => {
-        return this.http.get<any>(response.authServerURL + '/info').pipe(
+        return this.http.get<any>(response.authServerURL + INFO_ENDPOINT).pipe(
           switchMap(data => {
             data.services.forEach(element => {
               if (element.type === COMMUNICATION_SERVER) {

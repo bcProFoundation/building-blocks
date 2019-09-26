@@ -15,6 +15,7 @@ export const ServerSettings = new mongoose.Schema(
     enableChoosingAccount: Boolean,
     refreshTokenExpiresInDays: { type: Number, default: 30 },
     authCodeExpiresInMinutes: { type: Number, default: 30 },
+    enableUserPhone: { type: Boolean, default: false },
   },
   { collection: 'server_settings', versionKey: false },
 );

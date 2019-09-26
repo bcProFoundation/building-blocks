@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import { UpdatePhoneService } from './update-phone.service';
-import { DURATION } from '../constants/app-constants';
-import { MatSnackBar } from '@angular/material';
-import { CLOSE } from '../constants/messages';
 import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material';
+import { delay, map } from 'rxjs/operators';
+import { UpdatePhoneService } from './update-phone.service';
+import { DURATION, UNDO_DURATION } from '../constants/app-constants';
+import { CLOSE, ENTER_VALID_PHONE } from '../constants/messages';
 
 @Component({
   selector: 'app-update-phone',
@@ -36,16 +37,24 @@ export class UpdatePhoneComponent implements OnInit {
 
   addUnverifiedPhone() {
     this.updatePhoneForm.controls.phone.disable();
+    this.isSendDisabled = true;
     this.updatePhone
       .addUnverifiedPhone(this.updatePhoneForm.controls.phone.value)
+      .pipe(
+        map(data => (this.isOTPHidden = false)),
+        delay(UNDO_DURATION),
+      )
       .subscribe({
-        next: success => {
-          this.isSendDisabled = true;
-          setTimeout(() => (this.isSendDisabled = false), DURATION);
-          this.isOTPHidden = false;
-        },
+        next: success => (this.isSendDisabled = false),
         error: ({ error }) => {
-          this.snackBar.open(error.message, CLOSE, { duration: DURATION });
+          this.isSendDisabled = false;
+          if (Array.isArray(error.message)) {
+            this.snackBar.open(ENTER_VALID_PHONE, CLOSE, {
+              duration: DURATION,
+            });
+          } else {
+            this.snackBar.open(error.message, CLOSE, { duration: DURATION });
+          }
         },
       });
   }

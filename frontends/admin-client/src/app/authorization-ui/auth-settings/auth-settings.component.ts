@@ -36,6 +36,7 @@ export class AuthSettingsComponent implements OnInit {
   refreshTokenExpiresInDays: number = THIRTY;
   authCodeExpiresInMinutes: number = THIRTY;
   organizationName: string;
+  enableUserPhone: boolean;
 
   authSettingsForm = new FormGroup({
     issuerUrl: new FormControl(this.issuerUrl),
@@ -54,6 +55,7 @@ export class AuthSettingsComponent implements OnInit {
     refreshTokenExpiresInDays: new FormControl(this.refreshTokenExpiresInDays),
     authCodeExpiresInMinutes: new FormControl(this.authCodeExpiresInMinutes),
     organizationName: new FormControl(this.organizationName),
+    enableUserPhone: new FormControl(this.enableUserPhone),
   });
 
   constructor(
@@ -70,6 +72,7 @@ export class AuthSettingsComponent implements OnInit {
         enableChoosingAccount: boolean;
         refreshTokenExpiresInDays: number;
         authCodeExpiresInMinutes: number;
+        enableUserPhone: boolean;
       }) => {
         this.issuerUrl = response.issuerUrl;
         this.communicationServerClientId = response.communicationServerClientId;
@@ -77,6 +80,7 @@ export class AuthSettingsComponent implements OnInit {
         this.enableChoosingAccount = response.enableChoosingAccount;
         this.refreshTokenExpiresInDays = response.refreshTokenExpiresInDays;
         this.authCodeExpiresInMinutes = response.authCodeExpiresInMinutes;
+        this.enableUserPhone = response.enableUserPhone;
         this.populateForm(response);
       },
       error: error => {},
@@ -116,6 +120,9 @@ export class AuthSettingsComponent implements OnInit {
     this.authSettingsForm.controls.organizationName.setValue(
       response.organizationName,
     );
+    this.authSettingsForm.controls.enableUserPhone.setValue(
+      response.enableUserPhone,
+    );
     this.authSettingsForm.controls.organizationName.disable();
   }
 
@@ -131,6 +138,7 @@ export class AuthSettingsComponent implements OnInit {
         this.authSettingsForm.controls.refreshTokenExpiresInDays.value,
         this.authSettingsForm.controls.authCodeExpiresInMinutes.value,
         this.authSettingsForm.controls.organizationName.value,
+        this.authSettingsForm.controls.enableUserPhone.value,
       )
       .subscribe({
         next: response => {
