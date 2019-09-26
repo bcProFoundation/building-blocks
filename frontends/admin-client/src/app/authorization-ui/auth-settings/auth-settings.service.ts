@@ -59,6 +59,7 @@ export class AuthSettingsService {
     refreshTokenExpiresInDays: number,
     authCodeExpiresInMinutes: number,
     organizationName?: string,
+    enableUserPhone?: boolean,
   ) {
     const requestUrl = localStorage.getItem(ISSUER_URL) + '/settings/v1/update';
     if (!organizationName) organizationName = undefined;
@@ -75,6 +76,7 @@ export class AuthSettingsService {
         refreshTokenExpiresInDays,
         authCodeExpiresInMinutes,
         organizationName,
+        enableUserPhone,
       },
       { headers: this.headers },
     );

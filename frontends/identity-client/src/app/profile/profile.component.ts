@@ -76,6 +76,7 @@ export class ProfileComponent implements OnInit {
   email: string;
   phone: string;
   enablePasswordLess: boolean;
+  enableUserPhone: boolean;
 
   personalForm = new FormGroup({
     fullName: new FormControl(this.fullName),
@@ -120,6 +121,7 @@ export class ProfileComponent implements OnInit {
     const { roles } = this.oauthService.getIdentityClaims() as IDTokenClaims;
     this.roles = roles;
     this.subscribeGetUser();
+    this.checkServerForPhoneRegistration();
   }
 
   subscribeGetUser() {
@@ -396,5 +398,12 @@ export class ProfileComponent implements OnInit {
     let url = localStorage.getItem(ISSUER_URL) + '/account/keys/';
     url += this.uuid + '?access_token=' + this.oauthService.getAccessToken();
     window.location.href = url;
+  }
+
+  checkServerForPhoneRegistration() {
+    this.profileService.checkServerForPhoneRegistration().subscribe({
+      next: response => (this.enableUserPhone = response.enableUserPhone),
+      error: error => (this.enableUserPhone = false),
+    });
   }
 }

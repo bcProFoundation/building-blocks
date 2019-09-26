@@ -50,6 +50,9 @@ describe('ProfileComponent', () => {
             getProfileDetails() {
               return from([]);
             },
+            checkServerForPhoneRegistration() {
+              return from([]);
+            },
           },
         },
         MatSnackBar,

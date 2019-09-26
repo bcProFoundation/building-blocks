@@ -17,3 +17,4 @@ export const FORGOT_PASSWORD = '/user/v1/forgot_password';
 export const USER_INFO = '/oauth2/profile';
 export const ADD_UNVERIFIED_PHONE = '/user/v1/add_unverified_phone';
 export const VERIFY_PHONE = '/user/v1/verify_phone';
+export const INFO_ENDPOINT = '/info';

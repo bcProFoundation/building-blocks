@@ -80,4 +80,12 @@ export class ServerSettingDto {
     type: 'string',
   })
   organizationName: string;
+
+  @IsBoolean()
+  @IsOptional()
+  @ApiModelProperty({
+    description: 'Allow users to register phone',
+    type: 'boolean',
+  })
+  enableUserPhone: boolean;
 }

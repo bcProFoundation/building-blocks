@@ -21,6 +21,7 @@ import {
   invalidUserException,
   EventStoreNotConnectedException,
   invalidOTPException,
+  PhoneRegistrationNotAllowedException,
 } from '../../../common/filters/exceptions';
 import { UnverifiedPhoneAddedEvent } from '../../events/unverified-phone-added/unverified-phone-added.event';
 import { ConfigService } from '../../../config/config.service';
@@ -189,6 +190,11 @@ export class OTPAggregateService extends AggregateRoot {
 
   async getPhoneVerificationCode(user: User, unverifiedPhone: string) {
     this.settings = await this.serverSettings.find();
+    // Check server settings for enableUserPhone
+    if (!this.settings.enableUserPhone) {
+      throw new PhoneRegistrationNotAllowedException();
+    }
+
     const secret = speakeasy.generateSecret({
       name: user.email,
     });

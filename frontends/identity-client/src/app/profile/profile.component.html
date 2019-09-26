@@ -45,7 +45,7 @@
       </mat-card-content>
       <mat-card-actions>
         <button (click)="updatePersonal()" mat-button color="primary" [disabled]="!personalForm.valid">Update</button>
-        <button (click)="updatePhone()" mat-button>Update Phone</button>
+        <button (click)="updatePhone()" *ngIf="enableUserPhone" mat-button>Update Phone</button>
       </mat-card-actions>
     </mat-card>
   </form>

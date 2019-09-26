@@ -101,3 +101,12 @@ export class EventStoreNotConnectedException extends HttpException {
     super(i18n.__('EventStore not connected'), HttpStatus.NOT_IMPLEMENTED);
   }
 }
+
+export class PhoneRegistrationNotAllowedException extends HttpException {
+  constructor() {
+    super(
+      i18n.__('Server does not allow phone registration'),
+      HttpStatus.NOT_IMPLEMENTED,
+    );
+  }
+}

@@ -80,5 +80,6 @@
 	"Type of method to authenticate client during authorization code exchange": "Type of method to authenticate client during authorization code exchange",
 	"Disable User": "Disable User",
 	"Communication Server not found": "Communication Server not found",
-	"Phone number already registered": "Phone number already registered"
+	"Phone number already registered": "Phone number already registered",
+	"Server does not allow phone registration": "Server does not allow phone registration"
 }

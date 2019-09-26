@@ -13,4 +13,5 @@ export interface ServerSettings extends Document {
   refreshTokenExpiresInDays?: number;
   authCodeExpiresInMinutes?: number;
   organizationName?: string;
+  enableUserPhone?: boolean;
 }

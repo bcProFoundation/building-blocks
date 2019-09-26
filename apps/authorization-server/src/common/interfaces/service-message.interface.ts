@@ -6,4 +6,5 @@ export interface ServiceMessage {
   communication: boolean;
   services?: ConnectedService[];
   enableChoosingAccount?: boolean;
+  enableUserPhone?: boolean;
 }

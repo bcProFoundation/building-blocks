@@ -16,6 +16,7 @@ import {
   DELETE_ME_ENDPOINT,
   FORGOT_PASSWORD,
   USER_INFO,
+  INFO_ENDPOINT,
 } from '../constants/url-paths';
 import { ISSUER_URL, APP_URL } from '../constants/storage';
 import { CLOSE, CURRENT_PASSWORD_MISMATCH } from '../constants/messages';
@@ -184,5 +185,9 @@ export class ProfileService {
           );
         }),
       );
+  }
+
+  checkServerForPhoneRegistration() {
+    return this.http.get<any>(localStorage.getItem(ISSUER_URL) + INFO_ENDPOINT);
   }
 }
