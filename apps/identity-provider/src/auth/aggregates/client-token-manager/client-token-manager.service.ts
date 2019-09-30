@@ -12,6 +12,7 @@ import {
   APP_WWW_FORM_URLENCODED,
   REFRESH_TOKEN,
   BASIC,
+  CONTENT_TYPE,
 } from '../../../constants/app-strings';
 import { AxiosResponse } from 'axios';
 
@@ -62,6 +63,8 @@ export class ClientTokenManagerService {
   }
 
   getNewToken(settings$: Observable<ServerSettings>) {
+    const headers = {};
+    headers[CONTENT_TYPE] = APP_WWW_FORM_URLENCODED;
     return settings$.pipe(
       switchMap(settings => {
         return this.http.post(
@@ -73,7 +76,7 @@ export class ClientTokenManagerService {
             grant_type: CLIENT_CREDENTIALS,
             scope: OPENID,
           },
-          { headers: { CONTENT_TYPE: APP_WWW_FORM_URLENCODED } },
+          { headers },
         );
       }),
       map(this.payloadMapper),
@@ -87,6 +90,8 @@ export class ClientTokenManagerService {
     settings$: Observable<ServerSettings>,
     token: TokenCache,
   ) {
+    const headers = {};
+    headers[CONTENT_TYPE] = APP_WWW_FORM_URLENCODED;
     return settings$.pipe(
       switchMap(settings => {
         return this.http
@@ -98,7 +103,7 @@ export class ClientTokenManagerService {
               redirect_uri: settings.callbackURLs[0],
               grant_type: REFRESH_TOKEN,
             },
-            { headers: { CONTENT_TYPE: APP_WWW_FORM_URLENCODED } },
+            { headers },
           )
           .pipe(
             map(this.payloadMapper),
