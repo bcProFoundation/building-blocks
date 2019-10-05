@@ -6,6 +6,7 @@ import {
 import { TCPClient } from 'geteventstore-promise';
 import { Observable } from 'rxjs';
 import { ConfigService } from '../../config/config.service';
+import { EventStoreContext } from './event-store.context';
 
 export class EventStoreServer extends Server
   implements CustomTransportStrategy {
@@ -36,7 +37,7 @@ export class EventStoreServer extends Server
       stream,
     } = this.config.getEventStoreConfig();
 
-    if (hostname && stream && username && password) {
+    if (hostname && username && password && stream) {
       this.stream = stream;
       this.server = new TCPClient({
         hostname,
@@ -61,14 +62,16 @@ export class EventStoreServer extends Server
       pattern: payload.eventType,
     };
 
-    await this.handleEvent(packet.pattern, packet);
+    const eventStoreCtx = new EventStoreContext([this.stream]);
+
+    await this.handleEvent(packet.pattern, packet, eventStoreCtx);
     await this.handleMessage(packet);
   }
 
-  async handleEvent(pattern, packet) {
+  async handleEvent(pattern, packet, context) {
     // Mute Errors if EventPattern not found
     this.logger.error = (...args) => {};
-    super.handleEvent(pattern, packet);
+    super.handleEvent(pattern, packet, context);
   }
 
   async handleMessage(packet: ReadPacket) {

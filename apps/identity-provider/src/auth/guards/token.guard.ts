@@ -10,7 +10,7 @@ import { TokenCache } from '../../auth/entities/token-cache/token-cache.entity';
 import { TokenCacheService } from '../../auth/entities/token-cache/token-cache.service';
 import { TOKEN } from '../../constants/app-strings';
 import { switchMap, retry } from 'rxjs/operators';
-import { of, from } from 'rxjs';
+import { of, from, throwError } from 'rxjs';
 import * as Express from 'express';
 
 @Injectable()
@@ -42,7 +42,9 @@ export class TokenGuard implements CanActivate {
   introspectToken(accessToken: string, req: Express.Request) {
     return from(this.settingsService.find()).pipe(
       switchMap(settings => {
-        if (!settings) throw new NotImplementedException();
+        if (!settings) {
+          return throwError(new NotImplementedException());
+        }
         const baseEncodedCred = Buffer.from(
           settings.clientId + ':' + settings.clientSecret,
         ).toString('base64');
@@ -84,6 +86,7 @@ export class TokenGuard implements CanActivate {
   cacheToken(introspectedToken: any, accessToken: string): Promise<TokenCache> {
     introspectedToken.accessToken = accessToken;
     introspectedToken.clientId = introspectedToken.client_id;
+    introspectedToken.trustedClient = introspectedToken.trusted_client;
     return this.tokenCacheService.save(introspectedToken);
   }
 
