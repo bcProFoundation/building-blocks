@@ -21,6 +21,8 @@ export class TokenCache extends BaseEntity {
   roles: string[];
   @Column()
   clientId: string;
+  @Column()
+  trustedClient: boolean;
   constructor() {
     super();
     if (!this.uuid) this.uuid = uuidv4();
