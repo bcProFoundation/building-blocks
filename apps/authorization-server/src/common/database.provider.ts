@@ -9,10 +9,12 @@ import {
   DB_PASSWORD,
   DB_HOST,
   DB_NAME,
+  MONGO_URI_PREFIX,
 } from '../config/config.service';
 
 export const MONGOOSE_CONNECTION = 'DATABASE_CONNECTION';
 export const AGENDA_CONNECTION = 'AGENDA_CONNECTION';
+export const MAJORITY = 'majority';
 
 export const databaseProviders = [
   {
@@ -20,12 +22,14 @@ export const databaseProviders = [
     useFactory: async (config: ConfigService): Promise<typeof mongoose> => {
       // Remove Deprecation Warnings https://mongoosejs.com/docs/deprecations.html
       mongoose.set('useUnifiedTopology', true);
+      mongoose.set('retryWrites', true);
+      const mongoUriPrefix = config.get(MONGO_URI_PREFIX) || 'mongodb';
       return await defer(() =>
         mongoose.connect(
-          `mongodb://${config.get(DB_USER)}:${config.get(
+          `${mongoUriPrefix}://${config.get(DB_USER)}:${config.get(
             DB_PASSWORD,
           )}@${config.get(DB_HOST)}/${config.get(DB_NAME)}`,
-          { useNewUrlParser: true },
+          { useNewUrlParser: true, w: MAJORITY },
         ),
       )
         .pipe(handleRetry())
@@ -36,12 +40,18 @@ export const databaseProviders = [
   {
     provide: AGENDA_CONNECTION,
     useFactory: async (config: ConfigService) => {
+      const mongoUriPrefix = config.get(MONGO_URI_PREFIX) || 'mongodb';
       const agenda = new Agenda({
         db: {
-          address: `mongodb://${config.get(DB_USER)}:${config.get(
+          address: `${mongoUriPrefix}://${config.get(DB_USER)}:${config.get(
             DB_PASSWORD,
           )}@${config.get(DB_HOST)}/${config.get(DB_NAME)}`,
-          options: { useNewUrlParser: true, useUnifiedTopology: true },
+          options: {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            retryWrites: true,
+            w: MAJORITY,
+          },
         },
       });
       await agenda.start();
