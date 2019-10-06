@@ -4,6 +4,7 @@ import {
   DB_PASSWORD,
   DB_HOST,
   DB_NAME,
+  MONGO_URI_PREFIX,
 } from '../config/config.service';
 import { TokenCache } from '../auth/entities/token-cache/token-cache.entity';
 import { EmailAccount } from '../email/entities/email-account/email-account.entity';
@@ -15,10 +16,12 @@ import { QueueLog } from '../system-settings/entities/queue-log/queue-log.entity
 import { Storage } from '../cloud-storage/entities/storage/storage.entity';
 
 export function connectTypeorm(config): MongoConnectionOptions {
+  const mongoUriPrefix = config.get(MONGO_URI_PREFIX) || 'mongodb';
+  const mongoOptions = 'useUnifiedTopology=true&retryWrites=true';
   return {
-    url: `mongodb://${config.get(DB_USER)}:${config.get(
+    url: `${mongoUriPrefix}://${config.get(DB_USER)}:${config.get(
       DB_PASSWORD,
-    )}@${config.get(DB_HOST)}/${config.get(DB_NAME)}?useUnifiedTopology=true`,
+    )}@${config.get(DB_HOST)}/${config.get(DB_NAME)}?${mongoOptions}`,
     type: 'mongodb',
     name: 'default',
     logging: false,
@@ -34,5 +37,6 @@ export function connectTypeorm(config): MongoConnectionOptions {
       Storage,
     ],
     useNewUrlParser: true,
+    w: 'majority',
   };
 }

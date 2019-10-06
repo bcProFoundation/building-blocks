@@ -4,20 +4,25 @@ import {
   DB_USER,
   DB_HOST,
   DB_NAME,
+  MONGO_URI_PREFIX,
+  ConfigService,
 } from '../config/config.service';
 import { ServerSettings } from '../system-settings/entities/server-settings/server-settings.entity';
 import { Profile } from '../profile-management/entities/profile/profile.entity';
 import { TokenCache } from '../auth/entities/token-cache/token-cache.entity';
 
-export function connectTypeorm(config): MongoConnectionOptions {
+export function connectTypeorm(config: ConfigService): MongoConnectionOptions {
+  const mongoUriPrefix = config.get(MONGO_URI_PREFIX) || 'mongodb';
+  const mongoOptions = 'useUnifiedTopology=true&retryWrites=true';
   return {
     type: 'mongodb',
-    url: `mongodb://${config.get(DB_USER)}:${config.get(
+    url: `${mongoUriPrefix}://${config.get(DB_USER)}:${config.get(
       DB_PASSWORD,
-    )}@${config.get(DB_HOST)}/${config.get(DB_NAME)}?useUnifiedTopology=true`,
+    )}@${config.get(DB_HOST)}/${config.get(DB_NAME)}?${mongoOptions}`,
     logging: false,
     synchronize: true,
     entities: [ServerSettings, Profile, TokenCache],
     useNewUrlParser: true,
+    w: 'majority',
   };
 }

@@ -15,6 +15,7 @@ export const ES_HOST = 'ES_HOST';
 export const ES_USER = 'ES_USER';
 export const ES_PASSWORD = 'ES_PASSWORD';
 export const ES_STREAM = 'ES_STREAM';
+export const MONGO_URI_PREFIX = 'MONGO_URI_PREFIX';
 
 @Injectable()
 export class ConfigService {
@@ -38,6 +39,7 @@ export class ConfigService {
       DB_HOST: Joi.string().required(),
       DB_USER: Joi.string().required(),
       DB_PASSWORD: Joi.string().required(),
+      MONGO_URI_PREFIX: Joi.string().optional(),
       ES_HOST: Joi.string().optional(),
       ES_USER: Joi.string().optional(),
       ES_PASSWORD: Joi.string().optional(),

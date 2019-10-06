@@ -4,6 +4,10 @@ import * as expressSession from 'express-session';
 import * as passport from 'passport';
 import * as helmet from 'helmet';
 import * as connectMongoDBSession from 'connect-mongo';
+import * as fs from 'fs';
+import { join } from 'path';
+import { INestApplication } from '@nestjs/common';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import {
   ConfigService,
   SESSION_SECRET,
@@ -14,12 +18,9 @@ import {
   DB_NAME,
   SESSION_NAME,
   NODE_ENV,
+  MONGO_URI_PREFIX,
 } from './config/config.service';
-import { join } from 'path';
-import { INestApplication } from '@nestjs/common';
 import { i18n } from './i18n/i18n.config';
-import * as fs from 'fs';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { VIEWS_DIR, SWAGGER_ROUTE } from './constants/app-strings';
 import { SESSION_COLLECTION } from './auth/entities/session/session.schema';
 
@@ -30,7 +31,7 @@ const MongoStore = connectMongoDBSession(expressSession);
 export class ExpressServer {
   public server: express.Express;
 
-  constructor(private configService: ConfigService) {
+  constructor(private config: ConfigService) {
     this.server = express();
   }
 
@@ -53,23 +54,19 @@ export class ExpressServer {
   }
 
   setupSession() {
-    this.server.use(cookieParser(this.configService.get(SESSION_SECRET)));
+    this.server.use(cookieParser(this.config.get(SESSION_SECRET)));
 
     const cookie = {
-      maxAge: Number(this.configService.get(COOKIE_MAX_AGE)),
+      maxAge: Number(this.config.get(COOKIE_MAX_AGE)),
       httpOnly: false,
       secure: true,
     };
 
-    if (this.configService.get(NODE_ENV) !== 'production') {
+    if (this.config.get(NODE_ENV) !== 'production') {
       cookie.secure = false;
     }
 
-    const url = `mongodb://${this.configService.get(
-      DB_USER,
-    )}:${this.configService.get(DB_PASSWORD)}@${this.configService.get(
-      DB_HOST,
-    )}/${this.configService.get(DB_NAME)}?useUnifiedTopology=true`;
+    const url = this.getMongoUrl();
 
     const store = new MongoStore({
       url,
@@ -78,8 +75,8 @@ export class ExpressServer {
       stringify: false,
     });
     const sessionConfig = {
-      name: this.configService.get(SESSION_NAME),
-      secret: this.configService.get(SESSION_SECRET),
+      name: this.config.get(SESSION_NAME),
+      secret: this.config.get(SESSION_SECRET),
       store,
       cookie,
       saveUninitialized: false,
@@ -95,6 +92,24 @@ export class ExpressServer {
 
   setupI18n() {
     this.server.use(i18n.init);
+  }
+
+  getMongoUrl() {
+    const mongoUriPrefix = this.config.get(MONGO_URI_PREFIX) || 'mongodb';
+    const mongoOptions = this.getMongoOptions();
+
+    return `${mongoUriPrefix}://${this.config.get(DB_USER)}:${this.config.get(
+      DB_PASSWORD,
+    )}@${this.config.get(DB_HOST)}/${this.config.get(DB_NAME)}?${mongoOptions}`;
+  }
+
+  getMongoOptions() {
+    let mongoOptions = 'useUnifiedTopology=true&';
+    mongoOptions += 'w=majority&';
+    mongoOptions += 'retryWrites=true&';
+    mongoOptions += 'useNewUrlParser=true';
+
+    return mongoOptions;
   }
 
   static setupSwagger(app) {
