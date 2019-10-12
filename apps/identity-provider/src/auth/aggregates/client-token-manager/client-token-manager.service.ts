@@ -15,6 +15,7 @@ import {
   CONTENT_TYPE,
 } from '../../../constants/app-strings';
 import { AxiosResponse } from 'axios';
+import { stringify } from 'querystring';
 
 @Injectable()
 export class ClientTokenManagerService {
@@ -67,17 +68,17 @@ export class ClientTokenManagerService {
     headers[CONTENT_TYPE] = APP_WWW_FORM_URLENCODED;
     return settings$.pipe(
       switchMap(settings => {
-        return this.http.post(
-          settings.tokenURL,
-          {
-            client_id: settings.clientId,
-            client_secret: settings.clientSecret,
-            redirect_uri: settings.callbackURLs[0],
-            grant_type: CLIENT_CREDENTIALS,
-            scope: OPENID,
-          },
-          { headers },
-        );
+        const payload = {
+          client_id: settings.clientId,
+          client_secret: settings.clientSecret,
+          redirect_uri: settings.callbackURLs[0],
+          grant_type: CLIENT_CREDENTIALS,
+          scope: OPENID,
+        };
+
+        return this.http.post(settings.tokenURL, stringify(payload), {
+          headers,
+        });
       }),
       map(this.payloadMapper),
       switchMap(token => {
