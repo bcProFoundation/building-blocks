@@ -48,6 +48,11 @@ export class ClientManagementAggregateService extends AggregateRoot {
   async removeClient(clientId, actorUuid) {
     const client = await this.client.findOne({ clientId });
     if (!client) throw new NotFoundException({ clientId });
+
+    if (client.isTrusted) {
+      throw new ForbiddenException({ isTrusted: client.isTrusted });
+    }
+
     if (client.isTrusted === 0) {
       if (
         client.createdBy === actorUuid ||
