@@ -1,6 +1,8 @@
 import { ForbiddenException, Injectable, HttpService } from '@nestjs/common';
 import { from, of, Observable, throwError } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
+import { AxiosResponse } from 'axios';
+import { stringify } from 'querystring';
 import { TokenCache } from '../../entities/token-cache/token-cache.entity';
 import { TokenCacheService } from '../../entities/token-cache/token-cache.service';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
@@ -14,8 +16,6 @@ import {
   BASIC,
   CONTENT_TYPE,
 } from '../../../constants/app-strings';
-import { AxiosResponse } from 'axios';
-import { stringify } from 'querystring';
 
 @Injectable()
 export class ClientTokenManagerService {
@@ -95,17 +95,15 @@ export class ClientTokenManagerService {
     headers[CONTENT_TYPE] = APP_WWW_FORM_URLENCODED;
     return settings$.pipe(
       switchMap(settings => {
+        const payload = {
+          client_id: settings.clientId,
+          refresh_token: token.refreshToken,
+          redirect_uri: settings.callbackURLs[0],
+          grant_type: REFRESH_TOKEN,
+        };
+
         return this.http
-          .post(
-            settings.tokenURL,
-            {
-              client_id: settings.clientId,
-              refresh_token: token.refreshToken,
-              redirect_uri: settings.callbackURLs[0],
-              grant_type: REFRESH_TOKEN,
-            },
-            { headers },
-          )
+          .post(settings.tokenURL, stringify(payload), { headers })
           .pipe(
             map(this.payloadMapper),
             switchMap(tokenPayload => {
