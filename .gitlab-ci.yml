@@ -14,8 +14,6 @@ variables:
 stages:
   - tests
   - pack
-  - deploy
-  - setup
   - docs
 
 test_authorization_server:
@@ -501,26 +499,6 @@ pack_production_admin_client:
     - docker tag admin-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client:$VERSION
     - docker tag admin-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client
-
-deploy_staging:
-  image: dtzar/helm-kubectl:latest
-  stage: deploy
-  environment:
-    name: staging
-  only:
-    - staging
-  variables:
-    KUBECONFIG: /etc/deploy/config
-  before_script:
-    - mkdir -p /etc/deploy
-    - echo ${kube_config} | base64 -d > ${KUBECONFIG}
-    - kubectl config use-context staging
-    - helm init --service-account staging-user --client-only
-    - helm repo add stable https://kubernetes-charts.storage.googleapis.com/
-    - helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
-    - helm repo update
-  script:
-    - ./kubernetes/deploy/deploy-staging.sh
 
 pages:
   stage: docs
