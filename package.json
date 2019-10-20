@@ -5,9 +5,9 @@
     "version": "lerna clean --yes && lerna bootstrap --ignore-scripts -- --package-lock-only --no-audit && git add apps/*/package-lock.json frontends/*/package-lock.json"
   },
   "devDependencies": {
-    "@compodoc/compodoc": "^1.1.10",
-    "@types/node": "^12.7.12",
-    "lerna": "^3.17.0",
+    "@compodoc/compodoc": "^1.1.11",
+    "@types/node": "^12.11.1",
+    "lerna": "^3.18.1",
     "npm-check": "^5.9.0"
   }
 }
