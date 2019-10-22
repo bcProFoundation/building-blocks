@@ -56,7 +56,7 @@ export class EventStoreServer extends Server
     }
   }
 
-  async processEvent(payload) {
+  async processEvent(subscription, payload) {
     const packet: ReadPacket = {
       data: payload,
       pattern: payload.eventType,

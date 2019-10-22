@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CloudStorageController } from './cloud-storage.controller';
 import { HttpService } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { StorageService } from '../../../cloud-storage/entities/storage/storage.service';
 import { TokenGuard } from '../../../auth/guards/token.guard';
 import { RoleGuard } from '../../../auth/guards/role.guard';
@@ -17,6 +17,10 @@ describe('CloudStorage Controller', () => {
       providers: [
         {
           provide: CommandBus,
+          useFactory: (...args) => jest.fn(),
+        },
+        {
+          provide: QueryBus,
           useFactory: (...args) => jest.fn(),
         },
         {
