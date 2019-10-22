@@ -20,7 +20,7 @@ export class StorageService {
     return await this.storageRepository.find();
   }
 
-  public async findOne(params): Promise<any> {
+  public async findOne(params): Promise<Storage> {
     return await this.storageRepository.findOne(params);
   }
 

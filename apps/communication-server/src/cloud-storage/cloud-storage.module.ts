@@ -5,7 +5,7 @@ import { CloudStorageAggregates } from './aggregates';
 import { CloudStorageControllers } from './controllers';
 import { CloudStorageCommands } from './commands';
 import { CloudStorageEvents } from './events';
-import { ModifyCloudStorageAggregateService } from './aggregates/modify-cloud-storage-aggregate/modify-cloud-storage-aggregate.service';
+import { CloudStorageQueries } from './queries';
 
 @Global()
 @Module({
@@ -14,7 +14,7 @@ import { ModifyCloudStorageAggregateService } from './aggregates/modify-cloud-st
     ...CloudStorageAggregates,
     ...CloudStorageCommands,
     ...CloudStorageEvents,
-    ModifyCloudStorageAggregateService,
+    ...CloudStorageQueries,
   ],
   controllers: [...CloudStorageControllers],
   exports: [CloudStorageEntitiesModule, ...CloudStorageAggregates],

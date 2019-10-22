@@ -14,7 +14,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { CommandBus } from '@nestjs/cqrs';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { TokenGuard } from '../../../auth/guards/token.guard';
 import { Roles } from '../../../auth/decorators/roles.decorator';
 import { ADMINISTRATOR } from '../../../constants/app-strings';
@@ -29,11 +29,14 @@ import { UploadFilesCloudBucketCommand } from '../../commands/upload-files-cloud
 import { Storage } from '../../entities/storage/storage.entity';
 import { DeleteFileFromStorageCommand } from '../../commands/delete-file-from-storage/delete-file-from-storage.command';
 import { INVALID_FILE_OR_STORAGE_UUID } from '../../../constants/messages';
+import { RetrieveFileQuery } from '../../queries/retrieve-file/retrieve-file.query';
+import { RetrieveFileDto } from '../../policies/retrieve-file/retrieve-file.dto';
 
 @Controller('storage')
 export class CloudStorageController {
   constructor(
     private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
     private readonly storage: StorageService,
   ) {}
 
@@ -66,7 +69,7 @@ export class CloudStorageController {
   @Roles(ADMINISTRATOR)
   @UseGuards(TokenGuard, RoleGuard)
   async addStorage(@Body() payload: StorageValidationDto, @Req() req) {
-    return this.commandBus.execute(new AddCloudStorageCommand(payload));
+    return await this.commandBus.execute(new AddCloudStorageCommand(payload));
   }
 
   @Post('v1/modify/:uuid')
@@ -74,7 +77,7 @@ export class CloudStorageController {
   @Roles(ADMINISTRATOR)
   @UseGuards(TokenGuard, RoleGuard)
   async modifyStorage(@Body() payload: ModifyStorageDto, @Param('uuid') uuid) {
-    return this.commandBus.execute(
+    return await this.commandBus.execute(
       new ModifyCloudStorageCommand(uuid, payload),
     );
   }
@@ -85,7 +88,7 @@ export class CloudStorageController {
   @UseGuards(TokenGuard, RoleGuard)
   async removeStorage(@Param() uuid, @Req() req) {
     const actorUuid = req.user.user;
-    return this.commandBus.execute(
+    return await this.commandBus.execute(
       new RemoveCloudStorageCommand(actorUuid, uuid),
     );
   }
@@ -99,7 +102,7 @@ export class CloudStorageController {
     @Body('permission') permission,
     @Param('uuid') storageUuid,
   ) {
-    return this.commandBus.execute(
+    return await this.commandBus.execute(
       new UploadFilesCloudBucketCommand(file, storageUuid, req, permission),
     );
   }
@@ -111,8 +114,22 @@ export class CloudStorageController {
     @Req() req,
     @Param('uuid') storageUuid,
   ) {
-    return this.commandBus.execute(
+    return await this.commandBus.execute(
       new DeleteFileFromStorageCommand(filename, storageUuid, req),
+    );
+  }
+
+  @Get('v1/retrieve_file/:uuid')
+  @UseGuards(TokenGuard)
+  @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
+  async retrieveFile(
+    @Query() query: RetrieveFileDto,
+    @Param('uuid') uuid: string,
+    @Req() req,
+  ) {
+    const { filename, expiry } = query;
+    return await this.queryBus.execute(
+      new RetrieveFileQuery(filename, uuid, req, Number(expiry)),
     );
   }
 }
