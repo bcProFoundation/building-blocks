@@ -1,6 +1,6 @@
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { ProfileDeletedEvent } from './profile-deleted.event';
-import { ProfileService } from 'profile-management/entities/profile/profile.service';
+import { ProfileService } from '../../entities/profile/profile.service';
 
 @EventsHandler(ProfileDeletedEvent)
 export class ProfileDeletedHandler
