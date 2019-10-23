@@ -1,14 +1,15 @@
 import { Injectable } from '@nestjs/common';
+import { CommandBus } from '@nestjs/cqrs';
 import { TokenCacheService } from '../../../auth/entities/token-cache/token-cache.service';
-import { ProfileService } from '../../../profile-management/entities/profile/profile.service';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
+import { DeleteProfileCommand } from '../../../profile-management/commands/delete-profile/delete-profile.command';
 
 @Injectable()
 export class ConnectService {
   constructor(
     private readonly tokenCacheService: TokenCacheService,
-    private readonly profileService: ProfileService,
     private readonly settings: ServerSettingsService,
+    private readonly commandBus: CommandBus,
   ) {}
 
   async tokenDelete(accessToken: string) {
@@ -17,7 +18,7 @@ export class ConnectService {
   }
 
   async deleteProfile(uuid: string) {
-    return await this.profileService.deleteProfile({ uuid });
+    await this.commandBus.execute(new DeleteProfileCommand(uuid));
   }
 
   async checkAndClearSettings(accessToken: string) {

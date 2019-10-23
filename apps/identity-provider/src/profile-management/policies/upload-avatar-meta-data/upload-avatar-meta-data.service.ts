@@ -11,10 +11,10 @@ export class UploadAvatarMetaDataService {
     private readonly serverSettingsService: ServerSettingsService,
     private readonly http: HttpService,
   ) {}
-  uploadNewAvatarMetaData(clientHttpRequest) {
+  uploadNewAvatarMetaData(accessToken: string) {
     let cloudStorage, communicationServerUrl;
     this.authorizationHeader = {
-      Authorization: 'Bearer ' + clientHttpRequest.token.accessToken,
+      Authorization: 'Bearer ' + accessToken,
     };
     return from(this.serverSettingsService.find()).pipe(
       switchMap(settings => {

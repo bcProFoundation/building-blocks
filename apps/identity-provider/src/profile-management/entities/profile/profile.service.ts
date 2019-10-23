@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MongoRepository } from 'typeorm';
 import { Profile } from './profile.entity';
-import { from } from 'rxjs';
 
 @Injectable()
 export class ProfileService {
@@ -27,7 +26,7 @@ export class ProfileService {
     return await this.profileRepository.find();
   }
 
-  public deleteProfile(uuid) {
-    return from(this.profileRepository.deleteOne({ uuid }));
+  public async deleteProfile(uuid: string) {
+    return await this.profileRepository.deleteOne({ uuid });
   }
 }
