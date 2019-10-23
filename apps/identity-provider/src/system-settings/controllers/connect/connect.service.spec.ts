@@ -3,6 +3,7 @@ import { ConnectService } from './connect.service';
 import { TokenCacheService } from '../../../auth/entities/token-cache/token-cache.service';
 import { ProfileService } from '../../../profile-management/entities/profile/profile.service';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
+import { CommandBus } from '@nestjs/cqrs';
 
 describe('ConnectService', () => {
   let service: ConnectService;
@@ -14,6 +15,7 @@ describe('ConnectService', () => {
         { provide: TokenCacheService, useValue: {} },
         { provide: ProfileService, useValue: {} },
         { provide: ServerSettingsService, useValue: {} },
+        { provide: CommandBus, useValue: {} },
       ],
     }).compile();
 
