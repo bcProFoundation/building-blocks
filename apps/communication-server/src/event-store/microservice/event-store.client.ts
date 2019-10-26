@@ -67,7 +67,7 @@ export class EventStoreClient extends ClientProxy {
     }
   }
 
-  handleResponse(buffer: WritePacket & PacketId) {
+  handleResponse(subscription, buffer: WritePacket & PacketId) {
     const { err, response, isDisposed, id } = buffer;
     const callback = this.routingMap.get(id);
     if (!callback) {
