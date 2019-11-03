@@ -62,6 +62,7 @@ export class UserService {
 
   async getAuthorizedUser(uuid: string) {
     const user = await this.findOne({ uuid });
+    if (!user) throw invalidUserException;
 
     return {
       disabled: user.disabled,
