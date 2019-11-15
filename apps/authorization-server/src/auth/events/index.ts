@@ -12,9 +12,7 @@ import { UserLogInHOTPGeneratedHandler } from './user-login-hotp-generated/user-
 import { UnverifiedPhoneAddedHandler } from './unverified-phone-added/unverified-phone-added.handler';
 import { PhoneVerifiedHandler } from './phone-verified/phone-verified.handler';
 
-export {
-  SocialLoginUserSignedUpEvent,
-} from './social-login-user-signed-up/social-login-user-signed-up.event';
+export { SocialLoginUserSignedUpEvent } from './social-login-user-signed-up/social-login-user-signed-up.event';
 
 export const AuthEventHandlers = [
   SocialLoginRemovedHandler,
