@@ -31,7 +31,8 @@ export class AuthServerVerificationGuard implements CanActivate {
       const settings = await this.settingsService.find();
       if (
         settings &&
-        (settings.clientId && settings.clientId === clientId) &&
+        settings.clientId &&
+        settings.clientId === clientId &&
         settings.clientSecret === clientSecret
       ) {
         return true;

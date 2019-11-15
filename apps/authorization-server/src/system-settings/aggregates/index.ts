@@ -1,3 +1,1 @@
-export {
-  SystemSettingsManagementService,
-} from './system-settings-management/system-settings-management.service';
+export { SystemSettingsManagementService } from './system-settings-management/system-settings-management.service';
