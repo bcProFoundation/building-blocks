@@ -1,11 +1,11 @@
 import { IsUrl, IsNotEmpty, IsOptional, IsUUID } from 'class-validator';
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class ServerSettingsDto {
   uuid?: string;
 
   @IsUrl()
-  @ApiModelProperty({
+  @ApiProperty({
     description: 'The URL of the server.',
     type: 'string',
     required: true,

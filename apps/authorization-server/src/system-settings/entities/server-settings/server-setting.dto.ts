@@ -7,12 +7,12 @@ import {
   Min,
   IsString,
 } from 'class-validator';
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { THIRTY_NUMBER, TEN_NUMBER } from '../../../constants/app-strings';
 
 export class ServerSettingDto {
   @IsUrl()
-  @ApiModelProperty({
+  @ApiProperty({
     description: 'The URL of the server.',
     type: 'string',
     required: true,
@@ -21,7 +21,7 @@ export class ServerSettingDto {
 
   @IsOptional()
   @IsUUID()
-  @ApiModelProperty({
+  @ApiProperty({
     description: 'OAuth 2.0 Client ID for Communication Server',
     type: 'string',
   })
@@ -29,7 +29,7 @@ export class ServerSettingDto {
 
   @IsOptional()
   @IsUUID()
-  @ApiModelProperty({
+  @ApiProperty({
     description: 'OAuth 2.0 Client ID for Identity Provider',
     type: 'string',
   })
@@ -37,7 +37,7 @@ export class ServerSettingDto {
 
   @IsOptional()
   @IsUUID()
-  @ApiModelProperty({
+  @ApiProperty({
     description: 'OAuth 2.0 Client ID for Infrastructure Console',
     type: 'string',
   })
@@ -45,7 +45,7 @@ export class ServerSettingDto {
 
   @IsOptional()
   @IsUUID()
-  @ApiModelProperty({
+  @ApiProperty({
     description: 'Cloud Storage Bucket',
     type: 'string',
   })
@@ -75,7 +75,7 @@ export class ServerSettingDto {
 
   @IsString()
   @IsOptional()
-  @ApiModelProperty({
+  @ApiProperty({
     description: 'The name of host organization.',
     type: 'string',
   })
@@ -83,7 +83,7 @@ export class ServerSettingDto {
 
   @IsBoolean()
   @IsOptional()
-  @ApiModelProperty({
+  @ApiProperty({
     description: 'Allow users to register phone',
     type: 'boolean',
   })

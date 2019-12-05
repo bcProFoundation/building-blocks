@@ -33,7 +33,7 @@ export class AuthController {
     }),
   )
   @ApiOperation({
-    title: i18n.__('Login'),
+    summary: i18n.__('Login'),
     description: 'Login with email or mobile phone',
   })
   login(@Body() body: LoginUserDto, @Req() req, @Res() res) {
@@ -44,7 +44,7 @@ export class AuthController {
 
   @Get('logout')
   @ApiOperation({
-    title: i18n.__('Logout'),
+    summary: i18n.__('Logout'),
     description: i18n.__('Logout of the session'),
   })
   logout(@Param('uuid') uuid, @Req() req, @Res() res) {
@@ -53,7 +53,7 @@ export class AuthController {
 
   @Get('logout/:uuid')
   @ApiOperation({
-    title: i18n.__('Logout'),
+    summary: i18n.__('Logout'),
     description: i18n.__('Logout of the session'),
   })
   logoutUuid(@Param('uuid') uuid, @Req() req, @Res() res) {
@@ -62,7 +62,7 @@ export class AuthController {
 
   @Post('verify_user')
   @ApiOperation({
-    title: i18n.__('Verify User'),
+    summary: i18n.__('Verify User'),
     description: i18n.__('Check whether the user exists and retrieve a record'),
   })
   async verifyUser(

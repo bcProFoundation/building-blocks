@@ -5,14 +5,14 @@ import {
   IsOptional,
   IsBoolean,
 } from 'class-validator';
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { IsMobileE164 } from '../../../common/decorators/is-mobile-e164.decorator';
 import { i18n } from '../../../i18n/i18n.config';
 
 export class UserAccountDto {
   @IsEmail()
   @IsNotEmpty()
-  @ApiModelProperty({
+  @ApiProperty({
     description: i18n.__('Identifies a user uniquely'),
     required: true,
     example: i18n.__('luke.skywalker@twosuns.com'),
@@ -20,7 +20,7 @@ export class UserAccountDto {
   readonly email: string;
 
   @IsNotEmpty()
-  @ApiModelProperty({
+  @ApiProperty({
     description: i18n.__(
       'Strong alphanumeric password, enriched with special characters',
     ),
@@ -29,7 +29,7 @@ export class UserAccountDto {
   })
   public password: string;
 
-  @ApiModelProperty({
+  @ApiProperty({
     description: i18n.__('Full name of the user'),
     type: 'string',
     required: true,
@@ -37,7 +37,7 @@ export class UserAccountDto {
   @IsString()
   readonly name: string;
 
-  @ApiModelProperty({
+  @ApiProperty({
     description: i18n.__('Mobile number in E.164 format'),
     type: 'string',
     required: true,
@@ -47,7 +47,7 @@ export class UserAccountDto {
   })
   phone: string;
 
-  @ApiModelProperty({
+  @ApiProperty({
     description: i18n.__('User Roles'),
     type: 'string',
     required: true,
@@ -56,7 +56,7 @@ export class UserAccountDto {
   @IsString({ each: true })
   roles?: string[];
 
-  @ApiModelProperty({
+  @ApiProperty({
     description: i18n.__('Disable User'),
     type: 'boolean',
     required: true,

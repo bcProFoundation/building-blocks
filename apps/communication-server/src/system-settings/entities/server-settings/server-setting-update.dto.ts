@@ -1,10 +1,10 @@
 import { IsUrl, IsNotEmpty, IsOptional } from 'class-validator';
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class ServerSettingsUpdateDto {
   @IsOptional()
   @IsUrl()
-  @ApiModelProperty({
+  @ApiProperty({
     description: 'The URL of the server.',
     type: 'string',
     required: true,
