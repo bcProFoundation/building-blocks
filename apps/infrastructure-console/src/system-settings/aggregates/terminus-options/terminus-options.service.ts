@@ -48,7 +48,7 @@ export class TerminusOptionsService implements TerminusOptionsFactory {
     const broadcastHost = this.config.get(BROADCAST_HOST);
     const broadcastPort = this.config.get(BROADCAST_PORT)
       ? Number(this.config.get(BROADCAST_PORT))
-      : 3112;
+      : undefined;
     if (broadcastHost || broadcastPort) {
       healthEndpoint.healthIndicators.push(async () =>
         this.microservice.pingCheck('broadcast-service', {
