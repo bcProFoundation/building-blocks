@@ -174,17 +174,3 @@ lerna run format && lerna run lint -- --fix
 # OR execute from app or frontend package root
 npm run format && npm run lint -- --fix
 ```
-
-# TypeScript API Documentation
-
-* [Authorization Server]({{ book.docUrl }}/api/authorization-server/)
-* [Infrastructure Console]({{ book.docUrl }}/api/infrastructure-console/)
-* [Identity Provider]({{ book.docUrl }}/api/identity-provider/)
-* [Communication Server]({{ book.docUrl }}/api/communication-server/)
-* [Admin Client]({{ book.docUrl }}/api/admin-client/)
-* [Authorization Client]({{ book.docUrl }}/api/authorization-client/)
-* [Identity Provider]({{ book.docUrl }}/api/identity-client/)
-
-# ReST API Swagger Docs
-
-ReST API Docs for each app can be accessed at `/api-docs` and `/api-docs-json`

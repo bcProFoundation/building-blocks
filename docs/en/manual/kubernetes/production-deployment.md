@@ -59,6 +59,13 @@ Proceed using Web UI available at http://localhost:2113. Refer Event store docum
 - `communication-server` needs access to read the streams to list them via administrator only endpoint. (used for development, debugging, operations)
 - In case of shared development cluster, use your development kubeconfig to port-forward eventstore and use it to listen to streams during development
 
+### Broadcast Service
+
+All events are broadcasted to TCP service. Unlike EventStore no event log is kept for these events
+
+- Service is connected on host configured in `BROADCAST_HOST` environment variable
+- Port used for the connection is configured via `BROADCAST_PORT`
+
 ### Clone helm charts repository
 
 ```sh
