@@ -16,6 +16,8 @@ export const ES_USER = 'ES_USER';
 export const ES_PASSWORD = 'ES_PASSWORD';
 export const ES_STREAM = 'ES_STREAM';
 export const MONGO_URI_PREFIX = 'MONGO_URI_PREFIX';
+export const BROADCAST_HOST = 'BROADCAST_HOST';
+export const BROADCAST_PORT = 'BROADCAST_PORT';
 
 @Injectable()
 export class ConfigService {
@@ -44,6 +46,8 @@ export class ConfigService {
       ES_USER: Joi.string().optional(),
       ES_PASSWORD: Joi.string().optional(),
       ES_STREAM: Joi.string().optional(),
+      BROADCAST_HOST: Joi.string().optional(),
+      BROADCAST_PORT: Joi.string().optional(),
     });
 
     const { error, value: validatedEnvConfig } = Joi.validate(

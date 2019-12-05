@@ -10,6 +10,8 @@ import {
   ConfigService,
   ES_HOST,
   DB_HOST,
+  BROADCAST_HOST,
+  BROADCAST_PORT,
 } from '../../../config/config.service';
 
 export const HEALTH_ENDPOINT = '/api/healthz';
@@ -39,6 +41,19 @@ export class TerminusOptionsService implements TerminusOptionsFactory {
         this.microservice.pingCheck('event-store', {
           transport: Transport.TCP,
           options: { host: esHost, port: 1113 },
+        }),
+      );
+    }
+
+    const broadcastHost = this.config.get(BROADCAST_HOST);
+    const broadcastPort = this.config.get(BROADCAST_PORT)
+      ? Number(this.config.get(BROADCAST_PORT))
+      : 3112;
+    if (broadcastHost || broadcastPort) {
+      healthEndpoint.healthIndicators.push(async () =>
+        this.microservice.pingCheck('broadcast-service', {
+          transport: Transport.TCP,
+          options: { host: broadcastHost, port: broadcastPort },
         }),
       );
     }

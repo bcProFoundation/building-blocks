@@ -1,3 +1,5 @@
+# WARNING: Use Helm 3
+
 ## Configuring and initializing Helm Tiller
 
 Run following commands

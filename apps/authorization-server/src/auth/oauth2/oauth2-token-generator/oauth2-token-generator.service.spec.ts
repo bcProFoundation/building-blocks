@@ -5,6 +5,7 @@ import { BearerTokenService } from '../../../auth/entities/bearer-token/bearer-t
 import { ClientService } from '../../../client-management/entities/client/client.service';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { ConfigService } from '../../../config/config.service';
+import { EventStoreAggregateService } from '../../../event-store/aggregates/event-store-aggregate/event-store-aggregate.service';
 
 describe('OAuth2TokenGeneratorService', () => {
   let service: OAuth2TokenGeneratorService;
@@ -27,6 +28,7 @@ describe('OAuth2TokenGeneratorService', () => {
             },
           },
         },
+        { provide: EventStoreAggregateService, useValue: {} },
       ],
     }).compile();
     service = module.get<OAuth2TokenGeneratorService>(

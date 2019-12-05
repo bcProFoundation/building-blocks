@@ -9,6 +9,7 @@ import {
   getParameterByName,
   OIDCKey,
   validateUsersAndAuthData,
+  delay,
 } from './e2e-helpers';
 import { UserService } from '../src/user-management/entities/user/user.service';
 import { OIDCKeyService } from '../src/auth/entities/oidc-key/oidc-key.service';
@@ -229,15 +230,20 @@ describe('AppModule (e2e)', () => {
       name: 'Tester',
       email: 'test@user.org',
     };
-    return request(app.getHttpServer())
-      .post('/user/v1/create')
-      .set('Authorization', 'Bearer ' + userAccessToken)
-      .send(userReq)
-      .expect(201)
-      .then(response => {
-        return userService.findUserByEmailOrPhone('test@user.org');
-      })
-      .then(user => (testUser = user));
+    return (
+      request(app.getHttpServer())
+        .post('/user/v1/create')
+        .set('Authorization', 'Bearer ' + userAccessToken)
+        .send(userReq)
+        .expect(201)
+        // delay 500ms before findUserByEmailOrPhone
+        // async event may result in error: Invalid User
+        .then(delay(500))
+        .then(response => {
+          return userService.findUserByEmailOrPhone('test@user.org');
+        })
+        .then(user => (testUser = user))
+    );
   });
 
   it('Validate: Number of User 2, AuthData 2', async () => {

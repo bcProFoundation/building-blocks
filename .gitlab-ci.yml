@@ -30,6 +30,7 @@ test_authorization_server:
     changes:
       - apps/authorization-server/**/*
   variables:
+    NODE_ENV: "development"
     SESSION_SECRET: "secret"
     EXPIRY_DAYS: "1"
     COOKIE_MAX_AGE: "43200"

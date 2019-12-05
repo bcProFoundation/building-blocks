@@ -31,7 +31,9 @@ It allows dynamic client registration and client registration for third party ap
 - Resource server can be made using preferred language for optimized tasks
 - Rolling updates to core service, no downtime during upgrades
 - Code structure influenced by Domain Driven Design
-- Optional EventStore connection
+- Optional EventStore connection (violates privacy by storing events)
+- Optionally notify events to Broadcast Service on TCP (respects privacy by not storing events)
+- Webauthn passwordless login using hardware key
 
 ### Development
 
@@ -44,3 +46,23 @@ Host a common setup under a kubernetes namespace for developers.
 ### Production
 
 Refer Kubernetes [section](/kubernetes/README.md)
+
+### TypeScript API Documentation
+
+* [Authorization Server]({{ book.docUrl }}/api/authorization-server/)
+* [Infrastructure Console]({{ book.docUrl }}/api/infrastructure-console/)
+* [Identity Provider]({{ book.docUrl }}/api/identity-provider/)
+* [Communication Server]({{ book.docUrl }}/api/communication-server/)
+* [Admin Client]({{ book.docUrl }}/api/admin-client/)
+* [Authorization Client]({{ book.docUrl }}/api/authorization-client/)
+* [Identity Provider]({{ book.docUrl }}/api/identity-client/)
+
+### ReST API Swagger Docs
+
+ReST API Docs for each app can be accessed at `/api-docs` and `/api-docs-json`
+
+### Sources
+
+- [Building Blocks](https://gitlab.com/castlecraft/building-blocks)
+- [NestJS Resource Server Starter](https://gitlab.com/castlecraft/nestjs-resource-server-starter)
+- [gitlab.com/castlecraft](https://gitlab.com/castlecraft)

@@ -1,7 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { HttpService } from '@nestjs/common';
 import { EventStoreAggregateService } from './event-store-aggregate.service';
 import { ConfigService } from '../../../config/config.service';
-import { HttpService } from '@nestjs/common';
+import { EVENT_SERVICE } from '../../../event-store/microservice/event-service.provider';
 
 describe('EventStoreAggregateService', () => {
   let service: EventStoreAggregateService;
@@ -17,6 +18,7 @@ describe('EventStoreAggregateService', () => {
           },
         },
         { provide: HttpService, useValue: jest.fn() },
+        { provide: EVENT_SERVICE, useValue: {} },
       ],
     }).compile();
 

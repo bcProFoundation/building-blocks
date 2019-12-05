@@ -141,6 +141,23 @@ describe('AppModule (e2e)', () => {
       });
   });
 
+  it('/POST /oauth2/revoke (Revoke Token)', done => {
+    const clientCredentials = Buffer.from(
+      clientId + ':' + clientSecret,
+    ).toString('base64');
+    return request(app.getHttpServer())
+      .post('/oauth2/revoke')
+      .send({
+        token: clientAccessToken,
+      })
+      .set('Authorization', 'Basic ' + clientCredentials)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+        done();
+      });
+  });
+
   it('/GET /oauth2/confirmation (Authorization Code Grant)', done => {
     const authRequest = `/oauth2/confirmation?scope=${allowedScopes.join(
       '%20',
