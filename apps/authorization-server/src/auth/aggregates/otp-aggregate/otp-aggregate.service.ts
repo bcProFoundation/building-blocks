@@ -24,7 +24,11 @@ import {
   PhoneRegistrationNotAllowedException,
 } from '../../../common/filters/exceptions';
 import { UnverifiedPhoneAddedEvent } from '../../events/unverified-phone-added/unverified-phone-added.event';
-import { ConfigService } from '../../../config/config.service';
+import {
+  ConfigService,
+  BROADCAST_HOST,
+  BROADCAST_PORT,
+} from '../../../config/config.service';
 import { PhoneVerifiedEvent } from '../../events/phone-verified/phone-verified.event';
 
 @Injectable()
@@ -167,6 +171,9 @@ export class OTPAggregateService extends AggregateRoot {
   }
 
   verifyConnectedEventStore() {
+    let eventStoreConnected = false;
+    let broadcastServiceConnected = false;
+
     const {
       hostname,
       username,
@@ -174,7 +181,15 @@ export class OTPAggregateService extends AggregateRoot {
       stream,
     } = this.config.getEventStoreConfig();
 
-    if (!hostname || !username || !password || !stream) {
+    if (hostname && username && password && stream) {
+      eventStoreConnected = true;
+    }
+
+    if (this.config.get(BROADCAST_HOST) && this.config.get(BROADCAST_PORT)) {
+      broadcastServiceConnected = true;
+    }
+
+    if (!eventStoreConnected && !broadcastServiceConnected) {
       throw new EventStoreNotConnectedException();
     }
   }

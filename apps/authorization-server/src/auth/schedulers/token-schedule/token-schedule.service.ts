@@ -1,13 +1,12 @@
-import { Injectable, HttpService, Inject } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { OnModuleInit } from '@nestjs/common';
-import { retry } from 'rxjs/operators';
 import * as Agenda from 'agenda';
 import { BearerTokenService } from '../../entities/bearer-token/bearer-token.service';
-import { ClientService } from '../../../client-management/entities/client/client.service';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { THIRTY_NUMBER } from '../../../constants/app-strings';
 import { ServerSettings } from '../../../system-settings/entities/server-settings/server-settings.interface';
 import { AGENDA_CONNECTION } from '../../../common/database.provider';
+import { OAuth2Service } from '../../controllers/oauth2/oauth2.service';
 
 export const TOKEN_DELETE_QUEUE = 'token_delete';
 
@@ -17,9 +16,8 @@ export class TokenSchedulerService implements OnModuleInit {
     @Inject(AGENDA_CONNECTION)
     private readonly agenda: Agenda,
     private readonly bearerTokenService: BearerTokenService,
-    private readonly clientService: ClientService,
-    private readonly http: HttpService,
     private readonly settings: ServerSettingsService,
+    private readonly oauth2: OAuth2Service,
   ) {}
 
   async onModuleInit() {
@@ -46,48 +44,18 @@ export class TokenSchedulerService implements OnModuleInit {
           refreshTokenExp.getDate() + settings.refreshTokenExpiresInDays,
         );
         if (exp.valueOf() < now.valueOf() && !token.refreshToken) {
-          await this.bearerTokenService.remove(token);
-          await this.informClients(accessToken);
+          await this.oauth2.tokenRevoke(accessToken);
         } else if (
           token.refreshToken &&
           refreshTokenExp.valueOf() < now.valueOf()
         ) {
-          await this.bearerTokenService.remove(token);
-          await this.informClients(accessToken);
+          await this.oauth2.tokenRevoke(accessToken);
         }
       }
     });
   }
   async addQueue() {
-    const every = '1 hour'; // every one hour in milliseconds
+    const every = '1 hour';
     await this.agenda.every(every, TOKEN_DELETE_QUEUE);
-  }
-
-  async informClients(accessToken: string) {
-    const clients = await this.clientService.findAll();
-    for (const client of clients) {
-      if (client.tokenDeleteEndpoint) {
-        this.http
-          .post(
-            client.tokenDeleteEndpoint,
-            {
-              message: TOKEN_DELETE_QUEUE,
-              accessToken,
-            },
-            {
-              auth: {
-                username: client.clientId,
-                password: client.clientSecret,
-              },
-            },
-          )
-          .pipe(retry(3))
-          .subscribe({
-            error: error => {
-              // TODO: Log Error
-            },
-          });
-      }
-    }
   }
 }

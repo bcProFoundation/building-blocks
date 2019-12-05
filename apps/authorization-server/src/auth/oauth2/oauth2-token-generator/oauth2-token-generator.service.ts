@@ -10,6 +10,8 @@ import { UserService } from '../../../user-management/entities/user/user.service
 import { Client } from '../../../client-management/entities/client/client.interface';
 import { BearerToken } from '../../../auth/entities/bearer-token/bearer-token.interface';
 import { ConfigService, TOKEN_VALIDITY } from '../../../config/config.service';
+import { BearerTokenAddedEvent } from '../../../auth/events/bearer-token-added/bearer-token-added.event';
+import { EventStoreAggregateService } from '../../../event-store/aggregates/event-store-aggregate/event-store-aggregate.service';
 
 @Injectable()
 export class OAuth2TokenGeneratorService {
@@ -19,6 +21,7 @@ export class OAuth2TokenGeneratorService {
     private readonly clientService: ClientService,
     private readonly userService: UserService,
     private readonly configService: ConfigService,
+    private readonly event: EventStoreAggregateService,
   ) {}
 
   /**
@@ -64,6 +67,13 @@ export class OAuth2TokenGeneratorService {
     bearerToken.expiresIn = extraParams.expires_in;
 
     await this.bearerTokenService.save(bearerToken);
+
+    const bearerTokenAddedEvent = new BearerTokenAddedEvent(bearerToken);
+
+    this.event.create(
+      bearerTokenAddedEvent.constructor.name,
+      bearerTokenAddedEvent,
+    );
 
     return { bearerToken, extraParams };
   }

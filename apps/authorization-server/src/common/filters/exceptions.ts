@@ -98,7 +98,7 @@ export class PhoneAlreadyRegisteredException extends HttpException {
 
 export class EventStoreNotConnectedException extends HttpException {
   constructor() {
-    super(i18n.__('EventStore not connected'), HttpStatus.NOT_IMPLEMENTED);
+    super(i18n.__('Event service not connected'), HttpStatus.NOT_IMPLEMENTED);
   }
 }
 

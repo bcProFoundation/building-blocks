@@ -51,3 +51,7 @@ export async function validateUsersAndAuthData(
   expect(users.length).toEqual(expectUserCount);
   expect(authDataList.length).toEqual(expectAuthDataCount);
 }
+
+// https://stackoverflow.com/a/38956175
+export const delay = (milliseconds: number) => promise =>
+  new Promise(resolve => setTimeout(() => resolve(promise), milliseconds));
