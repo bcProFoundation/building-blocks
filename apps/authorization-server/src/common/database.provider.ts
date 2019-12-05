@@ -21,7 +21,6 @@ export const databaseProviders = [
     provide: MONGOOSE_CONNECTION,
     useFactory: async (config: ConfigService): Promise<typeof mongoose> => {
       // Remove Deprecation Warnings https://mongoosejs.com/docs/deprecations.html
-      mongoose.set('useUnifiedTopology', true);
       mongoose.set('retryWrites', true);
       const mongoUriPrefix = config.get(MONGO_URI_PREFIX) || 'mongodb';
       return await defer(() =>
@@ -29,7 +28,14 @@ export const databaseProviders = [
           `${mongoUriPrefix}://${config.get(DB_USER)}:${config.get(
             DB_PASSWORD,
           )}@${config.get(DB_HOST)}/${config.get(DB_NAME)}`,
-          { useNewUrlParser: true, w: MAJORITY },
+          {
+            useNewUrlParser: true,
+            w: MAJORITY,
+            useUnifiedTopology: true,
+            autoReconnect: false,
+            reconnectTries: 0,
+            reconnectInterval: 0,
+          },
         ),
       )
         .pipe(handleRetry())
@@ -49,8 +55,10 @@ export const databaseProviders = [
           options: {
             useNewUrlParser: true,
             useUnifiedTopology: true,
-            retryWrites: true,
             w: MAJORITY,
+            autoReconnect: false,
+            reconnectTries: 0,
+            reconnectInterval: 0,
           },
         },
       });

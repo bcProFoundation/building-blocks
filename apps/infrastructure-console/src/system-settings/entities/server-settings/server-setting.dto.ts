@@ -1,11 +1,11 @@
 import { IsUrl, IsNotEmpty } from 'class-validator';
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class ServerSettingsDto {
   uuid?: string;
 
   @IsUrl()
-  @ApiModelProperty({
+  @ApiProperty({
     description: 'The URL of the application server.',
     type: 'string',
     required: true,
@@ -13,7 +13,7 @@ export class ServerSettingsDto {
   appURL: string;
 
   @IsUrl()
-  @ApiModelProperty({
+  @ApiProperty({
     description: 'The URL of central Authorization server.',
     type: 'string',
     required: true,
@@ -21,7 +21,7 @@ export class ServerSettingsDto {
   authServerURL: string;
 
   @IsNotEmpty()
-  @ApiModelProperty({
+  @ApiProperty({
     description:
       'ID for this app, received after registering on the Authorization server.',
     type: 'string',
@@ -30,7 +30,7 @@ export class ServerSettingsDto {
   clientId: string;
 
   @IsNotEmpty()
-  @ApiModelProperty({
+  @ApiProperty({
     description:
       'Secret key for this app, received after registering on the Authorization server.',
     type: 'string',

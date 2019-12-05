@@ -1,12 +1,12 @@
 import { IsString } from 'class-validator';
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty } from 'class-validator';
 import { i18n } from '../../../i18n/i18n.config';
 
 export class LoginUserDto {
   @IsEmail()
   @IsNotEmpty()
-  @ApiModelProperty({
+  @ApiProperty({
     description: i18n.__('Identifies a user uniquely'),
     required: true,
     example: i18n.__('luke.skywalker@twosuns.com or +919876543210'),
@@ -14,7 +14,7 @@ export class LoginUserDto {
   readonly username: string;
 
   @IsNotEmpty()
-  @ApiModelProperty({
+  @ApiProperty({
     description: i18n.__(
       'Strong alphanumeric password, enriched with special characters',
     ),
@@ -23,7 +23,7 @@ export class LoginUserDto {
   })
   public password: string;
 
-  @ApiModelProperty({
+  @ApiProperty({
     description: i18n.__(
       'URL to which the user will be redirected after login',
     ),

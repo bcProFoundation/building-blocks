@@ -10,11 +10,11 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
+import { ApiExcludeEndpoint, ApiOperation } from '@nestjs/swagger';
 import { AuthGuard } from '../../guards/auth.guard';
 import { EnsureLoginGuard } from '../../guards/ensure-login.guard';
 import { ErrorFilter } from '../../../common/filters/errors.filter';
 import { callback } from '../../passport/strategies/local.strategy';
-import { ApiExcludeEndpoint, ApiOperation } from '@nestjs/swagger';
 import { OAuth2Service } from './oauth2.service';
 import { BasicClientCredentialsGuard } from '../../guards/basic-client-credentials.guard';
 import { i18n } from '../../../i18n/i18n.config';
@@ -40,14 +40,14 @@ export class OAuth2Controller {
   @Post('authorize')
   @UseGuards(EnsureLoginGuard)
   @ApiOperation({
-    title: i18n.__('Authorize'),
+    summary: i18n.__('Authorize'),
     description: i18n.__('Authorize access to resource'),
   })
   async authorize() {}
 
   @Post('token')
   @ApiOperation({
-    title: i18n.__('Token'),
+    summary: i18n.__('Token'),
     description: i18n.__('OAuth2.0 flow: Return a bearer token'),
   })
   token() {}
@@ -62,7 +62,7 @@ export class OAuth2Controller {
   @HttpCode(HttpStatus.OK)
   @UseGuards(BasicClientCredentialsGuard)
   @ApiOperation({
-    title: i18n.__('Revoke'),
+    summary: i18n.__('Revoke'),
     description: i18n.__('OAuth2.0 flow: Revoke a token explicitly'),
   })
   async tokenRevoke(@Body('token') token) {
@@ -73,7 +73,7 @@ export class OAuth2Controller {
   @HttpCode(HttpStatus.OK)
   @UseGuards(BasicClientCredentialsGuard)
   @ApiOperation({
-    title: i18n.__('Introspection'),
+    summary: i18n.__('Introspection'),
     description: i18n.__('Introspect token validity'),
   })
   async tokenIntrospection(@Body('token') token) {
