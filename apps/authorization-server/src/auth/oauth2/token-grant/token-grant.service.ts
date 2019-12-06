@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { CommandBus } from '@nestjs/cqrs';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { OAuth2TokenGeneratorService } from '../oauth2-token-generator/oauth2-token-generator.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
@@ -6,6 +7,7 @@ import {
   invalidUserException,
   invalidClientException,
 } from '../../../common/filters/exceptions';
+import { GenerateBearerTokenCommand } from '../../commands/generate-bearer-token/generate-bearer-token.command';
 
 @Injectable()
 export class TokenGrantService {
@@ -15,6 +17,7 @@ export class TokenGrantService {
     private readonly userService: UserService,
     private readonly clientService: ClientService,
     private readonly tokenGeneratorService: OAuth2TokenGeneratorService,
+    private readonly commandBus: CommandBus,
   ) {}
 
   async grantToken(client, user, ares, areq, done) {
@@ -34,14 +37,13 @@ export class TokenGrantService {
         client,
         areq.scope,
       );
-      const {
-        bearerToken,
-        extraParams,
-      } = await this.tokenGeneratorService.getBearerToken(
-        localClient.clientId,
-        localUser.uuid,
-        scope,
-        false,
+      const { bearerToken, extraParams } = await this.commandBus.execute(
+        new GenerateBearerTokenCommand(
+          localClient.clientId,
+          localUser.uuid,
+          scope,
+          false,
+        ),
       );
       this.accessToken = bearerToken.accessToken;
       return done(null, bearerToken.accessToken, extraParams);

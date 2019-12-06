@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { CommandBus } from '@nestjs/cqrs';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { OAuth2TokenGeneratorService } from '../oauth2-token-generator/oauth2-token-generator.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
@@ -18,6 +19,7 @@ describe('TokenGrantService', () => {
         { provide: OAuth2TokenGeneratorService, useValue: {} },
         { provide: CryptographerService, useValue: {} },
         { provide: BearerTokenService, useValue: {} },
+        { provide: CommandBus, useValue: {} },
         {
           provide: ConfigService,
           useValue: {

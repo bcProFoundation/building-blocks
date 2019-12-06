@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { CommandBus } from '@nestjs/cqrs';
 import * as crypto from 'crypto';
-import { OAuth2TokenGeneratorService } from '../oauth2-token-generator/oauth2-token-generator.service';
 import {
   invalidAuthorizationCodeException,
   invalidCodeChallengeException,
@@ -13,16 +13,17 @@ import { ServerSettingsService } from '../../../system-settings/entities/server-
 import { TEN_NUMBER } from '../../../constants/app-strings';
 import { ServerSettings } from '../../../system-settings/entities/server-settings/server-settings.interface';
 import { BearerTokenService } from '../../entities/bearer-token/bearer-token.service';
+import { GenerateBearerTokenCommand } from '../../commands/generate-bearer-token/generate-bearer-token.command';
 
 @Injectable()
 export class CodeExchangeService {
   constructor(
     private readonly authorizationCodeService: AuthorizationCodeService,
-    private readonly tokenGeneratorService: OAuth2TokenGeneratorService,
     private readonly idTokenGrantService: IDTokenGrantService,
     private readonly userService: UserService,
     private readonly settings: ServerSettingsService,
     private readonly token: BearerTokenService,
+    private readonly commandBus: CommandBus,
   ) {}
 
   async exchangeCode(client, code, redirectUri, body, issued) {
@@ -58,13 +59,12 @@ export class CodeExchangeService {
         // Generate Bearer Token
         const user = await this.userService.findOne({ uuid: localCode.user });
         const scope: string[] = localCode.scope;
-        const {
-          bearerToken,
-          extraParams,
-        } = await this.tokenGeneratorService.getBearerToken(
-          localCode.client,
-          localCode.user,
-          scope,
+        const { bearerToken, extraParams } = await this.commandBus.execute(
+          new GenerateBearerTokenCommand(
+            localCode.client,
+            localCode.user,
+            scope,
+          ),
         );
 
         // For PKCE
