@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
 import { OAuth2TokenGeneratorService } from './oauth2-token-generator/oauth2-token-generator.service';
 import { CodeGrantService } from './code-grant/code-grant.service';
 import { TokenGrantService } from './token-grant/token-grant.service';
@@ -10,6 +11,7 @@ import { IDTokenGrantService } from './id-token-grant/id-token-grant.service';
 import { OIDCKeyService } from '../entities/oidc-key/oidc-key.service';
 
 @Module({
+  imports: [CqrsModule],
   providers: [
     OAuth2TokenGeneratorService,
     CodeGrantService,

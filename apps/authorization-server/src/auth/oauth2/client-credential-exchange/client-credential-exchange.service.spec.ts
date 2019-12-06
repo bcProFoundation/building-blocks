@@ -6,6 +6,7 @@ import { ConfigService } from '../../../config/config.service';
 import { BearerTokenService } from '../../../auth/entities/bearer-token/bearer-token.service';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
+import { CommandBus } from '@nestjs/cqrs';
 
 describe('ClientCredentialExchangeService', () => {
   let service: ClientCredentialExchangeService;
@@ -14,26 +15,11 @@ describe('ClientCredentialExchangeService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ClientCredentialExchangeService,
-        {
-          provide: OAuth2TokenGeneratorService,
-          useValue: {},
-        },
-        {
-          provide: CryptographerService,
-          useValue: {},
-        },
-        {
-          provide: BearerTokenService,
-          useValue: {},
-        },
-        {
-          provide: UserService,
-          useValue: {},
-        },
-        {
-          provide: ClientService,
-          useValue: {},
-        },
+        { provide: OAuth2TokenGeneratorService, useValue: {} },
+        { provide: CryptographerService, useValue: {} },
+        { provide: BearerTokenService, useValue: {} },
+        { provide: UserService, useValue: {} },
+        { provide: ClientService, useValue: {} },
         {
           provide: ConfigService,
           useValue: {
@@ -45,6 +31,7 @@ describe('ClientCredentialExchangeService', () => {
             },
           },
         },
+        { provide: CommandBus, useValue: {} },
       ],
     }).compile();
     service = module.get<ClientCredentialExchangeService>(

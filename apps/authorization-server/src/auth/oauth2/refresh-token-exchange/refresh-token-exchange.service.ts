@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { CommandBus } from '@nestjs/cqrs';
 import { OAuth2TokenGeneratorService } from '../oauth2-token-generator/oauth2-token-generator.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
-import { BearerTokenService } from '../../../auth/entities/bearer-token/bearer-token.service';
+import { BearerTokenService } from '../../entities/bearer-token/bearer-token.service';
 import { Client } from '../../../client-management/entities/client/client.interface';
+import { GenerateBearerTokenCommand } from '../../commands/generate-bearer-token/generate-bearer-token.command';
 
 @Injectable()
 export class RefreshTokenExchangeService {
@@ -10,6 +12,7 @@ export class RefreshTokenExchangeService {
     private readonly clientService: ClientService,
     private readonly tokenGeneratorService: OAuth2TokenGeneratorService,
     private readonly bearerTokenService: BearerTokenService,
+    private readonly commandBus: CommandBus,
   ) {}
 
   async exchangeRefreshToken(client, refreshToken, done) {
@@ -40,14 +43,13 @@ export class RefreshTokenExchangeService {
       );
 
       // Everything validated, return the token
-      const {
-        bearerToken,
-        extraParams,
-      } = await this.tokenGeneratorService.getBearerToken(
-        client.clientId,
-        localRefreshToken.user,
-        scope,
-        true,
+      const { bearerToken, extraParams } = await this.commandBus.execute(
+        new GenerateBearerTokenCommand(
+          client.clientId,
+          localRefreshToken.user,
+          scope,
+          true,
+        ),
       );
       return done(
         null,

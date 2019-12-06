@@ -11,6 +11,7 @@ import { UserAuthenticatorModifiedEvent } from './user-authenticator-modified/us
 import { UserLogInHOTPGeneratedHandler } from './user-login-hotp-generated/user-login-hotp-generated.handler';
 import { UnverifiedPhoneAddedHandler } from './unverified-phone-added/unverified-phone-added.handler';
 import { PhoneVerifiedHandler } from './phone-verified/phone-verified.handler';
+import { BearerTokenAddedHandler } from './bearer-token-added/bearer-token-added.handler';
 
 export { SocialLoginUserSignedUpEvent } from './social-login-user-signed-up/social-login-user-signed-up.event';
 
@@ -28,4 +29,5 @@ export const AuthEventHandlers = [
   UserLogInHOTPGeneratedHandler,
   UnverifiedPhoneAddedHandler,
   PhoneVerifiedHandler,
+  BearerTokenAddedHandler,
 ];

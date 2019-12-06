@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { CommandBus } from '@nestjs/cqrs';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { OAuth2TokenGeneratorService } from '../oauth2-token-generator/oauth2-token-generator.service';
 import { CryptographerService } from '../../../common/services/cryptographer/cryptographer.service';
@@ -32,6 +33,7 @@ describe('PasswordExchangeService', () => {
             },
           },
         },
+        { provide: CommandBus, useValue: {} },
       ],
     }).compile();
     service = module.get<PasswordExchangeService>(PasswordExchangeService);

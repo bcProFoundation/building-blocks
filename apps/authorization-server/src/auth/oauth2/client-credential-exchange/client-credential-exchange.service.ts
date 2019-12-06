@@ -1,13 +1,16 @@
 import { Injectable } from '@nestjs/common';
+import { CommandBus } from '@nestjs/cqrs';
 import { OAuth2TokenGeneratorService } from '../oauth2-token-generator/oauth2-token-generator.service';
 import { invalidScopeException } from '../../../common/filters/exceptions';
 import { ClientService } from '../../../client-management/entities/client/client.service';
+import { GenerateBearerTokenCommand } from '../../commands/generate-bearer-token/generate-bearer-token.command';
 
 @Injectable()
 export class ClientCredentialExchangeService {
   constructor(
     private readonly clientService: ClientService,
     private readonly tokenGeneratorService: OAuth2TokenGeneratorService,
+    private readonly commandBus: CommandBus,
   ) {}
 
   async exchangeClientCredentials(client, scope, done) {
@@ -29,16 +32,16 @@ export class ClientCredentialExchangeService {
       );
       // Everything validated, return the token
       // Pass in a null for user id since there is no user with this grant type
-      const {
-        bearerToken,
-        extraParams,
-      } = await this.tokenGeneratorService.getBearerToken(
-        client.clientId,
-        null,
-        validScope,
-        true,
-        false,
+      const { bearerToken, extraParams } = await this.commandBus.execute(
+        new GenerateBearerTokenCommand(
+          client.clientId,
+          null,
+          validScope,
+          true,
+          false,
+        ),
       );
+
       return done(
         null,
         bearerToken.accessToken,

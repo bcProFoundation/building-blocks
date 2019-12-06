@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { CommandBus } from '@nestjs/cqrs';
 import { UserService } from '../../../user-management/entities/user/user.service';
-import { OAuth2TokenGeneratorService } from '../oauth2-token-generator/oauth2-token-generator.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
 import { AuthorizationCodeService } from '../../../auth/entities/authorization-code/authorization-code.service';
 import { CodeExchangeService } from './code-exchange.service';
@@ -20,7 +20,7 @@ describe('CodeExchangeService', () => {
           useValue: {},
         },
         {
-          provide: OAuth2TokenGeneratorService,
+          provide: CommandBus,
           useValue: {},
         },
         {

@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { CommandBus } from '@nestjs/cqrs';
 import { OAuth2TokenGeneratorService } from '../oauth2-token-generator/oauth2-token-generator.service';
 import { invalidScopeException } from '../../../common/filters/exceptions';
 import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { CryptographerService } from '../../../common/services/cryptographer/cryptographer.service';
+import { GenerateBearerTokenCommand } from '../../commands/generate-bearer-token/generate-bearer-token.command';
 
 @Injectable()
 export class PasswordExchangeService {
@@ -14,6 +16,7 @@ export class PasswordExchangeService {
     private readonly userService: UserService,
     private readonly cryptographerService: CryptographerService,
     private readonly tokenGeneratorService: OAuth2TokenGeneratorService,
+    private readonly commandBus: CommandBus,
   ) {}
 
   async exchangePassword(client, username, password, scope, done) {
@@ -46,13 +49,12 @@ export class PasswordExchangeService {
         scope,
       );
       // Everything validated, return the token
-      const {
-        bearerToken,
-        extraParams,
-      } = await this.tokenGeneratorService.getBearerToken(
-        localClient.clientId,
-        user.uuid,
-        validScope,
+      const { bearerToken, extraParams } = await this.commandBus.execute(
+        new GenerateBearerTokenCommand(
+          localClient.clientId,
+          user.uuid,
+          validScope,
+        ),
       );
       return done(
         null,
