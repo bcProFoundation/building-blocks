@@ -20,14 +20,13 @@ export const databaseProviders = [
   {
     provide: MONGOOSE_CONNECTION,
     useFactory: async (config: ConfigService): Promise<typeof mongoose> => {
-      // Remove Deprecation Warnings https://mongoosejs.com/docs/deprecations.html
-      mongoose.set('retryWrites', true);
       const mongoUriPrefix = config.get(MONGO_URI_PREFIX) || 'mongodb';
+      const mongoOptions = 'retryWrites=true';
       return await defer(() =>
         mongoose.connect(
           `${mongoUriPrefix}://${config.get(DB_USER)}:${config.get(
             DB_PASSWORD,
-          )}@${config.get(DB_HOST)}/${config.get(DB_NAME)}`,
+          )}@${config.get(DB_HOST)}/${config.get(DB_NAME)}?${mongoOptions}`,
           {
             useNewUrlParser: true,
             w: MAJORITY,
@@ -82,7 +81,7 @@ export function handleRetry(
               `Unable to connect to the database. Retrying (${errorCount +
                 1})...`,
               '',
-              'DatabaseModule',
+              'DatabaseProvider',
             );
             if (errorCount + 1 >= retryAttempts) {
               throw error;
