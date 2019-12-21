@@ -1,6 +1,6 @@
 {
   "name": "authorization-server",
-  "version": "4.5.1",
+  "version": "4.5.2",
   "repository": "https://gitlab.com/castlecraft/building-blocks",
   "description": "Authorization Server",
   "author": "CEPL",
