@@ -25,8 +25,6 @@ test_authorization_server:
   only:
     refs:
       - merge_requests
-      - develop
-      - master
     changes:
       - apps/authorization-server/**/*
   variables:
@@ -67,8 +65,6 @@ test_authorization_client:
   only:
     refs:
       - merge_requests
-      - develop
-      - master
     changes:
       - frontends/authorization-client/**/*
   before_script:
@@ -97,8 +93,6 @@ test_communication_server:
   only:
     refs:
       - merge_requests
-      - develop
-      - master
     changes:
       - apps/communication-server/**/*
   before_script:
@@ -126,8 +120,6 @@ test_identity_provider:
   only:
     refs:
       - merge_requests
-      - develop
-      - master
     changes:
       - apps/identity-provider/**/*
   before_script:
@@ -155,8 +147,6 @@ test_identity_client:
   only:
     refs:
       - merge_requests
-      - develop
-      - master
     changes:
       - frontends/identity-client/**/*
   before_script:
@@ -185,8 +175,6 @@ test_infrastructure_console:
   only:
     refs:
       - merge_requests
-      - develop
-      - master
     changes:
       - apps/infrastructure-console/**/*
   before_script:
@@ -214,8 +202,6 @@ test_admin_client:
   only:
     refs:
       - merge_requests
-      - develop
-      - master
     changes:
       - frontends/admin-client/**/*
   before_script:
