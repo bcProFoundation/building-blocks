@@ -13,7 +13,7 @@ export class UpdateUserFullNameHandler
   async execute(command: UpdateUserFullNameCommand) {
     const { actorUserUuid, name } = command;
     const aggregate = this.publisher.mergeObjectContext(this.manager);
-    const user = await aggregate.updateUserFullName(actorUserUuid, name);
+    const user = await aggregate.updateUserFullName(name, actorUserUuid);
     aggregate.commit();
 
     return {
