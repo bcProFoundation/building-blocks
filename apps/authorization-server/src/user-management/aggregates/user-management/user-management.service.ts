@@ -282,7 +282,9 @@ export class UserManagementService extends AggregateRoot {
 
   async updateUserFullName(fullName: string, actorUserUuid: string) {
     const user = await this.userService.findOne({ uuid: actorUserUuid });
-    if (!user) new NotFoundException({ userUuid: actorUserUuid });
+    if (!user) {
+      throw new NotFoundException({ userUuid: actorUserUuid });
+    }
     user.name = fullName;
     this.apply(new UserAccountModifiedEvent(user));
     return user;
