@@ -9,7 +9,7 @@ This configuration works on linux machine. You need to make changes as per your 
 {
     "version": "0.2.0",
     "configurations": [
-                {
+        {
             "type": "node",
             "request": "attach",
             "name": "authorization-server",

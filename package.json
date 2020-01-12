@@ -6,8 +6,8 @@
   },
   "devDependencies": {
     "@compodoc/compodoc": "^1.1.11",
-    "@types/node": "^13.1.1",
-    "lerna": "^3.20.1",
+    "@types/node": "^13.1.6",
+    "lerna": "^3.20.2",
     "npm-check": "^5.9.0"
   }
 }
