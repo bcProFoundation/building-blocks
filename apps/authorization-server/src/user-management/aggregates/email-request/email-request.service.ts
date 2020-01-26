@@ -1,8 +1,8 @@
 import { Injectable, HttpService } from '@nestjs/common';
-import { User } from '../../../user-management/entities/user/user.interface';
-import { from } from 'rxjs';
-import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
+import { from, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { User } from '../../../user-management/entities/user/user.interface';
+import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class EmailRequestService {
     private readonly client: ClientService,
   ) {}
 
-  emailVerificationCode(user: User) {
+  emailVerificationCode(user: User): Observable<unknown> {
     // Send Email
     let generateForgottenPasswordUrl: string;
     return from(this.settings.find()).pipe(
