@@ -124,8 +124,8 @@ export class ProfileController {
 
   @Get('v1/userinfo')
   @UseGuards(TokenGuard)
-  userInfo(@Req() req) {
+  async userInfo(@Req() req) {
     const token = req.token;
-    return this.queryBus.execute(new GetUserInfoQuery(token));
+    return await this.queryBus.execute(new GetUserInfoQuery(token));
   }
 }
