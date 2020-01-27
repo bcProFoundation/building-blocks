@@ -41,7 +41,7 @@ export class AppComponent {
             SILENT_REFRESH_REDIRECT_URI,
           ),
           loginUrl: localStorage.getItem(LOGIN_URL),
-          scope: 'openid roles',
+          scope: 'openid roles email profile',
           issuer: localStorage.getItem(ISSUER_URL),
         };
 
