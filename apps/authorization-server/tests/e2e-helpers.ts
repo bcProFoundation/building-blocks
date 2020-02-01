@@ -16,7 +16,7 @@ export function extractToken(hash) {
   return !!match && match[1];
 }
 
-/* tslint:disable */
+/* eslint-disable */
 export const OIDCKey = {
   keyPair: {
     kty: 'RSA',
@@ -38,7 +38,7 @@ export const OIDCKey = {
       'EUrS_kW5fAzZRVYQKoqUaXAa43Oa7lINkRdR7QBfvAMhzBMQVw4L-M-oqwPRyNcXJzOcHFH5XHukTvAwSHWXfa0zng2nQDkszF5nqDQmBPYQ7_YfU1GAw0aElMxlnHak9qKLpg_HrlHMD8SYOPOh-MOT3dkpDv4qRjdIjWes6J4',
   },
 };
-/* tslint:enable */
+/* eslint-enable */
 
 export async function validateUsersAndAuthData(
   user: UserService,

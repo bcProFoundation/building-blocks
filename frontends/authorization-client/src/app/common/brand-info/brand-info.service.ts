@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { switchMap } from 'rxjs/operators';
-import { ConnectedServiceNames } from 'src/app/account/connected-services';
+import { ConnectedServiceNames } from '../../account/connected-services';
 import { of } from 'rxjs';
 
 @Injectable({
