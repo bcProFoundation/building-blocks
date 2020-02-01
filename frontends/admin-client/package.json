@@ -6,7 +6,7 @@
     "start": "ng serve --proxy-config proxy.config.json  --host \"admin.localhost\" --port 4220",
     "build": "ng build --prod",
     "test": "ng test --no-progress",
-    "lint": "tslint -c tslint.json './src/**/*.ts' './e2e/**/*.ts'",
+    "lint": "eslint '{e2e,src}/**/*.ts'",
     "e2e": "ng e2e",
     "format": "prettier --write \"./src/**/*.ts\" \"./e2e/**/*.ts\"",
     "format:check": "prettier-check \"./src/**/*.ts\" \"./e2e/**/*.ts\""
@@ -18,7 +18,7 @@
     "@angular/common": "^8.2.14",
     "@angular/compiler": "^8.2.14",
     "@angular/core": "^8.2.14",
-    "@angular/flex-layout": "^7.0.0-beta.22",
+    "@angular/flex-layout": "^8.0.0-beta.27",
     "@angular/forms": "^8.2.14",
     "@angular/http": "^7.2.16",
     "@angular/material": "^8.2.3",
@@ -34,14 +34,19 @@
     "zone.js": "^0.10.2"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^0.803.23",
-    "@angular/cli": "^8.3.23",
+    "@angular-devkit/build-angular": "^0.803.24",
+    "@angular/cli": "^8.3.24",
     "@angular/compiler-cli": "^8.2.14",
     "@angular/language-service": "^8.2.14",
-    "@types/jasmine": "^3.5.1",
+    "@types/jasmine": "^3.5.2",
     "@types/jasminewd2": "^2.0.8",
+    "@typescript-eslint/eslint-plugin": "^2.18.0",
+    "@typescript-eslint/parser": "^2.18.0",
     "codelyzer": "^5.2.1",
-    "concurrently": "^5.0.2",
+    "concurrently": "^5.1.0",
+    "eslint": "^6.8.0",
+    "eslint-plugin-jsdoc": "^21.0.0",
+    "eslint-plugin-prefer-arrow": "^1.1.7",
     "jasmine-core": "^3.5.0",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "^4.4.1",
@@ -51,9 +56,8 @@
     "karma-jasmine-html-reporter": "^1.5.1",
     "prettier": "^1.19.1",
     "prettier-check": "^2.0.0",
-    "protractor": "^5.4.2",
+    "protractor": "^5.4.3",
     "ts-node": "^8.6.2",
-    "tslint": "^6.0.0",
     "typescript": "^3.4.5"
   }
 }

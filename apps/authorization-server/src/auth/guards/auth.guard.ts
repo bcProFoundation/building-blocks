@@ -77,8 +77,8 @@ const createPassportContext = (request, response) => (types, options) =>
         } else {
           return resolve(options.callback(err, user, info));
         }
-      } catch (err) {
-        reject(err);
+      } catch (error) {
+        reject(error);
       }
     })(request, response, resolve),
   );
