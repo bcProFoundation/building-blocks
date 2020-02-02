@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ChooseAccountService } from './choose-account.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { stringify } from 'querystring';
-import { environment } from '../../environments/environment.prod';
+import { environment } from '../../environments/environment';
 import { FormGroup, FormArray, FormControl } from '@angular/forms';
 import {
   UNDO,
