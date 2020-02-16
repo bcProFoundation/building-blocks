@@ -2,7 +2,7 @@ import { OnInit, Component } from '@angular/core';
 import { ClientService } from '../client/client.service';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   CLIENT_ERROR,
   CLOSE,

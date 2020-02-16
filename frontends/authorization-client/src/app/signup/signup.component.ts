@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { SOMETHING_WENT_WRONG } from '../constants/messages';
 import { SignupService } from './signup.service';
 import { ServerInfo } from '../common/server-info.interface';

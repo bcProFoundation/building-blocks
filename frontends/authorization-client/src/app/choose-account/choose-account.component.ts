@@ -9,7 +9,7 @@ import {
   DURATION,
   REMOVE_USER_FROM_SESSION,
 } from '../constants/app-strings';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-choose-account',

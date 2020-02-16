@@ -7,7 +7,7 @@ import {
   DELETING,
   UNDO,
 } from '../../constants/messages';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { DURATION, UNDO_DURATION, THIRTY } from '../../constants/common';
 
 @Component({

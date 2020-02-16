@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EmailService } from './email.service';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { NEW_ID, DURATION } from '../../constants/common';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import {

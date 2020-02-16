@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { ServiceService } from './service.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { NEW_ID, DURATION } from '../../constants/common';
 import { map, debounceTime } from 'rxjs/operators';
 import { Observable } from 'rxjs';
