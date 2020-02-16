@@ -10,7 +10,7 @@ import {
   UPDATE_SUCCESSFUL,
   UPDATE_ERROR,
 } from '../../constants/messages';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 export const SCOPE_LIST_ROUTE = '/scope/list';
 

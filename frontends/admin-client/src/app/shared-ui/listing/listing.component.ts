@@ -1,5 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort } from '@angular/material';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 import { ListingDataSource } from './listing-datasource';
 import { ListingService } from './listing.service';
 import { filter } from 'rxjs/operators';

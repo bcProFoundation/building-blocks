@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RoleService } from './role.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormGroup, FormControl } from '@angular/forms';
 import {
   CREATE_SUCCESSFUL,

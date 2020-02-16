@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { VerifyGeneratePasswordService } from './verify-generate-password.service';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   CLOSE,
   INVALID_VERIFICATION_CODE,

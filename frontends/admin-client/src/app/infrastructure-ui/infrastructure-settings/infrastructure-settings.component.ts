@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { InfrastructureSettingsService } from './infrastructure-settings.service';
 import { UPDATE_SUCCESSFUL, CLOSE } from '../../constants/messages';
 import { DURATION } from '../../constants/common';

@@ -4,7 +4,7 @@ import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { CloudStorageService } from './cloud-storage.service';
 import { NEW_ID, DURATION } from '../../constants/common';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   UPDATE_SUCCESSFUL,
   CLOSE,
