@@ -9,19 +9,11 @@ RUN cd communication-server \
     && npm install --only=production
 
 FROM node:slim
-# Install mysql Dockerize
-ENV DOCKERIZE_VERSION v0.6.1
-RUN apt-get update \
-    && apt-get install -y wget \
-    && wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-    && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-    && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-    && apt-get purge -y wget \
-    && apt-get clean
+# Install dependencies
+RUN apt-get update && apt-get install -y gettext-base && apt-get clean
 
 # Setup docker-entrypoint
 COPY docker/docker-entrypoint.sh usr/local/bin/docker-entrypoint.sh
-RUN ln -s usr/local/bin/docker-entrypoint.sh / # backwards compat
 
 # Add non root user
 RUN useradd -ms /bin/bash craft

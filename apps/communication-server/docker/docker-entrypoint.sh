@@ -24,13 +24,43 @@ function checkEnv() {
 }
 
 function checkConnection() {
-  # Wait for mongodb
-  dockerize -wait tcp://$DB_HOST:27017 -timeout 30s
+  # Wait for services
+  echo "Connect MongoDB . . ."
+  timeout 10 bash -c 'until printf "" 2>>/dev/null >>/dev/tcp/$0/$1; do sleep 1; done' $DB_HOST 27017
+
+  if [[ ! -z "$ES_HOST" ]]; then
+    echo "Connect EventStore . . ."
+    timeout 10 bash -c 'until printf "" 2>>/dev/null >>/dev/tcp/$0/$1; do sleep 1; done' $ES_HOST 1113
+  fi
+
+  if [[ ! -z "$BROADCAST_HOST" ]] && [[ ! -z "$BROADCAST_PORT" ]]; then
+    echo "Connect Broadcast Service . . ."
+    timeout 10 bash -c 'until printf "" 2>>/dev/null >>/dev/tcp/$0/$1; do sleep 1; done' $BROADCAST_HOST $BROADCAST_PORT
+  fi
 }
 
 function configureServer() {
   if [ ! -f .env ]; then
-    dockerize -template docker/env.tmpl:.env
+    envsubst '${NODE_ENV}
+      ${DB_HOST}
+      ${DB_NAME}
+      ${DB_USER}
+      ${DB_PASSWORD}' \
+      < docker/env.tmpl > .env
+
+    if [[ ! -z "$ES_HOST" ]] && [[ ! -z "$ES_USER" ]] &&
+      [[ ! -z "$ES_PASSWORD" ]] && [[ ! -z "$ES_STREAM" ]]; then
+      envsubst '${ES_HOST}
+        ${ES_USER}
+        ${ES_PASSWORD}
+        ${ES_STREAM}' \
+        < docker/env-es.tmpl >> .env
+    fi
+    if [ ! -z "$BROADCAST_HOST" ] && [ ! -z "$BROADCAST_PORT" ]; then
+      envsubst '${BROADCAST_HOST}
+        ${BROADCAST_PORT}' \
+        < docker/env-bs.tmpl >> .env
+    fi
   fi
 }
 export -f configureServer
