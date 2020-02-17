@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { delay, map } from 'rxjs/operators';
 import { UpdatePhoneService } from './update-phone.service';
 import { DURATION, UNDO_DURATION } from '../constants/app-constants';
