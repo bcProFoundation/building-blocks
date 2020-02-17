@@ -1,5 +1,3 @@
-image: registry.gitlab.com/castlecraft/docker-craft/node-latest-headless-chrome:latest
-
 services:
   - name: bitnami/mongodb:latest
     alias: mongo
@@ -17,6 +15,7 @@ stages:
   - docs
 
 test_authorization_server:
+  image: registry.gitlab.com/castlecraft/docker-craft/node-latest-dockerize:latest
   stage: tests
   cache:
     key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
@@ -57,6 +56,7 @@ test_authorization_server:
     - docker
 
 test_authorization_client:
+  image: registry.gitlab.com/castlecraft/docker-craft/node-latest-headless-chrome:latest
   stage: tests
   cache:
     key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
@@ -85,6 +85,7 @@ test_authorization_client:
     - docker
 
 test_communication_server:
+  image: registry.gitlab.com/castlecraft/docker-craft/node-latest-dockerize:latest
   stage: tests
   cache:
     key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
@@ -112,6 +113,7 @@ test_communication_server:
     - docker
 
 test_identity_provider:
+  image: registry.gitlab.com/castlecraft/docker-craft/node-latest-dockerize:latest
   stage: tests
   cache:
     key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
@@ -139,6 +141,7 @@ test_identity_provider:
     - docker
 
 test_identity_client:
+  image: registry.gitlab.com/castlecraft/docker-craft/node-latest-headless-chrome:latest
   stage: tests
   cache:
     key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
@@ -167,6 +170,7 @@ test_identity_client:
     - docker
 
 test_infrastructure_console:
+  image: registry.gitlab.com/castlecraft/docker-craft/node-latest-dockerize:latest
   stage: tests
   cache:
     key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
@@ -194,6 +198,7 @@ test_infrastructure_console:
     - docker
 
 test_admin_client:
+  image: registry.gitlab.com/castlecraft/docker-craft/node-latest-headless-chrome:latest
   stage: tests
   cache:
     key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
@@ -488,6 +493,7 @@ pack_production_admin_client:
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client
 
 pages:
+  image: node:latest
   stage: docs
   only:
     - staging
