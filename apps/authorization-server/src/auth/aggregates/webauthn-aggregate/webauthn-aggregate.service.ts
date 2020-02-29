@@ -11,7 +11,7 @@ import {
   parseLoginRequest,
   verifyAuthenticatorAssertion,
 } from '@webauthn/server';
-import * as uuidv4 from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
 import {

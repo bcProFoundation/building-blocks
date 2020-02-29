@@ -7,7 +7,7 @@ import {
 import { CommandBus } from '@nestjs/cqrs';
 import { from, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import * as uuidv4 from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
 import { AxiosResponse } from 'axios';
 import { stringify } from 'querystring';
 import { OAuth2TokenRequest } from '../../../auth/controllers/social-login/oauth2-token-request.interface';

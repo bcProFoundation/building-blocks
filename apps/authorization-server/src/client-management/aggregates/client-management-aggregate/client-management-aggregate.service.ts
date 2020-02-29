@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { AggregateRoot } from '@nestjs/cqrs';
-import * as uuidv4 from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
 import { ClientService } from '../../entities/client/client.service';
 import { BearerTokenService } from '../../../auth/entities/bearer-token/bearer-token.service';
 import { UserService } from '../../../user-management/entities/user/user.service';

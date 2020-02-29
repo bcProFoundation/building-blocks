@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { AggregateRoot } from '@nestjs/cqrs';
-import * as uuidv4 from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
 import { UserService } from '../../entities/user/user.service';
 import { AuthDataService } from '../../entities/auth-data/auth-data.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';

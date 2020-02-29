@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import * as uuidv4 from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
 
 function dateNow() {
   return new Date();

@@ -5,7 +5,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { AggregateRoot } from '@nestjs/cqrs';
-import * as uuidv4 from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
 import * as AWS from 'aws-sdk';
 import { CloudStorageCreatedEvent } from '../../events/cloud-storage-created-event/cloud-storage-created-event';
 import { StorageService } from '../../entities/storage/storage.service';

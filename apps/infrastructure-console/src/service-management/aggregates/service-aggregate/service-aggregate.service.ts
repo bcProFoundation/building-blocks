@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { AggregateRoot } from '@nestjs/cqrs';
-import * as uuidv4 from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
 import { Service } from '../../entities/service/service.entity';
 import { ServiceRegisteredEvent } from '../../events/service-registered/service-registered.event';
 import { ServiceRemovedEvent } from '../../events/service-removed/service-removed.event';
