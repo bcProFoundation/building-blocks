@@ -1,6 +1,6 @@
 {
   "name": "identity-provider",
-  "version": "4.6.1",
+  "version": "4.7.0",
   "description": "Manage user profile",
   "author": "CEPL",
   "repository": "https://gitlab.com/castlecraft/building-blocks.git",
