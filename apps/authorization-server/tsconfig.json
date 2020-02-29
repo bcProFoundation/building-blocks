@@ -10,7 +10,8 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es6",
+    "incremental": true,
+    "target": "es2017",
     "typeRoots": [
       "node_modules/@types"
     ],

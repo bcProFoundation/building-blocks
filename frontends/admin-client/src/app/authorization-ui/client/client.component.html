@@ -25,12 +25,20 @@
             <mat-form-field *ngIf="clientSecret">
               <input matInput placeholder="Client Secret" formControlName="clientSecret"
               [type]="hideClientSecret ? 'password' : 'text'" readonly>
-              <mat-icon matSuffix (click)="hideClientSecret = !hideClientSecret">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
+              <mat-icon
+                matSuffix
+                (click)="hideClientSecret = !hideClientSecret">
+                {{hideClientSecret ? 'visibility' : 'visibility_off'}}
+              </mat-icon>
             </mat-form-field>
             <mat-form-field *ngIf="changedClientSecret">
               <input matInput placeholder="Changed Client Secret" formControlName="changedClientSecret"
               [type]="hideChangedClientSecret ? 'password' : 'text'" readonly>
-              <mat-icon matSuffix (click)="hideChangedClientSecret = !hideChangedClientSecret">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
+              <mat-icon
+                matSuffix
+                (click)="hideChangedClientSecret = !hideChangedClientSecret">
+                {{hideChangedClientSecret ? 'visibility' : 'visibility_off'}}
+              </mat-icon>
             </mat-form-field>
             <mat-form-field>
               <mat-select placeholder="Scopes" formControlName="clientScopes" multiple>

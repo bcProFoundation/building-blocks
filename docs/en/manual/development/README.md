@@ -66,7 +66,11 @@ cp docker/env-example/infrastructure-console-env apps/infrastructure-console/.en
 ### Start Backing Services and initialize dbs
 
 ```sh
-docker-compose --project-name bb -f docker/docker-compose.yml up -d
+docker-compose \
+    --project-name bb \
+    -f docker/docker-compose-mongo.yml \
+    -f docker/docker-compose-eventstore.yml \
+    up -d
 ```
 
 Wait for mongodb to start

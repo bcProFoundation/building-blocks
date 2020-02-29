@@ -24,17 +24,5 @@ services:
     depends_on:
       - fix-mongodb-permissions
 
-  eventstore:
-    image: eventstore/eventstore:latest
-    restart: unless-stopped
-    ports:
-      - "1112:1112"
-      - "1113:1113"
-      - "2112:2112"
-      - "2113:2113"
-    volumes:
-      - eventstore-vol:/var/lib/eventstore
-
 volumes:
   mongo-vol:
-  eventstore-vol:

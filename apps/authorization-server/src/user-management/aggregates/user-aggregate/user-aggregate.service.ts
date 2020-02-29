@@ -6,7 +6,7 @@ import {
 import { AggregateRoot } from '@nestjs/cqrs';
 import * as speakeasy from 'speakeasy';
 import * as QRCode from 'qrcode';
-import * as uuidv4 from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { UserService } from '../../entities/user/user.service';
 import { User } from '../../entities/user/user.interface';

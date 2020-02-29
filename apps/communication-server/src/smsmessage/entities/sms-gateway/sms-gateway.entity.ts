@@ -1,6 +1,6 @@
 import { Entity, ObjectID, ObjectIdColumn, Column, BaseEntity } from 'typeorm';
 import { RequestBody } from './request-body.interface';
-import * as uuidv4 from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
 
 @Entity()
 export class SMSGateway extends BaseEntity {
