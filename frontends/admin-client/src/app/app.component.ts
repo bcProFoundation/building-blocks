@@ -1,10 +1,7 @@
 import { Component, isDevMode } from '@angular/core';
 import { AppService } from './app.service';
-import {
-  OAuthService,
-  JwksValidationHandler,
-  AuthConfig,
-} from 'angular-oauth2-oidc';
+import { OAuthService, AuthConfig } from 'angular-oauth2-oidc';
+import { JwksValidationHandler } from 'angular-oauth2-oidc-jwks';
 import { StorageService } from './common/services/storage/storage.service';
 
 @Component({
