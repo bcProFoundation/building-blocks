@@ -19,7 +19,6 @@
     "test:e2e": "export NODE_ENV=test-e2e && jest --config ./tests/jest-e2e.json --detectOpenHandles --forceExit --verbose"
   },
   "dependencies": {
-    "@godaddy/terminus": "^4.3.1",
     "@nestjs/common": "^7.0.7",
     "@nestjs/core": "^7.0.7",
     "@nestjs/cqrs": "^6.1.0",
