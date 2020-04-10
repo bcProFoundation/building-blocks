@@ -21,10 +21,10 @@ export class OAuth2ClientStrategy extends PassportStrategy(
     done: (err?, user?, confirmationURL?, info?) => any,
   ) {
     try {
-      const code = req.query.code;
+      const code = req.query.code as string;
       const socialLogin = req.params.socialLogin;
-      const redirect = req.query.redirect;
-      const state = req.query.state;
+      const redirect = req.query.redirect as string;
+      const state = req.query.state as string;
       this.socialLoginCallback
         .requestTokenAndProfile(
           code,

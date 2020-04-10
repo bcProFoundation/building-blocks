@@ -1,5 +1,4 @@
 import { Module, HttpModule } from '@nestjs/common';
-import { TerminusModule } from '@nestjs/terminus';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -9,7 +8,6 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from './config/config.module';
 import { ServiceManagementModule } from './service-management/service-management.module';
 import { OrganizationSettingsModule } from './organization-settings/organization-settings.module';
-import { TerminusOptionsService } from './system-settings/aggregates/terminus-options/terminus-options.service';
 import { ConfigService } from './config/config.service';
 import { EventStoreModule } from './event-store/event-store.module';
 
@@ -21,7 +19,6 @@ import { EventStoreModule } from './event-store/event-store.module';
       useFactory: connectTypeorm,
       inject: [ConfigService],
     }),
-    TerminusModule.forRootAsync({ useClass: TerminusOptionsService }),
     ConfigModule,
     AuthModule,
     SystemSettingsModule,
