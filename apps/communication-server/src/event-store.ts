@@ -1,4 +1,5 @@
 import { INestApplication, Logger } from '@nestjs/common';
+import { MicroserviceOptions } from '@nestjs/microservices';
 import { EventStoreServer } from './event-store/microservice/event-store.server';
 import { ConfigService } from './config/config.service';
 
@@ -10,7 +11,7 @@ export function setupEventStore(app: INestApplication) {
 
   const { hostname, username, password, stream } = config.getEventStoreConfig();
   if (hostname && username && password && stream) {
-    const eventStore = app.connectMicroservice({
+    const eventStore = app.connectMicroservice<MicroserviceOptions>({
       strategy: new EventStoreServer(config),
     });
     eventStore.listen(() =>
