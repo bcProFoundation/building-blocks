@@ -1,6 +1,6 @@
 {
   "name": "communication-server",
-  "version": "4.8.0",
+  "version": "4.8.1",
   "scripts": {
     "lint": "eslint '{tests,src}/**/*.ts'",
     "format": "prettier --write \"./src/**/*.ts\" \"./tests/**/*.ts\"",
