@@ -1,4 +1,4 @@
-import { IsUrl, IsNotEmpty } from 'class-validator';
+import { IsUrl, IsNotEmpty, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ServerSettingsDto {
@@ -39,5 +39,6 @@ export class ServerSettingsDto {
   clientSecret: string;
 
   @IsUrl({ allow_underscores: true }, { each: true })
+  @IsOptional()
   callbackURLs: string[];
 }

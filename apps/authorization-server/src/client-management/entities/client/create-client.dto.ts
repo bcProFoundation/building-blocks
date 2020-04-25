@@ -3,15 +3,11 @@ import {
   IsOptional,
   IsString,
   IsNumberString,
-  ValidateNested,
   IsBoolean,
   IsEnum,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { i18n } from '../../../i18n/i18n.config';
-import { Type } from 'class-transformer';
-import { RedirectURIsDTO } from './redirect-uris.dto';
-import { AllowedScopeDTO } from './allowed-scopes.dto';
 import { ClientAuthentication } from './client.interface';
 
 export class CreateClientDto {
@@ -46,16 +42,14 @@ export class CreateClientDto {
       'Client app endpoint which will receive the token/code',
     ),
   })
-  @ValidateNested({ each: true })
-  @Type(() => RedirectURIsDTO)
-  redirectUris: RedirectURIsDTO[];
+  @IsUrl({ allow_underscores: true }, { each: true })
+  redirectUris: string[];
 
   @ApiProperty({
     description: i18n.__('Allowed Scopes for Client app'),
   })
-  @ValidateNested({ each: true })
-  @Type(() => AllowedScopeDTO)
-  allowedScopes: AllowedScopeDTO[];
+  @IsString({ each: true })
+  allowedScopes: string[];
 
   @IsUrl()
   @IsOptional()

@@ -22,6 +22,7 @@ export class ServerSettingsDto {
   clientSecret: string;
 
   @IsUrl({ allow_underscores: true }, { each: true })
+  @IsOptional()
   callbackURLs: string[];
 
   @IsUUID()
