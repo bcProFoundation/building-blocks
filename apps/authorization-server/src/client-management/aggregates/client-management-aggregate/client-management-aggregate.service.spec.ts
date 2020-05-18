@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClientManagementAggregateService } from './client-management-aggregate.service';
-import { OnlyAllowValidScopeService } from 'client-management/policies';
+import { OnlyAllowValidScopeService } from '../../policies';
 
 describe('ClientManagementAggregateService', () => {
   let service: ClientManagementAggregateService;

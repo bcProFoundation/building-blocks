@@ -17,12 +17,12 @@
     ],
     "noUnusedLocals": true,
     "types": [
-      "node"
+      "node",
+      "jest"
     ],
     "lib": [
       "es2017",
       "dom"
     ]
-  },
-  "exclude": ["node_modules"]
+  }
 }
