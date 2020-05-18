@@ -53,12 +53,12 @@
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
     "eslint": "^7.0.0",
-    "eslint-plugin-jsdoc": "^25.4.1",
+    "eslint-plugin-jsdoc": "^25.4.2",
     "eslint-plugin-prefer-arrow": "^1.2.1",
-    "jest": "^25.4.0",
+    "jest": "^26.0.1",
     "prettier": "^2.0.5",
     "supertest": "^4.0.2",
-    "ts-jest": "^25.4.0",
+    "ts-jest": "^26.0.0",
     "ts-loader": "^7.0.4",
     "ts-node": "^8.10.1",
     "tsconfig-paths": "^3.9.0",
@@ -66,7 +66,7 @@
   },
   "jest": {
     "moduleDirectories": [
-      "src/server",
+      "src",
       "node_modules"
     ],
     "moduleFileExtensions": [

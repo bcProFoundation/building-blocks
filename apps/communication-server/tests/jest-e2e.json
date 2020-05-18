@@ -1,7 +1,7 @@
 {
     "testEnvironment": "node",
     "moduleDirectories": [
-        "../src/server",
+        "../src",
         "node_modules"
     ],
     "moduleFileExtensions": [

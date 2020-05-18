@@ -4,7 +4,7 @@ import { OAuth2Service } from './oauth2.service';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { BearerTokenService } from '../../../auth/entities/bearer-token/bearer-token.service';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
-import { ClientService } from 'client-management/entities/client/client.service';
+import { ClientService } from '../../../client-management/entities/client/client.service';
 import { CqrsModule } from '@nestjs/cqrs';
 
 describe('OAuth2Service', () => {
