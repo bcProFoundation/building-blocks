@@ -2,7 +2,7 @@ import { registerDecorator, ValidationOptions } from 'class-validator';
 
 export const IS_MOBILEE164_TOKEN = 'isMobileE164';
 export function IsMobileE164(validationOptions?: ValidationOptions) {
-  return (object: object, propertyName: string) => {
+  return (object: unknown, propertyName: string) => {
     registerDecorator({
       name: IS_MOBILEE164_TOKEN,
       target: object.constructor,
