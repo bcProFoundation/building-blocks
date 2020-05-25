@@ -13,16 +13,18 @@ import { TokenCache } from '../auth/entities/token-cache/token-cache.entity';
 
 export function connectTypeorm(config: ConfigService): MongoConnectionOptions {
   const mongoUriPrefix = config.get(MONGO_URI_PREFIX) || 'mongodb';
-  const mongoOptions = 'useUnifiedTopology=true&retryWrites=true';
+
   return {
     type: 'mongodb',
     url: `${mongoUriPrefix}://${config.get(DB_USER)}:${config.get(
       DB_PASSWORD,
-    )}@${config.get(DB_HOST)}/${config.get(DB_NAME)}?${mongoOptions}`,
+    )}@${config.get(DB_HOST)}/${config.get(DB_NAME)}`,
     logging: false,
     synchronize: true,
     entities: [ServerSettings, Profile, TokenCache],
     useNewUrlParser: true,
     w: 'majority',
+    useUnifiedTopology: true,
+    extra: { retryWrites: true },
   };
 }

@@ -17,11 +17,11 @@ import { Storage } from '../cloud-storage/entities/storage/storage.entity';
 
 export function connectTypeorm(config): MongoConnectionOptions {
   const mongoUriPrefix = config.get(MONGO_URI_PREFIX) || 'mongodb';
-  const mongoOptions = 'useUnifiedTopology=true&retryWrites=true';
+
   return {
     url: `${mongoUriPrefix}://${config.get(DB_USER)}:${config.get(
       DB_PASSWORD,
-    )}@${config.get(DB_HOST)}/${config.get(DB_NAME)}?${mongoOptions}`,
+    )}@${config.get(DB_HOST)}/${config.get(DB_NAME)}`,
     type: 'mongodb',
     name: 'default',
     logging: false,
@@ -38,5 +38,7 @@ export function connectTypeorm(config): MongoConnectionOptions {
     ],
     useNewUrlParser: true,
     w: 'majority',
+    useUnifiedTopology: true,
+    extra: { retryWrites: true },
   };
 }
