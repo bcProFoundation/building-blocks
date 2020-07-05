@@ -8,6 +8,7 @@ import {
   UNDO,
   DURATION,
   REMOVE_USER_FROM_SESSION,
+  PROMPT,
 } from '../constants/app-strings';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -72,7 +73,7 @@ export class ChooseAccountComponent implements OnInit {
                 params.set(key, query[key]);
               }
             }
-            params.delete('prompt');
+            params.delete(PROMPT);
             window.location.href =
               environment.routes.CONFIRMATION + '?' + params.toString();
           } else {
