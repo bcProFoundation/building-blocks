@@ -8,7 +8,6 @@ import {
   DURATION,
   NEW_PASSWORD_MISMATCH,
 } from '../constants/app-strings';
-import { isArray } from 'util';
 
 @Component({
   selector: 'app-verify-generate-password',
@@ -39,7 +38,7 @@ export class VerifyGeneratePasswordComponent implements OnInit {
           },
           error: error => {
             let message = INVALID_VERIFICATION_CODE;
-            if (isArray(error.error.message)) {
+            if (Array.isArray(error.error.message)) {
               message = error.error.message[0];
             }
             this.snackBar.open(message, CLOSE, { duration: DURATION });

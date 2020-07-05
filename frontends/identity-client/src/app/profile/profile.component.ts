@@ -31,7 +31,6 @@ import {
   PASSWORD_LESS_LOGIN_ENABLED,
   PASSWORD_LESS_LOGIN_DISABLED,
 } from '../constants/messages';
-import { isArray } from 'util';
 import {
   DURATION,
   UNDO_DURATION,
@@ -324,7 +323,7 @@ export class ProfileComponent implements OnInit {
         next: data => this.logout(),
         error: err => {
           let message = err.error.message;
-          if (isArray(err.error.message)) {
+          if (Array.isArray(err.error.message)) {
             message = err.error.message[0];
           }
           this.snackBar.open(message, CLOSE, { duration: DURATION });
