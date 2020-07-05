@@ -6,6 +6,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { map } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { URLSearchParams } from '@angular/http';
 import {
   PLEASE_CHECK_EMAIL,
   CLOSE,
@@ -14,7 +15,6 @@ import {
   NO_KEYS_REGISTERED,
 } from '../constants/app-strings';
 import { LoginChoice } from './login-choice';
-import { stringify } from 'querystring';
 import { BrandInfoService } from '../common/brand-info/brand-info.service';
 
 @Component({
@@ -267,7 +267,14 @@ export class LoginComponent implements OnInit {
     }
 
     if (!this.redirect && query.params) {
-      redirect = '/account/choose?' + stringify(query.params);
+      const params = new URLSearchParams();
+      for (const key in query.params) {
+        if (query.params.hasOwnProperty(key)) {
+          params.set(key, query.params[key]);
+        }
+      }
+
+      redirect = '/account/choose?' + params.toString();
     }
 
     window.location.href =

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ChooseAccountService } from './choose-account.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { stringify } from 'querystring';
+import { URLSearchParams } from '@angular/http';
 import { environment } from '../../environments/environment';
 import { FormGroup, FormArray, FormControl } from '@angular/forms';
 import {
@@ -66,9 +66,15 @@ export class ChooseAccountComponent implements OnInit {
         next: success => {
           const query = { ...this.activeRoute.snapshot.queryParams };
           if (query.prompt) {
-            delete query.prompt;
+            const params = new URLSearchParams();
+            for (const key in query) {
+              if (query.hasOwnProperty(key)) {
+                params.set(key, query[key]);
+              }
+            }
+            params.delete('prompt');
             window.location.href =
-              environment.routes.CONFIRMATION + '?' + stringify(query);
+              environment.routes.CONFIRMATION + '?' + params.toString();
           } else {
             window.location.href = '/';
           }
