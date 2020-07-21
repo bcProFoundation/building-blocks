@@ -1,4 +1,4 @@
-import * as Joi from 'joi';
+import * as Joi from '@hapi/joi';
 import * as dotenv from 'dotenv';
 import { Injectable } from '@nestjs/common';
 
@@ -35,7 +35,7 @@ export class ConfigService {
   private validateInput(envConfig: EnvConfig): EnvConfig {
     const envVarsSchema: Joi.ObjectSchema = Joi.object({
       NODE_ENV: Joi.string()
-        .valid(['development', 'production', 'test', 'provision', 'staging'])
+        .valid('development', 'production', 'test', 'provision', 'staging')
         .default('development'),
       DB_NAME: Joi.string().required(),
       DB_HOST: Joi.string().required(),
@@ -50,9 +50,8 @@ export class ConfigService {
       BROADCAST_PORT: Joi.string().optional(),
     });
 
-    const { error, value: validatedEnvConfig } = Joi.validate(
+    const { error, value: validatedEnvConfig } = envVarsSchema.validate(
       envConfig,
-      envVarsSchema,
     );
     if (error) {
       throw new Error(`Config validation error: ${error.message}`);
