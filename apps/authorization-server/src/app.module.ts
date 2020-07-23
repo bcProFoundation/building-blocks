@@ -7,7 +7,6 @@ import { CommonModule } from './common/common.module';
 import { UserManagementModule } from './user-management/user-management.module';
 import { ClientManagementModule } from './client-management/client-management.module';
 import { SystemSettingsModule } from './system-settings/system-settings.module';
-import { EventStoreModule } from './event-store/event-store.module';
 
 @Module({
   imports: [
@@ -17,7 +16,6 @@ import { EventStoreModule } from './event-store/event-store.module';
     UserManagementModule,
     ClientManagementModule,
     SystemSettingsModule,
-    EventStoreModule,
   ],
   controllers: [AppController],
   providers: [AppService],

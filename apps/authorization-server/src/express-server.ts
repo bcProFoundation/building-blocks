@@ -6,6 +6,7 @@ import * as helmet from 'helmet';
 import * as connectMongoDBSession from 'connect-mongo';
 import * as fs from 'fs';
 import { join } from 'path';
+import { stringify } from 'querystring';
 import { INestApplication } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import {
@@ -23,6 +24,7 @@ import {
 import { i18n } from './i18n/i18n.config';
 import { VIEWS_DIR, SWAGGER_ROUTE } from './constants/app-strings';
 import { SESSION_COLLECTION } from './auth/entities/session/session.schema';
+import { MAJORITY } from './common/database.provider';
 
 // import * as rateLimit from 'express-rate-limit';
 
@@ -104,12 +106,12 @@ export class ExpressServer {
   }
 
   getMongoOptions() {
-    let mongoOptions = 'useUnifiedTopology=true&';
-    mongoOptions += 'w=majority&';
-    mongoOptions += 'retryWrites=true&';
-    mongoOptions += 'useNewUrlParser=true';
-
-    return mongoOptions;
+    return stringify({
+      useUnifiedTopology: true,
+      w: MAJORITY,
+      retryWrites: true,
+      useNewUrlParser: true,
+    });
   }
 
   static setupSwagger(app) {

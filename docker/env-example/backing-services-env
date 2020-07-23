@@ -2,3 +2,4 @@ DB_USER=admin
 DB_PASSWORD=admin
 DB_NAME=test_authorization-server
 MONGODB_ROOT_PASSWORD=admin
+REDIS_PASSWORD=admin

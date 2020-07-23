@@ -8,7 +8,6 @@ export interface EnvConfig {
 
 export const NODE_ENV = 'NODE_ENV';
 export const SESSION_SECRET = 'SESSION_SECRET';
-export const EXPIRY_DAYS = 'EXPIRY_DAYS';
 export const COOKIE_MAX_AGE = 'COOKIE_MAX_AGE';
 export const SESSION_NAME = 'SESSION_NAME';
 export const TOKEN_VALIDITY = 'TOKEN_VALIDITY';
@@ -16,13 +15,11 @@ export const DB_NAME = 'DB_NAME';
 export const DB_HOST = 'DB_HOST';
 export const DB_USER = 'DB_USER';
 export const DB_PASSWORD = 'DB_PASSWORD';
-export const ES_HOST = 'ES_HOST';
-export const ES_USER = 'ES_USER';
-export const ES_PASSWORD = 'ES_PASSWORD';
-export const ES_STREAM = 'ES_STREAM';
+export const REDIS_PROTO = 'REDIS_PROTO';
+export const REDIS_HOST = 'REDIS_HOST';
+export const REDIS_PASSWORD = 'REDIS_PASSWORD';
+export const REDIS_PORT = 'REDIS_PORT';
 export const MONGO_URI_PREFIX = 'MONGO_URI_PREFIX';
-export const BROADCAST_HOST = 'BROADCAST_HOST';
-export const BROADCAST_PORT = 'BROADCAST_PORT';
 
 @Injectable()
 export class ConfigService {
@@ -39,25 +36,22 @@ export class ConfigService {
    */
   private validateInput(envConfig: EnvConfig): EnvConfig {
     const envVarsSchema: Joi.ObjectSchema = Joi.object({
-      NODE_ENV: Joi.string()
+      [NODE_ENV]: Joi.string()
         .valid('development', 'production', 'test', 'provision', 'staging')
         .default('development'),
-      SESSION_SECRET: Joi.string().required(),
-      EXPIRY_DAYS: Joi.number().required(),
-      COOKIE_MAX_AGE: Joi.number().required(),
-      SESSION_NAME: Joi.string().required(),
-      TOKEN_VALIDITY: Joi.string().required(),
-      DB_NAME: Joi.string().required(),
-      DB_HOST: Joi.string().required(),
-      DB_USER: Joi.string().required(),
-      DB_PASSWORD: Joi.string().required(),
-      MONGO_URI_PREFIX: Joi.string().optional(),
-      ES_HOST: Joi.string().optional(),
-      ES_USER: Joi.string().optional(),
-      ES_PASSWORD: Joi.string().optional(),
-      ES_STREAM: Joi.string().optional(),
-      BROADCAST_HOST: Joi.string().optional(),
-      BROADCAST_PORT: Joi.string().optional(),
+      [SESSION_SECRET]: Joi.string().required(),
+      [COOKIE_MAX_AGE]: Joi.number().required(),
+      [SESSION_NAME]: Joi.string().required(),
+      [TOKEN_VALIDITY]: Joi.string().required(),
+      [DB_NAME]: Joi.string().required(),
+      [DB_HOST]: Joi.string().required(),
+      [DB_USER]: Joi.string().required(),
+      [DB_PASSWORD]: Joi.string().required(),
+      [MONGO_URI_PREFIX]: Joi.string().optional(),
+      [REDIS_PROTO]: Joi.string().optional(),
+      [REDIS_HOST]: Joi.string().optional(),
+      [REDIS_PASSWORD]: Joi.string().optional(),
+      [REDIS_PORT]: Joi.string().optional(),
     });
 
     const { error, value: validatedEnvConfig } = envVarsSchema.validate(
@@ -78,13 +72,5 @@ export class ConfigService {
       default:
         return this.envConfig[key];
     }
-  }
-
-  getEventStoreConfig() {
-    const hostname = this.get(ES_HOST);
-    const username = this.get(ES_USER);
-    const password = this.get(ES_PASSWORD);
-    const stream = this.get(ES_STREAM);
-    return { hostname, username, password, stream };
   }
 }
