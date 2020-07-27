@@ -1,0 +1,17 @@
+{{- if .Values.idProvider.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "blocks.fullname" . }}-id-provider
+  labels:
+    {{- include "blocks.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.idProvider.service.type }}
+  ports:
+    - port: {{ .Values.idProvider.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "blocks.idProviderSelectorLabels" . | nindent 4 }}
+{{- end }}

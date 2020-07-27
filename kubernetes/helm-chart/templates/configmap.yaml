@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+data:
+  AS_DB_NAME: {{ ternary (printf "%s-" .Release.Name) "" (eq .Values.mongoDBHost "") }}{{ .Values.authServer.dbName }}
+  AS_DB_USER: {{ ternary (printf "%s-" .Release.Name) "" (eq .Values.mongoDBHost "") }}{{ .Values.authServer.dbUser }}
+  CS_DB_NAME: {{ ternary (printf "%s-" .Release.Name) "" (eq .Values.mongoDBHost "") }}{{ .Values.comServer.dbName }}
+  CS_DB_USER: {{ ternary (printf "%s-" .Release.Name) "" (eq .Values.mongoDBHost "") }}{{ .Values.comServer.dbUser }}
+  IP_DB_NAME: {{ ternary (printf "%s-" .Release.Name) "" (eq .Values.mongoDBHost "") }}{{ .Values.idProvider.dbName }}
+  IP_DB_USER: {{ ternary (printf "%s-" .Release.Name) "" (eq .Values.mongoDBHost "") }}{{ .Values.idProvider.dbUser }}
+  IC_DB_NAME: {{ ternary (printf "%s-" .Release.Name) "" (eq .Values.mongoDBHost "") }}{{ .Values.infraConsole.dbName }}
+  IC_DB_USER: {{ ternary (printf "%s-" .Release.Name) "" (eq .Values.mongoDBHost "") }}{{ .Values.infraConsole.dbUser }}
