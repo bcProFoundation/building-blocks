@@ -7,11 +7,10 @@ import { SystemSettingsModule } from './system-settings/system-settings.module';
 import { AuthModule } from './auth/auth.module';
 import { EmailModule } from './email/email.module';
 import { Oauth2ClientModule } from './oauth2-client/oauth2-client.module';
-import { SmsmessageModule } from './smsmessage/smsmessage.module';
 import { connectTypeorm } from './constants/typeorm.connection';
 import { CloudStorageModule } from './cloud-storage/cloud-storage.module';
 import { ConfigService } from './config/config.service';
-import { EventStoreModule } from './event-store/event-store.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -21,13 +20,12 @@ import { EventStoreModule } from './event-store/event-store.module';
       inject: [ConfigService],
     }),
     ConfigModule,
+    CommonModule,
     AuthModule,
     EmailModule,
     Oauth2ClientModule,
-    SmsmessageModule,
     SystemSettingsModule,
     CloudStorageModule,
-    EventStoreModule,
   ],
   controllers: [AppController],
   providers: [AppService],

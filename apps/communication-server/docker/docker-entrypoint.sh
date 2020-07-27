@@ -21,21 +21,17 @@ function checkEnv() {
     echo "NODE_ENV is not set"
     exit 1
   fi
+  if [[ -z "$REDIS_PROTO" ]]; then
+    export REDIS_PROTO=redis
+  fi
 }
 
 function checkConnection() {
   # Wait for services
-  echo "Connect MongoDB . . ."
-  timeout 10 bash -c 'until printf "" 2>>/dev/null >>/dev/tcp/$0/$1; do sleep 1; done' $DB_HOST 27017
-
-  if [[ ! -z "$ES_HOST" ]]; then
-    echo "Connect EventStore . . ."
-    timeout 10 bash -c 'until printf "" 2>>/dev/null >>/dev/tcp/$0/$1; do sleep 1; done' $ES_HOST 1113
-  fi
-
-  if [[ ! -z "$BROADCAST_HOST" ]] && [[ ! -z "$BROADCAST_PORT" ]]; then
-    echo "Connect Broadcast Service . . ."
-    timeout 10 bash -c 'until printf "" 2>>/dev/null >>/dev/tcp/$0/$1; do sleep 1; done' $BROADCAST_HOST $BROADCAST_PORT
+  su craft -c "node ./docker/check-db.js"
+  if [[ ! -z "$REDIS_HOST" ]] && [[ ! -z "$REDIS_PORT" ]]; then
+    echo "Connect Redis . . ."
+    timeout 10 bash -c 'until printf "" 2>>/dev/null >>/dev/tcp/$0/$1; do sleep 1; done' $REDIS_HOST $REDIS_PORT
   fi
 }
 
@@ -48,34 +44,19 @@ function configureServer() {
       ${DB_PASSWORD}' \
       < docker/env.tmpl > .env
 
-    if [[ ! -z "$ES_HOST" ]] && [[ ! -z "$ES_USER" ]] &&
-      [[ ! -z "$ES_PASSWORD" ]] && [[ ! -z "$ES_STREAM" ]]; then
-      envsubst '${ES_HOST}
-        ${ES_USER}
-        ${ES_PASSWORD}
-        ${ES_STREAM}' \
-        < docker/env-es.tmpl >> .env
-    fi
-    if [ ! -z "$BROADCAST_HOST" ] && [ ! -z "$BROADCAST_PORT" ]; then
-      envsubst '${BROADCAST_HOST}
-        ${BROADCAST_PORT}' \
-        < docker/env-bs.tmpl >> .env
+    if [[ ! -z "$REDIS_PROTO" ]] &&
+      [[ ! -z "$REDIS_HOST" ]] &&
+      [[ ! -z "$REDIS_PORT" ]] &&
+      [[ ! -z "$REDIS_PASSWORD" ]]; then
+      envsubst '${REDIS_PROTO}
+        ${REDIS_HOST}
+        ${REDIS_PORT}
+        ${REDIS_PASSWORD}'\
+        < docker/env-redis.tmpl >> .env
     fi
   fi
 }
 export -f configureServer
-
-if [ "$1" = 'rollback' ]; then
-  # Validate if DB_HOST is set.
-  checkEnv
-  # Validate DB Connection
-  checkConnection
-  # Configure server
-  su craft -c "bash -c configureServer"
-  # Rollback Migrations
-  echo "Rollback migrations"
-  # su craft -c "./node_modules/.bin/migrate down updateRoleScopeUuid -d mongodb://$DB_HOST:27017/$DB_NAME"
-fi
 
 if [ "$1" = 'start' ]; then
   # Validate if DB_HOST is set.
@@ -84,10 +65,6 @@ if [ "$1" = 'start' ]; then
   checkConnection
   # Configure server
   su craft -c "bash -c configureServer"
-  # Run Migrations
-  echo "Run migrations"
-  # su craft -c "./node_modules/.bin/migrate up -d mongodb://$DB_HOST:27017/$DB_NAME"
-
   su craft -c "node dist/out-tsc/main.js"
 fi
 

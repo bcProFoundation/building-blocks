@@ -4,7 +4,7 @@ import * as express from 'express';
 import * as helmet from 'helmet';
 import { AppModule } from './app.module';
 import { setupSwagger } from './swagger';
-import { setupEventStore } from './event-store';
+import { setupRedis } from './redis-server';
 
 async function bootstrap() {
   const server = new ExpressAdapter(express());
@@ -12,7 +12,7 @@ async function bootstrap() {
   app.use(helmet());
   app.enableCors();
   setupSwagger(app);
-  setupEventStore(app);
+  setupRedis(app);
   await app.listen(4100);
 }
 bootstrap();
