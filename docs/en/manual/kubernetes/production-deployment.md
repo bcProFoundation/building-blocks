@@ -6,24 +6,11 @@
 
 ### Prepare cluster
 
-Refer Kubernetes [section](./create-namespace-for-repo.md) of documentation to setup namespaces.
+Refer Kubernetes [section](./create-namespace-for-repo.md) of documentation to setup namespaces and control access.
 
-### MongoDB
+### Install MongoDB
 
 MongoDB helm chart is installed in mongodb namespace as global-mongo (refer mongodb helm chart docs)
-
-Connect to mongo locally to create users for databases.
-
-```sh
-# export root password
-export MONGODB_ROOT_PASSWORD=$(kubectl get secret --namespace mongodb global-mongodb -o jsonpath="{.data.mongodb-root-password}" | base64 --decode)
-
-# port-forward database from cluster for local access
-kubectl port-forward --namespace mongodb svc/global-mongodb 27017:27017 &
-
-# to connect to mongo service using mongo client
-mongo --host 127.0.0.1 --authenticationDatabase admin -p $MONGODB_ROOT_PASSWORD -u root
-```
 
 Create users for databases using mongo shell, we need users for four dbs; `authorization-server`, `communication-server`, `identity-provider` and `infrastructure-console`. Following is example command for creating a user for database.
 
@@ -31,7 +18,7 @@ Example command :
 
 ``` sh
 mongo accounts-example-com \
-    --host localhost \
+    --host $MONGO_HOSTS \
     --port 27017 \
     -u root \
     -p $MONGODB_ROOT_PASSWORD \
@@ -41,48 +28,26 @@ mongo accounts-example-com \
 
 Note: In case of managed db, you need to provide hostnames as env variables. No need to setup databases on cluster. Refer mongodb docs to create databases with user and password access.
 
-### Eventstore
+### Redis Service
 
-Eventstore helm chart is installed in eventstore namespace as global-eventstore (refer eventstore helm chart docs)
+All events are broadcasted to Redis. Configure redis to store or discard data.
 
-Connect to eventstore locally to create users and give them access to streams.
-
-```sh
-# port-forward eventstore from cluster for local access
-kubectl port-forward --namespace eventstore svc/global-eventstore 2113:2113 &
-```
-
-Proceed using Web UI available at http://localhost:2113. Refer Event store documentation for details.
-
-- Add Users for each app, viz. `authorization-server`, `communication-server`, `identity-provider`, and `infrastructure-console`
-- Share a common stream between the apps or separate them, decide as per your architecture.
-- `communication-server` needs access to read the streams to list them via administrator only endpoint. (used for development, debugging, operations)
-- In case of shared development cluster, use your development kubeconfig to port-forward eventstore and use it to listen to streams during development
-
-### Broadcast Service
-
-All events are broadcasted to TCP service. Unlike EventStore no event log is kept for these events
-
-- Service is connected on host configured in `BROADCAST_HOST` environment variable
-- Port used for the connection is configured via `BROADCAST_PORT`
-
-### Clone helm charts repository
-
-```sh
-git clone https://github.com/castlecraft/helm-charts
-```
+- Service is connected on host configured in `REDIS_HOST` environment variable
+- Port used for the connection is configured via `REDIS_PORT`
+- Password Redis is configured through `REDIS_PASSWORD` environment variable
 
 ### Set values.yaml
 
 Use any editor and set the environment variables and values for the created/managed databases.
 
 ```sh
-code helm-charts/building-blocks/values.yaml
+cp values.yaml ~/production-values.yaml
+code ~/production-values.yaml
 ```
 
 ### Install Building Blocks
 
-refer README https://github.com/castlecraft/helm-charts/tree/master/building-blocks
+Refer README under kubernetes/helm-chart.
 Use the modified values.yaml instead of the one on repo.
 
 ### letsencrypt and cert-manager

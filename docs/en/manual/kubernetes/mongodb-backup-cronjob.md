@@ -1,6 +1,6 @@
 ### CromJob to backup MongoDB and upload to Bucket
 
-Download `kubernetes/deploy/mongodb-backup-cronjob/mongo-backup-cronjob.yaml` and make appropriate changes
+Download `https://gitlab.com/castlecraft/building-blocks/raw/develop/kubernetes/deploy/mongodb-backup-cronjob/mongo-backup-cronjob.yaml` and make appropriate changes
 
 Create resources
 
