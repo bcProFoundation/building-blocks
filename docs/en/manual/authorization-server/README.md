@@ -6,7 +6,6 @@
 
 ```
 SESSION_SECRET=secret
-EXPIRY_DAYS=1
 COOKIE_MAX_AGE=7.884e+9
 SESSION_NAME=AS_SESSION
 TOKEN_VALIDITY=3600
@@ -15,12 +14,10 @@ DB_NAME=authorization-server
 DB_USER=authorization-server
 DB_PASSWORD=admin
 # Optional
-ES_HOST=localhost
-ES_USER=bb-dev-as
-ES_PASSWORD=admin
-ES_STREAM=$bb-dev
-BROADCAST_HOST=localhost
-BROADCAST_PORT=3112
+REDIS_PROTO=redis
+REDIS_HOST=localhost
+REDIS_PASSWORD=admin
+REDIS_PORT=6379
 ```
 
 Note: It is important to change the secrets and password. DO NOT USE development passwords or secrets.

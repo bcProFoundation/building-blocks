@@ -36,8 +36,6 @@
 
 * Kubernetes
     * [Introduction](/kubernetes/README.md)
-    * [Gitlab Kubernetes Integration](/kubernetes/gitlab-do-k8-integration.md)
-    * [Configuring and initializing Helm Tiller](/kubernetes/configuring-and-initializing-helm-tiller.md)
     * [Cert Manager and Letsencrypt](/kubernetes/cert-manager-letsencrypt.md)
     * [Create Namespace for access](/kubernetes/create-namespace-for-repo.md)
     * [Production Deployment](/kubernetes/production-deployment.md)

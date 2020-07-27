@@ -1,0 +1,41 @@
+{{- if and .Values.infraConsole.ingress.enabled .Values.infraConsole.enabled -}}
+{{- $fullName := include "blocks.fullname" . -}}
+{{- $svcPort := .Values.infraConsole.service.port -}}
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-infra-console
+  labels:
+    {{- include "blocks.labels" . | nindent 4 }}
+  {{- with .Values.infraConsole.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+{{- if .Values.infraConsole.ingress.tls }}
+  tls:
+  {{- range .Values.infraConsole.ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . | quote }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
+  rules:
+  {{- range .Values.infraConsole.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+        {{- range .paths }}
+          - path: {{ . }}
+            backend:
+              serviceName: {{ $fullName }}-infra-console
+              servicePort: {{ $svcPort }}
+        {{- end }}
+  {{- end }}
+{{- end }}

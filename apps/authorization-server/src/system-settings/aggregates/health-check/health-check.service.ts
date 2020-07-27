@@ -6,11 +6,10 @@ import { Injectable } from '@nestjs/common';
 import { Transport } from '@nestjs/microservices';
 import {
   ConfigService,
-  ES_HOST,
-  DB_HOST,
-  BROADCAST_HOST,
-  BROADCAST_PORT,
+  REDIS_HOST,
+  REDIS_PORT,
 } from '../../../config/config.service';
+import { DatabaseHealthIndicatorService } from '../database-health-indicator/database-health-indicator.service';
 
 export const HEALTH_ENDPOINT = '/api/healthz';
 
@@ -18,37 +17,23 @@ export const HEALTH_ENDPOINT = '/api/healthz';
 export class HealthCheckAggregateService {
   constructor(
     private readonly microservice: MicroserviceHealthIndicator,
+    private readonly database: DatabaseHealthIndicatorService,
     private readonly config: ConfigService,
   ) {}
 
   createTerminusOptions(): HealthIndicatorFunction[] {
     const healthEndpoint: HealthIndicatorFunction[] = [
-      async () =>
-        this.microservice.pingCheck('database', {
-          transport: Transport.TCP,
-          options: { host: this.config.get(DB_HOST), port: 27017 },
-        }),
+      async () => this.database.isHealthy(),
     ];
 
-    const esHost = this.config.get(ES_HOST);
-    if (esHost) {
+    if (this.config.get(REDIS_HOST) && this.config.get(REDIS_PORT)) {
       healthEndpoint.push(async () =>
-        this.microservice.pingCheck('event-store', {
+        this.microservice.pingCheck('events', {
           transport: Transport.TCP,
-          options: { host: esHost, port: 1113 },
-        }),
-      );
-    }
-
-    const broadcastHost = this.config.get(BROADCAST_HOST);
-    const broadcastPort = this.config.get(BROADCAST_PORT)
-      ? Number(this.config.get(BROADCAST_PORT))
-      : undefined;
-    if (broadcastHost && broadcastPort) {
-      healthEndpoint.push(async () =>
-        this.microservice.pingCheck('broadcast-service', {
-          transport: Transport.TCP,
-          options: { host: broadcastHost, port: broadcastPort },
+          options: {
+            host: this.config.get(REDIS_HOST),
+            port: Number(this.config.get(REDIS_PORT)),
+          },
         }),
       );
     }

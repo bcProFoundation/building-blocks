@@ -1,0 +1,99 @@
+{{- $replicaCount := int $.Values.mongodb.replicaCount }}
+{{- if .Values.comServer.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "blocks.fullname" . }}-com-server
+  labels:
+    {{- include "blocks.labels" . | nindent 4 }}
+spec:
+  strategy:
+    type: RollingUpdate
+  replicas: {{ .Values.comServer.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "blocks.comServerSelectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        timestamp: "{{ date "20060102150405" .Release.Time }}"
+      labels:
+        {{- include "blocks.comServerSelectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "blocks.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: com-server
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.comServer.image.repository }}:{{ .Values.comServer.image.tag }}"
+          imagePullPolicy: {{ .Values.comServer.image.pullPolicy }}
+          env:
+            - name: "DB_HOST"
+              {{- if eq .Values.mongoDBHost "" }}
+              value: "{{- range $e, $i := until $replicaCount }}{{ $.Release.Name }}-mongodb-{{ $i }}.{{ $.Release.Name }}-mongodb-headless.{{ $.Release.Namespace }}.svc.{{ $.Values.mongodb.clusterDomain }},{{ end }}"
+              {{- else }}
+              value: {{ .Values.mongoDBHost }}
+              {{- end}}
+            - name: "DB_NAME"
+              valueFrom:
+                configMapKeyRef:
+                  key: CS_DB_NAME
+                  name: {{ .Release.Name }}-config
+            - name: "DB_USER"
+              valueFrom:
+                configMapKeyRef:
+                  key: CS_DB_USER
+                  name: {{ .Release.Name }}-config
+            - name: "DB_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  key: CS_DB_PASSWORD
+                  name: {{ .Release.Name }}-secrets
+            - name: "REDIS_HOST"
+              {{- if ne .Values.redisHost "" }}
+              value: {{ .Values.redisHost }}
+              {{- else }}
+              value: {{ .Release.Name }}-redis-cluster
+              {{- end}}
+            - name: "REDIS_PORT"
+              value: {{ index .Values "redis-cluster" "service" "port" | quote }}
+            - name: "REDIS_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  key: redis-password
+                  name: {{ .Release.Name }}-redis-cluster
+            - name: "NODE_ENV"
+              value: {{ .Values.NODE_ENV }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.comServer.service.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /api/healthz
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /api/healthz
+              port: http
+          resources:
+            {{- toYaml .Values.comServer.resources | nindent 12 }}
+      {{- with .Values.comServer.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.comServer.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.comServer.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+{{- end }}

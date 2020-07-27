@@ -26,7 +26,9 @@ export const databaseProviders = [
         mongoose.connect(
           `${mongoUriPrefix}://${config.get(DB_USER)}:${config.get(
             DB_PASSWORD,
-          )}@${config.get(DB_HOST)}/${config.get(DB_NAME)}?${mongoOptions}`,
+          )}@${config.get(DB_HOST).replace(/,\s*$/, '')}/${config.get(
+            DB_NAME,
+          )}?${mongoOptions}`,
           {
             useNewUrlParser: true,
             w: MAJORITY,
@@ -50,7 +52,9 @@ export const databaseProviders = [
         db: {
           address: `${mongoUriPrefix}://${config.get(DB_USER)}:${config.get(
             DB_PASSWORD,
-          )}@${config.get(DB_HOST)}/${config.get(DB_NAME)}`,
+          )}@${config.get(DB_HOST).replace(/,\s*$/, '')}/${config.get(
+            DB_NAME,
+          )}`,
           options: {
             useNewUrlParser: true,
             useUnifiedTopology: true,

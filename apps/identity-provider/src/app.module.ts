@@ -8,6 +8,7 @@ import { SystemSettingsModule } from './system-settings/system-settings.module';
 import { ProfileManagementModule } from './profile-management/profile-management.module';
 import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ConfigService } from './config/config.service';
       inject: [ConfigService],
     }),
     ConfigModule,
+    CommonModule,
     AuthModule,
     SystemSettingsModule,
     ProfileManagementModule,

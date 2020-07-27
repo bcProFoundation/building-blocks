@@ -1,0 +1,315 @@
+# Default values for blocks.
+# This is a YAML-formatted file.
+
+# Set host for MongoDB and Redis
+# Use when mongodb and redis are not part of this release.
+mongoDBHost: ""
+redisHost: ""
+
+# Common values
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+NODE_ENV: production
+
+authServer:
+  enabled: true
+  replicaCount: 1
+
+  # Env variables
+  # sessionSecret: 'changethis'
+  cookieMaxAge: !!string "7.884e+9"
+  tokenValidity: !!string "3600"
+  sessionName: "AS_SESSION"
+
+  # Database Credentials
+  dbName: "as-db"
+  dbUser: "as-db"
+  dbPassword: ""
+
+  # Images
+  backendImage:
+    repository: registry.gitlab.com/castlecraft/building-blocks/authorization-server
+    tag: testing
+    pullPolicy: IfNotPresent
+  frontendImage:
+    repository: registry.gitlab.com/castlecraft/building-blocks/authorization-client
+    tag: latest
+    pullPolicy: IfNotPresent
+
+  # Service
+  service:
+    type: ClusterIP
+    port: 8080
+
+  # Ingress
+  ingress:
+    enabled: true
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+      # cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - host: auth-server.local
+        paths:
+          - /
+    tls: []
+    #  - secretName: auth-server-tls
+    #    hosts:
+    #      - auth-server.local
+
+  resources: {}
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+comServer:
+  enabled: true
+  replicaCount: 1
+
+  # Database Credentials
+  dbName: "cs-db"
+  dbUser: "cs-db"
+  dbPassword: ""
+
+  # Images
+  image:
+    repository: registry.gitlab.com/castlecraft/building-blocks/communication-server
+    tag: testing
+    pullPolicy: IfNotPresent
+
+  # Service
+  service:
+    type: ClusterIP
+    port: 4100
+
+  # Ingress
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+      # cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - host: com-server.local
+        paths:
+          - /
+    tls: []
+    #  - secretName: com-server-tls
+    #    hosts:
+    #      - com-server.local
+  resources: {}
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+idProvider:
+  enabled: true
+  replicaCount: 1
+
+  # Database Credentials
+  dbName: "ip-db"
+  dbUser: "ip-db"
+  dbPassword: ""
+
+  # Images
+  backendImage:
+    repository: registry.gitlab.com/castlecraft/building-blocks/identity-provider
+    tag: testing
+    pullPolicy: IfNotPresent
+  frontendImage:
+    repository: registry.gitlab.com/castlecraft/building-blocks/identity-client
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8080
+
+  # Ingress
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+      # cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - host: id-server.local
+        paths:
+          - /
+    tls: []
+    #  - secretName: id-server-tls
+    #    hosts:
+    #      - id-server.local
+
+  resources: {}
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+infraConsole:
+  enabled: true
+  replicaCount: 1
+
+  # Database Credentials
+  dbName: "ic-db"
+  dbUser: "ic-db"
+  dbPassword: ""
+
+  # Images
+  backendImage:
+    repository: registry.gitlab.com/castlecraft/building-blocks/infrastructure-console
+    tag: testing
+    pullPolicy: IfNotPresent
+  frontendImage:
+    repository: registry.gitlab.com/castlecraft/building-blocks/admin-client
+    tag: latest
+    pullPolicy: IfNotPresent
+
+  # Service
+  service:
+    type: ClusterIP
+    port: 8080
+
+  # Ingress
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+      # cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - host: admin-server.local
+        paths:
+          - /
+    tls: []
+    #  - secretName: admin-server-tls
+    #    hosts:
+    #      - admin-server.local
+
+  resources: {}
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+# Values for dependent bitnami/redis-cluster chart
+redis-cluster:
+  enabled: false
+  # Set redis password. (default to random string)
+  # password: 'changethis'
+  service:
+    port: 6379
+  persistence:
+    enabled: false
+  redis:
+    useAOFPersistence: "no"
+  networkPolicy:
+    enabled: true
+  metrics:
+    enabled: true
+
+# Values for dependent bitnami/mongodb chart
+mongodb:
+  enabled: false
+  architecture: replicaset
+  # Set root password and replication. (defaults to random string)
+  # auth:
+  #   rootPassword: 'changethis'
+  #   replicaSetKey: 'changethis'
+  replicaCount: 4
+  pdb:
+    create: true
+  metrics:
+    enabled: true
+  extraEnvVarsSecret: "{{ .Release.Name }}-secrets"
+  extraEnvVarsCM: "{{ .Release.Name }}-config"
+  initdbScripts:
+    create-as-db.sh: |-
+      #!/bin/bash
+
+      echo 'Create database user and grant role dbOwner for database to user'
+      mongo $AS_DB_NAME \
+        -u root \
+        -p $MONGODB_ROOT_PASSWORD \
+        --authenticationDatabase admin \
+        --eval "db.createUser({user: '$AS_DB_USER', pwd: '$AS_DB_PASSWORD', roles: [{role:'dbOwner', db: '$AS_DB_NAME'}]});" \
+        || echo "Command error suppressed"
+
+      echo 'Create database user and grant role dbOwner for database to user'
+      mongo $CS_DB_NAME \
+        -u root \
+        -p $MONGODB_ROOT_PASSWORD \
+        --authenticationDatabase admin \
+        --eval "db.createUser({user: '$CS_DB_USER', pwd: '$CS_DB_PASSWORD', roles: [{role:'dbOwner', db: '$CS_DB_NAME'}]});" \
+        || echo "Command error suppressed"
+
+      echo 'Create database user and grant role dbOwner for database to user'
+      mongo $IP_DB_NAME \
+        -u root \
+        -p $MONGODB_ROOT_PASSWORD \
+        --authenticationDatabase admin \
+        --eval "db.createUser({user: '$IP_DB_USER', pwd: '$IP_DB_PASSWORD', roles: [{role:'dbOwner', db: '$IP_DB_NAME'}]});" \
+        || echo "Command error suppressed"
+
+      echo 'Create database user and grant role dbOwner for database to user'
+      mongo $IC_DB_NAME \
+        -u root \
+        -p $MONGODB_ROOT_PASSWORD \
+        --authenticationDatabase admin \
+        --eval "db.createUser({user: '$IC_DB_USER', pwd: '$IC_DB_PASSWORD', roles:[{role:'dbOwner', db: '$IC_DB_NAME'}]});" \
+        || echo "Command error suppressed"

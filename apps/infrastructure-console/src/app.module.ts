@@ -9,7 +9,7 @@ import { ConfigModule } from './config/config.module';
 import { ServiceManagementModule } from './service-management/service-management.module';
 import { OrganizationSettingsModule } from './organization-settings/organization-settings.module';
 import { ConfigService } from './config/config.service';
-import { EventStoreModule } from './event-store/event-store.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -20,11 +20,11 @@ import { EventStoreModule } from './event-store/event-store.module';
       inject: [ConfigService],
     }),
     ConfigModule,
+    CommonModule,
     AuthModule,
     SystemSettingsModule,
     ServiceManagementModule,
     OrganizationSettingsModule,
-    EventStoreModule,
   ],
   controllers: [AppController],
   providers: [AppService],

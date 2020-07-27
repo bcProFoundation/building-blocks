@@ -1,54 +1,47 @@
 import {
   MicroserviceHealthIndicator,
   HealthIndicatorFunction,
+  TypeOrmHealthIndicator,
 } from '@nestjs/terminus';
 import { Injectable } from '@nestjs/common';
 import { Transport } from '@nestjs/microservices';
 import {
   ConfigService,
-  ES_HOST,
-  DB_HOST,
-  BROADCAST_HOST,
-  BROADCAST_PORT,
+  REDIS_HOST,
+  REDIS_PORT,
 } from '../../../config/config.service';
+import { Connection } from 'typeorm';
+import { TYPEORM_DEFAULT_CONNECTION } from '../../../constants/typeorm.connection';
+import { InjectConnection } from '@nestjs/typeorm';
 
 export const HEALTH_ENDPOINT = '/api/healthz';
 
 @Injectable()
 export class HealthCheckAggregateService {
   constructor(
+    @InjectConnection(TYPEORM_DEFAULT_CONNECTION)
+    private readonly typeormConnection: Connection,
     private readonly microservice: MicroserviceHealthIndicator,
+    private readonly database: TypeOrmHealthIndicator,
     private readonly config: ConfigService,
   ) {}
 
   createTerminusOptions(): HealthIndicatorFunction[] {
     const healthEndpoint: HealthIndicatorFunction[] = [
       async () =>
-        this.microservice.pingCheck('database', {
-          transport: Transport.TCP,
-          options: { host: this.config.get(DB_HOST), port: 27017 },
+        this.database.pingCheck('database', {
+          connection: this.typeormConnection,
         }),
     ];
 
-    const esHost = this.config.get(ES_HOST);
-    if (esHost) {
+    if (this.config.get(REDIS_HOST) && this.config.get(REDIS_PORT)) {
       healthEndpoint.push(async () =>
-        this.microservice.pingCheck('event-store', {
+        this.microservice.pingCheck('events', {
           transport: Transport.TCP,
-          options: { host: esHost, port: 1113 },
-        }),
-      );
-    }
-
-    const broadcastHost = this.config.get(BROADCAST_HOST);
-    const broadcastPort = this.config.get(BROADCAST_PORT)
-      ? Number(this.config.get(BROADCAST_PORT))
-      : undefined;
-    if (broadcastHost && broadcastPort) {
-      healthEndpoint.push(async () =>
-        this.microservice.pingCheck('broadcast-service', {
-          transport: Transport.TCP,
-          options: { host: broadcastHost, port: broadcastPort },
+          options: {
+            host: this.config.get(REDIS_HOST),
+            port: Number(this.config.get(REDIS_PORT)),
+          },
         }),
       );
     }

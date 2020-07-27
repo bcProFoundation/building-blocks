@@ -3,11 +3,14 @@ services:
     alias: mongo
   - name: docker:dind
     alias: docker
+  - name: bitnami/redis:latest
+    alias: redis
 
 variables:
   MONGODB_USERNAME: "admin"
   MONGODB_PASSWORD: "admin"
   MONGODB_DATABASE: "test_authorization-server"
+  REDIS_PASSWORD: "admin"
 
 stages:
   - tests
@@ -29,7 +32,6 @@ test_authorization_server:
   variables:
     NODE_ENV: "development"
     SESSION_SECRET: "secret"
-    EXPIRY_DAYS: "1"
     COOKIE_MAX_AGE: "43200"
     TOKEN_VALIDITY: "3600"
     SESSION_NAME: "E2E_SESSION"
@@ -37,6 +39,10 @@ test_authorization_server:
     DB_USER: "admin"
     DB_PASSWORD: "admin"
     DB_NAME: "authorization-server"
+    REDIS_PROTO: "redis"
+    REDIS_HOST: "redis"
+    REDIS_PORT: "6379"
+    REDIS_PASSWORD: "admin"
   before_script:
     - cd apps/authorization-server
     - npm install
@@ -49,7 +55,6 @@ test_authorization_server:
     # Create .env file
     - envsubst '${NODE_ENV}
       ${SESSION_SECRET}
-      ${EXPIRY_DAYS}
       ${COOKIE_MAX_AGE}
       ${SESSION_NAME}
       ${TOKEN_VALIDITY}
@@ -502,18 +507,16 @@ pack_production_admin_client:
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client
 
 pages:
-  image: node:latest
+  image: node:12
   stage: docs
   only:
     - staging
   before_script:
-    - npm install -g lerna
+    - npm install -g lerna gitbook-cli typedoc typescript
     - npm install
     - lerna clean -y
     - lerna bootstrap
   script:
-    - npm install gitbook-cli -g
-    - npm install typedoc -g
     # - gitbook fetch latest # fetch latest stable version
     # - gitbook install # add any requested plugins in book.json
     - gitbook build docs public # build to public path

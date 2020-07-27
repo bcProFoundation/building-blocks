@@ -1,20 +1,10 @@
-## Create ClusterIssuer and Certificates
+## Using Kubernetes Nginx Ingress and Cert Manager
 
 To install letsencrypt ssl along with cert-manager.
-(requires cert-manager and nginx-ingress installed)
 
-### Create ClusterIssuer
+1. Install [Kubernetes Nginx Ingress](https://kubernetes.github.io/ingress-nginx)
+2. Install [Cert Manager](https://cert-manager.io)
 
-```sh
-$ kubectl create -f kubernetes/deploy/cert-manager-ingress/cluster-issuer/cluster-issuer-prod.yaml
-```
+### Configure Cert Manager
 
-### Create Certificate for domains
-
-Note: Cert manager automatically creates certificate as per labels
-
-```sh
-$ kubectl create -f certificate.yaml
-```
-
-The directory `kubernetes/deploy/cert-manager-ingress` has reference files used in production.
+Create Issuer / ClusterIssuer or choose [configuration](https://cert-manager.io/docs/configuration)

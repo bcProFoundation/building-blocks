@@ -69,7 +69,7 @@ cp docker/env-example/infrastructure-console-env apps/infrastructure-console/.en
 docker-compose \
     --project-name bb \
     -f docker/docker-compose-mongo.yml \
-    -f docker/docker-compose-eventstore.yml \
+    -f docker/docker-compose-redis.yml \
     up -d
 ```
 

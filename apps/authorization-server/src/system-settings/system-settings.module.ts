@@ -11,6 +11,7 @@ import { SystemSettingsEventHandlers } from './events';
 import { AuthEntitiesModule } from '../auth/entities/entities.module';
 import { HealthController } from './controllers/health/health.controller';
 import { HealthCheckAggregateService } from './aggregates/health-check/health-check.service';
+import { DatabaseHealthIndicatorService } from './aggregates/database-health-indicator/database-health-indicator.service';
 
 @Global()
 @Module({
@@ -27,6 +28,7 @@ import { HealthCheckAggregateService } from './aggregates/health-check/health-ch
     SystemSettingsManagementService,
     ...SystemSettingsCommandHandlers,
     ...SystemSettingsEventHandlers,
+    DatabaseHealthIndicatorService,
   ],
   controllers: [SetupController, ServerSettingsController, HealthController],
 })

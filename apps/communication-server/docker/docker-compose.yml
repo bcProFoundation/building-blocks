@@ -14,44 +14,38 @@ services:
       - MONGODB_USERNAME=${DB_USER}
       - MONGODB_PASSWORD=${DB_PASSWORD}
       - MONGODB_DATABASE=${DB_NAME}
-    ports:
-      - "27017:27017"
     volumes:
       - mongo-vol:/bitnami
     depends_on:
       - fix-mongodb-permissions
 
-  eventstore:
-    image: eventstore/eventstore:latest
-    ports:
-      - "1112:1112"
-      - "1113:1113"
-      - "2112:2112"
-      - "2113:2113"
+  redis:
+    image: bitnami/redis:latest
+    environment:
+      - REDIS_PASSWORD=admin
     volumes:
-      - eventstore-vol:/var/lib/eventstore
+      - redis-vol:/bitnami/redis/data
 
   communication-server:
-    image: registry.gitlab.com/castlecraft/building-blocks/communication-server:edge
+    image: registry.gitlab.com/castlecraft/building-blocks/communication-server:testing
     ports:
       - "4100:4100"
     depends_on:
       - mongo
-      - eventstore
+      - redis
     links:
       - mongo
-      - eventstore
+      - redis
     environment:
       - NODE_ENV=${NODE_ENV}
       - DB_HOST=${DB_HOST}
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
-      - ES_HOST=${ES_HOST}
-      - ES_USER=${ES_USER}
-      - ES_PASSWORD=${ES_PASSWORD}
-      - ES_STREAM=${ES_STREAM}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=admin
 
 volumes:
   mongo-vol:
-  eventstore-vol:
+  redis-vol:

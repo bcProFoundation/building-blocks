@@ -19,15 +19,16 @@ import { UserService } from '../../../user-management/entities/user/user.service
 import {
   PhoneAlreadyRegisteredException,
   invalidUserException,
-  EventStoreNotConnectedException,
+  RedisNotConnectedException,
   invalidOTPException,
   PhoneRegistrationNotAllowedException,
 } from '../../../common/filters/exceptions';
 import { UnverifiedPhoneAddedEvent } from '../../events/unverified-phone-added/unverified-phone-added.event';
 import {
   ConfigService,
-  BROADCAST_HOST,
-  BROADCAST_PORT,
+  REDIS_HOST,
+  REDIS_PORT,
+  REDIS_PASSWORD,
 } from '../../../config/config.service';
 import { PhoneVerifiedEvent } from '../../events/phone-verified/phone-verified.event';
 
@@ -144,7 +145,7 @@ export class OTPAggregateService extends AggregateRoot {
   }
 
   async addUnverifiedPhone(userUuid: string, unverifiedPhone: string) {
-    this.verifyConnectedEventStore();
+    this.verifyConnectedRedis();
     await this.checkPhoneAlreadyRegistered(unverifiedPhone);
 
     const user = await this.user.findOne({ uuid: userUuid });
@@ -170,27 +171,19 @@ export class OTPAggregateService extends AggregateRoot {
     });
   }
 
-  verifyConnectedEventStore() {
-    let eventStoreConnected = false;
-    let broadcastServiceConnected = false;
+  verifyConnectedRedis() {
+    let isRedisConnected = false;
 
-    const {
-      hostname,
-      username,
-      password,
-      stream,
-    } = this.config.getEventStoreConfig();
+    const hostname = this.config.get(REDIS_HOST);
+    const port = this.config.get(REDIS_PORT);
+    const password = this.config.get(REDIS_PASSWORD);
 
-    if (hostname && username && password && stream) {
-      eventStoreConnected = true;
+    if (hostname && port && password) {
+      isRedisConnected = true;
     }
 
-    if (this.config.get(BROADCAST_HOST) && this.config.get(BROADCAST_PORT)) {
-      broadcastServiceConnected = true;
-    }
-
-    if (!eventStoreConnected && !broadcastServiceConnected) {
-      throw new EventStoreNotConnectedException();
+    if (!isRedisConnected) {
+      throw new RedisNotConnectedException();
     }
   }
 
