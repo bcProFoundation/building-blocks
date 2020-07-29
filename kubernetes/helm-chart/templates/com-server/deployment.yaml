@@ -69,7 +69,7 @@ spec:
                   key: redis-password
                   name: {{ .Release.Name }}-redis-cluster
             - name: "NODE_ENV"
-              value: {{ .Values.NODE_ENV }}
+              value: {{ .Values.environment }}
           ports:
             - name: http
               containerPort: {{ .Values.comServer.service.port }}

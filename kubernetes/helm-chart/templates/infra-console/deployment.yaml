@@ -69,7 +69,7 @@ spec:
                   key: redis-password
                   name: {{ .Release.Name }}-redis-cluster
             - name: "NODE_ENV"
-              value: {{ .Values.NODE_ENV }}
+              value: {{ .Values.environment }}
         - name: admin-client
           image: "{{ .Values.infraConsole.frontendImage.repository }}:{{ .Values.infraConsole.frontendImage.tag }}"
           imagePullPolicy: {{ .Values.infraConsole.frontendImage.pullPolicy }}

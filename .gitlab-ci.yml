@@ -243,10 +243,9 @@ test_admin_client:
 pack_staging_authorization_server:
   image: docker
   stage: pack
-  environment: staging
   only:
     refs:
-      - staging
+      - develop
     changes:
       - apps/authorization-server/**/*
   before_script:
@@ -260,10 +259,9 @@ pack_staging_authorization_server:
 pack_staging_authorization_client:
   image: docker
   stage: pack
-  environment: staging
   only:
     refs:
-      - staging
+      - develop
     changes:
       - frontends/authorization-client/**/*
   before_script:
@@ -277,10 +275,9 @@ pack_staging_authorization_client:
 pack_staging_communication_server:
   image: docker
   stage: pack
-  environment: staging
   only:
     refs:
-      - staging
+      - develop
     changes:
       - apps/communication-server/**/*
   before_script:
@@ -294,10 +291,9 @@ pack_staging_communication_server:
 pack_staging_identity_provider:
   image: docker
   stage: pack
-  environment: staging
   only:
     refs:
-      - staging
+      - develop
     changes:
       - apps/identity-provider/**/*
   before_script:
@@ -311,10 +307,9 @@ pack_staging_identity_provider:
 pack_staging_identity_client:
   image: docker
   stage: pack
-  environment: staging
   only:
     refs:
-      - staging
+      - develop
     changes:
       - frontends/identity-client/**/*
   before_script:
@@ -328,10 +323,9 @@ pack_staging_identity_client:
 pack_staging_infrastructure_console:
   image: docker
   stage: pack
-  environment: staging
   only:
     refs:
-      - staging
+      - develop
     changes:
       - apps/infrastructure-console/**/*
   before_script:
@@ -345,10 +339,9 @@ pack_staging_infrastructure_console:
 pack_staging_admin_client:
   image: docker
   stage: pack
-  environment: staging
   only:
     refs:
-      - staging
+      - develop
     changes:
       - frontends/admin-client/**/*
   before_script:
@@ -510,18 +503,30 @@ pages:
   image: node:12
   stage: docs
   only:
-    - staging
+    - master
   before_script:
+    # Install Helm
+    - curl -fsSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+
+    # Install nodejs global packages
     - npm install -g lerna gitbook-cli typedoc typescript
+
+    # Install nodejs dependencies
     - npm install
     - lerna clean -y
     - lerna bootstrap
   script:
+    # Build GitBook
     # - gitbook fetch latest # fetch latest stable version
     # - gitbook install # add any requested plugins in book.json
     - gitbook build docs public # build to public path
+
+    # Build TypeScript API docs
     - npm run docs
+
+    # Build and package Helm Chart
+    - helm package kubernetes/helm-chart --destination public
+    - helm repo index public --url https://castlecraft.gitlab.io/building-blocks
   artifacts:
     paths:
       - public
-    expire_in: 4 weeks

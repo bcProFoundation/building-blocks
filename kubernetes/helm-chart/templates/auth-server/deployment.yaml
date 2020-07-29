@@ -80,7 +80,7 @@ spec:
                   key: redis-password
                   name: {{ .Release.Name }}-redis-cluster
             - name: "NODE_ENV"
-              value: {{ .Values.NODE_ENV }}
+              value: {{ .Values.environment }}
         - name: auth-client
           image: "{{ .Values.authServer.frontendImage.repository }}:{{ .Values.authServer.frontendImage.tag }}"
           imagePullPolicy: {{ .Values.authServer.frontendImage.pullPolicy }}

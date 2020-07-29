@@ -10,7 +10,9 @@ redisHost: ""
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
-NODE_ENV: production
+
+# Common environment variables
+environment: production
 
 authServer:
   enabled: true
@@ -30,11 +32,11 @@ authServer:
   # Images
   backendImage:
     repository: registry.gitlab.com/castlecraft/building-blocks/authorization-server
-    tag: testing
+    tag: "5.0.0"
     pullPolicy: IfNotPresent
   frontendImage:
     repository: registry.gitlab.com/castlecraft/building-blocks/authorization-client
-    tag: latest
+    tag: "5.0.0"
     pullPolicy: IfNotPresent
 
   # Service
@@ -44,7 +46,7 @@ authServer:
 
   # Ingress
   ingress:
-    enabled: true
+    enabled: false
     annotations: {}
       # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"
@@ -84,7 +86,7 @@ comServer:
   # Images
   image:
     repository: registry.gitlab.com/castlecraft/building-blocks/communication-server
-    tag: testing
+    tag: "5.0.0"
     pullPolicy: IfNotPresent
 
   # Service
@@ -133,11 +135,11 @@ idProvider:
   # Images
   backendImage:
     repository: registry.gitlab.com/castlecraft/building-blocks/identity-provider
-    tag: testing
+    tag: "5.0.0"
     pullPolicy: IfNotPresent
   frontendImage:
     repository: registry.gitlab.com/castlecraft/building-blocks/identity-client
-    tag: latest
+    tag: "5.0.0"
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
@@ -185,11 +187,11 @@ infraConsole:
   # Images
   backendImage:
     repository: registry.gitlab.com/castlecraft/building-blocks/infrastructure-console
-    tag: testing
+    tag: "5.0.0"
     pullPolicy: IfNotPresent
   frontendImage:
     repository: registry.gitlab.com/castlecraft/building-blocks/admin-client
-    tag: latest
+    tag: "5.0.0"
     pullPolicy: IfNotPresent
 
   # Service
@@ -282,34 +284,34 @@ mongodb:
     create-as-db.sh: |-
       #!/bin/bash
 
-      echo 'Create database user and grant role dbOwner for database to user'
+      echo 'Create database user and grant role dbOwner for database to user for authorization-server'
       mongo $AS_DB_NAME \
         -u root \
         -p $MONGODB_ROOT_PASSWORD \
         --authenticationDatabase admin \
         --eval "db.createUser({user: '$AS_DB_USER', pwd: '$AS_DB_PASSWORD', roles: [{role:'dbOwner', db: '$AS_DB_NAME'}]});" \
-        || echo "Command error suppressed"
+        || echo "mongo client command error suppressed."
 
-      echo 'Create database user and grant role dbOwner for database to user'
+      echo 'Create database user and grant role dbOwner for database to user for communication-server'
       mongo $CS_DB_NAME \
         -u root \
         -p $MONGODB_ROOT_PASSWORD \
         --authenticationDatabase admin \
         --eval "db.createUser({user: '$CS_DB_USER', pwd: '$CS_DB_PASSWORD', roles: [{role:'dbOwner', db: '$CS_DB_NAME'}]});" \
-        || echo "Command error suppressed"
+        || echo "mongo client command error suppressed."
 
-      echo 'Create database user and grant role dbOwner for database to user'
+      echo 'Create database user and grant role dbOwner for database to user for identity-provider'
       mongo $IP_DB_NAME \
         -u root \
         -p $MONGODB_ROOT_PASSWORD \
         --authenticationDatabase admin \
         --eval "db.createUser({user: '$IP_DB_USER', pwd: '$IP_DB_PASSWORD', roles: [{role:'dbOwner', db: '$IP_DB_NAME'}]});" \
-        || echo "Command error suppressed"
+        || echo "mongo client command error suppressed."
 
-      echo 'Create database user and grant role dbOwner for database to user'
+      echo 'Create database user and grant role dbOwner for database to user infrastructure-console'
       mongo $IC_DB_NAME \
         -u root \
         -p $MONGODB_ROOT_PASSWORD \
         --authenticationDatabase admin \
         --eval "db.createUser({user: '$IC_DB_USER', pwd: '$IC_DB_PASSWORD', roles:[{role:'dbOwner', db: '$IC_DB_NAME'}]});" \
-        || echo "Command error suppressed"
+        || echo "mongo client command error suppressed."

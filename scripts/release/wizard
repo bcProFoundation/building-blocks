@@ -1,0 +1,271 @@
+#!/usr/bin/env python3
+
+import argparse
+import os
+import ruamel.yaml
+import semantic_version
+import git
+
+class Colors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+def main():
+    args = parse_args()
+    versions = []
+    packages_to_update = []
+
+    values_file = f'{os.getcwd()}/kubernetes/helm-chart/values.yaml'
+    values_dict = get_yaml_dict(values_file)
+    repo = git.Repo(path=os.getcwd())
+
+    repo_tags = get_repo_tags(repo)
+
+    versions += get_backend_versions(repo_tags, values_dict)
+    versions += get_frontend_versions(repo_tags, values_dict)
+
+    print(f"{Colors.BOLD}Check versions from git tags and values.yaml{Colors.ENDC}\n")
+    for version in versions:
+        print('Package Name              : ' + version.get('package_name'))
+        validate_local_and_remote_version(
+            current_version=version.get('values_version'),
+            remote_version=version.get('remote_version'),
+        )
+
+        packages_to_update.append({
+            'package_name': version.get('package_name'),
+            'updated': check_change_in_versions(
+                version.get('remote_version'),
+                version.get('values_version'),
+            ),
+        })
+
+    packages = [p for p in packages_to_update if p.get('updated')]
+    is_flagged_to_update = len(packages) == 7
+
+    if is_flagged_to_update:
+        for package in packages:
+            print('Updating values.yaml with package version for ' + package.get('package_name'))
+            update_values(
+                package.get('package_name'),
+                package.get("remote_version")
+            )
+
+        print('Updating Chart.yaml')
+        chart_dict = update_chart(
+            packages[0].get('remote_version'),
+            args.helm_chart_bump_type
+        )
+
+        print('Commit release to git')
+        git_commit_release_message(repo, chart_dict['version'])
+
+        print('Push release and tags to git remote')
+        git_push_all(repo, args.remote)
+    else:
+        print('No changes to publish.')
+        print('Or check versions if there is any mismatch.')
+
+def get_repo_tags(repo):
+    repo.git.fetch('--tags')
+    return repo.tags
+
+
+def get_app_version(app_name, repo_tags):
+    # e.g. authorization-server becomes authorization-server@
+    app_name = f'{app_name}@'
+    # ['authorization-server', '@', '5.0.0']
+    version_components = sorted(list(filter(lambda t: f'{app_name}' in t.name, repo_tags)), key=lambda t: t.commit.committed_date)[-1].name
+    try:
+        return version_components.split('@')[1]
+    except IndexError as error:
+        print(error)
+        exit(1)
+
+
+def get_yaml_file(file_name):
+    data_string = None
+    try:
+        with open(file_name) as f:
+            data_string = f.read()
+    except Exception as exc:
+        print(exc)
+        exit(1)
+    return data_string
+
+
+def save_yaml_file(data, file_name):
+    with open(file_name, 'w') as f:
+        ruamel.yaml.round_trip_dump(data, f)
+
+
+def get_backend_versions(repo_tags, values_dict):
+    versions = []
+    for backend in [
+        'authorization-server',
+        'communication-server',
+        'identity-provider',
+        'infrastructure-console']:
+
+        server = None
+        imageKey = 'backendImage'
+
+        if backend == 'authorization-server':
+            server = 'authServer'
+        elif backend == 'communication-server':
+            server = 'comServer'
+            imageKey = 'image'
+        elif backend == 'identity-provider':
+            server = 'idProvider'
+        elif backend == 'infrastructure-console':
+            server = 'infraConsole'
+
+        versions += [{
+            "remote_version": get_app_version(backend, repo_tags),
+            "values_version": values_dict[server][imageKey]['tag'],
+            "package_name": backend
+        }]
+
+    return versions
+
+
+def get_frontend_versions(repo_tags, values_dict):
+    versions = []
+    for frontend in [
+        'admin-client',
+        'authorization-client',
+        'identity-client']:
+
+        server = None
+
+        if frontend == 'admin-client':
+            server = 'infraConsole'
+        elif frontend == 'authorization-client':
+            server = 'authServer'
+        elif frontend == 'identity-client':
+            server = 'idProvider'
+        elif frontend == 'infrastructure-console':
+            server = 'infraConsole'
+
+        versions += [{
+            "remote_version": get_app_version(frontend, repo_tags),
+            "values_version": values_dict[server]['frontendImage']['tag'],
+            "package_name": frontend
+        }]
+
+    return versions
+
+
+def update_chart(app_version, bump_type):
+    # Update Chart.yaml
+    chart_file = f'{os.getcwd()}/kubernetes/helm-chart/Chart.yaml'
+    chart_dict = get_yaml_dict(chart_file)
+
+    chart_version = semantic_version.Version(chart_dict['version'])
+    if bump_type == 'major':
+        chart_version = chart_version.next_major()
+    if bump_type == 'minor':
+        chart_version = chart_version.next_minor()
+    if bump_type == 'patch':
+        chart_version = chart_version.next_patch()
+    chart_dict['version'] = str(chart_version)
+    chart_dict['appVersion'] = app_version
+
+    save_yaml_file(chart_dict, chart_file)
+    return chart_dict
+
+
+def update_values(package, version):
+    # Update values.yaml
+    values_file = f'{os.getcwd()}/kubernetes/helm-chart/values.yaml'
+    values_dict = get_yaml_dict(values_file)
+
+    packages = {
+        "authorization-server": { "image": "backendImage", "name": "authServer" },
+        "communication-server": { "image": "backendImage", "name": "comServer" },
+        "identity-provider": { "image": "backendImage", "name": "idProvider" },
+        "infrastructure-console": { "image": "backendImage", "name": "infraConsole" },
+        "admin-client": { "image": "frontendImage", "name": "infraConsole" },
+        "authorization-client": { "image": "frontendImage", "name": "authServer" },
+        "identity-client": { "image": "frontendImage", "name": "idProvider" },
+    }
+
+    package_name = packages.get(package, {}).get('name')
+    package_image = packages.get(package, {}).get('image')
+
+    if package_name and package_image:
+        values_dict[package_name][package_image]['tag'] = version
+        save_yaml_file(values_dict, values_file)
+
+
+def git_commit_release_message(repo, chart_version):
+    commit_message = f"Publish Helm Chart {chart_version}"
+    repo.git.add(all=True)
+    repo.git.commit('-m', commit_message)
+
+
+def git_push_all(repo, remote=None):
+    if not remote:
+        remote = 'origin'
+
+    git_ssh_command = os.environ.get('GIT_SSH_COMMAND')
+    if git_ssh_command:
+        repo.git.update_environment(GIT_SSH_COMMAND=git_ssh_command)
+
+    repo.git.push(remote, '--follow-tags')
+
+
+def get_yaml_dict(file_name):
+    yaml_string = get_yaml_file(file_name)
+    yaml_dict = ruamel.yaml.round_trip_load(yaml_string, preserve_quotes=True)
+    return yaml_dict
+
+
+def validate_local_and_remote_version(current_version, remote_version):
+    current_version = semantic_version.Version(current_version)
+    remote_version = semantic_version.Version(remote_version)
+    print(f'Version from values.yaml  : {current_version}')
+    print(f'Version from git tags     : {remote_version}\n')
+    if(current_version > remote_version):
+        print("Version in values.yaml is greater than the remote version")
+        print("Release only possible for latest stable version")
+        exit(1)
+
+
+def check_change_in_versions(remote_version, values_version):
+    remote_version = semantic_version.Version(remote_version)
+    values_version = semantic_version.Version(values_version)
+
+    if remote_version > values_version:
+        return True
+
+    return False
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description='Publish Helm Chart for Building Blocks',
+        add_help=True)
+    parser.add_argument(
+        'helm_chart_bump_type',
+        action='store',
+        type=str,
+        choices=['major', 'minor', 'patch'],
+        help='Bump Type for Helm Chart')
+    group = parser.add_argument_group('options')
+    group.add_argument(
+        '--remote',
+        action='store',
+        type=str,
+        help='Git remote to tag and release helm chart')
+    return parser.parse_args()
+
+
+if __name__ == "__main__":
+    main()
