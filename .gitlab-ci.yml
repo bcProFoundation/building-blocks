@@ -500,7 +500,7 @@ pack_production_admin_client:
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client
 
 pages:
-  image: node:12
+  image: node:latest
   stage: docs
   only:
     - master
