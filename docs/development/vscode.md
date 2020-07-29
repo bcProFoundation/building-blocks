@@ -5,7 +5,7 @@ This configuration works on linux machine. You need to make changes as per your 
 
 ### launch.json
 
-```
+```json
 {
     "version": "0.2.0",
     "configurations": [
@@ -87,7 +87,7 @@ This configuration works on linux machine. You need to make changes as per your 
 
 ### settings.json
 
-```
+```json
 {
     "debug.node.autoAttach": "on"
 }
@@ -95,7 +95,7 @@ This configuration works on linux machine. You need to make changes as per your 
 
 ### tasks.json
 
-```
+```json
 {
     "version": "2.0.0",
     "tasks": [

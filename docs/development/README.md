@@ -16,7 +16,7 @@ Note: All requirements can run native on Linux, Mac or Windows.
 
 ### Install NodeJS global commands
 
-```sh
+```shell
 # use nvm for better control and secure node environments for users.
 # DO NOT USE sudo or root privileges
 npm i lerna @angular/cli @nestjs/cli -g
@@ -24,14 +24,14 @@ npm i lerna @angular/cli @nestjs/cli -g
 
 ### Clone Repository and set working directory
 
-```sh
+```shell
 git clone https://gitlab.com/castlecraft/building-blocks
 cd building-blocks
 ```
 
 ### Bootstrap NodeJS package dependencies
 
-```sh
+```shell
 rm -fr node_modules && npm i && lerna clean -y && lerna bootstrap
 ```
 
@@ -39,7 +39,7 @@ rm -fr node_modules && npm i && lerna clean -y && lerna bootstrap
 
 Required environment variables to start backing services in `.env` file:
 
-```sh
+```shell
 DB_USER=admin
 DB_PASSWORD=admin
 DB_NAME=test_authorization-server
@@ -48,14 +48,14 @@ MONGODB_ROOT_PASSWORD=admin
 
 For required environment variables, place appropriate `.env` files under each app's package root
 
-- refer [Authorization Server](/authorization-server/README.md) `.env` file
-- refer [Communication Server](/communication-server/README.md) `.env` file
-- refer [Identity Provider](/identity-provider/README.md) `.env` file
-- refer [Infrastructure Console](/infrastructure-console/README.md) `.env` file
+- refer [Authorization Server](../authorization-server/README.md) `.env` file
+- refer [Communication Server](../communication-server/README.md) `.env` file
+- refer [Identity Provider](../identity-provider/README.md) `.env` file
+- refer [Infrastructure Console](../infrastructure-console/README.md) `.env` file
 
 Execute following to copy example env files
 
-```sh
+```shell
 cp docker/env-example/backing-services-env .env
 cp docker/env-example/authorization-server-env apps/authorization-server/.env
 cp docker/env-example/communication-server-env apps/communication-server/.env
@@ -65,7 +65,7 @@ cp docker/env-example/infrastructure-console-env apps/infrastructure-console/.en
 
 ### Start Backing Services and initialize dbs
 
-```sh
+```shell
 docker-compose \
     --project-name bb \
     -f docker/docker-compose-mongo.yml \
@@ -75,13 +75,13 @@ docker-compose \
 
 Wait for mongodb to start
 
-```sh
+```shell
 docker logs bb_mongo_1 --follow
 ```
 
 Execute following command to set users and dbs
 
-```sh
+```shell
 docker exec -it bb_mongo_1 /docker-entrypoint-initdb.d/createdatabases.sh
 ```
 
@@ -89,7 +89,7 @@ docker exec -it bb_mongo_1 /docker-entrypoint-initdb.d/createdatabases.sh
 
 Start Development backend and frontend using following commands
 
-```
+```shell
 # for packages in apps/ directory,
 # execute following command from the app package root
 npm run start:debug
@@ -99,7 +99,7 @@ npm run start:debug
 npm start
 ```
 
-or use VS Code Setup, refer [example](/development/vscode.md)
+or use VS Code Setup, refer [example](vscode.md)
 
 ### Run development setup script
 
@@ -115,7 +115,7 @@ Note:
 - phone must be MobileE164. (ie. +911234567890)
 - email must be valid email address
 
-```
+```shell
 # export required environment variables
 export ADMIN_FULL_NAME="Mr Administrator"
 export ADMIN_EMAIL=admin@example.com
@@ -139,7 +139,7 @@ All apps dependencies and services are up for debug and development.
 
 ### Commands for testing
 
-```
+```shell
 # NestJS unit tests
 lerna run test:server
 
@@ -171,7 +171,7 @@ lerna run lint
 
 ### Commands to format code and lint fixes
 
-```
+```shell
 # To execute from project root
 lerna run format && lerna run lint -- --fix
 

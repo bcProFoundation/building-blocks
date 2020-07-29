@@ -16,7 +16,7 @@ Create users for databases using mongo shell, we need users for four dbs; `autho
 
 Example command :
 
-``` sh
+```shell
 mongo accounts-example-com \
     --host $MONGO_HOSTS \
     --port 27017 \
@@ -40,7 +40,7 @@ All events are broadcasted to Redis. Configure redis to store or discard data.
 
 Use any editor and set the environment variables and values for the created/managed databases.
 
-```sh
+```shell
 cp values.yaml ~/production-values.yaml
 code ~/production-values.yaml
 ```
@@ -60,7 +60,7 @@ Make a `POST` http request to `/setup` endpoint of your authorization server
 
 Or Use the python script provided in `building-blocks` root directory
 
-```sh
+```shell
 ## Setup authorization-server and infrastructure-console
 ./scripts/setupwiz.py setup-as https://accounts.example.com "Mr Admin" admin@example.com Secret@420710 +919420420420 https://admin.example.com
 

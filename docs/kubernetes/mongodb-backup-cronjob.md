@@ -4,7 +4,7 @@ Download `https://gitlab.com/castlecraft/building-blocks/raw/develop/kubernetes/
 
 Create resources
 
-```sh
+```shell
 kubectl create -f mongo-backup-cronjob.yaml
 ```
 

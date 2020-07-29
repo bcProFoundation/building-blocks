@@ -24,7 +24,7 @@
 - `public` directory is git ignored as it is generated from docs and code changes.
 - To generate and tests docs locally you must have gitbook and http-server installed globally (nodejs packages). Execute following commands to check documentation locally
 
-```
+```shell
 gitbook build docs public
 npm run docs
 http-server public

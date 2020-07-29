@@ -16,24 +16,24 @@ All the code is built in TypeScript. Prettier (`npm run format`) does the format
 
 Check other repositories under the group for resource servers and client apps on other platform.
 
-### Gitbook
+### Docpress
 
-Gitbook is used to generate documentation. Gitbook should be installed globally. Following command executed from repo root will result in building of gitbook
+Docpress is used to generate documentation. Docpress should be installed globally. Following command executed from repo root will result in building of documentation.
 
-```sh
-gitbook build docs public
+```shell
+docpress b
 ```
 
-### TypeDoc
+### Compodoc
 
-TypeDoc is used to generate API documentation from TypeScript Code. It is done as part of CI automatically and linked in Gitbook's Summary menu. To manually generate docs following command can be executed
+Compodoc is used to generate API documentation from TypeScript Code. It is done as part of CI automatically and linked in documentation menu. To manually generate docs following command can be executed
 
-```sh
+```shell
 npm run docs
 ```
 
 ### Lerna
 
-Lerna is used to publish releases on git and npm. Lerna is also used to bootstrap development environment.
+Lerna is used to publish releases on git. Lerna is also used to bootstrap development environment.
 
 App specific dependencies will be discussed in detail under app's section.

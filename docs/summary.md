@@ -37,7 +37,7 @@ It allows dynamic client registration and client registration for third party ap
 
 ### Development
 
-Start development environment. Refer [section](/development/README.md)
+Start development environment. Refer [section](development/README.md)
 
 DO NOT setup local development servers to develop apps based on this authorization server and related service.
 
@@ -45,17 +45,17 @@ Host a common setup under a kubernetes namespace for developers.
 
 ### Production
 
-Refer Kubernetes [section](/kubernetes/README.md)
+Refer Kubernetes [section](kubernetes/README.md)
 
 ### TypeScript API Documentation
 
-* [Authorization Server]({{ book.docUrl }}/api/authorization-server/)
-* [Infrastructure Console]({{ book.docUrl }}/api/infrastructure-console/)
-* [Identity Provider]({{ book.docUrl }}/api/identity-provider/)
-* [Communication Server]({{ book.docUrl }}/api/communication-server/)
-* [Admin Client]({{ book.docUrl }}/api/admin-client/)
-* [Authorization Client]({{ book.docUrl }}/api/authorization-client/)
-* [Identity Provider]({{ book.docUrl }}/api/identity-client/)
+* [Authorization Server](https://castlecraft.gitlab.io/building-blocks/api/authorization-server/)
+* [Infrastructure Console](https://castlecraft.gitlab.io/building-blocks/api/infrastructure-console/)
+* [Identity Provider](https://castlecraft.gitlab.io/building-blocks/api/identity-provider/)
+* [Communication Server](https://castlecraft.gitlab.io/building-blocks/api/communication-server/)
+* [Admin Client](https://castlecraft.gitlab.io/building-blocks/api/admin-client/)
+* [Authorization Client](https://castlecraft.gitlab.io/building-blocks/api/authorization-client/)
+* [Identity Provider](https://castlecraft.gitlab.io/building-blocks/api/identity-client/)
 
 ### ReST API Swagger Docs
 

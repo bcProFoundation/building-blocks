@@ -4,7 +4,7 @@
 
 `.env` file for initializing following variables needs to be setup in project root to configure environment. This file is ignored by git.
 
-```
+```shell
 SESSION_SECRET=secret
 COOKIE_MAX_AGE=7.884e+9
 SESSION_NAME=AS_SESSION

@@ -500,7 +500,7 @@ pack_production_admin_client:
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client
 
 pages:
-  image: node:12
+  image: node:latest
   stage: docs
   only:
     - master
@@ -509,17 +509,15 @@ pages:
     - curl -fsSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
     # Install nodejs global packages
-    - npm install -g lerna gitbook-cli typedoc typescript
+    - npm install -g lerna docpress
 
     # Install nodejs dependencies
     - npm install
     - lerna clean -y
     - lerna bootstrap
   script:
-    # Build GitBook
-    # - gitbook fetch latest # fetch latest stable version
-    # - gitbook install # add any requested plugins in book.json
-    - gitbook build docs public # build to public path
+    # Build docpress to public path
+    - docpress b
 
     # Build TypeScript API docs
     - npm run docs

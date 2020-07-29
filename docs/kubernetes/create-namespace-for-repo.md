@@ -2,7 +2,7 @@
 
 reference : https://jeremievallee.com/2018/05/28/kubernetes-rbac-namespace-user.html
 
-```sh
+```shell
 wget -c https://gitlab.com/castlecraft/building-blocks/raw/develop/kubernetes/deploy/create-namespace-for-access/example-access.yaml
 mv example-access.yaml <namespace>-access.yaml # change to your settings
 kubectl create -f <namespace>-access.yaml # use changed file
@@ -10,7 +10,7 @@ kubectl create -f <namespace>-access.yaml # use changed file
 
 ### Get secrets
 
-```sh
+```shell
 kubectl describe sa example-user -n example
 
 example-user-token-xxxxx
@@ -18,13 +18,13 @@ example-user-token-xxxxx
 
 ### Get tokens
 
-```sh
+```shell
 kubectl get secret example-user-token-xxxxx -n example -o "jsonpath={.data.token}" | base64 -d
 ```
 
 ### Get Certificate
 
-```sh
+```shell
 kubectl get secret example-user-token-xxxxx -n example -o "jsonpath={.data['ca\.crt']}"
 ```
 
@@ -66,7 +66,7 @@ current-context: example
 
 ### Pack Config for gitlab / CI
 
-```sh
+```shell
 cat example-config.yaml | base64 | pbcopy
 ```
 
@@ -74,6 +74,6 @@ To use configuration in CI, export it into an environment variable, base64 decod
 
 ### Install Tiller
 
-```
+```shell
 helm init --service-account example-user --tiller-namespace example
 ```
