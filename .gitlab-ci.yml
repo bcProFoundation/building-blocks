@@ -367,7 +367,7 @@ pack_production_authorization_server:
   script:
     # get latest tag for app in master branch
     # Authorization Server
-    - export VERSION=$(git tag --list "authorization-server@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
+    - export VERSION=$(git tag --list --sort=-version:refname | sed -n 1p | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
     - docker build -t authorization-server apps/authorization-server
     - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:$VERSION
     - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:latest
@@ -388,7 +388,7 @@ pack_production_authorization_client:
   script:
     # get latest tag for app in master branch
     # Authorization Client
-    - export VERSION=$(git tag --list "authorization-client@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
+    - export VERSION=$(git tag --list --sort=-version:refname | sed -n 1p | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
     - docker build -t authorization-client frontends/authorization-client
     - docker tag authorization-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-client:$VERSION
     - docker tag authorization-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-client:latest
@@ -409,7 +409,7 @@ pack_production_communication_server:
   script:
     # get latest tag for app in master branch
     # Communication Server
-    - export VERSION=$(git tag --list "communication-server@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
+    - export VERSION=$(git tag --list --sort=-version:refname | sed -n 1p | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
     - docker build -t communication-server apps/communication-server
     - docker tag communication-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/communication-server:$VERSION
     - docker tag communication-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/communication-server:latest
@@ -430,7 +430,7 @@ pack_production_identity_provider:
   script:
     # get latest tag for app in master branch
     # Idenitiy Provider
-    - export VERSION=$(git tag --list "identity-provider@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
+    - export VERSION=$(git tag --list --sort=-version:refname | sed -n 1p | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
     - docker build -t identity-provider apps/identity-provider
     - docker tag identity-provider $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:$VERSION
     - docker tag identity-provider $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:latest
@@ -451,7 +451,7 @@ pack_production_identity_client:
   script:
     # get latest tag for app in master branch
     # Identity Client
-    - export VERSION=$(git tag --list "identity-client@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
+    - export VERSION=$(git tag --list --sort=-version:refname | sed -n 1p | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
     - docker build -t identity-client frontends/identity-client
     - docker tag identity-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-client:$VERSION
     - docker tag identity-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-client:latest
@@ -472,7 +472,7 @@ pack_production_infrastructure_console:
   script:
     # get latest tag for app in master branch
     # Infrastructure Console
-    - export VERSION=$(git tag --list "infrastructure-console@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
+    - export VERSION=$(git tag --list --sort=-version:refname | sed -n 1p | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
     - docker build -t infrastructure-console apps/infrastructure-console
     - docker tag infrastructure-console $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:$VERSION
     - docker tag infrastructure-console $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:latest
@@ -493,7 +493,7 @@ pack_production_admin_client:
   script:
     # get latest tag for app in master branch
     # Admin Client
-    - export VERSION=$(git tag --list "admin-client@*" --sort=-version:refname | sed -n 1p | sed -e 's#.*@\(\)#\1#')
+    - export VERSION=$(git tag --list --sort=-version:refname | sed -n 1p | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
     - docker build -t admin-client frontends/admin-client
     - docker tag admin-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client:$VERSION
     - docker tag admin-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client:latest
