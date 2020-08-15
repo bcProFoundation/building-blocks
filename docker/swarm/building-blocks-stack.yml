@@ -1,0 +1,179 @@
+version: "3.7"
+
+services:
+  authorization-client:
+    image: registry.gitlab.com/castlecraft/building-blocks/authorization-client:${VERSION? Variable VERSION not set}
+    environment:
+      - API_HOST=authorization-server
+      - API_PORT=3000
+    networks:
+      - mongodb-network
+      - traefik-public
+    deploy:
+      restart_policy:
+        condition: on-failure
+      labels:
+        - "traefik.enable=true"
+        - "traefik.docker.network=traefik-public"
+        - "traefik.constraint-label=traefik-public"
+        - "traefik.http.routers.authorization-client.rule=Host(`${AS_DOMAIN?Variable AS_DOMAIN not set}`)"
+        - "traefik.http.routers.authorization-client.entrypoints=http"
+        - "traefik.http.routers.authorization-client.middlewares=https-redirect"
+        - "traefik.http.routers.authorization-client-https.rule=Host(`${AS_DOMAIN?Variable AS_DOMAIN not set}`)"
+        - "traefik.http.routers.authorization-client-https.entrypoints=https"
+        - "traefik.http.routers.authorization-client-https.tls=true"
+        - "traefik.http.routers.authorization-client-https.tls.certresolver=le"
+        - "traefik.http.services.authorization-client.loadbalancer.server.port=8080"
+
+  admin-client:
+    image: registry.gitlab.com/castlecraft/building-blocks/admin-client:${VERSION? Variable VERSION not set}
+    environment:
+      - API_HOST=infrastructure-console
+      - API_PORT=5000
+    networks:
+      - mongodb-network
+      - traefik-public
+    deploy:
+      restart_policy:
+        condition: on-failure
+      labels:
+        - "traefik.enable=true"
+        - "traefik.docker.network=traefik-public"
+        - "traefik.constraint-label=traefik-public"
+        - "traefik.http.routers.admin-client.rule=Host(`${IC_DOMAIN?Variable IC_DOMAIN not set}`)"
+        - "traefik.http.routers.admin-client.entrypoints=http"
+        - "traefik.http.routers.admin-client.middlewares=https-redirect"
+        - "traefik.http.routers.admin-client-https.rule=Host(`${IC_DOMAIN?Variable IC_DOMAIN not set}`)"
+        - "traefik.http.routers.admin-client-https.entrypoints=https"
+        - "traefik.http.routers.admin-client-https.tls=true"
+        - "traefik.http.routers.admin-client-https.tls.certresolver=le"
+        - "traefik.http.services.admin-client.loadbalancer.server.port=8080"
+
+  identity-client:
+    image: registry.gitlab.com/castlecraft/building-blocks/identity-client:${VERSION? Variable VERSION not set}
+    environment:
+      - API_HOST=identity-provider
+      - API_PORT=3200
+    networks:
+      - mongodb-network
+      - traefik-public
+    deploy:
+      restart_policy:
+        condition: on-failure
+      labels:
+        - "traefik.enable=true"
+        - "traefik.docker.network=traefik-public"
+        - "traefik.constraint-label=traefik-public"
+        - "traefik.http.routers.identity-client.rule=Host(`${ID_DOMAIN?Variable ID_DOMAIN not set}`)"
+        - "traefik.http.routers.identity-client.entrypoints=http"
+        - "traefik.http.routers.identity-client.middlewares=https-redirect"
+        - "traefik.http.routers.identity-client-https.rule=Host(`${ID_DOMAIN?Variable ID_DOMAIN not set}`)"
+        - "traefik.http.routers.identity-client-https.entrypoints=https"
+        - "traefik.http.routers.identity-client-https.tls=true"
+        - "traefik.http.routers.identity-client-https.tls.certresolver=le"
+        - "traefik.http.services.identity-client.loadbalancer.server.port=8080"
+
+  authorization-server:
+    image: registry.gitlab.com/castlecraft/building-blocks/authorization-server:${VERSION? Variable VERSION not set}
+    deploy:
+      restart_policy:
+        condition: on-failure
+    environment:
+      - NODE_ENV=production
+      - SESSION_SECRET=${SESSION_SECRET}
+      - COOKIE_MAX_AGE=${COOKIE_MAX_AGE}
+      - SESSION_NAME=${SESSION_NAME}
+      - TOKEN_VALIDITY=${TOKEN_VALIDITY}
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${AS_DB_NAME}
+      - DB_USER=${AS_DB_USER}
+      - DB_PASSWORD=${AS_DB_PASSWORD}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PROTO=${REDIS_PROTO}
+    networks:
+      - mongodb-network
+
+  communication-server:
+    image: registry.gitlab.com/castlecraft/building-blocks/communication-server:${VERSION? Variable VERSION not set}
+    deploy:
+      restart_policy:
+        condition: on-failure
+      labels:
+        - "traefik.enable=true"
+        - "traefik.docker.network=traefik-public"
+        - "traefik.constraint-label=traefik-public"
+        - "traefik.http.routers.communication-server.rule=Host(`${CS_DOMAIN?Variable CS_DOMAIN not set}`)"
+        - "traefik.http.routers.communication-server.entrypoints=http"
+        - "traefik.http.routers.communication-server.middlewares=https-redirect"
+        - "traefik.http.routers.communication-server-https.rule=Host(`${CS_DOMAIN?Variable CS_DOMAIN not set}`)"
+        - "traefik.http.routers.communication-server-https.entrypoints=https"
+        - "traefik.http.routers.communication-server-https.tls=true"
+        - "traefik.http.routers.communication-server-https.tls.certresolver=le"
+        - "traefik.http.services.communication-server.loadbalancer.server.port=4100"
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${CS_DB_NAME}
+      - DB_USER=${CS_DB_USER}
+      - DB_PASSWORD=${CS_DB_PASSWORD}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PROTO=${REDIS_PROTO}
+    networks:
+      - mongodb-network
+      - traefik-public
+
+  identity-provider:
+    image: registry.gitlab.com/castlecraft/building-blocks/identity-provider:${VERSION? Variable VERSION not set}
+    deploy:
+      restart_policy:
+        condition: on-failure
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${ID_DB_NAME}
+      - DB_USER=${ID_DB_USER}
+      - DB_PASSWORD=${ID_DB_PASSWORD}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PROTO=${REDIS_PROTO}
+    networks:
+      - mongodb-network
+
+  infrastructure-console:
+    image: registry.gitlab.com/castlecraft/building-blocks/infrastructure-console:${VERSION? Variable VERSION not set}
+    deploy:
+      restart_policy:
+        condition: on-failure
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${IC_DB_NAME}
+      - DB_USER=${IC_DB_USER}
+      - DB_PASSWORD=${IC_DB_PASSWORD}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PROTO=${REDIS_PROTO}
+    networks:
+      - mongodb-network
+
+  redis-event-bus:
+    image: bitnami/redis:6.0.6-debian-10-r0
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    networks:
+      - mongodb-network
+    deploy:
+      restart_policy:
+        condition: on-failure
+
+networks:
+  traefik-public:
+    external: true
+  mongodb-network:
+    external: true

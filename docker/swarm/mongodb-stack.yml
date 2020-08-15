@@ -1,0 +1,25 @@
+version: '3.7'
+
+services:
+  global-mongodb:
+    image: 'bitnami/mongodb:4.2.8'
+    environment:
+      - "MONGODB_ROOT_PASSWORD=${MONGODB_ROOT_PASSWORD}"
+      - "MONGODB_DATABASE=${MONGODB_DATABASE}"
+      - "MONGODB_USERNAME=${MONGODB_USERNAME}"
+      - "MONGODB_PASSWORD=${MONGODB_PASSWORD}"
+    volumes:
+      - 'mongodb-vol:/bitnami/mongodb'
+    networks:
+      - mongodb-network
+    deploy:
+      restart_policy:
+        condition: on-failure
+
+volumes:
+  mongodb-vol:
+
+networks:
+  mongodb-network:
+    name: mongodb-network
+    attachable: true

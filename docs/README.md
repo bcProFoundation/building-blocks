@@ -40,3 +40,6 @@
     * [Create Namespace for access](kubernetes/create-namespace-for-repo.md)
     * [Production Deployment](kubernetes/production-deployment.md)
     * [MongoDB Backup CronJob](kubernetes/mongodb-backup-cronjob.md)
+
+* Docker Swarm
+    * [Production Deployment](docker-swarm/README.md)
