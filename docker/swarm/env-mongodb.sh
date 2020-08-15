@@ -1,0 +1,4 @@
+export MONGODB_DATABASE=building-blocks
+export MONGODB_USERNAME=building-blocks
+export MONGODB_PASSWORD=changeit
+export MONGODB_ROOT_PASSWORD=changeit

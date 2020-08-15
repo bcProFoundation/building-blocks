@@ -20,10 +20,22 @@ if [[ -z "$ORGANIZATION_NAME" ]]; then
     exit 1
 fi
 
-export AUTH_SERVER="http://accounts.localhost:4210"
-export INFRASTRUCTURE_CONSOLE="http://admin.localhost:4220"
-export IDENTITY_PROVIDER="http://myaccount.localhost:4420"
-export COMMUNICATION_SERVER="http://connect.localhost:4100"
+if [[ -z "$AUTH_SERVER" ]]; then
+    export AUTH_SERVER="http://accounts.localhost:4210"
+fi
+
+if [[ -z "$INFRASTRUCTURE_CONSOLE" ]]; then
+    export INFRASTRUCTURE_CONSOLE="http://admin.localhost:4220"
+fi
+
+if [[ -z "$IDENTITY_PROVIDER" ]]; then
+    export IDENTITY_PROVIDER="http://myaccount.localhost:4420"
+fi
+
+if [[ -z "$COMMUNICATION_SERVER" ]]; then
+    export COMMUNICATION_SERVER="http://connect.localhost:4100"
+fi
+
 export script_dir="$(dirname "$0")"
 
 echo "Setting Up Authorization Server and Infrastructure Console"
