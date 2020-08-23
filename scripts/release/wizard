@@ -54,12 +54,12 @@ def main():
             print('Updating values.yaml with package version for ' + package.get('package_name'))
             update_values(
                 package.get('package_name'),
-                package.get("remote_version")
+                version.get("remote_version")
             )
 
         print('Updating Chart.yaml')
         chart_dict = update_chart(
-            packages[0].get('remote_version'),
+            version.get('remote_version'),
             args.helm_chart_bump_type
         )
 
@@ -77,16 +77,11 @@ def get_repo_tags(repo):
     return repo.tags
 
 
-def get_app_version(app_name, repo_tags):
-    # e.g. authorization-server becomes authorization-server@
-    app_name = f'{app_name}@'
-    # ['authorization-server', '@', '5.0.0']
-    version_components = sorted(list(filter(lambda t: f'{app_name}' in t.name, repo_tags)), key=lambda t: t.commit.committed_date)[-1].name
-    try:
-        return version_components.split('@')[1]
-    except IndexError as error:
-        print(error)
-        exit(1)
+def get_app_version(repo_tags):
+    return sorted(
+        list(repo_tags),
+        key=lambda t: t.commit.committed_date,
+    )[-1].name.lstrip('v')
 
 
 def get_yaml_file(file_name):
@@ -127,7 +122,7 @@ def get_backend_versions(repo_tags, values_dict):
             server = 'infraConsole'
 
         versions += [{
-            "remote_version": get_app_version(backend, repo_tags),
+            "remote_version": get_app_version(repo_tags),
             "values_version": values_dict[server][imageKey]['tag'],
             "package_name": backend
         }]
@@ -154,7 +149,7 @@ def get_frontend_versions(repo_tags, values_dict):
             server = 'infraConsole'
 
         versions += [{
-            "remote_version": get_app_version(frontend, repo_tags),
+            "remote_version": get_app_version(repo_tags),
             "values_version": values_dict[server]['frontendImage']['tag'],
             "package_name": frontend
         }]
@@ -188,7 +183,7 @@ def update_values(package, version):
 
     packages = {
         "authorization-server": { "image": "backendImage", "name": "authServer" },
-        "communication-server": { "image": "backendImage", "name": "comServer" },
+        "communication-server": { "image": "image", "name": "comServer" },
         "identity-provider": { "image": "backendImage", "name": "idProvider" },
         "infrastructure-console": { "image": "backendImage", "name": "infraConsole" },
         "admin-client": { "image": "frontendImage", "name": "infraConsole" },

@@ -20,8 +20,8 @@ authServer:
 
   # Env variables
   # sessionSecret: 'changethis'
-  cookieMaxAge: !!string "7.884e+9"
-  tokenValidity: !!string "3600"
+  cookieMaxAge: "7.884e+9"
+  tokenValidity: "3600"
   sessionName: "AS_SESSION"
 
   # Database Credentials
@@ -32,11 +32,11 @@ authServer:
   # Images
   backendImage:
     repository: registry.gitlab.com/castlecraft/building-blocks/authorization-server
-    tag: "5.0.0"
+    tag: "5.0.2"
     pullPolicy: IfNotPresent
   frontendImage:
     repository: registry.gitlab.com/castlecraft/building-blocks/authorization-client
-    tag: "5.0.0"
+    tag: "5.0.2"
     pullPolicy: IfNotPresent
 
   # Service
@@ -52,9 +52,9 @@ authServer:
       # kubernetes.io/tls-acme: "true"
       # cert-manager.io/cluster-issuer: letsencrypt-prod
     hosts:
-      - host: auth-server.local
-        paths:
-          - /
+    - host: auth-server.local
+      paths:
+      - /
     tls: []
     #  - secretName: auth-server-tls
     #    hosts:
@@ -86,7 +86,7 @@ comServer:
   # Images
   image:
     repository: registry.gitlab.com/castlecraft/building-blocks/communication-server
-    tag: "5.0.0"
+    tag: "5.0.2"
     pullPolicy: IfNotPresent
 
   # Service
@@ -102,9 +102,9 @@ comServer:
       # kubernetes.io/tls-acme: "true"
       # cert-manager.io/cluster-issuer: letsencrypt-prod
     hosts:
-      - host: com-server.local
-        paths:
-          - /
+    - host: com-server.local
+      paths:
+      - /
     tls: []
     #  - secretName: com-server-tls
     #    hosts:
@@ -135,11 +135,11 @@ idProvider:
   # Images
   backendImage:
     repository: registry.gitlab.com/castlecraft/building-blocks/identity-provider
-    tag: "5.0.0"
+    tag: "5.0.2"
     pullPolicy: IfNotPresent
   frontendImage:
     repository: registry.gitlab.com/castlecraft/building-blocks/identity-client
-    tag: "5.0.0"
+    tag: "5.0.2"
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
@@ -153,9 +153,9 @@ idProvider:
       # kubernetes.io/tls-acme: "true"
       # cert-manager.io/cluster-issuer: letsencrypt-prod
     hosts:
-      - host: id-server.local
-        paths:
-          - /
+    - host: id-server.local
+      paths:
+      - /
     tls: []
     #  - secretName: id-server-tls
     #    hosts:
@@ -187,11 +187,11 @@ infraConsole:
   # Images
   backendImage:
     repository: registry.gitlab.com/castlecraft/building-blocks/infrastructure-console
-    tag: "5.0.0"
+    tag: "5.0.2"
     pullPolicy: IfNotPresent
   frontendImage:
     repository: registry.gitlab.com/castlecraft/building-blocks/admin-client
-    tag: "5.0.0"
+    tag: "5.0.2"
     pullPolicy: IfNotPresent
 
   # Service
@@ -207,9 +207,9 @@ infraConsole:
       # kubernetes.io/tls-acme: "true"
       # cert-manager.io/cluster-issuer: letsencrypt-prod
     hosts:
-      - host: admin-server.local
-        paths:
-          - /
+    - host: admin-server.local
+      paths:
+      - /
     tls: []
     #  - secretName: admin-server-tls
     #    hosts:
