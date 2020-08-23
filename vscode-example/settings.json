@@ -1,0 +1,11 @@
+{
+  "eslint.workingDirectories": [
+    { "directory": "apps/authorization-server", "changeProcessCWD": true },
+    { "directory": "apps/communication-server", "changeProcessCWD": true },
+    { "directory": "apps/identity-provider", "changeProcessCWD": true },
+    { "directory": "apps/infrastructure-console", "changeProcessCWD": true },
+    { "directory": "frontends/admin-client", "changeProcessCWD": true },
+    { "directory": "frontends/authorization-client", "changeProcessCWD": true },
+    { "directory": "frontends/identity-client", "changeProcessCWD": true }
+  ]
+}
