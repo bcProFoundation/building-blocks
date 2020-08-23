@@ -1,0 +1,81 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "authorization-server",
+            "type": "npm",
+            "script": "start:debug",
+            "path": "apps/authorization-server/",
+            "problemMatcher": []
+        },
+        {
+            "label": "infrastructure-console",
+            "type": "npm",
+            "script": "start:debug",
+            "path": "apps/infrastructure-console/",
+            "problemMatcher": []
+        },
+        {
+            "label": "identity-provider",
+            "type": "npm",
+            "script": "start:debug",
+            "path": "apps/identity-provider/",
+            "problemMatcher": []
+        },
+        {
+            "label": "communication-server",
+            "type": "npm",
+            "script": "start:debug",
+            "path": "apps/communication-server/",
+            "problemMatcher": []
+        },
+        {
+            "label": "authorization-client",
+            "type": "npm",
+            "script": "start",
+            "path": "frontends/authorization-client/",
+            "problemMatcher": []
+        },
+        {
+            "label": "admin-client",
+            "type": "npm",
+            "script": "start",
+            "path": "frontends/admin-client/",
+            "problemMatcher": []
+        },
+        {
+            "label": "identity-client",
+            "type": "npm",
+            "script": "start",
+            "path": "frontends/identity-client/",
+            "problemMatcher": []
+        },
+        {
+            "label": "building-blocks-frontend",
+            "dependsOn": [
+                "authorization-client",
+                "admin-client",
+                "identity-client"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "building-blocks-backend",
+            "dependsOn": [
+                "authorization-server",
+                "infrastructure-console",
+                "identity-provider",
+                "communication-server"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "building-blocks-all",
+            "dependsOn": [
+                "building-blocks-backend",
+                "building-blocks-frontend"
+            ],
+            "problemMatcher": []
+        }
+    ]
+}
