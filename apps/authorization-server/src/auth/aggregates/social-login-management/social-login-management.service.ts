@@ -4,7 +4,7 @@ import { SocialLoginService } from '../../entities/social-login/social-login.ser
 import { SocialLoginRemovedEvent } from '../../events/social-login-removed/social-login-removed.event';
 import { SocialLoginUserSignedUpEvent } from '../../events';
 import { UserService } from '../../../user-management/entities/user/user.service';
-import { CreateSocialLoginDto } from 'auth/controllers/social-login/social-login-create.dto';
+import { CreateSocialLoginDto } from '../../controllers/social-login/social-login-create.dto';
 import { SocialLoginAddedEvent } from '../../events/social-login-added/social-login-added.event';
 import { SocialLogin } from '../../entities/social-login/social-login.interface';
 import { SocialLoginModifiedEvent } from '../../events/social-login-modified/social-login-modified.event';

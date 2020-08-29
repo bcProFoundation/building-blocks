@@ -4,7 +4,7 @@ import { ClientManagementAggregateService } from '../../aggregates';
 import { AddOAuth2ScopeHandler } from './add-oauth2scope.handler';
 import { AddOAuth2ScopeCommand } from './add-oauth2scope.command';
 import { CreateScopeDto } from '../../../user-management/policies';
-import { Scope } from 'client-management/entities/scope/scope.interface';
+import { Scope } from '../../entities/scope/scope.interface';
 
 describe('Command: AddOAuth2ScopeHandler', () => {
   let commandBus$: CommandBus;

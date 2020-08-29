@@ -4,7 +4,7 @@ import { ClientManagementAggregateService } from '../../aggregates';
 import { CreateClientDto } from '../../entities/client/create-client.dto';
 import { ModifyClientCommand } from './modify-client.command';
 import { ModifyClientHandler } from './modify-client.handler';
-import { Client } from 'client-management/entities/client/client.interface';
+import { Client } from '../../entities/client/client.interface';
 
 describe('Command: ModifyClientHandler', () => {
   let commandBus$: CommandBus;

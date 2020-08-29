@@ -3,7 +3,7 @@ import { CqrsModule, EventBus } from '@nestjs/cqrs';
 import { WebAuthnKeyRegisteredHandler } from './webauthn-key-registered.handler';
 import { WebAuthnKeyRegisteredEvent } from './webauthn-key-registered.event';
 import { UserAuthenticatorService } from '../../../user-management/entities/user-authenticator/user-authenticator.service';
-import { UserAuthenticator } from 'user-management/entities/user-authenticator/user-authenticator.interface';
+import { UserAuthenticator } from '../../../user-management/entities/user-authenticator/user-authenticator.interface';
 
 describe('Event: WebAuthnKeyRegisteredHandler', () => {
   let eventBus$: EventBus;

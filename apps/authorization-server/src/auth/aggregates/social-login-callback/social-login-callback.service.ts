@@ -8,7 +8,6 @@ import { CommandBus } from '@nestjs/cqrs';
 import { from, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { v4 as uuidv4 } from 'uuid';
-import { AxiosResponse } from 'axios';
 import { stringify } from 'querystring';
 import { OAuth2TokenRequest } from '../../../auth/controllers/social-login/oauth2-token-request.interface';
 import { i18n } from '../../../i18n/i18n.config';
@@ -108,58 +107,62 @@ export class SocialLoginCallbackService {
                   },
                 })
                 .pipe(
-                  switchMap((tokenResponse: AxiosResponse) => {
-                    const token = tokenResponse.data;
-                    // TODO: OIDC and read id_token
+                  switchMap(
+                    (tokenResponse: { data: { access_token: string } }) => {
+                      const token = tokenResponse.data;
+                      // TODO: OIDC and read id_token
 
-                    // Check Profile Endpoint
-                    return this.http
-                      .get(socialLoginObject.profileURL, {
-                        headers: {
-                          authorization: 'Bearer ' + token.access_token,
-                        },
-                      })
-                      .pipe(
-                        switchMap((profileResponse: AxiosResponse) => {
-                          const profile = profileResponse.data;
-                          // Check Profile and set user.
-                          // TODO: Store Upstream sub claim on local server
-                          return from(
-                            this.userService.findOne({
-                              email: profile.email,
-                            }),
-                          ).pipe(
-                            switchMap(user => {
-                              if (!user) {
-                                if (settings.disableSignup) {
-                                  return done(
-                                    new UnauthorizedException({
-                                      message: i18n.__('Signup Disabled'),
-                                    }),
-                                  );
-                                }
+                      // Check Profile Endpoint
+                      return this.http
+                        .get(socialLoginObject.profileURL, {
+                          headers: {
+                            authorization: 'Bearer ' + token.access_token,
+                          },
+                        })
+                        .pipe(
+                          switchMap(
+                            (profileResponse: { data: { email: string } }) => {
+                              const profile = profileResponse.data;
+                              // Check Profile and set user.
+                              // TODO: Store Upstream sub claim on local server
+                              return from(
+                                this.userService.findOne({
+                                  email: profile.email,
+                                }),
+                              ).pipe(
+                                switchMap(user => {
+                                  if (!user) {
+                                    if (settings.disableSignup) {
+                                      return done(
+                                        new UnauthorizedException({
+                                          message: i18n.__('Signup Disabled'),
+                                        }),
+                                      );
+                                    }
 
-                                return from(
-                                  this.signUpSocialLoginUser(
-                                    profile,
-                                    socialLogin,
-                                  ),
-                                );
-                              }
+                                    return from(
+                                      this.signUpSocialLoginUser(
+                                        profile,
+                                        socialLogin,
+                                      ),
+                                    );
+                                  }
 
-                              if (user.disabled) {
-                                return done(
-                                  new ForbiddenException(
-                                    i18n.__('User Disabled'),
-                                  ),
-                                );
-                              }
-                              return of(user);
-                            }),
-                          );
-                        }),
-                      );
-                  }),
+                                  if (user.disabled) {
+                                    return done(
+                                      new ForbiddenException(
+                                        i18n.__('User Disabled'),
+                                      ),
+                                    );
+                                  }
+                                  return of(user);
+                                }),
+                              );
+                            },
+                          ),
+                        );
+                    },
+                  ),
                 );
             }
           }),
