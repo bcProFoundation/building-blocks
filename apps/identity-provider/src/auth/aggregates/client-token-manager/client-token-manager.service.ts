@@ -1,7 +1,6 @@
 import { ForbiddenException, Injectable, HttpService } from '@nestjs/common';
 import { from, of, Observable, throwError } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
-import { AxiosResponse } from 'axios';
 import { stringify } from 'querystring';
 import { TokenCache } from '../../entities/token-cache/token-cache.entity';
 import { TokenCacheService } from '../../entities/token-cache/token-cache.service';
@@ -16,6 +15,7 @@ import {
   BASIC,
   CONTENT_TYPE,
 } from '../../../constants/app-strings';
+import { TokenResponse } from './token-response.interface';
 
 @Injectable()
 export class ClientTokenManagerService {
@@ -25,7 +25,7 @@ export class ClientTokenManagerService {
     private readonly http: HttpService,
   ) {}
 
-  payloadMapper(res: AxiosResponse) {
+  payloadMapper(res: { data: TokenResponse }) {
     return {
       accessToken: res.data.access_token,
       refreshToken: res.data.refresh_token,

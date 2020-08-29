@@ -3,7 +3,7 @@ import { CommandBus, CqrsModule, EventPublisher } from '@nestjs/cqrs';
 import { ClientManagementAggregateService } from '../../aggregates';
 import { UpdateClientSecretCommand } from './update-client-secret.command';
 import { UpdateClientSecretHandler } from './update-client-secret.handler';
-import { Client } from 'client-management/entities/client/client.interface';
+import { Client } from '../../entities/client/client.interface';
 
 describe('Command: UpdateClientSecretHandler', () => {
   let commandBus$: CommandBus;
