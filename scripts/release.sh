@@ -1,7 +1,7 @@
 #!/bin/bash
 
 release_script_dir="$(dirname "$0")"
-$release_script_dir/release/setup.sh
+$release_script_dir/setup.sh
 
 . ./env/bin/activate
 
