@@ -2,6 +2,13 @@ import { Injectable, HttpService } from '@nestjs/common';
 import { settingsAlreadyExists } from '../../../exceptions';
 import { ServerSettings } from '../../entities/server-settings/server-settings.entity';
 import { ServerSettingsService } from '../../entities/server-settings/server-settings.service';
+import {
+  AUTHORIZATION_ENDPOINT,
+  TOKEN_ENDPOINT,
+  USERINFO_ENDPOINT,
+  REVOCATION_ENDPOINT,
+  INTROSPECTION_ENDPOINT,
+} from '../../../constants/url-strings';
 
 @Injectable()
 export class SetupService {
@@ -16,6 +23,12 @@ export class SetupService {
     if (await this.serverSettingsService.count()) {
       throw settingsAlreadyExists;
     }
+
+    params.callbackURLs = [
+      params.appURL + '/index.html',
+      params.appURL + '/silent-refresh.html',
+    ];
+
     this.http
       .get(params.authServerURL + '/.well-known/openid-configuration')
       .subscribe({
@@ -25,15 +38,23 @@ export class SetupService {
           params.profileURL = response.data.userinfo_endpoint;
           params.revocationURL = response.data.revocation_endpoint;
           params.introspectionURL = response.data.introspection_endpoint;
-          params.callbackURLs = [
-            params.appURL + '/index.html',
-            params.appURL + '/silent-refresh.html',
-          ];
-          this.idpSettings = await this.serverSettingsService.save(params);
-          return this.idpSettings;
+          this.serverSettingsService
+            .save(params)
+            .then(saved => {})
+            .catch(err => {});
         },
         error: error => {
-          // TODO: Log errors
+          params.authorizationURL =
+            params.authServerURL + AUTHORIZATION_ENDPOINT;
+          params.tokenURL = params.authServerURL + TOKEN_ENDPOINT;
+          params.profileURL = params.authServerURL + USERINFO_ENDPOINT;
+          params.revocationURL = params.authServerURL + REVOCATION_ENDPOINT;
+          params.introspectionURL =
+            params.authServerURL + INTROSPECTION_ENDPOINT;
+          this.serverSettingsService
+            .save(params)
+            .then(saved => {})
+            .catch(err => {});
         },
       });
   }

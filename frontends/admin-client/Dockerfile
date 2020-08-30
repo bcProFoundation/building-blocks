@@ -1,10 +1,12 @@
 FROM node:latest
+
+ARG BUILD_ARGS="-- --prod=true"
 # Copy and build app
 COPY . /home/craft/admin-client
 WORKDIR /home/craft
 RUN cd admin-client \
     && npm install \
-    && npm run build
+    && npm run build ${BUILD_ARGS}
 
 FROM nginx:latest
 COPY --from=0 /home/craft/admin-client/dist/admin-client /var/www/html
