@@ -1,0 +1,324 @@
+#!/usr/bin/env python3
+import argparse
+import requests
+import json
+from time import sleep
+from urllib.parse import (
+    urlsplit,
+    parse_qs,
+    quote,
+)
+
+DEFAULT_ADMIN_PASSWORD = "Secret@1234"
+
+class Colors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+def main():
+    args = get_args_parser().parse_args()
+    print(f"Setting Up Authorization Server and Infrastructure Console")
+    setup_as(
+        args.auth_server_url,
+        args.admin_name,
+        args.admin_email,
+        args.admin_password,
+        args.admin_phone,
+        args.infra_console_url,
+        args.org_name,
+    )
+
+    print("\nCreating Clients")
+    sleep(1)
+
+    info = requests.get(args.infra_console_url + '/info').json()
+    token = get_token(args.admin_email, args.admin_password, info)
+
+    # Setup Identity Provider
+    print(f"Setup {args.idp_client_name}")
+    add_client(
+        token,
+        args.infra_console_url,
+        args.idp_client_name,
+        args.idp_client_url
+    )
+
+    # Setup Communication Server
+    print(f"Setup {args.cs_client_name}")
+    add_client(
+        token,
+        args.infra_console_url,
+        args.cs_client_name,
+        args.cs_client_url
+    )
+
+    idp = get_client_by_name(args.idp_client_name, info, token)
+    cs = get_client_by_name(args.cs_client_name, info, token)
+
+    print(f"\nUpdate auth server settings for {Colors.BOLD}{args.org_name}{Colors.ENDC}")
+    update_auth_server_settings(info, token, idp, cs)
+
+    print(f"\nVisit Admin URL {args.infra_console_url}")
+    print(f"Login using email '{args.admin_email}' or phone '{args.admin_phone}'")
+    print(f"Use the password configured during setup wizard, default password {DEFAULT_ADMIN_PASSWORD}")
+
+    print(f"\n{Colors.BOLD}URLs :{Colors.ENDC}")
+    print(f"Authorization Server {args.auth_server_url}")
+    print(f"Communication Server {args.cs_client_url}")
+    print(f"Identity Provider {args.idp_client_url}")
+
+
+def get_client_by_name(name, info, token):
+    client = requests.get(
+        info.get('authServerURL') + f'/client/v1/list?search={quote(name)}',
+        headers={
+            'Authorization': f'Bearer {token}'
+        }
+    ).json().get('docs', [])
+    if len(client) > 0:
+        return client[0]
+    return {}
+
+def get_args_parser():
+    parser = argparse.ArgumentParser(
+        description='Setup wizard for building blocks',
+        add_help=True,
+    )
+    parser.add_argument(
+        '--admin-email',
+        default='admin@example.com',
+        type=str,
+        help='Valid administrator email',
+    )
+    parser.add_argument(
+        '--admin-password',
+        default=DEFAULT_ADMIN_PASSWORD,
+        type=str,
+        help='Valid OWASP compliant administrator password,',
+    )
+    parser.add_argument(
+        '--infra-console-url',
+        default='http://admin.localhost:4220',
+        type=str,
+        help='OAuth 2 Client Name for ID Provider',
+    )
+    parser.add_argument(
+        '--admin-name',
+        type=str,
+        default='Mr. Administrator',
+        help='Full name of administrator',
+    )
+    parser.add_argument(
+        '--admin-phone',
+        default='+919876543210',
+        type=str,
+        help='Valid administrator E164 compliant phone number',
+    )
+    parser.add_argument(
+        '--org-name',
+        default='Example Inc.',
+        type=str,
+        help='Name of the Organization',
+    )
+    parser.add_argument(
+        '--auth-server-url',
+        default='http://accounts.localhost:4210',
+        type=str,
+        help='URL of Authorization Server',
+    )
+    parser.add_argument(
+        '--idp-client-name',
+        default='Identity Provider',
+        type=str,
+        help='OAuth 2 client name for ID provider',
+    )
+    parser.add_argument(
+        '--idp-client-url',
+        default='http://myaccount.localhost:4420',
+        type=str,
+        help='OAuth 2 Client url for ID provider',
+    )
+    parser.add_argument(
+        '--cs-client-name',
+        default='Communication Server',
+        type=str,
+        help='OAuth 2 client name for com server',
+    )
+    parser.add_argument(
+        '--cs-client-url',
+        default='http://connect.localhost:4100',
+        type=str,
+        help='OAuth 2 Client url for com server',
+    )
+
+    return parser
+
+
+def setup_as(
+    auth_server_url,
+    full_name,
+    email,
+    password,
+    mobile,
+    infra_console_url,
+    organization_name,
+):
+    try:
+        response = requests.post(
+            auth_server_url + '/setup',
+            data={
+                'fullName': full_name,
+                'email': email,
+                'issuerUrl': auth_server_url,
+                'adminPassword': password,
+                'phone': mobile,
+                'infrastructureConsoleUrl': infra_console_url,
+                'organizationName': organization_name,
+            }
+        )
+        setup_infrastructure_console(
+            infra_console_url,
+            auth_server_url,
+            response.json(),
+        )
+    except requests.exceptions.ConnectionError as identifier:
+        request_error = identifier.__dict__['request']
+        print('Connection Error:\n', request_error.__dict__)
+    except BaseException as exc:
+        repr(exc)
+        exit(1)
+
+
+def setup_infrastructure_console(
+    url,
+    auth_server_url,
+    setup_response,
+):
+    """
+    setup_response = {
+        'redirectUris': [
+            'http://admin.localhost:5000/index.html',
+            'http://admin.localhost:5000/silent-refresh.html'
+        ],
+        'allowedScopes': ['openid', 'roles', 'email'],
+        'uuid': 'fc8b7d2d-ba03-4418-8997-73bf3356860f',
+        'clientId': '06f069d0-5e38-4d52-8c72-4927310f7b05',
+        'clientSecret': 'fcd9a97a6c3a5c25c0b5e02e46a365a4fe16c31c5847bb6b9da306a462f8f96a',
+        'name': 'Infrastructure Console',
+        'isTrusted': 1
+    }
+    """
+    response = requests.post(
+        url + '/setup',
+        data={
+            'appURL': url,
+            'authServerURL': auth_server_url,
+            'clientId': setup_response.get('clientId'),
+            'clientSecret': setup_response.get('clientSecret')
+        }
+    )
+
+
+def add_client(
+    token,
+    infra_console_url,
+    client_name,
+    client_url,
+):
+    """
+    Adds client using other servers and runs setup wizard on trusted client
+    email, password, infra_console_url, client_name, client_url
+    """
+    try:
+        info = requests.get(infra_console_url + '/info').json()
+        added_client = requests.post(
+            info.get('authServerURL') + '/client/v1/create',
+            data={
+                'name': client_name,
+                'redirectUris': [
+                    client_url + '/index.html',
+                    client_url + '/silent-refresh.html',
+                ],
+                'allowedScopes': ['openid', 'email', 'roles', 'profile'],
+                'isTrusted': 1,
+                'tokenDeleteEndpoint': client_url + '/connect/v1/token_delete',
+                'userDeleteEndpoint': client_url + '/connect/v1/user_delete',
+            },
+            headers={
+                'Authorization': 'Bearer ' + token,
+            }
+        ).json()
+        setup_response = requests.post(
+            client_url + '/setup',
+            data={
+                'appURL': client_url,
+                'authServerURL': info.get('authServerURL'),
+                'clientId': added_client.get('clientId'),
+                'clientSecret': added_client.get('clientSecret'),
+            }
+        )
+    except requests.exceptions.ConnectionError as identifier:
+        request_error = identifier.__dict__['request']
+        print('Connection Error:\n', request_error.__dict__)
+    except BaseException as exc:
+        repr(exc)
+        exit()
+
+def get_token(user, password, info):
+    """
+    get access_token using user, password and trusted server info
+    """
+    session = requests.Session()
+    session.post(
+        info.get('authServerURL') + '/auth/login',
+        data={
+            'username': user,
+            'password': password,
+        }
+    )
+    token_request_url = "{url}?scope={scope}&".format(
+        url=info.get('authorizationURL'),
+        scope='openid%20email',
+    )
+
+    token_request_url += "response_type=token&client_id={client_id}&".format(
+        client_id=info.get('clientId'),
+    )
+
+    token_request_url += "redirect_uri={redirect_uri}".format(
+        redirect_uri=info.get('callbackURLs')[0],
+    )
+
+    token_response = session.get(token_request_url).__dict__.get('url')
+    split_result = urlsplit(token_response.replace('index.html#', '?'))
+    return parse_qs(split_result.query).get('access_token')[0]
+
+
+def update_auth_server_settings(info, token, idp, cs):
+    return requests.post(
+        f"{info.get('authServerURL')}/settings/v1/update",
+        data=json.dumps({
+            "issuerUrl": info.get('authServerURL'),
+            "communicationServerClientId": cs.get('clientId'),
+            "infrastructureConsoleClientId": info.get('clientId'),
+            "identityProviderClientId": idp.get('clientId'),
+            "enableChoosingAccount": True,
+            "refreshTokenExpiresInDays": 30,
+            "authCodeExpiresInMinutes": 30,
+            "enableUserPhone": False,
+        }),
+        headers={
+            'Authorization': f'Bearer {token}',
+            'Content-Type': 'application/json'
+        },
+    ).json()
+
+
+if __name__ == "__main__":
+    main()

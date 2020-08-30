@@ -116,23 +116,26 @@ Note:
 - email must be valid email address
 
 ```shell
-# export required environment variables
-export ADMIN_FULL_NAME="Mr Administrator"
-export ADMIN_EMAIL=admin@example.com
-export ADMIN_PASSWORD=Secret@9876
-export ADMIN_PHONE=+919876543210
-export ORGANIZATION_NAME="Example Inc"
-
-# Run script
-./scripts/setup-dev.sh
+./scripts/setup-wizard --help
+./scripts/setup-wizard
 
 # Output
 Setting Up Authorization Server and Infrastructure Console
-<Response [201]>
-Setting Up Identity Provider
-<Response [201]>
-Setting Up Communication Server
-<Response [201]>
+
+Creating Clients
+Setup Identity Provider
+Setup Communication Server
+
+Update auth server settings for Example Inc.
+
+Visit Admin URL http://admin.localhost:4220
+Login using email 'admin@example.com' or phone '+919876543210'
+Use the password configured during setup wizard, default password Secret@1234
+
+Urls:
+Authorization Server http://accounts.localhost:4210
+Communication Server http://connect.localhost:4100
+Identity Provider http://myaccount.localhost:4420
 ```
 
 All apps dependencies and services are up for debug and development.

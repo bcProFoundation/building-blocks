@@ -316,9 +316,9 @@ pack_staging_identity_client:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
     # Identity Client
-    - docker build -t identity-client frontends/identity-client
+    - docker build --build-arg BUILD_ARGS="-- --prod=false" -t identity-client frontends/identity-client
     - docker tag identity-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-client:edge
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-client
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-client:edge
 
 pack_staging_infrastructure_console:
   image: docker
@@ -348,9 +348,9 @@ pack_staging_admin_client:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
     # Admin Client
-    - docker build -t admin-client frontends/admin-client
+    - docker build --build-arg BUILD_ARGS="-- --prod=false" -t admin-client frontends/admin-client
     - docker tag admin-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client:edge
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client:edge
 
 pack_production_authorization_server:
   image: docker

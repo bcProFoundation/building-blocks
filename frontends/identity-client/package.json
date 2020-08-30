@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.config.json  --host \"myaccount.localhost\" --port 4420",
-    "build": "ng build --prod",
+    "build": "ng build",
     "test": "ng test --no-progress",
     "lint": "eslint '{e2e,src}/**/*.ts'",
     "e2e": "ng e2e",
