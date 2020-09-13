@@ -16,7 +16,7 @@ spec:
   template:
     metadata:
       annotations:
-        timestamp: "{{ date "20060102150405" .Release.Time }}"
+        timestamp: "{{ now | date "20060102150405" }}"
       labels:
         {{- include "blocks.infraConsoleSelectorLabels" . | nindent 8 }}
     spec:
@@ -55,19 +55,21 @@ spec:
                 secretKeyRef:
                   key: IC_DB_PASSWORD
                   name: {{ .Release.Name }}-secrets
-            - name: "REDIS_HOST"
-              {{- if ne .Values.redisHost "" }}
-              value: {{ .Values.redisHost }}
+            - name: "EVENTS_HOST"
+              {{- if ne .Values.eventsHost "" }}
+              value: {{ .Values.eventsHost }}
               {{- else }}
-              value: {{ .Release.Name }}-redis-cluster
+              value: {{ .Release.Name }}-emqx
               {{- end}}
-            - name: "REDIS_PORT"
-              value: {{ index .Values "redis-cluster" "service" "port" | quote }}
-            - name: "REDIS_PASSWORD"
+            - name: "EVENTS_PORT"
+              value: {{ index .Values "emqx" "service" "mqtt" | quote }}
+            - name: "EVENTS_USER"
+              value: {{ ternary (printf "%s-" .Release.Name) "" (and .Values.createMqttUserJob.enabled .Values.emqx.enabled) }}{{ .Values.mqtt.user }}
+            - name: "EVENTS_PASSWORD"
               valueFrom:
                 secretKeyRef:
-                  key: redis-password
-                  name: {{ .Release.Name }}-redis-cluster
+                  key: events-password
+                  name: {{ .Release.Name }}-events
             - name: "NODE_ENV"
               value: {{ .Values.environment }}
         - name: admin-client

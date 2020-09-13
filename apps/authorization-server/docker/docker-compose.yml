@@ -21,12 +21,26 @@ services:
     depends_on:
       - fix-mongodb-permissions
 
-  redis:
-    image: bitnami/redis:latest
+  events:
+    image: emqx/emqx:latest
     environment:
-      - REDIS_PASSWORD=admin
-    volumes:
-      - redis-vol:/bitnami/redis/data
+      - EMQX_ALLOW_ANONYMOUS=false
+      - EMQX_LOADED_PLUGINS=emqx_management,emqx_auth_mnesia,emqx_recon,emqx_retainer,emqx_dashboard
+    ports:
+      - 1883:1883
+      - 18083:18083
+
+  events-config:
+    image: byrnedo/alpine-curl:latest
+    environment:
+      - EVENTS_USER=${EVENTS_USER?Variable EVENTS_USER not set}
+      - EVENTS_PASSWORD=${EVENTS_PASSWORD?Variable EVENTS_PASSWORD not set}
+    depends_on:
+      - events
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - sleep 5;
+        curl -i --basic -u admin:public -X POST http://events:8081/api/v4/mqtt_user -d '{"login":"$EVENTS_USER","password":"$EVENTS_PASSWORD","is_superuser":false}'
 
   authorization-service:
     image: registry.gitlab.com/castlecraft/building-blocks/authorization-server:edge
@@ -34,10 +48,10 @@ services:
       - "3000:3000"
     depends_on:
       - mongo
-      - redis
+      - events
     links:
       - mongo
-      - redis
+      - events
     environment:
       - SESSION_SECRET=${SESSION_SECRET}
       - COOKIE_MAX_AGE=${COOKIE_MAX_AGE}
@@ -47,12 +61,12 @@ services:
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
+      - EVENTS_PROTO=mqtt
+      - EVENTS_HOST=events
+      - EVENTS_PORT=1883
+      - EVENTS_USER=${EVENTS_USER}
+      - EVENTS_PASSWORD=${EVENTS_PASSWORD}
       - NODE_ENV=${NODE_ENV}
-      - REDIS_PROTO=redis
-      - REDIS_HOST=redis
-      - REDIS_PASSWORD=admin
-      - REDIS_PORT=6379
 
 volumes:
   mongo-vol:
-  redis-vol:

@@ -82,6 +82,6 @@
 	"Communication Server not found": "Communication Server not found",
 	"Phone number already registered": "Phone number already registered",
 	"Server does not allow phone registration": "Server does not allow phone registration",
-	"Event service not connected": "Event service not connected",
+	"Events service not connected": "Events service not connected",
 	"phone must be valid E164 phone number": "phone must be valid E164 phone number"
 }

@@ -37,17 +37,17 @@ function checkEnv() {
     echo "NODE_ENV is not set"
     exit 1
   fi
-  if [[ -z "$REDIS_PROTO" ]]; then
-    export REDIS_PROTO=redis
+  if [[ -z "$EVENTS_PROTO" ]]; then
+    export EVENTS_PROTO=mqtt
   fi
 }
 
 function checkConnection() {
   # Wait for services
   su craft -c "node ./docker/check-db.js"
-  if [[ ! -z "$REDIS_HOST" ]] && [[ ! -z "$REDIS_PORT" ]]; then
-    echo "Connect Redis . . ."
-    timeout 10 bash -c 'until printf "" 2>>/dev/null >>/dev/tcp/$0/$1; do sleep 1; done' $REDIS_HOST $REDIS_PORT
+  if [[ ! -z "$EVENTS_HOST" ]] && [[ ! -z "$EVENTS_PORT" ]]; then
+    echo "Connect Events . . ."
+    timeout 10 bash -c 'until printf "" 2>>/dev/null >>/dev/tcp/$0/$1; do sleep 1; done' $EVENTS_HOST $EVENTS_PORT
   fi
 }
 
@@ -64,15 +64,17 @@ function configureServer() {
       ${DB_PASSWORD}' \
       < docker/env.tmpl > .env
 
-    if [[ ! -z "$REDIS_PROTO" ]] &&
-      [[ ! -z "$REDIS_HOST" ]] &&
-      [[ ! -z "$REDIS_PORT" ]] &&
-      [[ ! -z "$REDIS_PASSWORD" ]]; then
-      envsubst '${REDIS_PROTO}
-        ${REDIS_HOST}
-        ${REDIS_PORT}
-        ${REDIS_PASSWORD}'\
-        < docker/env-redis.tmpl >> .env
+    if [[ ! -z "$EVENTS_PROTO" ]] &&
+      [[ ! -z "$EVENTS_USER" ]] &&
+      [[ ! -z "$EVENTS_PASSWORD" ]] &&
+      [[ ! -z "$EVENTS_HOST" ]] &&
+      [[ ! -z "$EVENTS_PORT" ]]; then
+      envsubst '${EVENTS_PROTO}
+        ${EVENTS_USER}
+        ${EVENTS_PASSWORD}
+        ${EVENTS_HOST}
+        ${EVENTS_PORT}'\
+        < docker/env-events.tmpl >> .env
     fi
   fi
 }

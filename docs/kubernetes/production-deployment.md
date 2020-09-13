@@ -28,13 +28,14 @@ mongo accounts-example-com \
 
 Note: In case of managed db, you need to provide hostnames as env variables. No need to setup databases on cluster. Refer mongodb docs to create databases with user and password access.
 
-### Redis Service
+### Events Service
 
-All events are broadcasted to Redis. Configure redis to store or discard data.
+All events are broadcasted to events service.
 
-- Service is connected on host configured in `REDIS_HOST` environment variable
-- Port used for the connection is configured via `REDIS_PORT`
-- Password Redis is configured through `REDIS_PASSWORD` environment variable
+- Service is connected on host configured in `EVENTS_HOST` environment variable
+- Port used for the connection is configured via `EVENTS_PORT`
+- Events user is configured through `EVENTS_PASSWORD` environment variable
+- Events password is configured through `EVENTS_PASSWORD` environment variable
 
 ### Set values.yaml
 
