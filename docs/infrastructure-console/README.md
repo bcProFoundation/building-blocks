@@ -12,10 +12,11 @@ DB_NAME=infrastructure-console
 DB_USER=infrastructure-console
 DB_PASSWORD=admin
 # Optional
-REDIS_PROTO=redis
-REDIS_HOST=localhost
-REDIS_PORT=6379
-REDIS_PASSWORD=admin
+EVENTS_PROTO=mqtt
+EVENTS_HOST=localhost
+EVENTS_USER=user
+EVENTS_PASSWORD=changeit
+EVENTS_PORT=1883
 ```
 
 Note: It is important to change the secrets and password. DO NOT USE development passwords or secrets in production.

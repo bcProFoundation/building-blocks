@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule } from '@nestjs/microservices';
-import { redisClient } from './redis-microservice.client';
+import { eventsClient } from './events-microservice.client';
 import { CommonCommandHandlers } from './commands';
 import { CommonSagas } from './sagas';
 
 @Module({
-  imports: [ClientsModule.registerAsync([redisClient])],
+  imports: [ClientsModule.registerAsync([eventsClient])],
   providers: [...CommonCommandHandlers, ...CommonSagas],
-  exports: [ClientsModule.registerAsync([redisClient])],
+  exports: [ClientsModule.registerAsync([eventsClient])],
 })
 export class CommonModule {}

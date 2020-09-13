@@ -1,0 +1,43 @@
+{{- if and .Values.emqx.enabled .Values.createMqttUserJob.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-events-user-{{ template "blocks.fullname" . }}-{{ date "20060102150405" .Release.Now }}
+spec:
+  backoffLimit: 1
+  template:
+    spec:
+      securityContext:
+        supplementalGroups: [1000]
+      initContainers:
+      - name: wait-for-emqx
+        image: groundnuty/k8s-wait-for:v1.3
+        imagePullPolicy: IfNotPresent
+        args:
+          - "service"
+          - "{{ .Release.Name }}-emqx"
+      containers:
+      - name: create-user
+        image: "{{ .Values.createMqttUserJob.curlImage.repo }}:{{ .Values.createMqttUserJob.curlImage.tag }}"
+        command: ["/bin/sh", "-c"]
+        args:
+          - curl -i --basic -u $ADMIN_USER:$ADMIN_PASSWORD -X POST http://$EVENTS_HOST:$MGMT_PORT/api/v4/mqtt_user -d "{\"login\":\"$EVENTS_USER\",\"password\":\"$EVENTS_PASSWORD\",\"is_superuser\":false}"
+        env:
+          - name: ADMIN_USER
+            value: {{ .Values.createMqttUserJob.adminUser }}
+          - name: ADMIN_PASSWORD
+            value: {{ .Values.createMqttUserJob.adminPassword }}
+          - name: EVENTS_HOST
+            value: {{ .Release.Name }}-emqx
+          - name: MGMT_PORT
+            value: "{{ .Values.emqx.service.mgmt }}"
+          - name: EVENTS_USER
+            value: {{ ternary (printf "%s-" .Release.Name) "" (and .Values.createMqttUserJob.enabled .Values.emqx.enabled) }}{{ .Values.mqtt.user }}
+          - name: EVENTS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: events-password
+                name: {{ .Release.Name }}-events
+        imagePullPolicy: {{ .Values.createMqttUserJob.pullPolicy }}
+      restartPolicy: Never
+{{- end }}

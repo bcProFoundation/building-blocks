@@ -1,9 +1,9 @@
 dependencies:
-- name: redis-cluster
-  repository: https://charts.bitnami.com/bitnami
-  version: 3.1.6
+- name: emqx
+  repository: https://repos.emqx.io/charts
+  version: 4.2.0
 - name: mongodb
   repository: https://charts.bitnami.com/bitnami
   version: 8.2.1
-digest: sha256:67ae2a7aa214d33e9ab7d5aa730ba729a7f15f6a44dd9283b733df6a7b396f5c
-generated: "2020-07-27T17:13:59.442002781+05:30"
+digest: sha256:dca55d03fe8fadb9da840c787a57ed5c6ba022eeb9fbe12482008078044b7d26
+generated: "2020-09-13T00:18:04.27308112+05:30"

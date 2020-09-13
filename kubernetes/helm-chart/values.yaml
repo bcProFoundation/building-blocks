@@ -1,10 +1,10 @@
 # Default values for blocks.
 # This is a YAML-formatted file.
 
-# Set host for MongoDB and Redis
-# Use when mongodb and redis are not part of this release.
+# Set host for MongoDB and Events
+# Use when mongodb and events are not part of this release.
 mongoDBHost: ""
-redisHost: ""
+eventsHost: ""
 
 # Common values
 imagePullSecrets: []
@@ -249,21 +249,30 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
-# Values for dependent bitnami/redis-cluster chart
-redis-cluster:
+# Values for dependent emqx/emqx chart
+emqx:
   enabled: false
-  # Set redis password. (default to random string)
-  # password: 'changethis'
-  service:
-    port: 6379
+  emqxConfig:
+    EMQX_ALLOW_ANONYMOUS: "false"
+    EMQX_LOADED_PLUGINS: "emqx_management,emqx_auth_mnesia,emqx_recon,emqx_retainer,emqx_dashboard"
   persistence:
-    enabled: false
-  redis:
-    useAOFPersistence: "no"
-  networkPolicy:
     enabled: true
-  metrics:
-    enabled: true
+  service:
+    mqtt: 1883
+    mgmt: 8081
+
+mqtt:
+  user: "events-user"
+  # password: "changeit"
+
+createMqttUserJob:
+  enabled: true
+  adminUser: "admin"
+  adminPassword: "public"
+  curlImage:
+    repo: curlimages/curl
+    tag: "7.72.0"
+    pullPolicy: IfNotPresent
 
 # Values for dependent bitnami/mongodb chart
 mongodb:

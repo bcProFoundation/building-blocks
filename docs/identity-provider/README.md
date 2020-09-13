@@ -12,10 +12,11 @@ DB_NAME=identity-provider
 DB_USER=identity-provider
 DB_PASSWORD=admin
 # Optional
-REDIS_PROTO=redis
-REDIS_HOST=localhost
-REDIS_PASSWORD=admin
-REDIS_PORT=6379
+EVENTS_PROTO=mqtt
+EVENTS_HOST=localhost
+EVENTS_USER=user
+EVENTS_PASSWORD=changeit
+EVENTS_PORT=1883
 ```
 
 Note: It is important to change the secrets and password. DO NOT USE development passwords or secrets in production.

@@ -88,10 +88,11 @@ services:
       - DB_NAME=${AS_DB_NAME}
       - DB_USER=${AS_DB_USER}
       - DB_PASSWORD=${AS_DB_PASSWORD}
-      - REDIS_HOST=${REDIS_HOST}
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - REDIS_PORT=${REDIS_PORT}
-      - REDIS_PROTO=${REDIS_PROTO}
+      - EVENTS_HOST=${EVENTS_HOST}
+      - EVENTS_USER=${EVENTS_USER}
+      - EVENTS_PASSWORD=${EVENTS_PASSWORD}
+      - EVENTS_PORT=${EVENTS_PORT}
+      - EVENTS_PROTO=${EVENTS_PROTO}
     networks:
       - mongodb-network
 
@@ -118,10 +119,11 @@ services:
       - DB_NAME=${CS_DB_NAME}
       - DB_USER=${CS_DB_USER}
       - DB_PASSWORD=${CS_DB_PASSWORD}
-      - REDIS_HOST=${REDIS_HOST}
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - REDIS_PORT=${REDIS_PORT}
-      - REDIS_PROTO=${REDIS_PROTO}
+      - EVENTS_HOST=${EVENTS_HOST}
+      - EVENTS_USER=${EVENTS_USER}
+      - EVENTS_PASSWORD=${EVENTS_PASSWORD}
+      - EVENTS_PORT=${EVENTS_PORT}
+      - EVENTS_PROTO=${EVENTS_PROTO}
     networks:
       - mongodb-network
       - traefik-public
@@ -137,10 +139,11 @@ services:
       - DB_NAME=${ID_DB_NAME}
       - DB_USER=${ID_DB_USER}
       - DB_PASSWORD=${ID_DB_PASSWORD}
-      - REDIS_HOST=${REDIS_HOST}
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - REDIS_PORT=${REDIS_PORT}
-      - REDIS_PROTO=${REDIS_PROTO}
+      - EVENTS_HOST=${EVENTS_HOST}
+      - EVENTS_USER=${EVENTS_USER}
+      - EVENTS_PASSWORD=${EVENTS_PASSWORD}
+      - EVENTS_PORT=${EVENTS_PORT}
+      - EVENTS_PROTO=${EVENTS_PROTO}
     networks:
       - mongodb-network
 
@@ -155,22 +158,40 @@ services:
       - DB_NAME=${IC_DB_NAME}
       - DB_USER=${IC_DB_USER}
       - DB_PASSWORD=${IC_DB_PASSWORD}
-      - REDIS_HOST=${REDIS_HOST}
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - REDIS_PORT=${REDIS_PORT}
-      - REDIS_PROTO=${REDIS_PROTO}
+      - EVENTS_HOST=${EVENTS_HOST}
+      - EVENTS_USER=${EVENTS_USER}
+      - EVENTS_PASSWORD=${EVENTS_PASSWORD}
+      - EVENTS_PORT=${EVENTS_PORT}
+      - EVENTS_PROTO=${EVENTS_PROTO}
     networks:
       - mongodb-network
 
-  redis-event-bus:
-    image: bitnami/redis:6.0.6-debian-10-r0
+  event-bus:
+    image: emqx/emqx:latest
     environment:
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - EMQX_ALLOW_ANONYMOUS=false
+      - EMQX_LOADED_PLUGINS=emqx_management,emqx_auth_mnesia,emqx_recon,emqx_retainer,emqx_dashboard
+    ports:
+      - 1883:1883
+      - 18083:18083
+      - 8081:8081
     networks:
       - mongodb-network
     deploy:
       restart_policy:
         condition: on-failure
+
+  events-config:
+    image: byrnedo/alpine-curl:latest
+    environment:
+      - EVENTS_USER=${EVENTS_USER?Variable EVENTS_USER not set}
+      - EVENTS_PASSWORD=${EVENTS_PASSWORD?Variable EVENTS_PASSWORD not set}
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+        - sleep 5;
+          curl -i --basic -u admin:public -X POST http://events:8081/api/v4/mqtt_user -d '{"login":"$EVENTS_USER","password":"$EVENTS_PASSWORD","is_superuser":false}'
+    networks:
+      - mongodb-network
 
 networks:
   traefik-public:

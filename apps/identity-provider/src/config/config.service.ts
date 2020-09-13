@@ -1,6 +1,6 @@
 import * as Joi from '@hapi/joi';
 import * as dotenv from 'dotenv';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
 export interface EnvConfig {
   [prop: string]: string;
@@ -12,10 +12,11 @@ export const DB_HOST = 'DB_HOST';
 export const DB_USER = 'DB_USER';
 export const DB_PASSWORD = 'DB_PASSWORD';
 export const MONGO_URI_PREFIX = 'MONGO_URI_PREFIX';
-export const REDIS_HOST = 'REDIS_HOST';
-export const REDIS_PROTO = 'REDIS_PROTO';
-export const REDIS_PORT = 'REDIS_PORT';
-export const REDIS_PASSWORD = 'REDIS_PASSWORD';
+export const EVENTS_HOST = 'EVENTS_HOST';
+export const EVENTS_PROTO = 'EVENTS_PROTO';
+export const EVENTS_PORT = 'EVENTS_PORT';
+export const EVENTS_PASSWORD = 'EVENTS_PASSWORD';
+export const EVENTS_USER = 'EVENTS_USER';
 
 @Injectable()
 export class ConfigService {
@@ -39,18 +40,20 @@ export class ConfigService {
       [DB_HOST]: Joi.string().required(),
       [DB_USER]: Joi.string().required(),
       [DB_PASSWORD]: Joi.string().required(),
+      [EVENTS_PROTO]: Joi.string().required(),
+      [EVENTS_HOST]: Joi.string().required(),
+      [EVENTS_PORT]: Joi.string().required(),
+      [EVENTS_USER]: Joi.string().required(),
+      [EVENTS_PASSWORD]: Joi.string().required(),
       [MONGO_URI_PREFIX]: Joi.string().optional(),
-      [REDIS_PROTO]: Joi.string().optional(),
-      [REDIS_HOST]: Joi.string().optional(),
-      [REDIS_PORT]: Joi.string().optional(),
-      [REDIS_PASSWORD]: Joi.string().optional(),
     });
 
     const { error, value: validatedEnvConfig } = envVarsSchema.validate(
       envConfig,
     );
     if (error) {
-      throw new Error(`Config validation error: ${error.message}`);
+      Logger.error(error, error.stack, this.constructor.name);
+      process.exit(1);
     }
     return validatedEnvConfig;
   }

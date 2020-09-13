@@ -5,10 +5,10 @@ type: application
 version: 1.0.3
 appVersion: 5.0.4
 dependencies:
-- name: redis-cluster
-  version: "3.1.6"
-  repository: "https://charts.bitnami.com/bitnami"
-  condition: redis-cluster.enabled
+- name: emqx
+  version: "4.2.0"
+  repository: "https://repos.emqx.io/charts"
+  condition: emqx.enabled
 - name: mongodb
   version: "8.2.1"
   repository: "https://charts.bitnami.com/bitnami"

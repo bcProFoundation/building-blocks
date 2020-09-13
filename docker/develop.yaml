@@ -1,4 +1,4 @@
-version: "3.7"
+version: "3"
 
 services:
   # Frontend
@@ -29,6 +29,10 @@ services:
   # Backend
   authorization-server:
     image: registry.gitlab.com/castlecraft/building-blocks/authorization-server:latest
+    extra_hosts:
+      admin.localhost: 172.17.0.1
+      connect.localhost: 172.17.0.1
+      myaccount.localhost: 172.17.0.1
     environment:
       - NODE_ENV=development
       - SESSION_SECRET=changeit
@@ -39,40 +43,55 @@ services:
       - DB_NAME=authorization-server
       - DB_USER=authorization-server
       - DB_PASSWORD=changeit
-      - REDIS_HOST=redis-event-bus
-      - REDIS_PASSWORD=changeit
-      - REDIS_PORT=6379
-      - REDIS_PROTO=redis
+      - EVENTS_HOST=event-bus
+      - EVENTS_USER=user
+      - EVENTS_PASSWORD=changeit
+      - EVENTS_PORT=1883
+      - EVENTS_PROTO=mqtt
 
   communication-server:
     image: registry.gitlab.com/castlecraft/building-blocks/communication-server:latest
+    extra_hosts:
+      accounts.localhost: 172.17.0.1
+      admin.localhost: 172.17.0.1
+      myaccount.localhost: 172.17.0.1
     environment:
       - NODE_ENV=development
       - DB_HOST=mongo
       - DB_NAME=communication-server
       - DB_USER=communication-server
       - DB_PASSWORD=changeit
-      - REDIS_HOST=redis-event-bus
-      - REDIS_PASSWORD=changeit
-      - REDIS_PORT=6379
-      - REDIS_PROTO=redis
+      - EVENTS_HOST=event-bus
+      - EVENTS_USER=user
+      - EVENTS_PASSWORD=changeit
+      - EVENTS_PORT=1883
+      - EVENTS_PROTO=mqtt
     ports:
       - 4100:4100
 
   identity-provider:
     image: registry.gitlab.com/castlecraft/building-blocks/identity-provider:latest
+    extra_hosts:
+      accounts.localhost: 172.17.0.1
+      admin.localhost: 172.17.0.1
+      connect.localhost: 172.17.0.1
     environment:
       - NODE_ENV=development
       - DB_HOST=mongo
       - DB_NAME=identity-provider
       - DB_USER=identity-provider
       - DB_PASSWORD=changeit
-      - REDIS_HOST=redis-event-bus
-      - REDIS_PASSWORD=changeit
-      - REDIS_PORT=6379
-      - REDIS_PROTO=redis
+      - EVENTS_HOST=event-bus
+      - EVENTS_USER=user
+      - EVENTS_PASSWORD=changeit
+      - EVENTS_PORT=1883
+      - EVENTS_PROTO=mqtt
 
   infrastructure-console:
+    extra_hosts:
+      accounts.localhost: 172.17.0.1
+      connect.localhost: 172.17.0.1
+      myaccount.localhost: 172.17.0.1
     image: registry.gitlab.com/castlecraft/building-blocks/infrastructure-console:latest
     environment:
       - NODE_ENV=development
@@ -80,16 +99,31 @@ services:
       - DB_NAME=infrastructure-console
       - DB_USER=infrastructure-console
       - DB_PASSWORD=changeit
-      - REDIS_HOST=redis-event-bus
-      - REDIS_PASSWORD=changeit
-      - REDIS_PORT=6379
-      - REDIS_PROTO=redis
+      - EVENTS_HOST=event-bus
+      - EVENTS_USER=user
+      - EVENTS_PASSWORD=changeit
+      - EVENTS_PORT=1883
+      - EVENTS_PROTO=mqtt
 
   # Services
-  redis-event-bus:
-    image: bitnami/redis:latest
+  event-bus:
+    image: emqx/emqx:latest
     environment:
-      - REDIS_PASSWORD=changeit
+      - EMQX_ALLOW_ANONYMOUS=false
+      - EMQX_LOADED_PLUGINS=emqx_management,emqx_auth_mnesia,emqx_recon,emqx_retainer,emqx_dashboard
+    ports:
+      - 1883:1883
+      - 18083:18083
+      - 8081:8081
+
+  event-bus-config:
+    image: byrnedo/alpine-curl:latest
+    depends_on:
+      - events
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+        - sleep 5;
+          curl -i --basic -u admin:public -X POST http://events:8081/api/v4/mqtt_user -d '{"login":"user","password":"changeit","is_superuser":false}'
 
   mongo:
     image: bitnami/mongodb:latest

@@ -3,14 +3,15 @@ services:
     alias: mongo
   - name: docker:dind
     alias: docker
-  - name: bitnami/redis:latest
-    alias: redis
+  - name: emqx/emqx:latest
+    alias: events
 
 variables:
   MONGODB_USERNAME: "admin"
   MONGODB_PASSWORD: "admin"
   MONGODB_DATABASE: "test_authorization-server"
-  REDIS_PASSWORD: "admin"
+  EMQX_ALLOW_ANONYMOUS: "false"
+  EMQX_LOADED_PLUGINS: "emqx_management,emqx_auth_mnesia,emqx_recon,emqx_retainer,emqx_dashboard"
 
 stages:
   - tests
@@ -39,13 +40,15 @@ test_authorization_server:
     DB_USER: "admin"
     DB_PASSWORD: "admin"
     DB_NAME: "authorization-server"
-    REDIS_PROTO: "redis"
-    REDIS_HOST: "redis"
-    REDIS_PORT: "6379"
-    REDIS_PASSWORD: "admin"
+    EVENTS_PROTO: "mqtt"
+    EVENTS_HOST: "events"
+    EVENTS_PORT: "1883"
+    EVENTS_USER: "user"
+    EVENTS_PASSWORD: "changeit"
   before_script:
     - cd apps/authorization-server
     - npm install
+    - curl -i --basic -u admin:public -X POST http://events:8081/api/v4/mqtt_user -d '{"login":"user","password":"changeit","is_superuser":false}'
   script:
     # Check Code Quality
     - npm run lint
@@ -62,6 +65,11 @@ test_authorization_server:
       ${DB_NAME}
       ${DB_USER}
       ${DB_PASSWORD}' < docker/env.tmpl > .env
+    - envsubst '${EVENTS_PROTO}
+      ${EVENTS_HOST}
+      ${EVENTS_PORT}
+      ${EVENTS_USER}
+      ${EVENTS_PASSWORD}' < docker/env-events.tmpl >> .env
     # set env variable for test
     - export NODE_ENV=test
     # Test backend e2e
@@ -246,8 +254,6 @@ pack_staging_authorization_server:
   only:
     refs:
       - develop
-    changes:
-      - apps/authorization-server/**/*
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
@@ -262,8 +268,6 @@ pack_staging_authorization_client:
   only:
     refs:
       - develop
-    changes:
-      - frontends/authorization-client/**/*
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
@@ -278,8 +282,6 @@ pack_staging_communication_server:
   only:
     refs:
       - develop
-    changes:
-      - apps/communication-server/**/*
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
@@ -294,8 +296,6 @@ pack_staging_identity_provider:
   only:
     refs:
       - develop
-    changes:
-      - apps/identity-provider/**/*
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
@@ -310,8 +310,6 @@ pack_staging_identity_client:
   only:
     refs:
       - develop
-    changes:
-      - frontends/identity-client/**/*
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
@@ -326,8 +324,6 @@ pack_staging_infrastructure_console:
   only:
     refs:
       - develop
-    changes:
-      - apps/infrastructure-console/**/*
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
@@ -342,8 +338,6 @@ pack_staging_admin_client:
   only:
     refs:
       - develop
-    changes:
-      - frontends/admin-client/**/*
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
@@ -359,8 +353,6 @@ pack_production_authorization_server:
   only:
     refs:
       - master
-    changes:
-      - apps/authorization-server/**/*
   before_script:
     - apk add git
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
@@ -380,8 +372,6 @@ pack_production_authorization_client:
   only:
     refs:
       - master
-    changes:
-      - frontends/authorization-client/**/*
   before_script:
     - apk add git
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
@@ -401,8 +391,6 @@ pack_production_communication_server:
   only:
     refs:
       - master
-    changes:
-      - apps/communication-server/**/*
   before_script:
     - apk add git
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
@@ -422,8 +410,6 @@ pack_production_identity_provider:
   only:
     refs:
       - master
-    changes:
-      - apps/identity-provider/**/*
   before_script:
     - apk add git
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
@@ -443,8 +429,6 @@ pack_production_identity_client:
   only:
     refs:
       - master
-    changes:
-      - frontends/identity-client/**/*
   before_script:
     - apk add git
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
@@ -464,8 +448,6 @@ pack_production_infrastructure_console:
   only:
     refs:
       - master
-    changes:
-      - apps/infrastructure-console/**/*
   before_script:
     - apk add git
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
@@ -485,8 +467,6 @@ pack_production_admin_client:
   only:
     refs:
       - master
-    changes:
-      - frontends/admin-client/**/*
   before_script:
     - apk add git
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com

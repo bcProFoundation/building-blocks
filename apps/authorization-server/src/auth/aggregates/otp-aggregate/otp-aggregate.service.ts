@@ -19,16 +19,17 @@ import { UserService } from '../../../user-management/entities/user/user.service
 import {
   PhoneAlreadyRegisteredException,
   invalidUserException,
-  RedisNotConnectedException,
+  EventsNotConnectedException,
   invalidOTPException,
   PhoneRegistrationNotAllowedException,
 } from '../../../common/filters/exceptions';
 import { UnverifiedPhoneAddedEvent } from '../../events/unverified-phone-added/unverified-phone-added.event';
 import {
   ConfigService,
-  REDIS_HOST,
-  REDIS_PORT,
-  REDIS_PASSWORD,
+  EVENTS_HOST,
+  EVENTS_PORT,
+  EVENTS_USER,
+  EVENTS_PASSWORD,
 } from '../../../config/config.service';
 import { PhoneVerifiedEvent } from '../../events/phone-verified/phone-verified.event';
 
@@ -145,7 +146,7 @@ export class OTPAggregateService extends AggregateRoot {
   }
 
   async addUnverifiedPhone(userUuid: string, unverifiedPhone: string) {
-    this.verifyConnectedRedis();
+    this.verifyConnectedEvents();
     await this.checkPhoneAlreadyRegistered(unverifiedPhone);
 
     const user = await this.user.findOne({ uuid: userUuid });
@@ -171,19 +172,20 @@ export class OTPAggregateService extends AggregateRoot {
     });
   }
 
-  verifyConnectedRedis() {
-    let isRedisConnected = false;
+  verifyConnectedEvents() {
+    let isEventsConnected = false;
 
-    const hostname = this.config.get(REDIS_HOST);
-    const port = this.config.get(REDIS_PORT);
-    const password = this.config.get(REDIS_PASSWORD);
-
-    if (hostname && port && password) {
-      isRedisConnected = true;
+    if (
+      this.config.get(EVENTS_HOST) &&
+      this.config.get(EVENTS_PORT) &&
+      this.config.get(EVENTS_USER) &&
+      this.config.get(EVENTS_PASSWORD)
+    ) {
+      isEventsConnected = true;
     }
 
-    if (!isRedisConnected) {
-      throw new RedisNotConnectedException();
+    if (!isEventsConnected) {
+      throw new EventsNotConnectedException();
     }
   }
 
