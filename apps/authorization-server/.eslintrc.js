@@ -95,9 +95,9 @@ module.exports = {
     'no-invalid-this': 'off',
     'no-new-wrappers': 'error',
     'no-shadow': [
-      'error',
+      'off',
       {
-        'hoist': 'all',
+        "@typescript-eslint/no-shadow": ["error"]
       },
     ],
     'no-throw-literal': 'error',
