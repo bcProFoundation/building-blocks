@@ -14,6 +14,7 @@ import {
   SCOPE_EMAIL,
   SCOPE_PROFILE,
 } from '../../../constants/app-strings';
+import { UserClaimService } from '../../entities/user-claim/user-claim.service';
 
 @Injectable()
 export class IDTokenGrantService {
@@ -23,6 +24,7 @@ export class IDTokenGrantService {
     private readonly oidcKeyService: OIDCKeyService,
     private readonly settingsService: ServerSettingsService,
     private readonly configService: ConfigService,
+    private readonly userClaimService: UserClaimService,
   ) {}
 
   async grantIDToken(
@@ -70,6 +72,17 @@ export class IDTokenGrantService {
     if (scope.includes(ROLES)) claims.roles = user.roles;
     if (scope.includes(SCOPE_EMAIL)) claims.email = user.email;
     if (scope.includes(SCOPE_PROFILE)) claims.name = user.name;
+
+    const userClaims = await this.userClaimService.find({
+      scope: { $in: scope },
+      uuid: user.uuid,
+    });
+
+    if (userClaims && userClaims.length > 0) {
+      userClaims.forEach(claim => {
+        claims[claim.name] = claim.value;
+      });
+    }
 
     if (accessToken) {
       // Thanks https://github.com/mozilla/fxa-oauth-server/pull/598/files

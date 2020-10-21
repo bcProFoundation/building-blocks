@@ -13,6 +13,8 @@ import { ScopeService } from './scope/scope.service';
 import { AuthSettingsService } from './auth-settings/auth-settings.service';
 import { SocialLoginService } from './social-login/social-login.service';
 import { SharedImportsModule } from '../shared-imports/shared-imports.module';
+import { ClaimsListingComponent } from './user/claims-listing/claims-listing.component';
+import { ClaimsListingService } from './user/claims-listing/claims-listing.service';
 
 @NgModule({
   declarations: [
@@ -22,6 +24,7 @@ import { SharedImportsModule } from '../shared-imports/shared-imports.module';
     UserComponent,
     AuthSettingsComponent,
     SocialLoginComponent,
+    ClaimsListingComponent,
   ],
   imports: [SharedImportsModule, CommonModule],
   exports: [
@@ -31,6 +34,7 @@ import { SharedImportsModule } from '../shared-imports/shared-imports.module';
     UserComponent,
     AuthSettingsComponent,
     SocialLoginComponent,
+    ClaimsListingComponent,
   ],
   providers: [
     ClientService,
@@ -39,6 +43,7 @@ import { SharedImportsModule } from '../shared-imports/shared-imports.module';
     ScopeService,
     AuthSettingsService,
     SocialLoginService,
+    ClaimsListingService,
   ],
 })
 export class AuthorizationUIModule {}

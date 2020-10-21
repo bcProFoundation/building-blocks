@@ -4,6 +4,7 @@ import { UserDeleteRequestService } from '../../schedulers/user-delete-request/u
 import { from } from 'rxjs';
 import { AuthDataService } from '../../entities/auth-data/auth-data.service';
 import { UserService } from '../../entities/user/user.service';
+import { UserClaimService } from '../../../auth/entities/user-claim/user-claim.service';
 
 @EventsHandler(UserAccountRemovedEvent)
 export class UserAccountRemovedHandler
@@ -12,6 +13,7 @@ export class UserAccountRemovedHandler
     private readonly requestUserDelete: UserDeleteRequestService,
     private readonly authData: AuthDataService,
     private readonly user: UserService,
+    private readonly userClaim: UserClaimService,
   ) {}
 
   handle(event: UserAccountRemovedEvent) {
@@ -50,6 +52,11 @@ export class UserAccountRemovedHandler
         error: error => {},
       });
     }
+
+    from(this.userClaim.deleteMany({ uuid: deletedUser.uuid })).subscribe({
+      next: success => {},
+      error: error => {},
+    });
 
     from(this.user.remove(deletedUser)).subscribe({
       next: success => {},

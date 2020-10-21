@@ -8,6 +8,9 @@ import { EmailVerifiedAndPasswordSetHandler } from './email-verified-and-passwor
 import { AuthDataRemovedHandler } from './auth-data-removed/auth-data-removed.handler';
 import { UserRoleAddedHandler } from './user-role-added/user-role-added.handler';
 import { UserRoleModifiedHandler } from './user-role-modified/user-role-modified.handler';
+import { UserClaimRemovedHandler } from './user-claim-removed/user-claim-removed.handler';
+import { UserClaimAddedHandler } from './user-claim-added/user-claim-added.handler';
+import { UserClaimUpdatedHandler } from './user-claim-updated/user-claim-updated.handler';
 
 export const UserManagementEventHandlers = [
   UserAccountRemovedHandler,
@@ -20,4 +23,7 @@ export const UserManagementEventHandlers = [
   AuthDataRemovedHandler,
   UserRoleAddedHandler,
   UserRoleModifiedHandler,
+  UserClaimAddedHandler,
+  UserClaimUpdatedHandler,
+  UserClaimRemovedHandler,
 ];

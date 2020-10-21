@@ -21,4 +21,5 @@ export interface User extends Document {
   deleted?: boolean;
   enablePasswordLess?: boolean;
   unverifiedPhone?: string;
+  isEmailVerified?: boolean;
 }

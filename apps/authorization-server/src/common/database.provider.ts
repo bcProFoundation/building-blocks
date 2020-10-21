@@ -36,6 +36,7 @@ export const databaseProviders = [
             autoReconnect: false,
             reconnectTries: 0,
             reconnectInterval: 0,
+            useCreateIndex: true,
           },
         ),
       )

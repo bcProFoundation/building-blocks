@@ -1,11 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpModule } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
+
 import { OAuth2Service } from './oauth2.service';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { BearerTokenService } from '../../../auth/entities/bearer-token/bearer-token.service';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
-import { CqrsModule } from '@nestjs/cqrs';
+import { UserClaimService } from '../../entities/user-claim/user-claim.service';
 
 describe('OAuth2Service', () => {
   let service: OAuth2Service;
@@ -28,6 +30,10 @@ describe('OAuth2Service', () => {
         },
         {
           provide: ClientService,
+          useValue: {},
+        },
+        {
+          provide: UserClaimService,
           useValue: {},
         },
       ],

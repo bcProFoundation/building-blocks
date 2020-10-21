@@ -205,6 +205,7 @@ export class UserAggregateService extends AggregateRoot {
     verifiedUser.password = userPassword.uuid;
     verifiedUser.disabled = false;
     verifiedUser.verificationCode = undefined;
+    verifiedUser.isEmailVerified = true;
     this.apply(
       new EmailVerifiedAndPasswordSetEvent(verifiedUser, userPassword),
     );

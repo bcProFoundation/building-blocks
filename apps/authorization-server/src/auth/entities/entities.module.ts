@@ -5,6 +5,7 @@ import { OIDCKeyService } from './oidc-key/oidc-key.service';
 import { SocialLoginService } from './social-login/social-login.service';
 import { SessionService } from './session/session.service';
 import { AuthModuleEntities } from './entities';
+import { UserClaimService } from './user-claim/user-claim.service';
 
 @Module({
   providers: [
@@ -14,6 +15,7 @@ import { AuthModuleEntities } from './entities';
     OIDCKeyService,
     SocialLoginService,
     SessionService,
+    UserClaimService,
   ],
   exports: [
     ...AuthModuleEntities,
@@ -22,6 +24,7 @@ import { AuthModuleEntities } from './entities';
     OIDCKeyService,
     SocialLoginService,
     SessionService,
+    UserClaimService,
   ],
 })
 export class AuthEntitiesModule {}
