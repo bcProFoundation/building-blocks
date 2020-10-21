@@ -132,4 +132,8 @@ export class UserService {
       offset: Number(offset),
     };
   }
+
+  async deleteMany(query: unknown) {
+    return await this.userModel.deleteMany(query);
+  }
 }

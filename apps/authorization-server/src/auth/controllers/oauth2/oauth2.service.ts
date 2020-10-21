@@ -4,7 +4,7 @@ import {
   SCOPE_EMAIL,
   SCOPE_PROFILE,
 } from '../../../constants/app-strings';
-import { from, of } from 'rxjs';
+import { forkJoin, from, of } from 'rxjs';
 import { switchMap, map, catchError } from 'rxjs/operators';
 import { BearerTokenService } from '../../../auth/entities/bearer-token/bearer-token.service';
 import { UserService } from '../../../user-management/entities/user/user.service';
@@ -14,6 +14,8 @@ import { BearerToken } from '../../entities/bearer-token/bearer-token.interface'
 import { User } from '../../../user-management/entities/user/user.interface';
 import { CommandBus } from '@nestjs/cqrs';
 import { RemoveBearerTokenCommand } from '../../commands/remove-bearer-token/remove-bearer-token.command';
+import { UserClaimService } from '../../entities/user-claim/user-claim.service';
+import { IDTokenClaims } from '../../middlewares/interfaces';
 
 export const PROFILE_USERINFO_ENDPOINT = '/profile/v1/userinfo';
 
@@ -25,6 +27,7 @@ export class OAuth2Service {
     private readonly settings: ServerSettingsService,
     private readonly http: HttpService,
     private readonly clientService: ClientService,
+    private readonly userClaimService: UserClaimService,
     private readonly commandBus: CommandBus,
   ) {}
 
@@ -108,17 +111,37 @@ export class OAuth2Service {
           switchMap(token => {
             return from(this.userService.findOne({ uuid })).pipe(
               switchMap(user => {
-                return of({
+                const claims: IDTokenClaims = {
                   aud: token.client,
                   iss: settings.issuerUrl,
                   sub: user.uuid,
-                  name: user.name,
-                  email: user.email,
-                  email_verified: user.email ? true : false,
+                };
 
-                  // non-standard claims
-                  roles: user.roles,
+                if (token.scope.includes(ROLES)) claims.roles = user.roles;
+                if (token.scope.includes(SCOPE_EMAIL))
+                  claims.email = user.email;
+                if (token.scope.includes(SCOPE_PROFILE))
+                  claims.name = user.name;
+
+                return forkJoin({
+                  requestClaims: of(claims),
+                  userClaims: from(
+                    this.userClaimService.find({
+                      scope: { $in: token.scope },
+                      uuid: user.uuid,
+                    }),
+                  ),
                 });
+              }),
+              switchMap(({ requestClaims, userClaims }) => {
+                const claims = requestClaims;
+
+                if (userClaims && userClaims.length > 0) {
+                  userClaims.forEach(claim => {
+                    claims[claim.name] = claim.value;
+                  });
+                }
+                return of(claims);
               }),
             );
           }),

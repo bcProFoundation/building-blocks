@@ -7,6 +7,7 @@ import { UserAccountRemovedEvent } from './user-account-removed';
 import { AuthData } from '../../entities/auth-data/auth-data.interface';
 import { UserService } from '../../entities/user/user.service';
 import { AuthDataService } from '../../entities/auth-data/auth-data.service';
+import { UserClaimService } from '../../../auth/entities/user-claim/user-claim.service';
 
 describe('Event: UserAccountRemovedHandler', () => {
   let eventBus$: EventBus;
@@ -51,6 +52,7 @@ describe('Event: UserAccountRemovedHandler', () => {
 
   let userService: UserService;
   let authDataService: AuthDataService;
+  let userClaimService: UserClaimService;
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
@@ -73,6 +75,10 @@ describe('Event: UserAccountRemovedHandler', () => {
           provide: AuthDataService,
           useFactory: () => jest.fn(),
         },
+        {
+          provide: UserClaimService,
+          useFactory: () => jest.fn(),
+        },
       ],
     }).compile();
 
@@ -83,6 +89,7 @@ describe('Event: UserAccountRemovedHandler', () => {
     );
     userService = module.get<UserService>(UserService);
     authDataService = module.get<AuthDataService>(AuthDataService);
+    userClaimService = module.get<UserClaimService>(UserClaimService);
   });
 
   it('should be defined', () => {
@@ -95,8 +102,9 @@ describe('Event: UserAccountRemovedHandler', () => {
     manager.informClients = jest.fn(() => Promise.resolve());
     userService.remove = jest.fn(() => Promise.resolve({} as User));
     authDataService.remove = jest.fn(() => Promise.resolve({} as AuthData));
-
+    userClaimService.deleteMany = jest.fn(() => Promise.resolve({}));
     eventBus$.publish = jest.fn(() => {});
+
     await eventHandler.handle(
       new UserAccountRemovedEvent(
         mockUser.uuid,

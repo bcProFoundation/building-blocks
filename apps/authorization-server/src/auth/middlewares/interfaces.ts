@@ -23,6 +23,7 @@ export interface IDTokenClaims {
   roles?: string[];
   nonce?: string;
   at_hash?: string;
+  [key: string]: unknown | unknown[];
 }
 
 export interface JWK {

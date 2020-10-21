@@ -10,9 +10,9 @@ export const schema = new mongoose.Schema(
     modifiedBy: String,
     disabled: { type: Boolean, default: false },
     name: String,
-    phone: String,
+    phone: { type: String, unique: true },
     unverifiedPhone: String,
-    email: String,
+    email: { type: String, unique: true },
     password: String, // uuid of auth-data
     roles: [String],
     enable2fa: { type: Boolean, default: false },
@@ -23,6 +23,7 @@ export const schema = new mongoose.Schema(
     verificationCode: String, // code to complete signup via email
     deleted: { type: Boolean, default: false },
     enablePasswordLess: { type: Boolean, default: false },
+    isEmailVerified: { type: Boolean, default: false },
   },
   { collection: 'user', versionKey: false },
 );

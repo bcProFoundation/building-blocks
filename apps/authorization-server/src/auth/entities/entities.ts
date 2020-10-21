@@ -7,6 +7,7 @@ import { BearerToken, BEARER_TOKEN } from './bearer-token/bearer-token.schema';
 import { OIDCKey, OIDC_KEY } from './oidc-key/oidc-key.schema';
 import { SocialLogin, SOCIAL_LOGIN } from './social-login/social-login.schema';
 import { Session, SESSION } from './session/session.schema';
+import { UserClaim, USER_CLAIM } from './user-claim/user-claim.schema';
 import { MONGOOSE_CONNECTION } from '../../common/database.provider';
 
 export const AuthModuleEntities = [
@@ -36,6 +37,12 @@ export const AuthModuleEntities = [
   {
     provide: SESSION,
     useFactory: (connection: Connection) => connection.model(SESSION, Session),
+    inject: [MONGOOSE_CONNECTION],
+  },
+  {
+    provide: USER_CLAIM,
+    useFactory: (connection: Connection) =>
+      connection.model(USER_CLAIM, UserClaim),
     inject: [MONGOOSE_CONNECTION],
   },
 ];
