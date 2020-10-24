@@ -8,7 +8,14 @@ import { MatDialog } from '@angular/material/dialog';
 import { RenameAuthKeyDialog } from './rename-key-dialog.component';
 import { switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { DELETING, UNDO, UNDO_DURATION } from '../constants/app-strings';
+import {
+  CLOSE,
+  DELETING,
+  DURATION,
+  UNDO,
+  UNDO_DURATION,
+} from '../constants/app-strings';
+import { SOMETHING_WENT_WRONG } from '../constants/messages';
 
 @Component({
   selector: 'app-authentication-keys',
@@ -92,7 +99,9 @@ export class AuthenticationKeysComponent implements OnInit {
         this.keys.push({ uuid: response.registered });
         this.addKey({ uuid: response.registered });
       },
-      error: error => {},
+      error: error => {
+        this.snackBar.open(SOMETHING_WENT_WRONG, CLOSE, { duration: DURATION });
+      },
     });
   }
 

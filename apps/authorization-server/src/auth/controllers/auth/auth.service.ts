@@ -236,6 +236,7 @@ export class AuthService {
 
   async saveUser(user: UserAccountDto, roles?: Role[]) {
     const userEntity = {} as User;
+    userEntity.uuid = uuidv4();
     userEntity.name = user.name;
 
     // process email field
@@ -245,6 +246,10 @@ export class AuthService {
     const authData = {} as AuthData;
     authData.uuid = uuidv4();
     authData.password = await this.cryptoService.hashPassword(user.password);
+    authData.authDataType = AuthDataType.Password;
+    authData.entity = USER;
+    authData.entityUuid = userEntity.uuid;
+
     await this.authDataService.save(authData);
     userEntity.password = authData.uuid;
 

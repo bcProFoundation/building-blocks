@@ -199,8 +199,12 @@ export class UserAggregateService extends AggregateRoot {
     });
     if (!userPassword) {
       userPassword = {} as AuthData;
+      userPassword.authDataType = AuthDataType.Password;
       userPassword.uuid = uuidv4();
     }
+
+    userPassword.entity = USER;
+    userPassword.entityUuid = verifiedUser.uuid;
     userPassword.password = this.crypto.hashPassword(payload.password);
     verifiedUser.password = userPassword.uuid;
     verifiedUser.disabled = false;

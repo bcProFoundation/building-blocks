@@ -54,7 +54,7 @@ describe('Command: RegisterWebAuthnKeyHandler', () => {
       register,
     }));
     await commandHandler.execute(
-      new RegisterWebAuthnKeyCommand({} as RequestBodyAsAny),
+      new RegisterWebAuthnKeyCommand({} as RequestBodyAsAny, 'actorUuid'),
     );
     expect(manager.register).toHaveBeenCalledTimes(1);
   });

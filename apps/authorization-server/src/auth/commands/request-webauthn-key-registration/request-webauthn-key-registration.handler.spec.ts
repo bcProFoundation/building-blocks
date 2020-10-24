@@ -41,7 +41,7 @@ describe('Command: RequestWebAuthnKeyRegistrationHandler', () => {
   });
 
   it('should generate registration challenge using the WebAuthnAggregateService', async () => {
-    const requestRegister = jest.fn(() => Promise.resolve());
+    const requestRegister = jest.fn((...args) => Promise.resolve({} as any));
     manager.requestRegister = requestRegister;
     commandBus$.execute = jest.fn();
     publisher.mergeObjectContext = jest.fn().mockImplementation((...args) => ({

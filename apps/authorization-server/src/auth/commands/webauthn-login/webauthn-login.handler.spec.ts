@@ -42,7 +42,7 @@ describe('Command: WebAuthnLoginHandler', () => {
   it('should generate login challenge WebAuthnAggregateService', async () => {
     const loginChallenge = jest.fn(() =>
       Promise.resolve({
-        loggedIn: true,
+        verified: true,
         redirect: 'redirectUrl',
       }),
     );

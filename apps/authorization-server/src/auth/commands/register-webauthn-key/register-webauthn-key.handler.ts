@@ -10,9 +10,9 @@ export class RegisterWebAuthnKeyHandler
     private readonly publisher: EventPublisher,
   ) {}
   async execute(command: RegisterWebAuthnKeyCommand) {
-    const { body } = command;
+    const { body, actorUuid } = command;
     const aggregate = this.publisher.mergeObjectContext(this.manager);
-    const registered = await aggregate.register(body);
+    const registered = await aggregate.register(body, actorUuid);
     aggregate.commit();
     return registered;
   }

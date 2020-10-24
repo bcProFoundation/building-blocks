@@ -157,6 +157,7 @@ export class UserManagementService extends AggregateRoot {
       });
     }
     const user = {} as User;
+    user.uuid = uuidv4();
     user.email = userData.email;
     user.name = userData.name;
     user.phone = userData.phone;
@@ -169,6 +170,9 @@ export class UserManagementService extends AggregateRoot {
     const authData = {} as AuthData;
     authData.uuid = uuidv4();
     authData.password = this.crypto.hashPassword(userData.password);
+    authData.authDataType = AuthDataType.Password;
+    authData.entity = USER;
+    authData.entityUuid = user.uuid;
 
     // link password with user
     user.password = authData.uuid;

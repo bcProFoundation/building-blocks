@@ -65,4 +65,8 @@ export class UserAuthenticatorService {
   async deleteMany(params) {
     return await this.userAuthenticatorModel.deleteMany(params);
   }
+
+  async updateOne(query, params) {
+    return await this.userAuthenticatorModel.updateOne(query, params);
+  }
 }

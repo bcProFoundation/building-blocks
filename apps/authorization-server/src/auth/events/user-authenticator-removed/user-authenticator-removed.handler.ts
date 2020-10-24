@@ -19,7 +19,7 @@ export class UserAuthenticatorRemovedHandler
       from(
         this.authData.deleteMany({
           authDataType: AuthDataType.Challenge,
-          entityUuid: authKey.userUuid,
+          entityUuid: authKey?.userUuid,
           entity: USER,
         }),
       ),
