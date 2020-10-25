@@ -312,10 +312,14 @@ export class LoginComponent implements OnInit {
         next: response => {
           this.redirectAsPerQuery(response.redirect);
         },
-        error: ({ error }) => {
-          this.snackBar.open(error.message || NO_KEYS_REGISTERED, CLOSE, {
-            duration: DURATION,
-          });
+        error: error => {
+          this.snackBar.open(
+            error?.error?.message || NO_KEYS_REGISTERED,
+            CLOSE,
+            {
+              duration: DURATION,
+            },
+          );
         },
       });
   }

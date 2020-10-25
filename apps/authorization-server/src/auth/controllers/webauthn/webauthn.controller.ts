@@ -43,8 +43,12 @@ export class WebAuthnController {
   }
 
   @Post('v1/register')
-  async register(@Body() body) {
-    return await this.commandBus.execute(new RegisterWebAuthnKeyCommand(body));
+  @UseGuards(AuthGuard('bearer', { callback, session: false }))
+  async register(@Req() req, @Body() body) {
+    const actorUuid = req.user.user;
+    return await this.commandBus.execute(
+      new RegisterWebAuthnKeyCommand(body, actorUuid),
+    );
   }
 
   @Post('v1/login')

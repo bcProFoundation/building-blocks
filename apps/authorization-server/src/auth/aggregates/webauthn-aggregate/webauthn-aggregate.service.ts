@@ -5,12 +5,11 @@ import {
 } from '@nestjs/common';
 import { AggregateRoot } from '@nestjs/cqrs';
 import {
-  generateRegistrationChallenge,
-  parseRegisterRequest,
-  generateLoginChallenge,
-  parseLoginRequest,
-  verifyAuthenticatorAssertion,
-} from '@webauthn/server';
+  generateAttestationOptions,
+  verifyAttestationResponse,
+  generateAssertionOptions,
+  verifyAssertionResponse,
+} from '@simplewebauthn/server';
 import { v4 as uuidv4 } from 'uuid';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
@@ -22,7 +21,10 @@ import { User } from '../../../user-management/entities/user/user.interface';
 import { USER } from '../../../user-management/entities/user/user.schema';
 import { TEN_NUMBER, SERVICE } from '../../../constants/app-strings';
 import { UserAuthenticatorService } from '../../../user-management/entities/user-authenticator/user-authenticator.service';
-import { UserAuthenticator } from '../../../user-management/entities/user-authenticator/user-authenticator.interface';
+import {
+  UserAuthenticator,
+  Fmt,
+} from '../../../user-management/entities/user-authenticator/user-authenticator.interface';
 import { invalidUserException } from '../../../common/filters/exceptions';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { addSessionUser } from '../../guards/auth.guard';
@@ -49,15 +51,8 @@ export class WebAuthnAggregateService extends AggregateRoot {
   }
 
   async requestRegister(actorUuid: string, userUuid: string) {
-    const settings = await this.settings.findWithoutError();
-    const partyName = settings.organizationName || SERVICE;
-    const issuerUrl = settings.issuerUrl;
-    const relyingParty: { name: string; id?: string } = { name: partyName };
-    if (issuerUrl && this.config.get(NODE_ENV) === 'production') {
-      try {
-        relyingParty.id = new URL(issuerUrl).hostname;
-      } catch (error) {}
-    }
+    const relyingParty = await this.getRelyingParty();
+
     await this.validateAuthorizedUser(actorUuid, userUuid);
 
     if (!userUuid) userUuid = actorUuid;
@@ -69,16 +64,22 @@ export class WebAuthnAggregateService extends AggregateRoot {
       userUuid: user.uuid,
     });
 
-    const challengeResponse: any = generateRegistrationChallenge({
-      relyingParty,
-      user: { id: user.uuid, name: user.email, displayName: user.name },
-    });
-
-    challengeResponse.excludeCredentials = authenticators.map(cred => {
-      return {
-        id: cred.credID,
-        type: 'public-key',
-      };
+    const challengeResponse = generateAttestationOptions({
+      rpName: relyingParty.name,
+      rpID: relyingParty.id,
+      userID: user.uuid,
+      userName: user.email,
+      userDisplayName: user.name,
+      // Don't prompt users for additional information about the authenticator
+      // (Recommended for smoother UX)
+      attestationType: 'indirect',
+      // Prevent users from re-registering existing authenticators
+      excludeCredentials: authenticators.map(cred => {
+        return {
+          id: cred.credID,
+          type: 'public-key',
+        };
+      }),
     });
 
     const authData = this.saveChallenge(user, challengeResponse.challenge);
@@ -92,32 +93,52 @@ export class WebAuthnAggregateService extends AggregateRoot {
     return challengeResponse;
   }
 
-  async register(body) {
-    const { key, challenge } = parseRegisterRequest(body);
+  async register(body, actorUuid: string) {
+    const user = await this.user.findOne({ uuid: actorUuid });
+    const challenge = this.getChallengeFromClientData(
+      body.response.clientDataJSON,
+    );
 
     const authData = await this.authData.findOne({
-      password: challenge,
+      entity: USER,
+      entityUuid: user?.uuid,
       authDataType: AuthDataType.Challenge,
+      password: challenge,
     });
 
     if (!authData) {
       throw new ForbiddenException();
     }
 
-    const userUuid = authData.entityUuid;
+    const relyingParty = await this.getRelyingParty();
 
-    await this.authData.remove(authData);
+    try {
+      const verification = await verifyAttestationResponse({
+        credential: body,
+        expectedChallenge: authData?.password,
+        expectedOrigin: relyingParty.origin,
+        expectedRPID: relyingParty.id,
+      });
 
-    const authenticator = {} as UserAuthenticator;
-    authenticator.uuid = uuidv4();
-    authenticator.credID = key.credID;
-    authenticator.fmt = key.fmt;
-    authenticator.publicKey = key.publicKey;
-    authenticator.counter = key.counter;
-    authenticator.userUuid = userUuid;
-    this.apply(new WebAuthnKeyRegisteredEvent(authenticator));
+      const userUuid = authData.entityUuid;
 
-    return { registered: authenticator.uuid };
+      await this.authData.remove(authData);
+
+      const authenticator = {} as UserAuthenticator;
+      const deviceInfo = verification?.authenticatorInfo;
+      authenticator.uuid = uuidv4();
+      authenticator.credID = deviceInfo?.base64CredentialID;
+      authenticator.fmt = (deviceInfo.fmt as unknown) as Fmt;
+      authenticator.publicKey = deviceInfo?.base64PublicKey;
+      authenticator.counter = deviceInfo.counter;
+      authenticator.userUuid = userUuid;
+
+      this.apply(new WebAuthnKeyRegisteredEvent(authenticator));
+
+      return { registered: authenticator.uuid };
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   async login(username: string) {
@@ -132,15 +153,19 @@ export class WebAuthnAggregateService extends AggregateRoot {
       throw new BadRequestException();
     }
 
-    const keys = authenticators.map(cred => ({
-      credID: cred.credID,
-      fmt: cred.fmt,
-      publicKey: cred.publicKey,
-    }));
+    const options = generateAssertionOptions({
+      // Require users to use a previously-registered authenticator
+      allowCredentials: authenticators.map(cred => ({
+        id: cred.credID,
+        type: 'public-key',
+        // Optional
+        transports: ['ble', 'internal', 'usb', 'nfc'],
+      })),
 
-    const assertionChallenge = generateLoginChallenge(keys);
+      userVerification: 'preferred',
+    });
 
-    const authData = this.saveChallenge(user, assertionChallenge.challenge);
+    const authData = this.saveChallenge(user, options.challenge);
     this.apply(
       new WebAuthnKeyChallengeRequestedEvent(
         authData,
@@ -148,12 +173,15 @@ export class WebAuthnAggregateService extends AggregateRoot {
       ),
     );
 
-    return assertionChallenge;
+    return options;
   }
 
   async loginChallenge(req) {
     const { body, query } = req;
-    const { challenge } = parseLoginRequest(body);
+
+    const challenge = this.getChallengeFromClientData(
+      body.response.clientDataJSON,
+    );
     if (!challenge) throw new BadRequestException();
 
     const authChallenge = await this.authData.findOne({
@@ -175,28 +203,45 @@ export class WebAuthnAggregateService extends AggregateRoot {
       throw new BadRequestException();
     }
 
-    await this.authData.remove(authChallenge);
+    const relyingParty = await this.getRelyingParty();
 
-    const loggedIn = verifyAuthenticatorAssertion(body, {
-      credID: authenticator.credID,
-      fmt: authenticator.fmt,
-      publicKey: authenticator.publicKey,
-    });
-
-    this.apply(new UserLoggedInWithWebAuthnEvent(user, authenticator));
-    if (loggedIn) {
-      addSessionUser(req, {
-        uuid: user.uuid,
-        email: user.email,
-        phone: user.phone,
+    try {
+      const verification = await verifyAssertionResponse({
+        credential: body,
+        expectedChallenge: authChallenge.password,
+        expectedOrigin: relyingParty.origin,
+        expectedRPID: relyingParty.id,
+        authenticator: {
+          publicKey: authenticator.publicKey,
+          credentialID: authenticator.credID,
+          counter: authenticator.counter,
+        },
       });
-      req.logIn(user, () => {});
-    }
 
-    return {
-      loggedIn,
-      redirect: query.redirect ? query.redirect : '/account',
-    };
+      await this.authData.remove(authChallenge);
+      const { verified, authenticatorInfo } = verification;
+      await this.authenticator.updateOne(
+        { uuid: authenticator.uuid },
+        { $set: { counter: authenticatorInfo.counter } },
+      );
+      authenticator.counter = authenticatorInfo.counter;
+
+      this.apply(new UserLoggedInWithWebAuthnEvent(user, authenticator));
+      if (verified) {
+        addSessionUser(req, {
+          uuid: user.uuid,
+          email: user.email,
+          phone: user.phone,
+        });
+        req.logIn(user, () => {});
+      }
+      return {
+        verified,
+        redirect: query.redirect ? query.redirect : '/account',
+      };
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   async find(actorUuid: string, userUuid: string) {
@@ -250,5 +295,36 @@ export class WebAuthnAggregateService extends AggregateRoot {
     authData.expiry = expiry;
 
     return authData;
+  }
+
+  async getRelyingParty() {
+    const settings = await this.settings.findWithoutError();
+    const partyName = settings.organizationName || SERVICE;
+    const issuerUrl = settings.issuerUrl;
+
+    const relyingParty: { name: string; id?: string; origin?: string } = {
+      name: partyName,
+    };
+    if (issuerUrl && this.config.get(NODE_ENV) === 'production') {
+      try {
+        relyingParty.id = new URL(issuerUrl).hostname;
+        relyingParty.origin = `https://${relyingParty.id}`;
+      } catch (error) {}
+    } else if (issuerUrl && this.config.get(NODE_ENV) === 'development') {
+      relyingParty.id = 'accounts.localhost';
+      relyingParty.origin = `http://${relyingParty.id}:4210`;
+    }
+    return relyingParty;
+  }
+
+  getChallengeFromClientData(clientDataJSON) {
+    const clientDataBuffer = Buffer.from(clientDataJSON, 'base64');
+    const clientData = JSON.parse(clientDataBuffer.toString());
+    const challenge = Buffer.from(clientData.challenge, 'base64');
+    return this.urlString(challenge.toString('base64'));
+  }
+
+  urlString(str) {
+    return str.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
   }
 }

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, from } from 'rxjs';
 import { map, delay, switchMap } from 'rxjs/operators';
-import { solveLoginChallenge } from '@webauthn/client';
+import { get } from '@github/webauthn-json';
 import { environment } from '../../environments/environment';
 
 interface InfoResponse {
@@ -135,7 +135,9 @@ export class AuthService {
         },
       )
       .pipe(
-        switchMap(challenge => from(solveLoginChallenge(challenge))),
+        switchMap(challenge => {
+          return from(get({ publicKey: challenge }));
+        }),
         switchMap(credentials => {
           let params;
           if (redirect) params = { redirect };

@@ -1,5 +1,6 @@
 import { Test } from '@nestjs/testing';
 import { CommandBus, CqrsModule, EventPublisher } from '@nestjs/cqrs';
+import { PublicKeyCredentialRequestOptionsJSON } from '@simplewebauthn/typescript-types';
 import { WebAuthnRequestLoginHandler } from './webauthn-request-login.handler';
 import { WebAuthnRequestLoginCommand } from './webauthn-request-login.command';
 import { WebAuthnAggregateService } from '../../aggregates/webauthn-aggregate/webauthn-aggregate.service';
@@ -41,7 +42,9 @@ describe('Command: RequestWebAuthnKeyRegistrationHandler', () => {
   });
 
   it('should generate login challenge WebAuthnAggregateService', async () => {
-    const login = jest.fn(() => Promise.resolve({}));
+    const login = jest.fn(() =>
+      Promise.resolve({} as PublicKeyCredentialRequestOptionsJSON),
+    );
     manager.login = login;
     commandBus$.execute = jest.fn();
     publisher.mergeObjectContext = jest.fn().mockImplementation((...args) => ({
