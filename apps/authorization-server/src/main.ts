@@ -25,7 +25,7 @@ async function bootstrap() {
   ExpressServer.setupViewEngine(app);
 
   // Setup Session
-  authServer.setupSession();
+  authServer.setupSession(app);
 
   // Setup Events
   setupEvents(app);

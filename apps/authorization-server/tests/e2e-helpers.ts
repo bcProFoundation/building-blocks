@@ -1,6 +1,23 @@
 import { UserService } from '../src/user-management/entities/user/user.service';
 import { AuthDataService } from '../src/user-management/entities/auth-data/auth-data.service';
 import 'jest';
+import { INestApplication } from '@nestjs/common';
+import { ClientMqtt } from '@nestjs/microservices';
+import { Mongoose } from 'mongoose';
+import * as Agenda from 'agenda';
+import * as RateLimitMongoStore from 'rate-limit-mongo';
+import { MongoClient } from 'mongodb';
+import { RequestHandler } from 'express';
+import { MongoStore } from 'connect-mongo';
+import { SessionOptions } from 'express-session';
+
+import { BROADCAST_EVENT } from '../src/common/events-microservice.client';
+import {
+  AGENDA_CONNECTION,
+  MONGOOSE_CONNECTION,
+  RATE_LIMIT_CONNECTION,
+  SESSION_CONNECTION,
+} from '../src/common/database.provider';
 
 export function getParameterByName(url, name) {
   name = name.replace(/[\[\]]/g, '\\$&');
@@ -55,3 +72,22 @@ export async function validateUsersAndAuthData(
 // https://stackoverflow.com/a/38956175
 export const delay = (milliseconds: number) => promise =>
   new Promise(resolve => setTimeout(() => resolve(promise), milliseconds));
+
+export async function stopServices(app: INestApplication) {
+  app.get<ClientMqtt>(BROADCAST_EVENT).close();
+  const database = app.get<Mongoose>(MONGOOSE_CONNECTION);
+  const agenda = app.get<Agenda>(AGENDA_CONNECTION);
+  const rateLimitStore = app.get<RateLimitMongoStore>(RATE_LIMIT_CONNECTION);
+  const { store } = app.get<{
+    store: MongoStore;
+    expressSession: (options?: SessionOptions) => RequestHandler;
+  }>(SESSION_CONNECTION);
+  const client: MongoClient = rateLimitStore.getClient();
+
+  store.close();
+  await client.close();
+  await agenda.stop();
+  await database.connection.close();
+  await database.disconnect();
+  await app.close();
+}

@@ -3,6 +3,8 @@ import * as request from 'supertest';
 import * as speakeasy from 'speakeasy';
 import { INestApplication } from '@nestjs/common';
 import { ExpressAdapter } from '@nestjs/platform-express';
+import 'jest';
+
 import { AppModule } from '../src/app.module';
 import { ExpressServer } from '../src/express-server';
 import {
@@ -10,6 +12,7 @@ import {
   OIDCKey,
   validateUsersAndAuthData,
   delay,
+  stopServices,
 } from './e2e-helpers';
 import { UserService } from '../src/user-management/entities/user/user.service';
 import { OIDCKeyService } from '../src/auth/entities/oidc-key/oidc-key.service';
@@ -26,7 +29,6 @@ import { USER } from '../src/user-management/entities/user/user.schema';
 import { User } from '../src/user-management/entities/user/user.interface';
 import { AuthDataService } from '../src/user-management/entities/auth-data/auth-data.service';
 import { ClientService } from '../src/client-management/entities/client/client.service';
-import 'jest';
 
 jest.setTimeout(30000);
 
@@ -60,7 +62,7 @@ describe('AppModule (e2e)', () => {
     app = moduleFixture.createNestApplication(
       new ExpressAdapter(authServer.server),
     );
-    authServer.setupSession();
+    authServer.setupSession(app);
     const keyPairService = moduleFixture.get(KeyPairGeneratorService);
     keyPairService.generateKeyPair = jest.fn(() => Promise.resolve());
 
@@ -478,6 +480,6 @@ describe('AppModule (e2e)', () => {
   });
 
   afterAll(async () => {
-    await app.close();
+    await stopServices(app);
   });
 });
