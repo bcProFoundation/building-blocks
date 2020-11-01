@@ -1,6 +1,14 @@
-import { Module, NestModule, MiddlewareConsumer, Global } from '@nestjs/common';
+import {
+  Module,
+  NestModule,
+  MiddlewareConsumer,
+  Global,
+  Inject,
+} from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { APP_FILTER } from '@nestjs/core';
+import * as MongoStore from 'rate-limit-mongo';
+
 import { OAuth2orizeSetup } from './middlewares/oauth2orize.setup';
 import { OAuth2ConfirmationMiddleware } from './middlewares/oauth2-confirmation.middleware';
 import { OAuth2AuthorizationMiddleware } from './middlewares/oauth2-authorization.middleware';
@@ -27,6 +35,11 @@ import { AuthorizationErrorFilter } from '../common/filters/authorization-error.
 import { TokenErrorFilter } from '../common/filters/token-error.filter';
 import { OAuth2ErrorFilter } from '../common/filters/oauth2-error.filter';
 import { OpenIDAuthorizationErrorFilter } from '../common/filters/openid-authorization-error.filter';
+import { rateLimiterMiddleware } from './middlewares/rate-limit.middleware';
+import { RATE_LIMIT_CONNECTION } from '../common/database.provider';
+
+export const AUTH_MAX_REQUESTS = 10;
+export const AUTH_WINDOW = 60 * 1000;
 
 @Global()
 @Module({
@@ -75,6 +88,11 @@ import { OpenIDAuthorizationErrorFilter } from '../common/filters/openid-authori
   ],
 })
 export class AuthModule implements NestModule {
+  constructor(
+    @Inject(RATE_LIMIT_CONNECTION)
+    private readonly store: MongoStore,
+  ) {}
+
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(
@@ -91,6 +109,8 @@ export class AuthModule implements NestModule {
         OAuth2TokenMiddleware,
         OAuth2ErrorHandlerMiddleware,
       )
-      .forRoutes('/oauth2/token');
+      .forRoutes('/oauth2/token')
+      .apply(rateLimiterMiddleware(AUTH_MAX_REQUESTS, AUTH_WINDOW, this.store))
+      .forRoutes('/auth/login', '/auth/verify_password');
   }
 }

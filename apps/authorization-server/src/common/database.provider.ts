@@ -3,6 +3,10 @@ import * as mongoose from 'mongoose';
 import { Observable, defer } from 'rxjs';
 import { retryWhen, scan, delay } from 'rxjs/operators';
 import * as Agenda from 'agenda';
+import * as RateLimitMongoStore from 'rate-limit-mongo';
+import * as connectMongoDBSession from 'connect-mongo';
+import * as expressSession from 'express-session';
+
 import {
   ConfigService,
   DB_USER,
@@ -11,10 +15,14 @@ import {
   DB_NAME,
   MONGO_URI_PREFIX,
 } from '../config/config.service';
+import { SESSION_COLLECTION } from '../auth/entities/session/session.schema';
 
 export const MONGOOSE_CONNECTION = 'DATABASE_CONNECTION';
 export const AGENDA_CONNECTION = 'AGENDA_CONNECTION';
 export const MAJORITY = 'majority';
+export const RATE_LIMIT_CONNECTION = 'RATE_LIMIT_CONNECTION';
+export const RATE_LIMIT_COLLECTION = 'rate_limit';
+export const SESSION_CONNECTION = 'SESSION_CONNECTION';
 
 export const databaseProviders = [
   {
@@ -68,6 +76,49 @@ export const databaseProviders = [
       });
       await agenda.start();
       return agenda;
+    },
+    inject: [ConfigService],
+  },
+  {
+    provide: RATE_LIMIT_CONNECTION,
+    useFactory: async (config: ConfigService) => {
+      const mongoUriPrefix = config.get(MONGO_URI_PREFIX) || 'mongodb';
+      const store = new RateLimitMongoStore({
+        uri: `${mongoUriPrefix}://${config.get(DB_USER)}:${config.get(
+          DB_PASSWORD,
+        )}@${config.get(DB_HOST).replace(/,\s*$/, '')}/${config.get(DB_NAME)}`,
+        collectionName: RATE_LIMIT_COLLECTION,
+      });
+
+      return store;
+    },
+    inject: [ConfigService],
+  },
+  {
+    provide: SESSION_CONNECTION,
+    useFactory: async (config: ConfigService) => {
+      const mongoUriPrefix = config.get(MONGO_URI_PREFIX) || 'mongodb';
+      const MongoStore = connectMongoDBSession(expressSession);
+      const mongoOptions = 'retryWrites=true';
+      const store = new MongoStore({
+        url: `${mongoUriPrefix}://${config.get(DB_USER)}:${config.get(
+          DB_PASSWORD,
+        )}@${config.get(DB_HOST).replace(/,\s*$/, '')}/${config.get(
+          DB_NAME,
+        )}?${mongoOptions}`,
+        touchAfter: 24 * 3600, // 24 hours * 3600 secs
+        collection: SESSION_COLLECTION,
+        stringify: false,
+        mongoOptions: {
+          useUnifiedTopology: true,
+          w: MAJORITY,
+          useNewUrlParser: true,
+        },
+      });
+      return {
+        store,
+        expressSession,
+      };
     },
     inject: [ConfigService],
   },

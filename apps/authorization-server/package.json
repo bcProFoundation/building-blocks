@@ -54,6 +54,7 @@
     "passport-oauth2-client-password": "^0.1.2",
     "passport-oauth2-code": "^0.1.6",
     "qrcode": "^1.4.4",
+    "rate-limit-mongo": "^2.3.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^6.6.3",
     "saslprep": "^1.0.3",

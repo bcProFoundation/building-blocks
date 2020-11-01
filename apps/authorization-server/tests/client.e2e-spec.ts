@@ -2,9 +2,11 @@ import { Test } from '@nestjs/testing';
 import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { ExpressAdapter } from '@nestjs/platform-express';
+import 'jest';
+
 import { AppModule } from '../src/app.module';
 import { ExpressServer } from '../src/express-server';
-import { getParameterByName, OIDCKey } from './e2e-helpers';
+import { getParameterByName, OIDCKey, stopServices } from './e2e-helpers';
 import { OIDCKeyService } from '../src/auth/entities/oidc-key/oidc-key.service';
 import { ConfigService } from '../src/config/config.service';
 import { KeyPairGeneratorService } from '../src/auth/schedulers';
@@ -15,7 +17,6 @@ import {
 import { Scope } from '../src/client-management/entities/scope/scope.interface';
 import { ScopeService } from '../src/client-management/entities/scope/scope.service';
 import { ClientService } from '../src/client-management/entities/client/client.service';
-import 'jest';
 
 jest.setTimeout(30000);
 
@@ -45,7 +46,7 @@ describe('AppModule (e2e)', () => {
     app = moduleFixture.createNestApplication(
       new ExpressAdapter(authServer.server),
     );
-    authServer.setupSession();
+    authServer.setupSession(app);
     const keyPairService = moduleFixture.get(KeyPairGeneratorService);
     keyPairService.generateKeyPair = jest.fn(() => Promise.resolve());
 
@@ -219,6 +220,6 @@ describe('AppModule (e2e)', () => {
   });
 
   afterAll(async () => {
-    await app.close();
+    await stopServices(app);
   });
 });

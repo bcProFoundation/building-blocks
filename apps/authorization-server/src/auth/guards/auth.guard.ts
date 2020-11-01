@@ -83,39 +83,6 @@ const createPassportContext = (request, response) => (types, options) =>
     })(request, response, resolve),
   );
 
-export function TestAuthGuard(
-  types,
-  options: AuthGuardOptions & { [key: string]: any } = defaultOptions,
-): Type<CanActivate> {
-  options = { ...defaultOptions, ...options };
-  const guard = mixin(
-    class implements CanActivate {
-      public async canActivate(context: ExecutionContext): Promise<boolean> {
-        const httpContext = context.switchToHttp();
-        const request = httpContext.getRequest();
-        const user = {
-          id: 1,
-          email: 'test@user.org',
-        };
-        request[options.property || defaultOptions.property] = user;
-        return true;
-      }
-
-      public async logIn<
-        TRequest extends {
-          logIn: (user, callback: (error) => any) => any;
-        } = any
-      >(request: TRequest): Promise<void> {
-        const user = request[options.property || defaultOptions.property];
-        await new Promise((resolve, reject) =>
-          request.logIn(user, err => (err ? reject(err) : resolve())),
-        );
-      }
-    },
-  );
-  return guard;
-}
-
 export interface RequestUser {
   email: string;
   uuid: string;
