@@ -10,9 +10,9 @@ export const schema = new mongoose.Schema(
     modifiedBy: String,
     disabled: { type: Boolean, default: false },
     name: String,
-    phone: { type: String, unique: true },
+    phone: { type: String, unique: true, sparse: true },
     unverifiedPhone: String,
-    email: { type: String, unique: true },
+    email: { type: String, unique: true, sparse: true },
     password: String, // uuid of auth-data
     roles: [String],
     enable2fa: { type: Boolean, default: false },
