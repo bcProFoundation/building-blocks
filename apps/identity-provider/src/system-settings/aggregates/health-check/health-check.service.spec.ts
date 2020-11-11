@@ -1,11 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import {
-  MicroserviceHealthIndicator,
-  TypeOrmHealthIndicator,
-} from '@nestjs/terminus';
-import { Connection } from 'typeorm';
+import { MicroserviceHealthIndicator } from '@nestjs/terminus';
 import { HealthCheckAggregateService } from './health-check.service';
 import { ConfigService } from '../../../config/config.service';
+import { DatabaseHealthIndicatorService } from '../database-health-indicator/database-health-indicator.service';
 
 describe('HealthCheckAggregateService', () => {
   let service: HealthCheckAggregateService;
@@ -16,8 +13,7 @@ describe('HealthCheckAggregateService', () => {
         HealthCheckAggregateService,
         { provide: MicroserviceHealthIndicator, useValue: {} },
         { provide: ConfigService, useValue: {} },
-        { provide: Connection, useValue: {} },
-        { provide: TypeOrmHealthIndicator, useValue: {} },
+        { provide: DatabaseHealthIndicatorService, useValue: {} },
       ],
     }).compile();
 

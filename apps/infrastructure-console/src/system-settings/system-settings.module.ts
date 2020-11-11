@@ -8,11 +8,17 @@ import { SettingsController } from './controllers/settings/settings.controller';
 import { SetupController } from './controllers/setup/setup.controller';
 import { HealthCheckAggregateService } from './aggregates/health-check/health-check.service';
 import { HealthController } from './controllers/health/health.controller';
+import { DatabaseHealthIndicatorService } from './aggregates/database-health-indicator/database-health-indicator.service';
 
 @Global()
 @Module({
   imports: [SystemSettingsEntitiesModule, HttpModule, TerminusModule],
-  providers: [SettingsService, SetupService, HealthCheckAggregateService],
+  providers: [
+    SettingsService,
+    SetupService,
+    HealthCheckAggregateService,
+    DatabaseHealthIndicatorService,
+  ],
   controllers: [
     ConnectController,
     SettingsController,

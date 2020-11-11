@@ -10,6 +10,7 @@ import { SetupService } from './controllers/setup/setup.service';
 import { ConnectService } from './controllers/connect/connect.service';
 import { HealthCheckAggregateService } from './aggregates/health-check/health-check.service';
 import { HealthController } from './controllers/health/health.controller';
+import { DatabaseHealthIndicatorService } from './aggregates/database-health-indicator/database-health-indicator.service';
 
 @Global()
 @Module({
@@ -24,6 +25,7 @@ import { HealthController } from './controllers/health/health.controller';
     SetupService,
     ConnectService,
     HealthCheckAggregateService,
+    DatabaseHealthIndicatorService,
   ],
   controllers: [
     SettingsController,
