@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ChooseAccountService } from './choose-account.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { URLSearchParams } from '@angular/http';
 import { environment } from '../../environments/environment';
 import { FormGroup, FormArray, FormControl } from '@angular/forms';
 import {
