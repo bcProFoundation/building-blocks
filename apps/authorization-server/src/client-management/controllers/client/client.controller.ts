@@ -13,8 +13,6 @@ import {
   Headers,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { callback } from '../../../auth/passport/strategies/local.strategy';
-import { AuthGuard } from '../../../auth/guards/auth.guard';
 import { CreateClientDto } from '../../entities/client/create-client.dto';
 import { Roles } from '../../../common/decorators/roles.decorator';
 import { ADMINISTRATOR, AUTHORIZATION } from '../../../constants/app-strings';
@@ -29,6 +27,7 @@ import { GetClientByClientIdQuery } from '../../queries/get-client-by-client-id/
 import { GetTrustedClientsQuery } from '../../queries/get-trusted-clients/get-trusted-clients.query';
 import { ListClientsQuery } from '../../queries/list-clients/list-clients.query';
 import { ListQueryDto } from '../../../common/policies/list-query/list-query';
+import { BearerTokenGuard } from '../../../auth/guards/bearer-token.guard';
 
 @Controller('client')
 @SerializeOptions({ excludePrefixes: ['_'] })
@@ -39,7 +38,7 @@ export class ClientController {
   ) {}
 
   @Post('v1/create')
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @UseGuards(BearerTokenGuard)
   @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
   async create(@Body() body: CreateClientDto, @Req() req) {
     const actorUuid = req.user.user;
@@ -48,7 +47,7 @@ export class ClientController {
 
   @Post('v1/update/:clientId')
   @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @UseGuards(BearerTokenGuard)
   async update(
     @Body() payload: CreateClientDto,
     @Param('clientId') clientId: string,
@@ -61,7 +60,7 @@ export class ClientController {
   }
 
   @Post('v1/update_secret/:clientId')
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @UseGuards(BearerTokenGuard)
   async updateSecret(@Param('clientId') clientId: string, @Req() req) {
     const userUuid = req.user.user;
     return await this.commandBus.execute(
@@ -78,7 +77,7 @@ export class ClientController {
 
   @Get('v1/list')
   @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @UseGuards(BearerTokenGuard)
   async list(@Query() query: ListQueryDto, @Req() req) {
     const { offset, limit, search, sort } = query;
     const userUuid = req.user.user;
@@ -89,13 +88,13 @@ export class ClientController {
 
   @Get('v1/trusted_clients')
   @Roles(ADMINISTRATOR)
-  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  @UseGuards(BearerTokenGuard, RoleGuard)
   async findAllTrustedClients() {
     return await this.queryBus.execute(new GetTrustedClientsQuery());
   }
 
   @Get('v1/get/:uuid')
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @UseGuards(BearerTokenGuard)
   async findOne(@Param('uuid') uuid: string, @Req() req) {
     const userUuid = req.user.user;
     return await this.queryBus.execute(
@@ -104,7 +103,7 @@ export class ClientController {
   }
 
   @Get('v1/get_by_client_id/:clientId')
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @UseGuards(BearerTokenGuard)
   async getClientId(@Param('clientId') clientId: string, @Req() req) {
     const userUuid = req.user.user;
     return await this.queryBus.execute(
@@ -113,7 +112,7 @@ export class ClientController {
   }
 
   @Post('v1/delete/:clientId')
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @UseGuards(BearerTokenGuard)
   async deleteByUUID(@Param('clientId') clientId, @Req() req) {
     const actorUserUuid = req.user.user;
     return await this.commandBus.execute(

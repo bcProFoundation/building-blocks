@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { EventPattern, Payload } from '@nestjs/microservices';
-import { AuthGuard } from '../../../auth/guards/auth.guard';
 import { RoleGuard } from '../../../auth/guards/role.guard';
 import { Roles } from '../../../common/decorators/roles.decorator';
 import { ADMINISTRATOR } from '../../../constants/app-strings';
@@ -22,7 +21,7 @@ import { RemoveUserClaimCommand } from '../../commands/remove-user-claim/remove-
 import { UpdateUserClaimCommand } from '../../commands/update-user-claim/update-user-claim.command';
 import { ListUserClaimsDto } from './list-user-claims.dto';
 import { UserClaimDto } from './user-claim.dto';
-import { callback } from '../../../auth/passport/strategies/local.strategy';
+import { BearerTokenGuard } from '../../../auth/guards/bearer-token.guard';
 
 export const UserClaimsAddedByServiceEvent = 'UserClaimsAddedByServiceEvent';
 export const UserClaimsUpdatedByServiceEvent =
@@ -61,7 +60,7 @@ export class UserClaimController {
 
   @Post('v1/add_user_claim')
   @Roles(ADMINISTRATOR)
-  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  @UseGuards(BearerTokenGuard, RoleGuard)
   @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
   async addUserClaimHttp(@Body() payload: UserClaimDto) {
     return await this.commandBus.execute(new AddUserClaimCommand(payload));
@@ -69,7 +68,7 @@ export class UserClaimController {
 
   @Post('v1/update_user_claim')
   @Roles(ADMINISTRATOR)
-  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  @UseGuards(BearerTokenGuard, RoleGuard)
   @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
   async updateUserClaimHttp(@Body() payload: UserClaimDto) {
     return await this.commandBus.execute(new UpdateUserClaimCommand(payload));
@@ -77,7 +76,7 @@ export class UserClaimController {
 
   @Post('v1/remove_user_claim')
   @Roles(ADMINISTRATOR)
-  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  @UseGuards(BearerTokenGuard, RoleGuard)
   async removeUserClaimHttp(@Body() payload: { uuid: string; name: string }) {
     return await this.commandBus.execute(
       new RemoveUserClaimCommand(payload.uuid, payload.name),
@@ -86,7 +85,7 @@ export class UserClaimController {
 
   @Get('v1/retrieve_user_claims')
   @Roles(ADMINISTRATOR)
-  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  @UseGuards(BearerTokenGuard, RoleGuard)
   @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
   async listUserClaims(@Query() query: ListUserClaimsDto) {
     return await this.queryBus.execute(

@@ -29,7 +29,7 @@ import { SendLoginOTPCommand } from '../../commands/send-login-otp/send-login-ot
 import { USER } from '../../../user-management/entities/user/user.schema';
 import { PasswordLessDto } from '../../policies/password-less/password-less.dto';
 import { SUCCESS } from '../../../constants/app-strings';
-import { addSessionUser } from '../../guards/auth.guard';
+import { addSessionUser } from '../../guards/guard.utils';
 
 @Injectable()
 export class AuthService {

@@ -12,8 +12,6 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { AuthGuard } from '../../guards/auth.guard';
-import { callback } from '../../passport/strategies/local.strategy';
 import { RegisterDeviceDto } from '../../policies/register-device/register-device.dto';
 import { RequestWebAuthnKeyRegistrationCommand } from '../../commands/request-webauthn-key-registration/request-webauthn-key-registration.command';
 import { RequestLogin } from '../../policies/login-user/request-login.dto';
@@ -23,6 +21,7 @@ import { WebAuthnLoginCommand } from '../../commands/webauthn-login/webauthn-log
 import { RemoveUserAuthenticatorCommand } from '../../commands/remove-user-authenticator/remove-user-authenticator.command';
 import { RenameUserAuthenticatorCommand } from '../../commands/rename-user-authenticator/rename-user-authenticator.command';
 import { FindUserAuthenticatorsQuery } from '../../queries/find-user-authenticators/find-user-authenticators.query';
+import { BearerTokenGuard } from '../../guards/bearer-token.guard';
 
 @Controller('webauthn')
 export class WebAuthnController {
@@ -32,7 +31,7 @@ export class WebAuthnController {
   ) {}
 
   @Post('v1/request_register')
-  @UseGuards(AuthGuard('bearer', { callback, session: false }))
+  @UseGuards(BearerTokenGuard)
   async requestRegister(@Req() req, @Body() body: RegisterDeviceDto) {
     const { userUuid } = body;
     const actorUuid = req.user.user;
@@ -43,7 +42,7 @@ export class WebAuthnController {
   }
 
   @Post('v1/register')
-  @UseGuards(AuthGuard('bearer', { callback, session: false }))
+  @UseGuards(BearerTokenGuard)
   async register(@Req() req, @Body() body) {
     const actorUuid = req.user.user;
     return await this.commandBus.execute(
@@ -67,7 +66,7 @@ export class WebAuthnController {
   }
 
   @Get('v1/authenticators/:userUuid')
-  @UseGuards(AuthGuard('bearer', { callback, session: false }))
+  @UseGuards(BearerTokenGuard)
   async findAuthenticators(@Param('userUuid') userUuid: string, @Req() req) {
     const actorUuid = req.user.user;
     return await this.queryBus.execute(
@@ -76,7 +75,7 @@ export class WebAuthnController {
   }
 
   @Post('v1/remove_authenticator/:uuid')
-  @UseGuards(AuthGuard('bearer', { callback, session: false }))
+  @UseGuards(BearerTokenGuard)
   async removeAuthenticator(
     @Param('uuid') uuid: string,
     @Body('userUuid') userUuid: string,
@@ -89,7 +88,7 @@ export class WebAuthnController {
   }
 
   @Post('v1/rename_authenticator/:uuid')
-  @UseGuards(AuthGuard('bearer', { callback, session: false }))
+  @UseGuards(BearerTokenGuard)
   async renameAuthenticator(
     @Param('uuid') uuid: string,
     @Body('name') name: string,

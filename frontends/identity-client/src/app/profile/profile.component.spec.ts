@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ProfileComponent } from './profile.component';
 import { MaterialModule } from '../material.module';
@@ -18,54 +18,55 @@ describe('ProfileComponent', () => {
   let component: ProfileComponent;
   let fixture: ComponentFixture<ProfileComponent>;
 
-  beforeEach(async(() => {
-    const oauthServiceStub: Partial<OAuthService> = {
-      getIdentityClaims() {
-        return { roles: ['administrator'] };
-      },
-    };
-
-    TestBed.configureTestingModule({
-      imports: [
-        MaterialModule,
-        ReactiveFormsModule,
-        FormsModule,
-        BrowserAnimationsModule,
-        RouterTestingModule,
-      ],
-      providers: [
-        {
-          provide: OAuthService,
-          useValue: oauthServiceStub,
+  beforeEach(
+    waitForAsync(() => {
+      const oauthServiceStub: Partial<OAuthService> = {
+        getIdentityClaims() {
+          return { roles: ['administrator'] };
         },
-        {
-          provide: ProfileService,
-          useValue: {
-            getPersonalDetails() {
-              return from([]);
-            },
-            getAuthServerUser() {
-              return from([]);
-            },
-            getProfileDetails() {
-              return from([]);
-            },
-            checkServerForPhoneRegistration() {
-              return from([]);
+      };
+
+      TestBed.configureTestingModule({
+        imports: [
+          MaterialModule,
+          ReactiveFormsModule,
+          FormsModule,
+          BrowserAnimationsModule,
+          RouterTestingModule,
+        ],
+        providers: [
+          {
+            provide: OAuthService,
+            useValue: oauthServiceStub,
+          },
+          {
+            provide: ProfileService,
+            useValue: {
+              getPersonalDetails() {
+                return from([]);
+              },
+              getAuthServerUser() {
+                return from([]);
+              },
+              getProfileDetails() {
+                return from([]);
+              },
+              checkServerForPhoneRegistration() {
+                return from([]);
+              },
             },
           },
-        },
-        MatSnackBar,
-      ],
-      declarations: [ProfileComponent, PasswordRequirementComponent],
-    }).compileComponents();
-  }));
+          MatSnackBar,
+        ],
+        declarations: [ProfileComponent, PasswordRequirementComponent],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ProfileComponent);
     component = fixture.componentInstance;
     component.ngOnInit();
-    fixture.detectChanges();
   });
 
   it('should create', () => {

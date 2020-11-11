@@ -12,8 +12,6 @@ import {
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { UserService } from '../../entities/user/user.service';
-import { AuthGuard } from '../../../auth/guards/auth.guard';
-import { callback } from '../../../auth/passport/strategies/local.strategy';
 import { Roles } from '../../../common/decorators/roles.decorator';
 import { ADMINISTRATOR } from '../../../constants/app-strings';
 import { RoleGuard } from '../../../auth/guards/role.guard';
@@ -43,6 +41,7 @@ import { AddUnverifiedMobileCommand } from '../../../auth/commands/add-unverifie
 import { UnverifiedPhoneDto } from '../../policies/unverified-phone/unverified-phone.dto';
 import { VerifyPhoneDto } from '../../policies/verify-phone/verify-phone.dto';
 import { VerifyPhoneCommand } from '../../../auth/commands/verify-phone/verify-phone.command';
+import { BearerTokenGuard } from '../../../auth/guards/bearer-token.guard';
 
 @Controller('user')
 export class UserController {
@@ -53,7 +52,7 @@ export class UserController {
   ) {}
 
   @Post('v1/change_password')
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @UseGuards(BearerTokenGuard)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async updatePassword(@Req() req, @Body() passwordPayload: ChangePasswordDto) {
     const userUuid = req.user.user;
@@ -63,7 +62,7 @@ export class UserController {
   }
 
   @Post('v1/update_full_name')
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @UseGuards(BearerTokenGuard)
   async updateFullName(@Req() req, @Body('name') name) {
     const actorUserUuid = req.user.user;
     return await this.commandBus.execute(
@@ -72,7 +71,7 @@ export class UserController {
   }
 
   @Post('v1/initialize_2fa')
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @UseGuards(BearerTokenGuard)
   async initialize2fa(@Req() req, @Query('restart') restart) {
     return await this.commandBus.execute(
       new Initialize2FACommand(req.user.user, restart || false),
@@ -80,7 +79,7 @@ export class UserController {
   }
 
   @Post('v1/verify_2fa')
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @UseGuards(BearerTokenGuard)
   async verify2fa(@Req() req, @Body('otp') otp: string) {
     return await this.commandBus.execute(
       new Verify2FACommand(req.user.user, otp),
@@ -88,13 +87,13 @@ export class UserController {
   }
 
   @Post('v1/disable_2fa')
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @UseGuards(BearerTokenGuard)
   async disable2fa(@Req() req) {
     return await this.commandBus.execute(new Disable2FACommand(req.user.user));
   }
 
   @Get('v1/get_user')
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @UseGuards(BearerTokenGuard)
   async getUser(@Req() req) {
     const actorUserUuid = req.user.user;
     return await this.userService.getAuthorizedUser(actorUserUuid);
@@ -103,7 +102,7 @@ export class UserController {
   @Post('v1/create')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Roles(ADMINISTRATOR)
-  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  @UseGuards(BearerTokenGuard, RoleGuard)
   async create(@Body() payload: UserAccountDto, @Req() req) {
     const createdBy = req.user.user;
     return await this.commandBus.execute(
@@ -113,7 +112,7 @@ export class UserController {
 
   @Post('v1/update/:userUuidToBeModified')
   @Roles(ADMINISTRATOR)
-  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  @UseGuards(BearerTokenGuard, RoleGuard)
   async update(
     @Param('userUuidToBeModified') userUuidToBeModified,
     @Body() payload: UserAccountDto,
@@ -131,7 +130,7 @@ export class UserController {
 
   @Post('v1/delete/:userUuidToBeDeleted')
   @Roles(ADMINISTRATOR)
-  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  @UseGuards(BearerTokenGuard, RoleGuard)
   async deleteUser(
     @Param('userUuidToBeDeleted') userUuidToBeDeleted,
     @Req() req,
@@ -145,7 +144,7 @@ export class UserController {
   @Get('v1/list')
   @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
   @Roles(ADMINISTRATOR)
-  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  @UseGuards(BearerTokenGuard, RoleGuard)
   async list(@Query() query: ListQueryDto) {
     const { offset, limit, search, sort } = query;
     const where = { deleted: { $eq: false } };
@@ -155,7 +154,7 @@ export class UserController {
 
   @Get('v1/get/:uuid')
   @Roles(ADMINISTRATOR)
-  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  @UseGuards(BearerTokenGuard, RoleGuard)
   async findOne(@Param('uuid') uuid: string, @Req() req) {
     return await this.userService.getAuthorizedUser(uuid);
   }
@@ -182,7 +181,7 @@ export class UserController {
   }
 
   @Post('v1/enable_password_less_login')
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @UseGuards(BearerTokenGuard)
   async enablePasswordLess(@Req() req, @Body('userUuid') userUuid) {
     const actorUserUuid = req.user.user;
     await this.commandBus.execute(
@@ -195,7 +194,7 @@ export class UserController {
   }
 
   @Post('v1/disable_password_less_login')
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @UseGuards(BearerTokenGuard)
   async disablePasswordLess(@Req() req, @Body('userUuid') userUuid) {
     const actorUserUuid = req.user.user;
     await this.commandBus.execute(
@@ -208,7 +207,7 @@ export class UserController {
   }
 
   @Post('v1/delete_me')
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @UseGuards(BearerTokenGuard)
   async deleteMe(@Req() req) {
     const user = req.user.user;
     await this.commandBus.execute(new RemoveUserAccountCommand(user, user));
@@ -222,7 +221,7 @@ export class UserController {
 
   @Post('v1/add_unverified_phone')
   @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @UseGuards(BearerTokenGuard)
   async addUnverifiedPhone(@Body() payload: UnverifiedPhoneDto, @Req() req) {
     const userUuid = req.user.user;
     const { unverifiedPhone } = payload;
@@ -233,7 +232,7 @@ export class UserController {
 
   @Post('v1/verify_phone')
   @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @UseGuards(BearerTokenGuard)
   async verifyPhone(@Body() payload: VerifyPhoneDto, @Req() req) {
     const userUuid = req.user.user;
     const { otp } = payload;

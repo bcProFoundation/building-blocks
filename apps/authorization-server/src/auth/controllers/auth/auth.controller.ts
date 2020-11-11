@@ -13,12 +13,11 @@ import {
   Param,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { callback } from '../../passport/strategies/local.strategy';
-import { AuthGuard } from '../../../auth/guards/auth.guard';
 import { ApiOperation } from '@nestjs/swagger';
 import { i18n } from '../../../i18n/i18n.config';
 import { LoginUserDto } from '../../policies/login-user/login-user.dto';
 import { PasswordLessDto } from '../../policies/password-less/password-less.dto';
+import { LocalUserGuard } from '../../guards/local-user.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -26,12 +25,7 @@ export class AuthController {
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  @UseGuards(
-    AuthGuard('local', {
-      session: true,
-      callback,
-    }),
-  )
+  @UseGuards(LocalUserGuard)
   @ApiOperation({
     summary: i18n.__('Login'),
     description: 'Login with email or mobile phone',
