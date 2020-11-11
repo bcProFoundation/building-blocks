@@ -13,18 +13,18 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { callback } from '../../passport/strategies/local.strategy';
 import { CreateSocialLoginDto } from './social-login-create.dto';
 import { ADMINISTRATOR } from '../../../constants/app-strings';
 import { SocialLoginService } from '../../../auth/entities/social-login/social-login.service';
 import { UserService } from '../../../user-management/entities/user/user.service';
-import { AuthGuard } from '../../../auth/guards/auth.guard';
 import { Roles } from '../../../common/decorators/roles.decorator';
 import { RoleGuard } from '../../../auth/guards/role.guard';
 import { RemoveSocialLoginCommand } from '../../../auth/commands/remove-social-login/remove-social-login.command';
 import { AddSocialLoginCommand } from '../../commands/add-social-login/add-social-login.command';
 import { ModifySocialLoginCommand } from '../../commands/modify-social-login/modify-social-login.command';
 import { ListQueryDto } from '../../../common/policies/list-query/list-query';
+import { OAuth2ClientGuard } from '../../guards/oauth2-client.guard';
+import { BearerTokenGuard } from '../../guards/bearer-token.guard';
 
 @Controller('social_login')
 export class SocialLoginController {
@@ -36,7 +36,7 @@ export class SocialLoginController {
 
   @Post('v1/create')
   @Roles(ADMINISTRATOR)
-  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  @UseGuards(BearerTokenGuard, RoleGuard)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async create(@Body() body: CreateSocialLoginDto, @Req() req) {
     const createdBy = req.user.user;
@@ -47,7 +47,7 @@ export class SocialLoginController {
 
   @Post('v1/update/:uuid')
   @Roles(ADMINISTRATOR)
-  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  @UseGuards(BearerTokenGuard, RoleGuard)
   async update(
     @Body() payload: CreateSocialLoginDto,
     @Param('uuid') uuid: string,
@@ -60,7 +60,7 @@ export class SocialLoginController {
   @Get('v1/list')
   @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
   @Roles(ADMINISTRATOR)
-  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  @UseGuards(BearerTokenGuard, RoleGuard)
   async list(@Query() query: ListQueryDto) {
     const { offset, limit, search, sort } = query;
     const where: { createdBy?: string } = {};
@@ -76,7 +76,7 @@ export class SocialLoginController {
 
   @Get('v1/get/:uuid')
   @Roles(ADMINISTRATOR)
-  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  @UseGuards(BearerTokenGuard, RoleGuard)
   async findOne(@Param('uuid') uuid: string, @Req() req) {
     let socialLogin;
     if (await this.userService.checkAdministrator(req.user.user)) {
@@ -93,7 +93,7 @@ export class SocialLoginController {
 
   @Post('v1/delete/:uuid')
   @Roles(ADMINISTRATOR)
-  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  @UseGuards(BearerTokenGuard, RoleGuard)
   async deleteByUUID(@Param('uuid') uuid, @Req() req) {
     const userUuid = req.user.user;
     return await this.commandBus.execute(
@@ -102,7 +102,7 @@ export class SocialLoginController {
   }
 
   @Get('callback/:socialLogin')
-  @UseGuards(AuthGuard('oauth2-client', { session: true }))
+  @UseGuards(OAuth2ClientGuard)
   oauth2Callback(@Req() req, @Res() res) {
     const parsedState = JSON.parse(
       Buffer.from(req.session.state, 'base64').toString(),

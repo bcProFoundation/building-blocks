@@ -14,9 +14,7 @@ import {
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Roles } from '../../../common/decorators/roles.decorator';
 import { ADMINISTRATOR } from '../../../constants/app-strings';
-import { callback } from '../../../auth/passport/strategies/local.strategy';
 import { RoleGuard } from '../../../auth/guards/role.guard';
-import { AuthGuard } from '../../../auth/guards/auth.guard';
 import { CreateScopeDto } from '../../../user-management/policies';
 import { RemoveOAuth2ScopeCommand } from '../../commands/remove-oauth2scope/remove-oauth2scope.command';
 import { AddOAuth2ScopeCommand } from '../../commands/add-oauth2scope/add-oauth2scope.command';
@@ -25,6 +23,7 @@ import { ListScopesQuery } from '../../queries/list-scopes/list-scopes.query';
 import { GetScopesQuery } from '../../queries/get-scopes/get-scopes.query';
 import { GetScopeByUuidQuery } from '../../queries/get-scope-by-uuid/get-scope-by-uuid.query';
 import { ListQueryDto } from '../../../common/policies/list-query/list-query';
+import { BearerTokenGuard } from '../../../auth/guards/bearer-token.guard';
 
 @Controller('scope')
 @SerializeOptions({ excludePrefixes: ['_'] })
@@ -37,7 +36,7 @@ export class ScopeController {
   @Get('v1/list')
   @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
   @Roles(ADMINISTRATOR)
-  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  @UseGuards(BearerTokenGuard, RoleGuard)
   async list(@Query() query: ListQueryDto) {
     const { offset, limit, search, sort } = query;
     return await this.queryBus.execute(
@@ -53,7 +52,7 @@ export class ScopeController {
   @Post('v1/update/:uuid')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Roles(ADMINISTRATOR)
-  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  @UseGuards(BearerTokenGuard, RoleGuard)
   async update(
     @Param('uuid') uuid,
     @Body() payload: CreateScopeDto,
@@ -68,7 +67,7 @@ export class ScopeController {
   @Post('v1/create')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Roles(ADMINISTRATOR)
-  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  @UseGuards(BearerTokenGuard, RoleGuard)
   async create(@Body() body: CreateScopeDto, @Req() req) {
     const actorUserUuid = req.user.user;
     return await this.commandBus.execute(
@@ -78,14 +77,14 @@ export class ScopeController {
 
   @Get('v1/:uuid')
   @Roles(ADMINISTRATOR)
-  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  @UseGuards(BearerTokenGuard, RoleGuard)
   async findOne(@Param('uuid') uuid: string) {
     return await this.queryBus.execute(new GetScopeByUuidQuery(uuid));
   }
 
   @Post('v1/delete/:scopeName')
   @Roles(ADMINISTRATOR)
-  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  @UseGuards(BearerTokenGuard, RoleGuard)
   async deleteScope(@Param('scopeName') scopeName, @Req() req) {
     const actorUserUuid = req.user.user;
     return await this.commandBus.execute(

@@ -11,14 +11,13 @@ import {
 import { CommandBus } from '@nestjs/cqrs';
 import { Roles } from '../../../common/decorators/roles.decorator';
 import { ADMINISTRATOR } from '../../../constants/app-strings';
-import { callback } from '../../../auth/passport/strategies/local.strategy';
-import { AuthGuard } from '../../../auth/guards/auth.guard';
 import { RoleGuard } from '../../../auth/guards/role.guard';
 import { ServerSettingDto } from '../../entities/server-settings/server-setting.dto';
 import { SystemSettingsManagementService } from '../../../system-settings/aggregates';
 import { ChangeServerSettingsCommand } from '../../commands/change-server-settings/change-server-settings.command';
 import { DeleteUserSessionsCommand } from '../../commands/delete-user-sessions/delete-user-sessions.command';
 import { DeleteBearerTokensCommand } from '../../commands/delete-bearer-tokens/delete-bearer-tokens.command';
+import { BearerTokenGuard } from '../../../auth/guards/bearer-token.guard';
 
 @Controller('settings')
 export class ServerSettingsController {
@@ -29,7 +28,7 @@ export class ServerSettingsController {
 
   @Get('v1/get')
   @Roles(ADMINISTRATOR)
-  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  @UseGuards(BearerTokenGuard, RoleGuard)
   getSettings() {
     return this.settingsManager.getSettings();
   }
@@ -37,7 +36,7 @@ export class ServerSettingsController {
   @Post('v1/update')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Roles(ADMINISTRATOR)
-  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  @UseGuards(BearerTokenGuard, RoleGuard)
   async updateSettings(@Body() payload: ServerSettingDto, @Req() req) {
     const actorUserUuid = req.user.user;
     return await this.commandBus.execute(
@@ -48,7 +47,7 @@ export class ServerSettingsController {
   @Post('v1/delete_bearer_tokens')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Roles(ADMINISTRATOR)
-  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  @UseGuards(BearerTokenGuard, RoleGuard)
   async deleteTokens(@Req() req) {
     const actorUserUuid = req.user.user;
     return await this.commandBus.execute(
@@ -59,7 +58,7 @@ export class ServerSettingsController {
   @Post('v1/delete_user_sessions')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Roles(ADMINISTRATOR)
-  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  @UseGuards(BearerTokenGuard, RoleGuard)
   async deleteSessions(@Req() req) {
     const actorUserUuid = req.user.user;
     return await this.commandBus.execute(

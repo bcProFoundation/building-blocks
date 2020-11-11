@@ -11,13 +11,12 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { ApiExcludeEndpoint, ApiOperation } from '@nestjs/swagger';
-import { AuthGuard } from '../../guards/auth.guard';
 import { EnsureLoginGuard } from '../../guards/ensure-login.guard';
 import { ErrorFilter } from '../../../common/filters/errors.filter';
-import { callback } from '../../passport/strategies/local.strategy';
 import { OAuth2Service } from './oauth2.service';
 import { BasicClientCredentialsGuard } from '../../guards/basic-client-credentials.guard';
 import { i18n } from '../../../i18n/i18n.config';
+import { BearerTokenGuard } from '../../guards/bearer-token.guard';
 
 @Controller('oauth2')
 export class OAuth2Controller {
@@ -53,7 +52,7 @@ export class OAuth2Controller {
   token() {}
 
   @Get('profile')
-  @UseGuards(AuthGuard('bearer', { session: false, callback }))
+  @UseGuards(BearerTokenGuard)
   profile(@Req() req) {
     return this.oauth2Service.getProfile(req);
   }

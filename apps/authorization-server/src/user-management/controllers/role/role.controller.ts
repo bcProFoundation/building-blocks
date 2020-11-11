@@ -12,8 +12,6 @@ import {
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ADMINISTRATOR } from '../../../constants/app-strings';
-import { callback } from '../../../auth/passport/strategies/local.strategy';
-import { AuthGuard } from '../../../auth/guards/auth.guard';
 import { RoleGuard } from '../../../auth/guards/role.guard';
 import { Roles } from '../../../common/decorators/roles.decorator';
 import { RemoveUserRoleCommand } from '../../commands/remove-user-role/remove-user-role.command';
@@ -23,6 +21,7 @@ import { ModifyUserRoleCommand } from '../../commands/modify-user-role/modify-us
 import { GetRolesQuery } from '../../queries/get-roles/get-roles.query';
 import { RetrieveRolesQuery } from '../../queries/retrieve-role/retrieve-role.query';
 import { ListQueryDto } from '../../../common/policies/list-query/list-query';
+import { BearerTokenGuard } from '../../../auth/guards/bearer-token.guard';
 
 @Controller('role')
 export class RoleController {
@@ -34,7 +33,7 @@ export class RoleController {
   @Get('v1/list')
   @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
   @Roles(ADMINISTRATOR)
-  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  @UseGuards(BearerTokenGuard, RoleGuard)
   async list(@Query() query: ListQueryDto) {
     const { offset, limit, search, sort } = query;
     return await this.queryBus.execute(
@@ -44,7 +43,7 @@ export class RoleController {
 
   @Post('v1/create')
   @Roles(ADMINISTRATOR)
-  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  @UseGuards(BearerTokenGuard, RoleGuard)
   async create(@Body('name') roleName: string, @Req() req) {
     const actorUserUuid = req.user.user;
     return await this.commandBus.execute(
@@ -54,7 +53,7 @@ export class RoleController {
 
   @Post('v1/update/:uuid')
   @Roles(ADMINISTRATOR)
-  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  @UseGuards(BearerTokenGuard, RoleGuard)
   async update(@Param('uuid') uuid, @Body('name') name, @Req() req) {
     const actorUserUuid = req.user.user;
     return await this.commandBus.execute(
@@ -64,21 +63,21 @@ export class RoleController {
 
   @Get('v1/find')
   @Roles(ADMINISTRATOR)
-  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  @UseGuards(BearerTokenGuard, RoleGuard)
   async findAll() {
     return await this.queryBus.execute(new GetRolesQuery());
   }
 
   @Get('v1/:uuid')
   @Roles(ADMINISTRATOR)
-  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  @UseGuards(BearerTokenGuard, RoleGuard)
   async findOne(@Param('uuid') uuid: string) {
     return await this.queryBus.execute(new RetrieveRolesQuery(uuid));
   }
 
   @Post('v1/delete/:roleName')
   @Roles(ADMINISTRATOR)
-  @UseGuards(AuthGuard('bearer', { session: false, callback }), RoleGuard)
+  @UseGuards(BearerTokenGuard, RoleGuard)
   async deleteRole(@Param('roleName') roleName: string, @Req() req) {
     const actorUserUuid = req.user.user;
     return await this.commandBus.execute(

@@ -27,7 +27,7 @@ import {
 } from '../../../user-management/entities/user-authenticator/user-authenticator.interface';
 import { invalidUserException } from '../../../common/filters/exceptions';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
-import { addSessionUser } from '../../guards/auth.guard';
+import { addSessionUser } from '../../guards/guard.utils';
 import {
   WebAuthnKeyChallengeRequestedEvent,
   WebauthnChallengeType,
