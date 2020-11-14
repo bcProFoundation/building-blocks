@@ -23,7 +23,7 @@ export class ServiceTypeComponent implements OnInit {
   uuid: string;
   name: string;
   serviceTypeForm = new FormGroup({
-    serviceTypeName: new FormControl(this.name),
+    serviceTypeName: new FormControl(),
   });
 
   constructor(

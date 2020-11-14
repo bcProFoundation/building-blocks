@@ -36,13 +36,13 @@ export class UserComponent implements OnInit {
   hide: boolean = true;
 
   userForm: FormGroup = new FormGroup({
-    fullName: new FormControl(this.fullName),
-    uuid: new FormControl(this.uuid),
-    userPassword: new FormControl(this.userPassword),
-    userRole: new FormControl(''),
-    userEmail: new FormControl(this.userEmail),
-    isDisabled: new FormControl(this.isDisabled),
-    userPhone: new FormControl(this.userPhone),
+    fullName: new FormControl(),
+    uuid: new FormControl(),
+    userPassword: new FormControl(),
+    userRole: new FormControl(),
+    userEmail: new FormControl(),
+    isDisabled: new FormControl(),
+    userPhone: new FormControl(),
   });
 
   constructor(

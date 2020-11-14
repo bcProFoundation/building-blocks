@@ -31,12 +31,12 @@ export class EmailComponent implements OnInit {
   isPasswordRequired: boolean = false;
 
   emailForm = new FormGroup({
-    name: new FormControl(this.name),
-    host: new FormControl(this.host),
-    port: new FormControl(this.port),
-    user: new FormControl(this.user),
-    pass: new FormControl(this.pass),
-    from: new FormControl(this.from),
+    name: new FormControl(),
+    host: new FormControl(),
+    port: new FormControl(),
+    user: new FormControl(),
+    pass: new FormControl(),
+    from: new FormControl(),
   });
 
   constructor(

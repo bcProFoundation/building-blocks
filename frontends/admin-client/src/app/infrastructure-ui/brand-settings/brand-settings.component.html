@@ -23,49 +23,19 @@
         </mat-form-field>
         <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1em">
           <mat-form-field class="full-width">
-            <input matInput formControlName="primaryColor" placeholder="Primary Color" readonly>
+            <input matInput formControlName="primaryColor" placeholder="Primary Color" type="color">
           </mat-form-field>
-          <mcc-color-picker
-            [selectedColor]="primaryColor"
-            (selected)="selectPrimaryColor($event)"
-            usedSizeColors="5"></mcc-color-picker>
         </div>
         <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1em">
           <mat-form-field class="full-width">
-            <input matInput formControlName="accentColor" placeholder="Accent Color" readonly>
+            <input matInput formControlName="accentColor" placeholder="Accent Color" type="color">
           </mat-form-field>
-          <mcc-color-picker
-            [selectedColor]="accentColor"
-            (selected)="selectAccentColor($event)"
-            usedSizeColors="5"></mcc-color-picker>
         </div>
         <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1em">
           <mat-form-field class="full-width">
-            <input matInput formControlName="warnColor" placeholder="Warn Color" readonly>
+            <input matInput formControlName="warnColor" placeholder="Warn Color" type="color">
           </mat-form-field>
-          <mcc-color-picker
-            (selected)="selectWarnColor($event)"
-            [selectedColor]="warnColor"
-            usedSizeColors="5"></mcc-color-picker>
         </div>
-        <!-- <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1em">
-          <mat-form-field class="full-width">
-            <input matInput formControlName="foregroundColor" placeholder="Foreground Color" readonly>
-          </mat-form-field>
-          <mcc-color-picker
-            (selected)="selectForegroundColor($event)"
-            [selectedColor]="foregroundColor"
-            usedSizeColors="5"></mcc-color-picker>
-        </div>
-        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1em">
-          <mat-form-field class="full-width">
-            <input matInput formControlName="backgroundColor" placeholder="Background Color" readonly>
-          </mat-form-field>
-          <mcc-color-picker
-            (selected)="selectBackgroundColor($event)"
-            [selectedColor]="backgroundColor"
-            usedSizeColors="5"></mcc-color-picker>
-        </div> -->
       </mat-card-content>
       <mat-card-actions>
         <button type="submit" mat-button color="primary" [disabled]="!settingsForm.valid">Update</button>
