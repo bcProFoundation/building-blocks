@@ -9,7 +9,7 @@ describe('workspace-project App', () => {
 
   it('should route to login', async () => {
     page.navigateToLogin();
-    expect(page.getParagraphText()).toEqual('Sign in');
+    expect(await page.getParagraphText()).toEqual('Sign in');
     // expect(browser.getCurrentUrl()).toEqual('http://localhost:4200/login');
   });
 });
