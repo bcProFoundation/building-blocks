@@ -1,19 +1,26 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Output,
+  EventEmitter,
+  ViewChild,
+  ElementRef,
+} from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { FormControl, FormGroup } from '@angular/forms';
+import { OAuthService } from 'angular-oauth2-oidc';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { map } from 'rxjs/operators';
+import { Router } from '@angular/router';
 import { TIME_ZONES } from '../constants/timezones';
 import { LOCALES } from '../constants/locale';
-import { OAuthService } from 'angular-oauth2-oidc';
 import { IDTokenClaims } from './id-token-claims.interfaces';
 import { ProfileService } from './profile.service';
 import { UserResponse } from '../interfaces/user-response.interface';
-import { MatDatepickerInputEvent } from '@angular/material/datepicker';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { USER_UUID, ISSUER_URL, APP_URL } from '../constants/storage';
-import { map } from 'rxjs/operators';
 import { PersonalResponse } from '../interfaces/personal-response.interface';
+import { USER_UUID, ISSUER_URL, APP_URL } from '../constants/storage';
 import { LOGOUT_URL, MISSING_AVATAR_IMAGE } from '../constants/url-paths';
-import { Router } from '@angular/router';
 import { ProfileResponse } from '../interfaces/profile-response.interface';
 import {
   MALE_CONST,
@@ -79,34 +86,33 @@ export class ProfileComponent implements OnInit {
   enableUserPhone: boolean;
 
   personalForm = new FormGroup({
-    fullName: new FormControl(this.fullName),
-    email: new FormControl(this.email),
-    phone: new FormControl(this.phone),
-    givenName: new FormControl(this.givenName),
-    middleName: new FormControl(this.middleName),
-    familyName: new FormControl(this.familyName),
-    nickname: new FormControl(this.nickName),
-    gender: new FormControl(this.gender),
-    birthdate: new FormControl({
-      value: this.birthdate,
-      disabled: true,
-    }),
+    fullName: new FormControl(),
+    email: new FormControl(),
+    phone: new FormControl(),
+    givenName: new FormControl(),
+    middleName: new FormControl(),
+    familyName: new FormControl(),
+    nickname: new FormControl(),
+    gender: new FormControl(),
+    birthdate: new FormControl(),
   });
 
   profileForm = new FormGroup({
-    picture: new FormControl(this.picture),
-    website: new FormControl(this.website),
-    zoneinfo: new FormControl(this.zoneinfo),
-    locale: new FormControl(this.locale),
+    picture: new FormControl(),
+    website: new FormControl(),
+    zoneinfo: new FormControl(),
+    locale: new FormControl(),
   });
 
   changePasswordForm = new FormGroup({
-    currentPassword: new FormControl(this.currentPassword),
-    newPassword: new FormControl(this.newPassword),
-    repeatPassword: new FormControl(this.repeatPassword),
+    currentPassword: new FormControl(),
+    newPassword: new FormControl(),
+    repeatPassword: new FormControl(),
   });
 
   @Output() messageEvent = new EventEmitter<string>();
+
+  @ViewChild('fileInput', { static: true }) fileInputRef: ElementRef;
 
   constructor(
     private title: Title,
@@ -117,6 +123,7 @@ export class ProfileComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.personalForm.controls.birthdate.disable();
     this.title.setTitle(PROFILE_TITLE);
     const { roles } = this.oauthService.getIdentityClaims() as IDTokenClaims;
     this.roles = roles;
@@ -214,25 +221,27 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  onFileChanged(event) {
-    this.selectedFile = event.target.files[0];
-    const reader = new FileReader();
-    this.profileService.uploadAvatar(this.selectedFile).subscribe({
-      next: (profile: any) => {
-        reader.readAsDataURL(event.target.files[0]);
-        reader.onload = (file: any) => {
-          this.picture = file.target.result;
-          this.messageEvent.emit(this.picture);
-        };
-        this.hideAvatar = false;
-        this.snackBar.open(AVATAR_UPDATED, CLOSE, { duration: DURATION });
-      },
-      error: err => {
-        this.snackBar.open(AVATAR_UPDATED_FAILED, CLOSE, {
-          duration: DURATION,
-        });
-      },
-    });
+  onFileChanged() {
+    this.selectedFile = this.fileInputRef.nativeElement.files[0];
+    if (this.selectedFile) {
+      const reader = new FileReader();
+      this.profileService.uploadAvatar(this.selectedFile).subscribe({
+        next: (profile: any) => {
+          reader.readAsDataURL(this.fileInputRef.nativeElement.files[0]);
+          reader.onload = (file: any) => {
+            this.picture = file.target.result;
+            this.messageEvent.emit(this.picture);
+          };
+          this.hideAvatar = false;
+          this.snackBar.open(AVATAR_UPDATED, CLOSE, { duration: DURATION });
+        },
+        error: err => {
+          this.snackBar.open(AVATAR_UPDATED_FAILED, CLOSE, {
+            duration: DURATION,
+          });
+        },
+      });
+    }
   }
 
   updatePersonal() {
@@ -336,6 +345,7 @@ export class ProfileComponent implements OnInit {
       next: response => {
         this.picture = undefined;
         this.messageEvent.emit(this.picture);
+        this.hideAvatar = false;
       },
       error: error => {},
     });

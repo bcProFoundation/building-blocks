@@ -15,7 +15,6 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatMenuModule } from '@angular/material/menu';
-import { MaterialFileInputModule } from 'ngx-material-file-input';
 
 @NgModule({
   imports: [
@@ -31,7 +30,6 @@ import { MaterialFileInputModule } from 'ngx-material-file-input';
     MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MaterialFileInputModule,
     MatChipsModule,
     MatSlideToggleModule,
     MatSnackBarModule,
@@ -50,7 +48,6 @@ import { MaterialFileInputModule } from 'ngx-material-file-input';
     MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MaterialFileInputModule,
     MatChipsModule,
     MatSlideToggleModule,
     MatSnackBarModule,
