@@ -25,13 +25,11 @@ export class CommunicationSettingsComponent implements OnInit {
   hideClientSecret = true;
 
   settingsForm = new FormGroup({
-    appURL: new FormControl(this.appURL),
-    clientList: new FormControl(this.clientList),
-    clientId: new FormControl(this.clientId),
-    clientSecret: new FormControl(this.clientSecret),
-    communicationServerSystemEmailAccount: new FormControl(
-      this.communicationServerSystemEmailAccount,
-    ),
+    appURL: new FormControl(),
+    clientList: new FormControl(),
+    clientId: new FormControl(),
+    clientSecret: new FormControl(),
+    communicationServerSystemEmailAccount: new FormControl(),
   });
 
   constructor(

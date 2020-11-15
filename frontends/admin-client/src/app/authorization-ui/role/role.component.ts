@@ -24,7 +24,7 @@ export class RoleComponent implements OnInit {
   name: string;
 
   roleForm = new FormGroup({
-    roleName: new FormControl(this.name),
+    roleName: new FormControl(),
   });
 
   constructor(

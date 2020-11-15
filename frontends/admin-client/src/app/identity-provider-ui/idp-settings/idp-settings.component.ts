@@ -30,10 +30,10 @@ export class IdpSettingsComponent implements OnInit {
   disableDeleteTokens: boolean = false;
   flagDeleteTokens: boolean = false;
   settingsForm = new FormGroup({
-    appURL: new FormControl(this.appURL),
-    clientId: new FormControl(this.clientId),
-    clientSecret: new FormControl(this.clientSecret),
-    cloudStorageSettings: new FormControl(this.cloudStorageSettings),
+    appURL: new FormControl(),
+    clientId: new FormControl(),
+    clientSecret: new FormControl(),
+    cloudStorageSettings: new FormControl(),
   });
 
   constructor(

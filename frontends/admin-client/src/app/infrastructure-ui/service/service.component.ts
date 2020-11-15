@@ -34,10 +34,10 @@ export class ServiceComponent implements OnInit {
   serviceTypeSearch: string = '';
   clientList: { clientId: string; name: string }[];
   serviceForm: FormGroup = new FormGroup({
-    name: new FormControl(this.name),
-    type: new FormControl(this.type),
-    clientId: new FormControl(this.clientId),
-    serviceURL: new FormControl(this.serviceURL),
+    name: new FormControl(),
+    type: new FormControl(),
+    clientId: new FormControl(),
+    serviceURL: new FormControl(),
   });
 
   constructor(

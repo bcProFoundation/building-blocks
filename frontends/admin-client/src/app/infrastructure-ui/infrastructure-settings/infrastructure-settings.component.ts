@@ -17,9 +17,9 @@ export class InfrastructureSettingsComponent implements OnInit {
   hideClientSecret = true;
 
   settingsForm = new FormGroup({
-    appURL: new FormControl(this.appURL),
-    clientId: new FormControl(this.clientId),
-    clientSecret: new FormControl(this.clientSecret),
+    appURL: new FormControl(),
+    clientId: new FormControl(),
+    clientSecret: new FormControl(),
   });
 
   constructor(

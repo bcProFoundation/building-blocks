@@ -25,9 +25,9 @@ export class ScopeComponent implements OnInit {
   description: string;
 
   scopeForm: FormGroup = new FormGroup({
-    name: new FormControl(this.name),
-    uuid: new FormControl(this.uuid),
-    description: new FormControl(this.description),
+    name: new FormControl(),
+    uuid: new FormControl(),
+    description: new FormControl(),
   });
 
   constructor(

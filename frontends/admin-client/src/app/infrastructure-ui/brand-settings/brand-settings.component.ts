@@ -28,17 +28,17 @@ export class BrandSettingsComponent implements OnInit {
   copyrightMessage: string;
 
   settingsForm = new FormGroup({
-    logoURL: new FormControl(this.logoURL),
-    faviconURL: new FormControl(this.faviconURL),
-    helpURL: new FormControl(this.helpURL),
-    privacyURL: new FormControl(this.privacyURL),
-    termsURL: new FormControl(this.termsURL),
-    accentColor: new FormControl(this.accentColor),
-    warnColor: new FormControl(this.warnColor),
-    primaryColor: new FormControl(this.primaryColor),
-    foregroundColor: new FormControl(this.foregroundColor),
-    backgroundColor: new FormControl(this.backgroundColor),
-    copyrightMessage: new FormControl(this.copyrightMessage),
+    logoURL: new FormControl(),
+    faviconURL: new FormControl(),
+    helpURL: new FormControl(),
+    privacyURL: new FormControl(),
+    termsURL: new FormControl(),
+    accentColor: new FormControl(),
+    warnColor: new FormControl(),
+    primaryColor: new FormControl(),
+    foregroundColor: new FormControl(),
+    backgroundColor: new FormControl(),
+    copyrightMessage: new FormControl(),
   });
 
   constructor(

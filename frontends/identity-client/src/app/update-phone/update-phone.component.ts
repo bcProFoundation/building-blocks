@@ -18,8 +18,8 @@ export class UpdatePhoneComponent implements OnInit {
   isSendDisabled: boolean;
   isOTPHidden: boolean = true;
   updatePhoneForm = new FormGroup({
-    otp: new FormControl(this.otp),
-    phone: new FormControl(this.phone),
+    otp: new FormControl(),
+    phone: new FormControl(),
   });
 
   constructor(

@@ -39,21 +39,19 @@ export class SocialLoginComponent implements OnInit {
   scopesForm = new FormArray([]);
 
   socialLoginForm = new FormGroup({
-    name: new FormControl(this.name),
-    description: new FormControl(this.description),
-    clientId: new FormControl(this.clientId),
-    clientSecret: new FormControl(this.clientSecret),
-    authorizationURL: new FormControl(this.authorizationURL),
-    tokenURL: new FormControl(this.tokenURL),
-    introspectionURL: new FormControl(this.introspectionURL),
-    baseURL: new FormControl(this.baseURL),
-    profileURL: new FormControl(this.profileURL),
-    revocationURL: new FormControl(this.revocationURL),
-    clientSecretToTokenEndpoint: new FormControl(
-      this.clientSecretToTokenEndpoint,
-    ),
+    name: new FormControl(),
+    description: new FormControl(),
+    clientId: new FormControl(),
+    clientSecret: new FormControl(),
+    authorizationURL: new FormControl(),
+    tokenURL: new FormControl(),
+    introspectionURL: new FormControl(),
+    baseURL: new FormControl(),
+    profileURL: new FormControl(),
+    revocationURL: new FormControl(),
+    clientSecretToTokenEndpoint: new FormControl(),
     scope: this.scopesForm,
-    redirectURL: new FormControl(this.redirectURL),
+    redirectURL: new FormControl(),
   });
 
   constructor(

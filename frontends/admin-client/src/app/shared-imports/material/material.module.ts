@@ -17,7 +17,6 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MccColorPickerModule } from 'material-community-components/color-picker';
 
 @NgModule({
   imports: [
@@ -39,7 +38,6 @@ import { MccColorPickerModule } from 'material-community-components/color-picker
     MatSelectModule,
     MatExpansionModule,
     MatAutocompleteModule,
-    MccColorPickerModule,
   ],
   exports: [
     MatTableModule,
@@ -60,7 +58,6 @@ import { MccColorPickerModule } from 'material-community-components/color-picker
     MatSelectModule,
     MatExpansionModule,
     MatAutocompleteModule,
-    MccColorPickerModule,
   ],
 })
 export class MaterialModule {}

@@ -69,16 +69,16 @@
         </div>
       </div>
       <mat-card-content fxLayout="column">
-        <mat-form-field *ngIf="hideAvatar">
-          <ngx-mat-file-input
-            formControlName="picture"
-            type="file"
-            (change)="onFileChanged($event)"
-            placeholder="Avatar"
-            accept="image/*"
-            valuePlaceholder="{{ avatarUrl }}" #fileInput></ngx-mat-file-input>
-            <mat-icon matSuffix>folder</mat-icon>
-        </mat-form-field>
+        <button *ngIf="hideAvatar" type="button" mat-raised-button (click)="fileInput.click()">
+          Choose File <mat-icon matSuffix>folder</mat-icon>
+        </button>
+        <input
+          hidden
+          formControlName="picture"
+          (change)="onFileChanged()"
+          #fileInput
+          type="file"
+          accept="image/*">
         <mat-form-field>
           <input matInput formControlName="website" placeholder="Website">
         </mat-form-field>

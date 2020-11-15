@@ -39,23 +39,17 @@ export class AuthSettingsComponent implements OnInit {
   enableUserPhone: boolean;
 
   authSettingsForm = new FormGroup({
-    issuerUrl: new FormControl(this.issuerUrl),
-    disableSignup: new FormControl(this.disableSignup),
-    infrastructureConsoleClientId: new FormControl(
-      this.infrastructureConsoleClientId,
-    ),
-    identityProviderClientId: new FormControl(this.identityProviderClientId),
-    communicationServerClientId: new FormControl(
-      this.communicationServerClientId,
-    ),
-    communicationServerSystemEmailAccount: new FormControl(
-      this.communicationServerSystemEmailAccount,
-    ),
-    enableChoosingAccount: new FormControl(this.enableChoosingAccount),
-    refreshTokenExpiresInDays: new FormControl(this.refreshTokenExpiresInDays),
-    authCodeExpiresInMinutes: new FormControl(this.authCodeExpiresInMinutes),
-    organizationName: new FormControl(this.organizationName),
-    enableUserPhone: new FormControl(this.enableUserPhone),
+    issuerUrl: new FormControl(),
+    disableSignup: new FormControl(),
+    infrastructureConsoleClientId: new FormControl(),
+    identityProviderClientId: new FormControl(),
+    communicationServerClientId: new FormControl(),
+    communicationServerSystemEmailAccount: new FormControl(),
+    enableChoosingAccount: new FormControl(),
+    refreshTokenExpiresInDays: new FormControl(),
+    authCodeExpiresInMinutes: new FormControl(),
+    organizationName: new FormControl(),
+    enableUserPhone: new FormControl(),
   });
 
   constructor(
