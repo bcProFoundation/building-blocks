@@ -25,16 +25,19 @@
           <mat-form-field class="full-width">
             <input matInput formControlName="primaryColor" placeholder="Primary Color" type="color">
           </mat-form-field>
+          <mat-icon (click)="clearPrimaryColor()">clear</mat-icon>
         </div>
         <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1em">
           <mat-form-field class="full-width">
             <input matInput formControlName="accentColor" placeholder="Accent Color" type="color">
           </mat-form-field>
+          <mat-icon (click)="clearAccentColor()">clear</mat-icon>
         </div>
         <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1em">
           <mat-form-field class="full-width">
             <input matInput formControlName="warnColor" placeholder="Warn Color" type="color">
           </mat-form-field>
+          <mat-icon (click)="clearWarnColor()">clear</mat-icon>
         </div>
       </mat-card-content>
       <mat-card-actions>

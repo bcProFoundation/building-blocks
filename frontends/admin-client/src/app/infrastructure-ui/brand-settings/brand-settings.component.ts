@@ -135,4 +135,16 @@ export class BrandSettingsComponent implements OnInit {
     this.settingsForm.controls.foregroundColor.setValue(this.foregroundColor);
     this.settingsForm.controls.faviconURL.setValue(this.faviconURL);
   }
+
+  clearPrimaryColor() {
+    this.settingsForm.controls.primaryColor.setValue('');
+  }
+
+  clearAccentColor() {
+    this.settingsForm.controls.accentColor.setValue('');
+  }
+
+  clearWarnColor() {
+    this.settingsForm.controls.warnColor.setValue('');
+  }
 }
