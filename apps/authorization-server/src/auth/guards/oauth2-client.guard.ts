@@ -1,5 +1,10 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { createPassportContext, defaultOptions } from './guard.utils';
+import {
+  addSessionUser,
+  createPassportContext,
+  defaultOptions,
+  RequestUser,
+} from './guard.utils';
 import { callback } from '../passport/strategies/oauth2-client.strategy';
 
 @Injectable()
@@ -14,6 +19,26 @@ export class OAuth2ClientGuard implements CanActivate {
     const passportFn = createPassportContext(request, response);
     const user = await passportFn('oauth2-client', { session: true, callback });
     request[defaultOptions.property] = user;
+
+    const reqUser = user as RequestUser;
+    addSessionUser(request, {
+      uuid: reqUser.uuid,
+      email: reqUser.email,
+      phone: reqUser.phone,
+    });
+    await this.logIn(request);
+
     return true;
+  }
+
+  public async logIn<
+    TRequest extends {
+      logIn: (user, callback: (error) => any) => any;
+    } = any
+  >(request: TRequest): Promise<void> {
+    const user = request[defaultOptions.property];
+    await new Promise((resolve, reject) =>
+      request.logIn(user, err => (err ? reject(err) : resolve())),
+    );
   }
 }

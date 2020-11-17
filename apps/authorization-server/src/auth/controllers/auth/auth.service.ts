@@ -344,7 +344,7 @@ export class AuthService {
       return res.redirect(req.query.redirect);
     }
 
-    res.json({ message: SUCCESS });
+    return res.json({ message: SUCCESS });
   }
 
   async passwordLess(payload, req) {
