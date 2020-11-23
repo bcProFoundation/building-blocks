@@ -14,7 +14,7 @@ export class SendSystemEmailHandler
     const { payload } = command;
 
     const aggregate = this.publisher.mergeObjectContext(this.manager);
-    await this.manager.sendEmail(payload);
+    await aggregate.sendEmail(payload);
     aggregate.commit();
   }
 }

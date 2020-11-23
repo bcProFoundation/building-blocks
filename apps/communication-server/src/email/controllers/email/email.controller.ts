@@ -11,6 +11,8 @@ import {
   Query,
   Param,
 } from '@nestjs/common';
+import { Request } from 'express';
+
 import { EmailService } from './email.service';
 import { AuthServerVerificationGuard } from '../../../auth/guards/authserver-verification.guard';
 import { EmailMessageAuthServerDto } from './email-message-authserver-dto';
@@ -20,6 +22,7 @@ import { ADMINISTRATOR } from '../../../constants/app-strings';
 import { TokenGuard } from '../../../auth/guards/token.guard';
 import { RoleGuard } from '../../../auth/guards/role.guard';
 import { Roles } from '../../../auth/decorators/roles.decorator';
+import { TokenCache } from '../../../auth/entities/token-cache/token-cache.entity';
 
 @Controller('email')
 export class EmailController {
@@ -33,6 +36,19 @@ export class EmailController {
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async sendSystemEmail(@Body() payload: EmailMessageAuthServerDto) {
     return await this.emailService.sendSystemMessage(payload);
+  }
+
+  @Post('v1/trusted_client')
+  @UseGuards(AuthServerVerificationGuard)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  async sendTrustedClientEmail(
+    @Body() payload: EmailMessageAuthServerDto,
+    @Req() request: Request & { token: TokenCache },
+  ) {
+    return await this.emailService.sendTrustedClientSystemMessage(
+      payload,
+      request.token,
+    );
   }
 
   @Post('v1/create')
