@@ -2,6 +2,9 @@ import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
 export class UserClaimDto {
   @IsUUID('4')
+  claimId: string;
+
+  @IsUUID('4')
   uuid: string;
 
   @IsString()

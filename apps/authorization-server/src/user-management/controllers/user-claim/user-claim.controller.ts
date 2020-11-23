@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  ForbiddenException,
   Get,
   Post,
   Query,
+  Req,
   UseFilters,
   UseGuards,
   UsePipes,
@@ -11,6 +13,7 @@ import {
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { EventPattern, Payload } from '@nestjs/microservices';
+import { Request } from 'express';
 import { RoleGuard } from '../../../auth/guards/role.guard';
 import { Roles } from '../../../common/decorators/roles.decorator';
 import { ADMINISTRATOR } from '../../../constants/app-strings';
@@ -22,6 +25,8 @@ import { UpdateUserClaimCommand } from '../../commands/update-user-claim/update-
 import { ListUserClaimsDto } from './list-user-claims.dto';
 import { UserClaimDto } from './user-claim.dto';
 import { BearerTokenGuard } from '../../../auth/guards/bearer-token.guard';
+import { BasicClientCredentialsGuard } from '../../../auth/guards/basic-client-credentials.guard';
+import { Client } from '../../../client-management/entities/client/client.interface';
 
 export const UserClaimsAddedByServiceEvent = 'UserClaimsAddedByServiceEvent';
 export const UserClaimsUpdatedByServiceEvent =
@@ -59,25 +64,40 @@ export class UserClaimController {
   }
 
   @Post('v1/add_user_claim')
-  @Roles(ADMINISTRATOR)
-  @UseGuards(BearerTokenGuard, RoleGuard)
+  @UseGuards(BasicClientCredentialsGuard)
   @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
-  async addUserClaimHttp(@Body() payload: UserClaimDto) {
+  async addUserClaimHttp(
+    @Body() payload: UserClaimDto,
+    @Req() request: Request & { client: Client },
+  ) {
+    if (!request.client?.isTrusted) {
+      throw new ForbiddenException();
+    }
     return await this.commandBus.execute(new AddUserClaimCommand(payload));
   }
 
   @Post('v1/update_user_claim')
-  @Roles(ADMINISTRATOR)
-  @UseGuards(BearerTokenGuard, RoleGuard)
+  @UseGuards(BasicClientCredentialsGuard)
   @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
-  async updateUserClaimHttp(@Body() payload: UserClaimDto) {
+  async updateUserClaimHttp(
+    @Body() payload: UserClaimDto,
+    @Req() request: Request & { client: Client },
+  ) {
+    if (!request.client?.isTrusted) {
+      throw new ForbiddenException();
+    }
     return await this.commandBus.execute(new UpdateUserClaimCommand(payload));
   }
 
   @Post('v1/remove_user_claim')
-  @Roles(ADMINISTRATOR)
-  @UseGuards(BearerTokenGuard, RoleGuard)
-  async removeUserClaimHttp(@Body() payload: { uuid: string; name: string }) {
+  @UseGuards(BasicClientCredentialsGuard)
+  async removeUserClaimHttp(
+    @Body() payload: { uuid: string; name: string },
+    @Req() request: Request & { client: Client },
+  ) {
+    if (!request.client?.isTrusted) {
+      throw new ForbiddenException();
+    }
     return await this.commandBus.execute(
       new RemoveUserClaimCommand(payload.uuid, payload.name),
     );

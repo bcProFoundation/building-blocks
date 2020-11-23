@@ -2,6 +2,7 @@ import * as mongoose from 'mongoose';
 
 export const UserClaim = new mongoose.Schema(
   {
+    claimId: { type: String, unique: true, required: true },
     uuid: String,
     scope: String,
     name: String,
