@@ -39,7 +39,7 @@ export class EmailController {
   }
 
   @Post('v1/trusted_client')
-  @UseGuards(AuthServerVerificationGuard)
+  @UseGuards(TokenGuard)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async sendTrustedClientEmail(
     @Body() payload: EmailMessageAuthServerDto,
