@@ -37,7 +37,7 @@ export class OAuth2ClientGuard implements CanActivate {
     } = any
   >(request: TRequest): Promise<void> {
     const user = request[defaultOptions.property];
-    await new Promise((resolve, reject) =>
+    await new Promise<void>((resolve, reject) =>
       request.logIn(user, err => (err ? reject(err) : resolve())),
     );
   }
