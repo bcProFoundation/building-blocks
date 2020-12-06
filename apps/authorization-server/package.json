@@ -17,7 +17,7 @@
     "test:server": "export NODE_ENV=test && jest",
     "test:cov": "jest --coverage",
     "test:e2e": "export NODE_ENV=test-e2e && jest --config ./tests/jest-e2e.json --detectOpenHandles --forceExit --verbose",
-    "postinstall": "patch-package"
+    "postinstall": "patch node_modules/connect-mongo/src/types.d.ts patches/connect-mongo+3.2.0.patch"
   },
   "dependencies": {
     "@nestjs/common": "^7.5.5",
