@@ -79,12 +79,12 @@ export class SetupService {
     const tokenDeleteEndpoint =
       infrastructureConsoleUrl + '/connect/v1/token_delete';
 
-    const scope: Scope[] = await this.scopeService.insertMany([
+    const scope = (await this.scopeService.insertMany([
       { name: SCOPE_OPENID },
       { name: SCOPE_ROLES },
       { name: SCOPE_EMAIL },
       { name: SCOPE_PROFILE },
-    ]);
+    ])) as Scope[];
 
     const createdBy = await this.userService.findOne({ email });
     const allowedScopes: string[] = scope.map(r => r.name);

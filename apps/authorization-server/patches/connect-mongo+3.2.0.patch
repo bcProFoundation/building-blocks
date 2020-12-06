@@ -1,0 +1,51 @@
+diff --git a/node_modules/connect-mongo/src/types.d.ts b/node_modules/connect-mongo/src/types.d.ts
+index 356ee45..f1493b2 100644
+--- a/node_modules/connect-mongo/src/types.d.ts
++++ b/node_modules/connect-mongo/src/types.d.ts
+@@ -8,11 +8,11 @@
+ /// <reference types="express-session" />
+ 
+ import * as express from 'express';
+-import * as mongoose from 'mongoose';
+ import * as mongodb from 'mongodb';
+-import * as session from 'express-session';
++import { Store, SessionData, SessionOptions } from 'express-session';
++import { ConnectOptions, Connection } from 'mongoose';
+ 
+-declare function connectMongo(connect: (options?: session.SessionOptions) => express.RequestHandler): connectMongo.MongoStoreFactory;
++declare function connectMongo(connect: (options?: SessionOptions) => express.RequestHandler): connectMongo.MongoStoreFactory;
+ 
+ declare namespace connectMongo {
+ 
+@@ -90,11 +90,11 @@ declare namespace connectMongo {
+ 
+     export interface MongoUrlOptions extends DefaultOptions {
+         url: string;
+-        mongoOptions?: mongoose.ConnectionOptions;
++        mongoOptions?: ConnectOptions;
+     }
+ 
+     export interface MongooseConnectionOptions extends DefaultOptions {
+-        mongooseConnection: mongoose.Connection;
++        mongooseConnection: Connection;
+     }
+ 
+     export interface NativeMongoOptions extends DefaultOptions {
+@@ -109,13 +109,13 @@ declare namespace connectMongo {
+         new(options: MongoUrlOptions | MongooseConnectionOptions | NativeMongoOptions | NativeMongoPromiseOptions): MongoStore;
+     }
+ 
+-    export class MongoStore extends session.Store {
+-        get: (sid: string, callback: (err: any, session: Express.SessionData | null) => void) => void;
+-        set: (sid: string, session: Express.SessionData, callback?: (err: any) => void) => void;
++    export class MongoStore extends Store {
++        get: (sid: string, callback: (err: any, session: SessionData | null) => void) => void;
++        set: (sid: string, session: SessionData, callback?: (err: any) => void) => void;
+         destroy: (sid: string, callback?: (err: any) => void) => void;
+         length: (callback: (err: any, length: number) => void) => void;
+         clear: (callback?: (err?: any) => void) => void;
+-        touch: (sid: string, session: Express.SessionData, callback?: (err: any) => void) => void;
++        touch: (sid: string, session: SessionData, callback?: (err: any) => void) => void;
+         close: () => void;
+     }
+ }

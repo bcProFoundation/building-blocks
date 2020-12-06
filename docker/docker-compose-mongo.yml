@@ -16,6 +16,7 @@ services:
       - MONGODB_PASSWORD=${DB_PASSWORD}
       - MONGODB_DATABASE=${DB_NAME}
       - MONGODB_ROOT_PASSWORD=${MONGODB_ROOT_PASSWORD}
+      - MONGODB_PRIMARY_ROOT_USER=root
     ports:
       - "27017:27017"
     volumes:

@@ -12,10 +12,7 @@
     "experimentalDecorators": true,
     "incremental": true,
     "target": "es2017",
-    "typeRoots": [
-      "src/types",
-      "node_modules/@types"
-    ],
+    "typeRoots": ["node_modules/@types"],
     "noUnusedLocals": true,
     "types": [
       "node",
