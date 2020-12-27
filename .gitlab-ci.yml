@@ -260,7 +260,7 @@ pack_staging_authorization_server:
     # Authorization Server
     - docker build -t authorization-server apps/authorization-server
     - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:edge
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:edge
 
 pack_staging_authorization_client:
   image: docker
@@ -274,7 +274,7 @@ pack_staging_authorization_client:
     # Authorization Client
     - docker build -t authorization-client frontends/authorization-client
     - docker tag authorization-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-client:edge
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-client
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-client:edge
 
 pack_staging_communication_server:
   image: docker
@@ -288,7 +288,7 @@ pack_staging_communication_server:
     # Communication Server
     - docker build -t communication-server apps/communication-server
     - docker tag communication-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/communication-server:edge
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/communication-server
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/communication-server:edge
 
 pack_staging_identity_provider:
   image: docker
@@ -302,7 +302,7 @@ pack_staging_identity_provider:
     # Identity Provider
     - docker build -t identity-provider apps/identity-provider
     - docker tag identity-provider $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:edge
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:edge
 
 pack_staging_identity_client:
   image: docker
@@ -349,7 +349,6 @@ pack_staging_admin_client:
 pack_production_authorization_server:
   image: docker
   stage: pack
-  environment: production
   only:
     refs:
       - master
@@ -363,12 +362,12 @@ pack_production_authorization_server:
     - docker build -t authorization-server apps/authorization-server
     - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:$VERSION
     - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:latest
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:$VERSION
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:latest
 
 pack_production_authorization_client:
   image: docker
   stage: pack
-  environment: production
   only:
     refs:
       - master
@@ -382,12 +381,12 @@ pack_production_authorization_client:
     - docker build -t authorization-client frontends/authorization-client
     - docker tag authorization-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-client:$VERSION
     - docker tag authorization-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-client:latest
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-client
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-client:$VERSION
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-client:latest
 
 pack_production_communication_server:
   image: docker
   stage: pack
-  environment: production
   only:
     refs:
       - master
@@ -401,12 +400,12 @@ pack_production_communication_server:
     - docker build -t communication-server apps/communication-server
     - docker tag communication-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/communication-server:$VERSION
     - docker tag communication-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/communication-server:latest
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/communication-server
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/communication-server:$VERSION
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/communication-server:latest
 
 pack_production_identity_provider:
   image: docker
   stage: pack
-  environment: production
   only:
     refs:
       - master
@@ -420,12 +419,12 @@ pack_production_identity_provider:
     - docker build -t identity-provider apps/identity-provider
     - docker tag identity-provider $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:$VERSION
     - docker tag identity-provider $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:latest
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:$VERSION
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:latest
 
 pack_production_identity_client:
   image: docker
   stage: pack
-  environment: production
   only:
     refs:
       - master
@@ -439,12 +438,12 @@ pack_production_identity_client:
     - docker build -t identity-client frontends/identity-client
     - docker tag identity-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-client:$VERSION
     - docker tag identity-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-client:latest
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-client
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-client:$VERSION
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-client:latest
 
 pack_production_infrastructure_console:
   image: docker
   stage: pack
-  environment: production
   only:
     refs:
       - master
@@ -458,12 +457,12 @@ pack_production_infrastructure_console:
     - docker build -t infrastructure-console apps/infrastructure-console
     - docker tag infrastructure-console $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:$VERSION
     - docker tag infrastructure-console $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:latest
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:$VERSION
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:latest
 
 pack_production_admin_client:
   image: docker
   stage: pack
-  environment: production
   only:
     refs:
       - master
@@ -477,7 +476,8 @@ pack_production_admin_client:
     - docker build -t admin-client frontends/admin-client
     - docker tag admin-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client:$VERSION
     - docker tag admin-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client:latest
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client:$VERSION
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client:latest
 
 pages:
   image: node:latest
