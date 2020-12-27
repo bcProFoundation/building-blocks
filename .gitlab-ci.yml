@@ -330,7 +330,7 @@ pack_staging_infrastructure_console:
     # Infrastructure Console
     - docker build -t infrastructure-console apps/infrastructure-console
     - docker tag infrastructure-console $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:edge
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:edge
 
 pack_staging_admin_client:
   image: docker
