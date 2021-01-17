@@ -4,7 +4,7 @@ services:
   events:
     image: emqx/emqx:latest
     environment:
-      - EMQX_ALLOW_ANONYMOUS=false
+      - EMQX_ALLOW_ANONYMOUS=true
       - EMQX_LOADED_PLUGINS=emqx_management,emqx_auth_mnesia,emqx_recon,emqx_retainer,emqx_dashboard
     ports:
       - 1883:1883
