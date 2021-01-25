@@ -1,6 +1,6 @@
 {
   "name": "authorization-client",
-  "version": "6.2.8",
+  "version": "6.2.9",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.config.json  --host \"accounts.localhost\" --port 4210",
