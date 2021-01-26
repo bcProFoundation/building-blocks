@@ -3,57 +3,32 @@
     <mat-card>
       <mat-card-title>{{ name || "New Email" }}</mat-card-title>
       <mat-card-content fxLayout="column">
-          <mat-form-field>
-            <input
-              matInput
-              placeholder="Name"
-              formControlName="name"
-              mat-raised-button
-              required>
-          </mat-form-field>
-          <mat-form-field>
-            <input
-              matInput
-              placeholder="Email Host"
-              formControlName="host"
-              mat-raised-button
-              required>
-          </mat-form-field>
-          <mat-form-field>
-            <input matInput placeholder="port" formControlName="port"
-              mat-raised-button
-              required>
-          </mat-form-field>
-          <mat-form-field>
-            <input matInput placeholder="user" formControlName="user"
-              mat-raised-button
-              required>
-          </mat-form-field>
-          <mat-form-field>
-            <input
-              [type]="hide ? 'password' : 'text'"
-              matInput placeholder="Password" formControlName="pass"
-              mat-raised-button
-              [required]="isPasswordRequired">
-          </mat-form-field>
-          <mat-form-field>
-            <input matInput placeholder="from" formControlName="from"
-              mat-raised-button
-              required>
-          </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="Name" formControlName="name" mat-raised-button required>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="Email Host" formControlName="host" mat-raised-button required>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="port" formControlName="port" mat-raised-button required>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="user" formControlName="user" mat-raised-button required>
+        </mat-form-field>
+        <mat-form-field>
+          <input [type]="hide ? 'password' : 'text'" matInput placeholder="Password" formControlName="pass"
+            mat-raised-button [required]="isPasswordRequired">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="from" formControlName="from" mat-raised-button required>
+        </mat-form-field>
       </mat-card-content>
-      <mat-card-actions>
-        <button
-          (click)="updateEmail()"
-          mat-flat-button color="primary"
-          [disabled]="!emailForm"
+      <mat-card-actions fxLayout="row" fxLayoutGap="1em">
+        <button (click)="updateEmail()" mat-flat-button color="primary" [disabled]="!emailForm.valid"
           *ngIf="host">Update</button>
-        <button
-          (click)="createEmail()"
-          mat-flat-button
-          color="primary"
-          [disabled]="!emailForm"
+        <button (click)="createEmail()" mat-flat-button color="primary" [disabled]="!emailForm.valid"
           *ngIf="!host">Create</button>
+        <button (click)="delete()" mat-flat-button color="warn" *ngIf="uuid !== new">Delete</button>
       </mat-card-actions>
     </mat-card>
   </form>

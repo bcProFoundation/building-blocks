@@ -1,21 +1,22 @@
-
-
 <div class="card-container">
-    <form [formGroup]="scopeForm">
-      <mat-card>
-        <mat-card-title>{{ name || "New Scope" }}</mat-card-title>
-        <mat-card-content fxLayout="column">
-            <mat-form-field>
-              <input matInput placeholder="Scope Name" formControlName="name" required>
-            </mat-form-field>
-            <mat-form-field>
-                <input matInput placeholder="Scope Description" formControlName="description" >
-              </mat-form-field>
-        </mat-card-content>
-        <mat-card-actions>
-          <button (click)="createScope()" mat-flat-button color="primary" [disabled]="uuid" *ngIf="!uuid">Create</button>
-          <button (click)="updateScope()" mat-flat-button color="primary" *ngIf="uuid">Update</button>
-        </mat-card-actions>
-      </mat-card>
-    </form>
-  </div>
+  <form [formGroup]="scopeForm">
+    <mat-card>
+      <mat-card-title>{{ name || "New Scope" }}</mat-card-title>
+      <mat-card-content fxLayout="column">
+        <mat-form-field>
+          <input matInput placeholder="Scope Name" formControlName="name" required>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="Scope Description" formControlName="description">
+        </mat-form-field>
+      </mat-card-content>
+      <mat-card-actions fxLayout="row" fxLayoutGap="1em">
+        <button (click)="createScope()" mat-flat-button color="primary" [disabled]="uuid" *ngIf="!uuid"
+          [disabled]="!scopeForm.valid">Create</button>
+        <button (click)="updateScope()" mat-flat-button color="primary" *ngIf="uuid"
+          [disabled]="!scopeForm.valid">Update</button>
+        <button (click)="delete()" mat-flat-button color="warn" *ngIf="uuid && uuid !== new">Delete</button>
+      </mat-card-actions>
+    </mat-card>
+  </form>
+</div>

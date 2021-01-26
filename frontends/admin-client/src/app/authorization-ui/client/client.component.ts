@@ -1,8 +1,8 @@
 import { OnInit, Component } from '@angular/core';
-import { ClientService } from '../client/client.service';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 import {
   CLIENT_ERROR,
   CLOSE,
@@ -11,9 +11,12 @@ import {
   BASIC_HEADER,
   PUBLIC_CLIENT,
   BODY_PARAM,
+  DELETE_ERROR,
 } from '../../constants/messages';
 import { NEW_ID, DURATION } from '../../constants/common';
 import { ClientAuthentication } from './client-authentication.enum';
+import { DeleteDialogComponent } from '../../shared-ui/delete-dialog/delete-dialog.component';
+import { ClientService } from '../client/client.service';
 
 export const CLIENT_LIST_ROUTE = '/client/list';
 
@@ -50,6 +53,7 @@ export class ClientComponent implements OnInit {
     { value: ClientAuthentication.PublicClient, viewValue: PUBLIC_CLIENT },
     { value: ClientAuthentication.BodyParam, viewValue: BODY_PARAM },
   ];
+  new = NEW_ID;
 
   constructor(
     private readonly clientService: ClientService,
@@ -57,6 +61,7 @@ export class ClientComponent implements OnInit {
     private router: Router,
     private snackBar: MatSnackBar,
     private formBuilder: FormBuilder,
+    private dialog: MatDialog,
   ) {
     this.uuid = this.route.snapshot.params.id;
   }
@@ -77,7 +82,7 @@ export class ClientComponent implements OnInit {
       changedClientSecret: this.changedClientSecret,
     });
 
-    if (this.uuid && this.uuid !== NEW_ID) {
+    if (this.uuid && this.uuid !== this.new) {
       this.subscribeGetClient(this.uuid);
     }
     this.subscribeGetScopes();
@@ -229,5 +234,22 @@ export class ClientComponent implements OnInit {
       this.clientForm.controls.autoApprove.setValue(false);
       this.clientForm.controls.autoApprove.enable();
     }
+  }
+
+  delete() {
+    const dialogRef = this.dialog.open(DeleteDialogComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.clientService.deleteClient(this.clientId).subscribe(
+          next => {
+            this.router.navigate(['client', 'list']);
+          },
+          error => {
+            this.snackBar.open(DELETE_ERROR, CLOSE, { duration: DURATION });
+          },
+        );
+      }
+    });
   }
 }

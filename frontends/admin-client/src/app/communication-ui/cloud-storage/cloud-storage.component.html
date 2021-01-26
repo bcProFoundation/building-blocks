@@ -33,11 +33,11 @@
           <input matInput placeholder="Base Path" formControlName="basePath" required>
         </mat-form-field>
       </mat-card-content>
-      <mat-card-actions>
+      <mat-card-actions fxLayout="row" fxLayoutGap="1em">
         <button (click)="createCloudStorage()" mat-flat-button color="primary" [disabled]="!cloudForm.valid" *ngIf="!uuid">Create</button>
         <button (click)="updateCloudStorage()" mat-flat-button color="primary" [disabled]="!cloudForm.valid" *ngIf="uuid">Update</button>
-        <!-- <button style="float: right;" (click)="deleteAccount()" mat-flat-button color="primary" [disabled]="!accountForm.valid" *ngIf="accountNumber">delete</button> -->
-       </mat-card-actions>
+        <button (click)="delete()" mat-flat-button color="warn" *ngIf="uuid !== new">Delete</button>
+      </mat-card-actions>
       </mat-card>
   </form>
 </div>

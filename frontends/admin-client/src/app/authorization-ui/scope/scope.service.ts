@@ -59,4 +59,11 @@ export class ScopeService {
       headers: this.authorizationHeader,
     });
   }
+
+  deleteScope(scopeName: string) {
+    const url = `${this.storageService.getInfo(
+      ISSUER_URL,
+    )}/scope/v1/delete/${scopeName}`;
+    return this.http.post(url, undefined);
+  }
 }

@@ -3,14 +3,17 @@ import { RoleService } from './role.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormGroup, FormControl } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import {
   CREATE_SUCCESSFUL,
   UPDATE_SUCCESSFUL,
   CLOSE,
   CREATE_ERROR,
   UPDATE_ERROR,
+  DELETE_ERROR,
 } from '../../constants/messages';
 import { NEW_ID, DURATION } from '../../constants/common';
+import { DeleteDialogComponent } from '../../shared-ui/delete-dialog/delete-dialog.component';
 
 export const ROLE_LIST_ROUTE = '/role/list';
 
@@ -22,6 +25,7 @@ export const ROLE_LIST_ROUTE = '/role/list';
 export class RoleComponent implements OnInit {
   uuid: string;
   name: string;
+  new = NEW_ID;
 
   roleForm = new FormGroup({
     roleName: new FormControl(),
@@ -32,12 +36,13 @@ export class RoleComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: MatSnackBar,
+    private dialog: MatDialog,
   ) {
     this.uuid = this.route.snapshot.params.id;
   }
 
   ngOnInit() {
-    if (this.uuid !== NEW_ID) {
+    if (this.uuid && this.uuid !== this.new) {
       this.roleService.getRole(this.uuid).subscribe({
         next: response => {
           this.name = response.name;
@@ -71,5 +76,22 @@ export class RoleComponent implements OnInit {
         error: error =>
           this.snackBar.open(UPDATE_ERROR, CLOSE, { duration: DURATION }),
       });
+  }
+
+  delete() {
+    const dialogRef = this.dialog.open(DeleteDialogComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.roleService.deleteRole(this.name).subscribe(
+          next => {
+            this.router.navigate(['role', 'list']);
+          },
+          error => {
+            this.snackBar.open(DELETE_ERROR, CLOSE, { duration: DURATION });
+          },
+        );
+      }
+    });
   }
 }

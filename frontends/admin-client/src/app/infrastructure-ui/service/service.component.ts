@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import { ServiceService } from './service.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { NEW_ID, DURATION } from '../../constants/common';
+import { MatDialog } from '@angular/material/dialog';
 import { map, debounceTime } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { NEW_ID, DURATION } from '../../constants/common';
 import { ListingService } from '../../shared-ui/listing/listing.service';
 import { ListResponse } from '../../shared-ui/listing/listing-datasource';
 import {
@@ -15,7 +15,10 @@ import {
   UPDATE_SUCCESSFUL,
   CREATE_ERROR,
   UPDATE_ERROR,
+  DELETE_ERROR,
 } from '../../constants/messages';
+import { ServiceService } from './service.service';
+import { DeleteDialogComponent } from '../../shared-ui/delete-dialog/delete-dialog.component';
 
 export const SERVICE_LIST_ROUTE = '/service/list';
 
@@ -39,6 +42,7 @@ export class ServiceComponent implements OnInit {
     clientId: new FormControl(),
     serviceURL: new FormControl(),
   });
+  new = NEW_ID;
 
   constructor(
     private readonly serviceService: ServiceService,
@@ -46,6 +50,7 @@ export class ServiceComponent implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly snackBar: MatSnackBar,
+    private readonly dialog: MatDialog,
   ) {
     this.uuid = this.route.snapshot.params.id;
   }
@@ -60,7 +65,7 @@ export class ServiceComponent implements OnInit {
       },
     });
 
-    if (this.uuid !== NEW_ID) {
+    if (this.uuid !== this.new) {
       this.serviceService.getService(this.uuid).subscribe({
         next: response => {
           this.name = response.name;
@@ -128,5 +133,22 @@ export class ServiceComponent implements OnInit {
         error: error =>
           this.snackBar.open(UPDATE_ERROR, CLOSE, { duration: DURATION }),
       });
+  }
+
+  delete() {
+    const dialogRef = this.dialog.open(DeleteDialogComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.serviceService.deleteService(this.clientId).subscribe(
+          next => {
+            this.router.navigate(['service', 'list']);
+          },
+          error => {
+            this.snackBar.open(DELETE_ERROR, CLOSE, { duration: DURATION });
+          },
+        );
+      }
+    });
   }
 }

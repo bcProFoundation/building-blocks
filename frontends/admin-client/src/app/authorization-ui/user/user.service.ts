@@ -115,4 +115,11 @@ export class UserService {
     const url = `${this.storageService.getInfo(ISSUER_URL)}/role/v1/find`;
     return this.http.get<string>(url);
   }
+
+  deleteUser(userUuid: string) {
+    const url = `${this.storageService.getInfo(
+      ISSUER_URL,
+    )}/user/v1/delete/${userUuid}`;
+    return this.http.post(url, undefined);
+  }
 }

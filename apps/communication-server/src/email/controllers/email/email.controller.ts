@@ -107,4 +107,11 @@ export class EmailController {
     email.pass = undefined;
     return email;
   }
+
+  @Post('v1/delete/:uuid')
+  @Roles(ADMINISTRATOR)
+  @UseGuards(TokenGuard, RoleGuard)
+  async deleteEmailAccount(@Param('uuid') uuid: string) {
+    return await this.emailService.deleteEmailAccount(uuid);
+  }
 }

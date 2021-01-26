@@ -91,4 +91,11 @@ export class SocialLoginService {
       this.storageService.getInfo(ISSUER_URL) + '/social_login/callback/' + uuid
     );
   }
+
+  deleteSocialLogin(uuid: string) {
+    const url = `${this.storageService.getInfo(
+      ISSUER_URL,
+    )}/social_login/v1/delete/${uuid}`;
+    return this.http.post(url, undefined);
+  }
 }

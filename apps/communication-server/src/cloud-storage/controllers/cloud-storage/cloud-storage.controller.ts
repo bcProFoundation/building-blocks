@@ -87,7 +87,7 @@ export class CloudStorageController {
   @Roles(ADMINISTRATOR)
   @UseGuards(TokenGuard, RoleGuard)
   async removeStorage(@Param() uuid, @Req() req) {
-    const actorUuid = req.user.user;
+    const actorUuid = req.token.user;
     return await this.commandBus.execute(
       new RemoveCloudStorageCommand(actorUuid, uuid),
     );

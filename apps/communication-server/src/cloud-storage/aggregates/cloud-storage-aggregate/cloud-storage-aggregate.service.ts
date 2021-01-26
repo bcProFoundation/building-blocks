@@ -13,6 +13,7 @@ import {
   INVALID_FILE_OR_STORAGE_UUID,
   INVALID_CLIENT,
 } from '../../../constants/messages';
+import { CloudStorageRemovedEvent } from '../../events/cloud-storage-removed-event/cloud-storage-removed-event';
 
 @Injectable()
 export class CloudStorageAggregateService extends AggregateRoot {
@@ -53,5 +54,14 @@ export class CloudStorageAggregateService extends AggregateRoot {
     if (!req.token.trustedClient || req.token.sub) {
       throw new ForbiddenException(INVALID_CLIENT);
     }
+  }
+
+  async removeStorage(uuid: string) {
+    const storage = await this.storage.findOne(uuid);
+    if (storage) {
+      this.apply(new CloudStorageRemovedEvent(storage));
+      return { deleted: storage.uuid };
+    }
+    throw new NotFoundException({ CloudStorageNotFound: uuid });
   }
 }

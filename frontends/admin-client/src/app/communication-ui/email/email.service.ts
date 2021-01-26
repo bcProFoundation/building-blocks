@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { OAuthService } from 'angular-oauth2-oidc';
+import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import {
   HandleError,
   HttpErrorHandler,
 } from '../../common/services/http-error-handler/http-error-handler.service';
 import { StorageService } from '../../common/services/storage/storage.service';
-import { OAuthService } from 'angular-oauth2-oidc';
 import { COMMUNICATION_SERVER } from '../../constants/storage';
-import { Observable } from 'rxjs';
-import { catchError } from 'rxjs/operators';
 import { CANNOT_FETCH_MODELS } from '../../constants/messages';
 
 @Injectable({
@@ -98,5 +98,12 @@ export class EmailService {
     return this.http.post(url, emailData, {
       headers: this.authorizationHeader,
     });
+  }
+
+  deleteEmailAccount(uuid: string) {
+    const url = `${this.storageService.getServiceURL(
+      COMMUNICATION_SERVER,
+    )}/email/v1/delete/${uuid}`;
+    return this.http.post(url, undefined);
   }
 }

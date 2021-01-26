@@ -103,4 +103,11 @@ export class ClientService {
     const url = `${this.storageService.getInfo(ISSUER_URL)}/scope/v1/find`;
     return this.http.get<string>(url);
   }
+
+  deleteClient(clientId: string) {
+    const url = `${this.storageService.getInfo(
+      ISSUER_URL,
+    )}/client/v1/delete/${clientId}`;
+    return this.http.post(url, undefined);
+  }
 }
