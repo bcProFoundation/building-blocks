@@ -16,3 +16,4 @@ export const APP_JSON = 'application/json';
 export const TEN_MINUTES_IN_SECONDS = 600;
 export const BASIC = 'Basic';
 export const BEARER = 'Bearer';
+export const CALLBACK_PROTOCOL = 'blocks';

@@ -5,6 +5,7 @@ import { RoleGuard } from './guards/role.guard';
 import { TokenGuard } from './guards/token.guard';
 import { AuthSchedulers } from './schedulers';
 import { AuthAggregates } from './aggregates';
+import { AuthControllers } from './controllers';
 
 @Global()
 @Module({
@@ -23,5 +24,6 @@ import { AuthAggregates } from './aggregates';
     TokenGuard,
     ...AuthAggregates,
   ],
+  controllers: [...AuthControllers],
 })
 export class AuthModule {}

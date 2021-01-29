@@ -1,6 +1,6 @@
 import { Column, Entity, BaseEntity, ObjectID, ObjectIdColumn } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
-import { SERVICE } from '../../../constants/app-strings';
+import { CALLBACK_PROTOCOL, SERVICE } from '../../../constants/app-strings';
 
 @Entity()
 export class ServerSettings extends BaseEntity {
@@ -48,6 +48,9 @@ export class ServerSettings extends BaseEntity {
 
   @Column()
   clientTokenUuid: string;
+
+  @Column()
+  callbackProtocol: string = CALLBACK_PROTOCOL;
 
   constructor() {
     super();
