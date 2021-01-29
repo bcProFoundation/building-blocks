@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { EmailAccountService } from '../../../email/entities/email-account/email-account.service';
 import { EmailMessageAuthServerDto } from './email-message-authserver-dto';
@@ -29,5 +33,14 @@ export class EmailService {
     }
 
     return await this.commandBus.execute(new SendSystemEmailCommand(payload));
+  }
+
+  async deleteEmailAccount(uuid: string) {
+    const email = await this.findOne({ uuid });
+    if (!email) {
+      throw new NotFoundException({ EmailAccountNotFound: uuid });
+    }
+    await this.emailAccount.delete({ uuid });
+    return { deleted: uuid };
   }
 }

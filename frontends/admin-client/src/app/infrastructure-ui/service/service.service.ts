@@ -54,4 +54,11 @@ export class ServiceService {
       headers: this.headers,
     });
   }
+
+  deleteService(clientId: string) {
+    const url = `${localStorage.getItem(
+      APP_URL,
+    )}/service/v1/delete/${clientId}`;
+    return this.http.post(url, undefined);
+  }
 }

@@ -14,7 +14,8 @@
               matInput
               formControlName="type"
               (keyup)="searchKeyUp()"
-              [matAutocomplete]="auto">
+              [matAutocomplete]="auto"
+              required>
             <mat-autocomplete #auto="matAutocomplete">
               <mat-option *ngFor="let type of serviceTypes | async" [value]="type.name">
                 {{ type.name }}
@@ -24,7 +25,8 @@
           <mat-form-field>
             <mat-select
               placeholder="Client ID"
-              formControlName="clientId">
+              formControlName="clientId"
+              required>
               <mat-option
                 *ngFor="let client of clientList"
                 [value]="client.clientId">{{ client.name + " (" + client.clientId + ")"}}
@@ -32,12 +34,13 @@
             </mat-select>
           </mat-form-field>
           <mat-form-field>
-            <input matInput placeholder="Service URL" formControlName="serviceURL">
+            <input matInput placeholder="Service URL" formControlName="serviceURL" required>
           </mat-form-field>
       </mat-card-content>
-      <mat-card-actions>
+      <mat-card-actions fxLayout="row" fxLayoutGap="1em">
         <button (click)="registerService()" mat-flat-button color="primary" [disabled]="!serviceForm.valid" *ngIf="!clientId">Create</button>
         <button (click)="modifyService()" mat-flat-button color="primary" [disabled]="!serviceForm.valid" *ngIf="clientId">Update</button>
+        <button (click)="delete()" mat-flat-button color="warn" *ngIf="uuid !== new">Delete</button>
       </mat-card-actions>
     </mat-card>
   </form>

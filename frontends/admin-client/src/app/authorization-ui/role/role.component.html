@@ -7,7 +7,7 @@
             <input matInput placeholder="Role Name" formControlName="roleName" required>
           </mat-form-field>
       </mat-card-content>
-      <mat-card-actions>
+      <mat-card-actions fxLayout="row" fxLayoutGap="1em">
         <button
           (click)="updateRole()"
           mat-flat-button color="primary"
@@ -19,6 +19,11 @@
           color="primary"
           [disabled]="!roleForm.valid"
           *ngIf="!name">Create</button>
+        <button
+          (click)="delete()"
+          mat-flat-button
+          color="warn"
+          *ngIf="uuid !== new">Delete</button>
       </mat-card-actions>
     </mat-card>
   </form>

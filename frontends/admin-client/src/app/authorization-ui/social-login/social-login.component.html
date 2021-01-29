@@ -55,9 +55,10 @@
               Add Scope <mat-icon>add</mat-icon>
           </button>
       </mat-card-content>
-      <mat-card-actions>
+      <mat-card-actions fxLayout="row" fxLayoutGap="1em">
         <button (click)="createSocialLogin()" mat-flat-button color="primary" [disabled]="!socialLoginForm.valid" *ngIf="!uuid">Create</button>
         <button (click)="updateSocialLogin()" mat-flat-button color="primary" [disabled]="!socialLoginForm.valid" *ngIf="uuid">Update</button>
+        <button (click)="delete()" mat-flat-button color="warn" *ngIf="uuid && uuid !== new">Delete</button>
       </mat-card-actions>
     </mat-card>
   </form>

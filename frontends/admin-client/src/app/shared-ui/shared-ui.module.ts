@@ -6,6 +6,7 @@ import { ListingService } from './listing/listing.service';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { SharedImportsModule } from '../shared-imports/shared-imports.module';
+import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
 
 @NgModule({
   declarations: [
@@ -13,6 +14,7 @@ import { SharedImportsModule } from '../shared-imports/shared-imports.module';
     ListingComponent,
     DashboardComponent,
     NavigationComponent,
+    DeleteDialogComponent,
   ],
   imports: [SharedImportsModule, CommonModule],
   providers: [ListingService],
@@ -21,6 +23,7 @@ import { SharedImportsModule } from '../shared-imports/shared-imports.module';
     ListingComponent,
     DashboardComponent,
     NavigationComponent,
+    DeleteDialogComponent,
   ],
 })
 export class SharedUIModule {}

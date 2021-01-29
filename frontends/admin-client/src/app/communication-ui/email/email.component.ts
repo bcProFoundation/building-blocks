@@ -1,16 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { EmailService } from './email.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { NEW_ID, DURATION } from '../../constants/common';
+import { MatDialog } from '@angular/material/dialog';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { NEW_ID, DURATION } from '../../constants/common';
+import { EmailService } from './email.service';
 import {
   CREATE_SUCCESSFUL,
   CLOSE,
   CREATE_ERROR,
   UPDATE_SUCCESSFUL,
   UPDATE_ERROR,
+  DELETE_ERROR,
 } from '../../constants/messages';
+import { DeleteDialogComponent } from '../../shared-ui/delete-dialog/delete-dialog.component';
 
 export const EMAIL_LIST_ROUTE = '/email/list';
 
@@ -38,18 +41,20 @@ export class EmailComponent implements OnInit {
     pass: new FormControl(),
     from: new FormControl(),
   });
+  new = NEW_ID;
 
   constructor(
     private readonly emailService: EmailService,
     route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private router: Router,
+    private dialog: MatDialog,
   ) {
     this.uuid = route.snapshot.params.id;
   }
 
   ngOnInit() {
-    if (this.uuid !== NEW_ID) {
+    if (this.uuid && this.uuid !== this.new) {
       this.emailService.getEmail(this.uuid).subscribe({
         next: response => {
           this.name = response.name;
@@ -110,5 +115,22 @@ export class EmailComponent implements OnInit {
         error: error =>
           this.snackBar.open(UPDATE_ERROR, CLOSE, { duration: DURATION }),
       });
+  }
+
+  delete() {
+    const dialogRef = this.dialog.open(DeleteDialogComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.emailService.deleteEmailAccount(this.uuid).subscribe(
+          next => {
+            this.router.navigate(['email', 'list']);
+          },
+          error => {
+            this.snackBar.open(DELETE_ERROR, CLOSE, { duration: DURATION });
+          },
+        );
+      }
+    });
   }
 }

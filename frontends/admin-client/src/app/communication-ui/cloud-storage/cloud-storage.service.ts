@@ -87,4 +87,9 @@ export class CloudStorageService {
       headers: this.headers,
     });
   }
+
+  deleteStorage(uuid: string) {
+    const url = `${this.url}/storage/v1/remove/${uuid}`;
+    return this.http.post(url, undefined);
+  }
 }

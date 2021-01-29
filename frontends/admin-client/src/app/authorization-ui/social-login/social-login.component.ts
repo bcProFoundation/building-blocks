@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormGroup, FormControl } from '@angular/forms';
-import { SocialLoginService } from './social-login.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { SocialLoginService } from './social-login.service';
 import { NEW_ID, DURATION } from '../../constants/common';
 import {
   SOCIAL_LOGIN_ERROR,
@@ -10,7 +11,9 @@ import {
   SOCIAL_LOGIN_CREATED,
   CLOSE,
   UPDATE_ERROR,
+  DELETE_ERROR,
 } from '../../constants/messages';
+import { DeleteDialogComponent } from '../../shared-ui/delete-dialog/delete-dialog.component';
 
 export const SOCIAL_LOGIN_LIST_ROUTE = '/social_login/list';
 
@@ -53,18 +56,20 @@ export class SocialLoginComponent implements OnInit {
     scope: this.scopesForm,
     redirectURL: new FormControl(),
   });
+  new = NEW_ID;
 
   constructor(
     private socialLoginService: SocialLoginService,
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: MatSnackBar,
+    private dialog: MatDialog,
   ) {
     this.uuid = this.route.snapshot.params.id;
   }
 
   ngOnInit() {
-    if (this.uuid && this.uuid !== NEW_ID) {
+    if (this.uuid && this.uuid !== this.new) {
       this.subscribeGetSocialLogin(this.uuid);
     } else if (this.uuid === NEW_ID) {
       this.uuid = undefined;
@@ -196,5 +201,22 @@ export class SocialLoginComponent implements OnInit {
         error: error =>
           this.snackBar.open(UPDATE_ERROR, CLOSE, { duration: DURATION }),
       });
+  }
+
+  delete() {
+    const dialogRef = this.dialog.open(DeleteDialogComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.socialLoginService.deleteSocialLogin(this.uuid).subscribe(
+          next => {
+            this.router.navigate(['social_login', 'list']);
+          },
+          error => {
+            this.snackBar.open(DELETE_ERROR, CLOSE, { duration: DURATION });
+          },
+        );
+      }
+    });
   }
 }

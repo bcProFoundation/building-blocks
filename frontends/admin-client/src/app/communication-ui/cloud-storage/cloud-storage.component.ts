@@ -1,17 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
-import { filter } from 'rxjs/operators';
-import { CloudStorageService } from './cloud-storage.service';
-import { NEW_ID, DURATION } from '../../constants/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { filter } from 'rxjs/operators';
+import { NEW_ID, DURATION } from '../../constants/common';
+import { CloudStorageService } from './cloud-storage.service';
 import {
   UPDATE_SUCCESSFUL,
   CLOSE,
   CREATE_SUCCESSFUL,
   CREATE_ERROR,
   UPDATE_ERROR,
+  DELETE_ERROR,
 } from '../../constants/messages';
+import { DeleteDialogComponent } from '../../shared-ui/delete-dialog/delete-dialog.component';
 
 export const STORAGE_LIST_ROUTE = '/storage/list';
 
@@ -45,6 +48,7 @@ export class CloudStorageComponent implements OnInit {
     private readonly activatedRoute: ActivatedRoute,
     private readonly snackBar: MatSnackBar,
     private readonly cloudStorageService: CloudStorageService,
+    private readonly dialog: MatDialog,
   ) {
     this.uuid = this.activatedRoute.snapshot.params.id;
     this.router.events
@@ -67,7 +71,7 @@ export class CloudStorageComponent implements OnInit {
       basePath: '',
     });
 
-    if (this.uuid === NEW_ID) {
+    if (this.uuid && this.uuid === this.new) {
       this.uuid = undefined;
       this.cloudForm.controls.secretKey.setValidators([Validators.required]);
       this.cloudForm.controls.accessKey.setValidators([Validators.required]);
@@ -145,6 +149,23 @@ export class CloudStorageComponent implements OnInit {
         this.cloudForm.controls.basePath.setValue(res.basePath);
       },
       error: err => {},
+    });
+  }
+
+  delete() {
+    const dialogRef = this.dialog.open(DeleteDialogComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.cloudStorageService.deleteStorage(this.uuid).subscribe(
+          next => {
+            this.router.navigate(['storage', 'list']);
+          },
+          error => {
+            this.snackBar.open(DELETE_ERROR, CLOSE, { duration: DURATION });
+          },
+        );
+      }
     });
   }
 }

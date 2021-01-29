@@ -1,16 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { NEW_ID, DURATION } from '../../constants/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { NEW_ID, DURATION } from '../../constants/common';
 import {
   CREATE_SUCCESSFUL,
   CLOSE,
   CREATE_ERROR,
   DELETE_ERROR,
-  DELETE_SUCCESSFUL,
 } from '../../constants/messages';
 import { ServiceTypeService } from './service-type.service';
+import { DeleteDialogComponent } from '../../shared-ui/delete-dialog/delete-dialog.component';
 
 export const SERVICE_TYPE_LIST_ROUTE = '/service_type/list';
 
@@ -31,6 +32,7 @@ export class ServiceTypeComponent implements OnInit {
     private readonly router: Router,
     private readonly snackBar: MatSnackBar,
     private readonly serviceTypeService: ServiceTypeService,
+    private readonly dialog: MatDialog,
   ) {
     this.uuid = this.route.snapshot.params.id;
   }
@@ -64,15 +66,19 @@ export class ServiceTypeComponent implements OnInit {
   }
 
   deleteServiceType() {
-    this.serviceTypeService
-      .deleteServiceType(this.serviceTypeForm.controls.serviceTypeName.value)
-      .subscribe({
-        next: success => {
-          this.snackBar.open(DELETE_SUCCESSFUL, CLOSE, { duration: DURATION });
-          this.router.navigateByUrl(SERVICE_TYPE_LIST_ROUTE);
-        },
-        error: error =>
-          this.snackBar.open(DELETE_ERROR, CLOSE, { duration: DURATION }),
-      });
+    const dialogRef = this.dialog.open(DeleteDialogComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.serviceTypeService.deleteServiceType(this.name).subscribe(
+          next => {
+            this.router.navigate(['service_type', 'list']);
+          },
+          error => {
+            this.snackBar.open(DELETE_ERROR, CLOSE, { duration: DURATION });
+          },
+        );
+      }
+    });
   }
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { NEW_ID, DURATION } from '../../constants/common';
 import { UserService } from './user.service';
@@ -11,9 +12,11 @@ import {
   CREATE_ERROR,
   UPDATE_SUCCESSFUL,
   UPDATE_ERROR,
+  DELETE_ERROR,
 } from '../../constants/messages';
 import { RoleService } from '../role/role.service';
 import { ISSUER_URL } from '../../constants/storage';
+import { DeleteDialogComponent } from '../../shared-ui/delete-dialog/delete-dialog.component';
 
 export const USER_LIST_ROUTE = '/user/list';
 
@@ -44,6 +47,7 @@ export class UserComponent implements OnInit {
     isDisabled: new FormControl(),
     userPhone: new FormControl(),
   });
+  new = NEW_ID;
 
   constructor(
     private readonly userService: UserService,
@@ -52,6 +56,7 @@ export class UserComponent implements OnInit {
     private snackBar: MatSnackBar,
     private router: Router,
     private readonly oauth2: OAuthService,
+    private dialog: MatDialog,
   ) {
     this.uuid =
       this.route.snapshot.params.id === NEW_ID
@@ -96,7 +101,7 @@ export class UserComponent implements OnInit {
         this.userForm.controls.userEmail.value,
         this.userForm.controls.userPhone.value,
         this.userForm.controls.userPassword.value,
-        this.userForm.controls.userRole.value,
+        this.userForm.controls.userRole.value || [],
       )
       .subscribe({
         next: success => {
@@ -167,5 +172,22 @@ export class UserComponent implements OnInit {
     this.userForm.controls.userPhone.setValue(user.phone);
     this.userForm.controls.userEmail.setValue(user.email);
     this.userForm.controls.userRole.setValue(user.roles);
+  }
+
+  delete() {
+    const dialogRef = this.dialog.open(DeleteDialogComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.userService.deleteUser(this.uuid).subscribe(
+          next => {
+            this.router.navigate(['user', 'list']);
+          },
+          error => {
+            this.snackBar.open(DELETE_ERROR, CLOSE, { duration: DURATION });
+          },
+        );
+      }
+    });
   }
 }

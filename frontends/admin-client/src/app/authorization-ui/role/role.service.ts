@@ -66,4 +66,11 @@ export class RoleService {
       headers: this.authorizationHeader,
     });
   }
+
+  deleteRole(roleName: string) {
+    const url = `${this.storageService.getInfo(
+      ISSUER_URL,
+    )}/role/v1/delete/${roleName}`;
+    return this.http.post(url, undefined);
+  }
 }

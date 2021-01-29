@@ -66,9 +66,10 @@
             </button>
 
         </mat-card-content>
-        <mat-card-actions>
+        <mat-card-actions fxLayout="row" fxLayoutGap="1em">
           <button (click)="createClient()" mat-flat-button color="primary" [disabled]="!clientForm.valid" *ngIf="!clientId">Create</button>
           <button (click)="updateClient()" mat-flat-button color="primary" [disabled]="!clientForm.valid" *ngIf="clientId">Update</button>
+          <button (click)="delete()" mat-flat-button color="warn" *ngIf="uuid !== new">Delete</button>
         </mat-card-actions>
       </mat-card>
     </form>
