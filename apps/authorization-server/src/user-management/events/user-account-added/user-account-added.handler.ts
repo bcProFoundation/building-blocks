@@ -13,7 +13,10 @@ export class UserAccountAddedHandler
 
   async handle(event: UserAccountAddedEvent) {
     const { user, authData } = event;
-    await this.authData.save(authData);
+
+    if (authData) {
+      await this.authData.save(authData);
+    }
     await this.user.save(user);
   }
 }

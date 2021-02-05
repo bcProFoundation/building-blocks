@@ -20,7 +20,7 @@
               class="email-button"
               fxFlex="90"
               (click)="chooseUser(i)"
-              mat-stroked-button>{{ user.value.email }}</button>
+              mat-stroked-button>{{ user.value.email || user.value.phone }}</button>
             <button
               mat-icon-button
               matSuffix

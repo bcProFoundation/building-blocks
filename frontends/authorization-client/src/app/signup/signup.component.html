@@ -1,28 +1,41 @@
 <mat-grid-list cols="1" rowHeight="30em">
   <mat-grid-tile>
-    <form (ngSubmit)="onSubmit()">
+    <form>
       <mat-card class="signup-card">
         <mat-card-title i18n="@@signUp">Sign Up</mat-card-title>
         <mat-card-content>
           <mat-form-field class="full-width">
-            <input [(ngModel)]="name"
-              matInput i18n-placeholder="@@fullName" placeholder="Full Name" name="name" required>
+            <input [(ngModel)]="name" [disabled]="isNameAndPhoneDisabled" matInput i18n-placeholder="@@fullName"
+              placeholder="Full Name" name="name" required>
           </mat-form-field>
-          <mat-form-field class="full-width">
-            <input [(ngModel)]="email"
-              matInput i18n-placeholder="@@email" placeholder="Email" name="email" required>
+          <mat-form-field class="full-width" *ngIf="isSignUpViaEmail">
+            <input [(ngModel)]="email" matInput i18n-placeholder="@@email" placeholder="Email" name="email" required>
+          </mat-form-field>
+          <mat-form-field *ngIf="isSignUpViaPhone" class="full-width">
+            <input [(ngModel)]="phone" matInput i18n-placeholder="@@mobile" placeholder="Mobile" name="phone" required
+              [disabled]="isNameAndPhoneDisabled">
           </mat-form-field>
           <mat-form-field *ngIf="!communicationEnabled" class="full-width">
-            <input [(ngModel)]="phone"
-              matInput i18n-placeholder="@@mobile" placeholder="Mobile" name="phone" required>
+            <input type="password" [(ngModel)]="password" matInput i18n-placeholder="@@password" placeholder="Password"
+              name="password" required>
           </mat-form-field>
-          <mat-form-field *ngIf="!communicationEnabled" class="full-width">
-            <input type="password" [(ngModel)]="password"
-              matInput i18n-placeholder="@@password" placeholder="Password" name="password" required>
+          <mat-form-field *ngIf="isSignUpViaPhone && isNameAndPhoneDisabled" class="full-width">
+            <input [(ngModel)]="otp" matInput i18n-placeholder="@@otp" placeholder="OTP" name="otp" required>
           </mat-form-field>
         </mat-card-content>
-        <mat-card-actions>
-          <button type="submit" mat-raised-button color="primary" i18n="@@signUp">Sign Up</button>
+        <mat-card-actions fxLayout="row" fxLayoutAlign="space-between center">
+          <button mat-raised-button *ngIf="isSignUpViaEmail" color="primary" i18n="@@signUp" (click)="onSubmit()">Sign
+            Up</button>
+          <button mat-raised-button *ngIf="isSignUpViaPhone && isNameAndPhoneDisabled" color="primary"
+            i18n="@@verifyPhone" (click)="verifyPhoneSignup()"
+            [autofocus]="isSignUpViaPhone && isNameAndPhoneDisabled">Verify Phone</button>
+          <button mat-button *ngIf="isSignUpViaPhone" color="link" i18n="@@sendOtp" (click)="onSubmitPhone()"
+            [disabled]="isOTPSendButtonDisabled">Send
+            OTP</button>
+          <button mat-button *ngIf="isSignUpViaEmail && enableUserPhone" color="link" i18n="@@signUpViaPhone"
+            (click)="signUpViaPhone()">Sign Up via Phone</button>
+          <button mat-button *ngIf="isSignUpViaPhone && !isNameAndPhoneDisabled" color="link" i18n="@@signUpViaPhone"
+            (click)="signUpViaPhone()">Sign Up via Email</button>
         </mat-card-actions>
       </mat-card>
     </form>

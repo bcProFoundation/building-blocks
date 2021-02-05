@@ -15,16 +15,16 @@ export class UserAuthenticatorRemovedHandler
   ) {}
   handle(event: UserAuthenticatorRemovedEvent) {
     const { authKey } = event;
-    forkJoin(
-      from(
+    forkJoin({
+      authData: from(
         this.authData.deleteMany({
           authDataType: AuthDataType.Challenge,
           entityUuid: authKey?.userUuid,
           entity: USER,
         }),
       ),
-      from(this.authenticator.remove(authKey)),
-    ).subscribe({
+      authenticator: from(this.authenticator.remove(authKey)),
+    }).subscribe({
       next: success => {},
       error: error => {},
     });

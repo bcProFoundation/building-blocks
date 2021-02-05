@@ -13,10 +13,10 @@ export class PhoneVerifiedHandler implements IEventHandler<PhoneVerifiedEvent> {
   handle(event: PhoneVerifiedEvent) {
     const { user, phoneOTP } = event;
 
-    forkJoin(
-      from(this.user.save(user)),
-      from(this.authData.remove(phoneOTP)),
-    ).subscribe({
+    forkJoin({
+      user: from(this.user.save(user)),
+      authData: from(this.authData.remove(phoneOTP)),
+    }).subscribe({
       next: success => {},
       error: error => {},
     });

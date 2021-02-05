@@ -154,4 +154,18 @@ export class AuthService {
         }),
       );
   }
+
+  signUpViaPhone(name: string, unverifiedPhone: string) {
+    return this.http.post(environment.routes.SIGNUP_VIA_PHONE, {
+      name,
+      unverifiedPhone,
+    });
+  }
+
+  verifySignupPhone(unverifiedPhone: string, otp: string) {
+    return this.http.post(environment.routes.VERIFY_PHONE_SIGNUP, {
+      otp,
+      unverifiedPhone,
+    });
+  }
 }

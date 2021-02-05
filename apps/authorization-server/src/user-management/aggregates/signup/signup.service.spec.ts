@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { SignupService } from './signup.service';
 import { HttpService } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
+import { SignupService } from './signup.service';
 import { UserService } from '../../entities/user/user.service';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
@@ -11,6 +12,7 @@ describe('SignupService', () => {
   let service: SignupService;
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [CqrsModule],
       providers: [
         SignupService,
         { provide: HttpService, useValue: {} },

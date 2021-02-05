@@ -15,6 +15,7 @@ import { UpdateUserFullNameHandler } from './update-user-full-name/update-user-f
 import { AddUserClaimHandler } from './add-user-claim/add-user-claim.handler';
 import { UpdateUserClaimHandler } from './update-user-claim/update-user-claim.handler';
 import { RemoveUserClaimHandler } from './remove-user-claim/remove-user-claim.handler';
+import { SignupViaPhoneHandler } from './signup-via-phone/signup-via-phone.handler';
 
 export const UserManagementCommandHandlers = [
   RemoveUserAccountHandler,
@@ -34,4 +35,5 @@ export const UserManagementCommandHandlers = [
   AddUserClaimHandler,
   UpdateUserClaimHandler,
   RemoveUserClaimHandler,
+  SignupViaPhoneHandler,
 ];
