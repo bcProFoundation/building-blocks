@@ -26,7 +26,11 @@ import {
   CommunicationServerNotFoundException,
 } from '../../../common/filters/exceptions';
 import { CryptographerService } from '../../../common/services/cryptographer/cryptographer.service';
-import { ChangePasswordDto, VerifyEmailDto } from '../../policies';
+import {
+  ChangePasswordDto,
+  VerifyEmailDto,
+  VerifySignupViaPhoneDto,
+} from '../../policies';
 import { PasswordChangedEvent } from '../../events/password-changed/password-changed.event';
 import { PasswordPolicyService } from '../../policies/password-policy/password-policy.service';
 import { EmailVerifiedAndPasswordSetEvent } from '../../events/email-verified-and-password-set/email-verified-and-password-set.event';
@@ -282,4 +286,6 @@ export class UserAggregateService extends AggregateRoot {
       throw new ForbiddenException();
     }
   }
+
+  async verifyPhone(payload: VerifySignupViaPhoneDto) {}
 }

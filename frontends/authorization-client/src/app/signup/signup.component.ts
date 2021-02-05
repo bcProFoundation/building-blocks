@@ -1,11 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../auth/auth.service';
+import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { SOMETHING_WENT_WRONG } from '../constants/messages';
+import { AuthService } from '../auth/auth.service';
+import { OTP_SENT_TO } from '../constants/messages';
 import { SignupService } from './signup.service';
 import { ServerInfo } from '../common/server-info.interface';
-import { CLOSE, PLEASE_CHECK_EMAIL, DURATION } from '../constants/app-strings';
-import { Router } from '@angular/router';
+import {
+  CLOSE,
+  PLEASE_CHECK_EMAIL,
+  DURATION,
+  LONG_DURATION,
+} from '../constants/app-strings';
 
 @Component({
   selector: 'app-signup',
@@ -18,6 +23,12 @@ export class SignupComponent implements OnInit {
   public phone: string;
   public password: string;
   public communicationEnabled: boolean = false;
+  otp: string;
+  enableUserPhone = false;
+  isSignUpViaEmail = true;
+  isSignUpViaPhone = false;
+  isNameAndPhoneDisabled = false;
+  isOTPSendButtonDisabled = false;
 
   constructor(
     private authService: AuthService,
@@ -31,6 +42,7 @@ export class SignupComponent implements OnInit {
       next: (response: ServerInfo) => {
         if (response.communication) {
           this.communicationEnabled = response.communication;
+          this.enableUserPhone = response.enableUserPhone;
         }
       },
     });
@@ -54,9 +66,48 @@ export class SignupComponent implements OnInit {
           if (typeof err.error.message === 'string') {
             this.snackBar.open(err.error.message, null, { duration: DURATION });
           } else {
-            this.snackBar.open(SOMETHING_WENT_WRONG);
+            this.snackBar.open(err?.error?.message || err?.toString(), null, {
+              duration: DURATION,
+            });
           }
         },
       });
+  }
+
+  signUpViaPhone() {
+    this.isNameAndPhoneDisabled = false;
+    this.isSignUpViaEmail = !this.isSignUpViaEmail;
+    this.isSignUpViaPhone = !this.isSignUpViaPhone;
+  }
+
+  onSubmitPhone() {
+    this.isOTPSendButtonDisabled = true;
+    setTimeout(() => (this.isOTPSendButtonDisabled = false), LONG_DURATION);
+    this.authService.signUpViaPhone(this.name, this.phone).subscribe({
+      next: success => {
+        this.snackBar.open(OTP_SENT_TO + this.phone, null, {
+          duration: DURATION,
+        });
+        this.isNameAndPhoneDisabled = true;
+      },
+      error: error => {
+        this.snackBar.open(error?.error?.message || error?.toString(), null, {
+          duration: DURATION,
+        });
+      },
+    });
+  }
+
+  verifyPhoneSignup() {
+    this.authService.verifySignupPhone(this.phone, this.otp).subscribe({
+      next: success => {
+        this.router.navigateByUrl('/login');
+      },
+      error: error => {
+        this.snackBar.open(error?.error?.message || error?.toString(), null, {
+          duration: DURATION,
+        });
+      },
+    });
   }
 }

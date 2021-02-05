@@ -21,6 +21,8 @@ import {
   VerifyEmailDto,
   ChangePasswordDto,
   UserAccountDto,
+  VerifyPhoneDto,
+  VerifySignupViaPhoneDto,
 } from '../../policies';
 import { ChangePasswordCommand } from '../../commands/change-password/change-password.command';
 import { VerifyEmailAndSetPasswordCommand } from '../../commands/verify-email-and-set-password/verify-email-and-set-password.command';
@@ -39,7 +41,6 @@ import { UpdateUserFullNameCommand } from '../../commands/update-user-full-name/
 import { ListQueryDto } from '../../../common/policies/list-query/list-query';
 import { AddUnverifiedMobileCommand } from '../../../auth/commands/add-unverified-phone/add-unverified-phone.command';
 import { UnverifiedPhoneDto } from '../../policies/unverified-phone/unverified-phone.dto';
-import { VerifyPhoneDto } from '../../policies/verify-phone/verify-phone.dto';
 import { VerifyPhoneCommand } from '../../../auth/commands/verify-phone/verify-phone.command';
 import { BearerTokenGuard } from '../../../auth/guards/bearer-token.guard';
 
@@ -237,5 +238,16 @@ export class UserController {
     const userUuid = req.user.user;
     const { otp } = payload;
     return await this.commandBus.execute(new VerifyPhoneCommand(userUuid, otp));
+  }
+
+  @Post('v1/verify_phone_signup')
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  async verifySignupByPhone(@Body() payload: VerifySignupViaPhoneDto) {
+    const user = await this.userService.findOne({
+      unverifiedPhone: payload.unverifiedPhone,
+    });
+    return await this.commandBus.execute(
+      new VerifyPhoneCommand(user?.uuid, payload.otp),
+    );
   }
 }

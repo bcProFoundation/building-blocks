@@ -3,6 +3,7 @@ import { KeyPairGeneratorService } from './keypair-generator/keypair-generator.s
 import { AuthDataScheduleService } from './auth-data-schedule/auth-data-schedule.service';
 import { AuthCodeSchedulerService } from './auth-code-scheduler/auth-code-scheduler.service';
 import { DeleteUnverifiedEmailsService } from './delete-unverified-emails/delete-unverified-emails.service';
+import { DeleteUnverifiedPhonesService } from './delete-unverified-phones/delete-unverified-phones.service';
 
 export { TokenSchedulerService } from './token-schedule/token-schedule.service';
 export { KeyPairGeneratorService } from './keypair-generator/keypair-generator.service';
@@ -14,4 +15,5 @@ export const AuthSchedulers = [
   AuthDataScheduleService,
   AuthCodeSchedulerService,
   DeleteUnverifiedEmailsService,
+  DeleteUnverifiedPhonesService,
 ];

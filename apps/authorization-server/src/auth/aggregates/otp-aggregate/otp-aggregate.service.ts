@@ -32,6 +32,8 @@ import {
   EVENTS_PASSWORD,
 } from '../../../config/config.service';
 import { PhoneVerifiedEvent } from '../../events/phone-verified/phone-verified.event';
+import { SignupViaPhoneDto } from '../../../user-management/policies';
+import { UserAccountAddedEvent } from '../../../user-management/events/user-account-added/user-account-added.event';
 
 @Injectable()
 export class OTPAggregateService extends AggregateRoot {
@@ -206,13 +208,12 @@ export class OTPAggregateService extends AggregateRoot {
     }
 
     const secret = speakeasy.generateSecret({
-      name: user.email,
+      name: user.email || user.phone || user.unverifiedPhone,
     });
 
-    let phoneOTP = await this.checkLocalPhoneVerificationCode(user);
-    if (!phoneOTP) {
-      phoneOTP = {} as AuthData;
-    }
+    const phoneOTP =
+      (await this.checkLocalPhoneVerificationCode(user)) || ({} as AuthData);
+
     phoneOTP.metaData = {
       counter: Math.floor(Math.random() * 100),
       secret: secret.base32,
@@ -254,6 +255,54 @@ export class OTPAggregateService extends AggregateRoot {
 
     // set phone
     user.phone = phone;
+    user.unverifiedPhone = undefined;
+
+    // set user enabled
+    user.disabled = false;
+
     this.apply(new PhoneVerifiedEvent(user, phoneOTP));
+  }
+
+  async signupViaPhone(payload: SignupViaPhoneDto) {
+    await this.checkPhoneAlreadyRegistered(payload.unverifiedPhone);
+
+    // Check if sending sms is available
+    this.verifyConnectedEvents();
+    this.settings = await this.serverSettings.find();
+    if (!this.settings.enableUserPhone) {
+      throw new PhoneRegistrationNotAllowedException();
+    }
+
+    const unverifiedUser =
+      (await this.getUnverifiedPhoneIfAlreadyRegistered(
+        payload.unverifiedPhone,
+      )) || ({} as User);
+    unverifiedUser.name = payload.name;
+    unverifiedUser.unverifiedPhone = payload.unverifiedPhone;
+    unverifiedUser.enablePasswordLess = true;
+    unverifiedUser.disabled = true;
+    unverifiedUser.creation = new Date();
+
+    this.apply(new UserAccountAddedEvent(unverifiedUser));
+
+    // Generate OTP and broadcast Event
+    const phoneOTP = await this.getPhoneVerificationCode(
+      unverifiedUser,
+      unverifiedUser.unverifiedPhone,
+    );
+
+    const hotp = speakeasy.hotp({
+      secret: phoneOTP.metaData.secret,
+      encoding: 'base32',
+      counter: phoneOTP.metaData.counter,
+    });
+
+    this.apply(new UnverifiedPhoneAddedEvent(unverifiedUser, phoneOTP, hotp));
+
+    return payload;
+  }
+
+  async getUnverifiedPhoneIfAlreadyRegistered(unverifiedPhone: string) {
+    return await this.user.findOne({ unverifiedPhone });
   }
 }

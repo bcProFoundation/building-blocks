@@ -13,10 +13,10 @@ export class EmailVerifiedAndPasswordSetHandler
   ) {}
   handle(event: EmailVerifiedAndPasswordSetEvent) {
     const { verifiedUser, userPassword } = event;
-    forkJoin(
-      from(this.user.update(verifiedUser)),
-      from(this.authData.save(userPassword)),
-    ).subscribe({
+    forkJoin({
+      user: from(this.user.update(verifiedUser)),
+      authData: from(this.authData.save(userPassword)),
+    }).subscribe({
       next: success => {},
       error: error => {},
     });

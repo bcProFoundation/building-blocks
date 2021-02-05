@@ -1,11 +1,14 @@
 import { Injectable, HttpService, BadRequestException } from '@nestjs/common';
 import { randomBytes } from 'crypto';
 import { handlebars } from 'hbs';
+import { CommandBus } from '@nestjs/cqrs';
 import { UserService } from '../../entities/user/user.service';
 import { User } from '../../entities/user/user.interface';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
 import { i18n } from '../../../i18n/i18n.config';
+import { SignupViaPhoneDto } from '../../policies';
+import { SignupViaPhoneCommand } from '../../commands/signup-via-phone/signup-via-phone.command';
 
 @Injectable()
 export class SignupService {
@@ -14,6 +17,7 @@ export class SignupService {
     private readonly userService: UserService,
     private readonly serverSettingsService: ServerSettingsService,
     private readonly clientService: ClientService,
+    private readonly commandBus: CommandBus,
   ) {}
 
   async initSignup(payload, res) {
@@ -25,6 +29,10 @@ export class SignupService {
     await this.userService.save(unverifiedUser);
     await this.emailRequest(unverifiedUser, res);
     return { message: res.__('Please check your email to complete signup') };
+  }
+
+  async initSignupViaPhone(payload: SignupViaPhoneDto) {
+    return await this.commandBus.execute(new SignupViaPhoneCommand(payload));
   }
 
   async emailRequest(unverifiedUser: User, res) {
