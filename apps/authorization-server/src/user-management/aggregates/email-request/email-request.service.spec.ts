@@ -1,8 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { EmailRequestService } from './email-request.service';
 import { HttpService } from '@nestjs/common';
+import { EmailRequestService } from './email-request.service';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
+import { UserService } from '../../entities/user/user.service';
 
 describe('EmailRequestService', () => {
   let service: EmailRequestService;
@@ -21,6 +22,10 @@ describe('EmailRequestService', () => {
         },
         {
           provide: ClientService,
+          useFactory: () => jest.fn(),
+        },
+        {
+          provide: UserService,
           useFactory: () => jest.fn(),
         },
       ],

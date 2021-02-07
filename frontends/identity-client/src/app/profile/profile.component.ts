@@ -11,8 +11,10 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 import { TIME_ZONES } from '../constants/timezones';
 import { LOCALES } from '../constants/locale';
 import { IDTokenClaims } from './id-token-claims.interfaces';
@@ -37,12 +39,14 @@ import {
   UPDATE_FAILED,
   PASSWORD_LESS_LOGIN_ENABLED,
   PASSWORD_LESS_LOGIN_DISABLED,
+  PLEASE_CHECK_EMAIL_TO_VERIFY_ACCOUNT,
 } from '../constants/messages';
 import {
   DURATION,
   UNDO_DURATION,
   ADMINISTRATOR,
 } from '../constants/app-constants';
+import { UpdateEmailComponent } from '../update-email/update-email.component';
 
 @Component({
   selector: 'app-profile',
@@ -84,6 +88,10 @@ export class ProfileComponent implements OnInit {
   phone: string;
   enablePasswordLess: boolean;
   enableUserPhone: boolean;
+  isEmailVerified: Observable<boolean> = this.profileService
+    .getOIDCProfile()
+    .pipe(map(res => res.email_verified));
+  isVerifyEmailDisabled: boolean;
 
   personalForm = new FormGroup({
     fullName: new FormControl(),
@@ -115,11 +123,12 @@ export class ProfileComponent implements OnInit {
   @ViewChild('fileInput', { static: true }) fileInputRef: ElementRef;
 
   constructor(
-    private title: Title,
-    private oauthService: OAuthService,
-    private profileService: ProfileService,
-    private snackBar: MatSnackBar,
-    private router: Router,
+    private readonly title: Title,
+    private readonly oauthService: OAuthService,
+    private readonly profileService: ProfileService,
+    private readonly snackBar: MatSnackBar,
+    private readonly router: Router,
+    private readonly dialog: MatDialog,
   ) {}
 
   ngOnInit() {
@@ -414,6 +423,45 @@ export class ProfileComponent implements OnInit {
     this.profileService.checkServerForPhoneRegistration().subscribe({
       next: response => (this.enableUserPhone = response.enableUserPhone),
       error: error => (this.enableUserPhone = false),
+    });
+  }
+
+  emailVerificationCode() {
+    this.isVerifyEmailDisabled = true;
+    this.profileService.emailVerificationCode().subscribe({
+      next: res => {
+        setTimeout(() => (this.isVerifyEmailDisabled = false), UNDO_DURATION);
+        this.snackBar.open(PLEASE_CHECK_EMAIL_TO_VERIFY_ACCOUNT, CLOSE, {
+          duration: UNDO_DURATION,
+        });
+      },
+    });
+  }
+
+  updateEmail() {
+    const dialogRef = this.dialog.open(UpdateEmailComponent);
+    dialogRef.afterClosed().subscribe({
+      next: email => {
+        if (email) {
+          return this.profileService.updateEmail(email).subscribe({
+            next: success => {
+              this.snackBar.open(PLEASE_CHECK_EMAIL_TO_VERIFY_ACCOUNT, CLOSE, {
+                duration: UNDO_DURATION,
+              });
+            },
+            error: error => {
+              this.snackBar.open(error?.error?.message, CLOSE, {
+                duration: UNDO_DURATION,
+              });
+            },
+          });
+        }
+      },
+      error: error => {
+        this.snackBar.open(error?.error?.message, CLOSE, {
+          duration: UNDO_DURATION,
+        });
+      },
     });
   }
 }

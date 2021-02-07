@@ -15,6 +15,7 @@ import { UserService } from '../../../user-management/entities/user/user.service
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { SocialLoginService } from '../../entities/social-login/social-login.service';
 import { SignUpSocialLoginUserCommand } from '../../commands/sign-up-social-login-user/sign-up-social-login-user.command';
+import { IDTokenClaims } from '../../middlewares/interfaces';
 
 @Injectable()
 export class SocialLoginCallbackService {
@@ -171,12 +172,13 @@ export class SocialLoginCallbackService {
     );
   }
 
-  async signUpSocialLoginUser(profile, socialLogin: string) {
+  async signUpSocialLoginUser(profile: IDTokenClaims, socialLogin: string) {
     return await this.commandBus.execute(
       new SignUpSocialLoginUserCommand(
         profile.email,
         profile.name,
         socialLogin,
+        profile.email_verified,
       ),
     );
   }

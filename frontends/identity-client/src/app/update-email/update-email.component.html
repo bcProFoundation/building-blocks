@@ -1,0 +1,15 @@
+<h2 mat-dialog-title>Enter email address</h2>
+<mat-dialog-content>
+  <span class="mat-typography">
+    Verification link will be sent on this email.
+  </span>
+  <form [formGroup]="updateEmailForm">
+    <mat-form-field class="full-width">
+      <input matInput formControlName="email" placeholder="Email">
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="false" cdkFocusInitial>Cancel</button>
+  <button mat-button [mat-dialog-close]="updateEmailForm.controls.email.value" color="warn">Update</button>
+</mat-dialog-actions>

@@ -7,6 +7,7 @@ import { AggregateRoot } from '@nestjs/cqrs';
 import * as speakeasy from 'speakeasy';
 import * as QRCode from 'qrcode';
 import { v4 as uuidv4 } from 'uuid';
+import { randomBytes } from 'crypto';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { UserService } from '../../entities/user/user.service';
 import { User } from '../../entities/user/user.interface';
@@ -24,12 +25,15 @@ import {
   passwordLessLoginAlreadyEnabledException,
   passwordLessLoginNotEnabledException,
   CommunicationServerNotFoundException,
+  userAlreadyExistsException,
+  InvalidVerificationCode,
+  EmailForVerificationNotFound,
 } from '../../../common/filters/exceptions';
 import { CryptographerService } from '../../../common/services/cryptographer/cryptographer.service';
 import {
   ChangePasswordDto,
   VerifyEmailDto,
-  VerifySignupViaPhoneDto,
+  VerifyUpdatedEmailDto,
 } from '../../policies';
 import { PasswordChangedEvent } from '../../events/password-changed/password-changed.event';
 import { PasswordPolicyService } from '../../policies/password-policy/password-policy.service';
@@ -40,6 +44,8 @@ import { AuthDataRemovedEvent } from '../../events/auth-data-removed/auth-data-r
 import { i18n } from '../../../i18n/i18n.config';
 import { UserAuthenticatorService } from '../../entities/user-authenticator/user-authenticator.service';
 import { ConfigService, NODE_ENV } from '../../../config/config.service';
+import { UnverifiedEmailAddedEvent } from '../../../auth/events/unverified-email-added/unverified-email-added.event';
+import { EmailVerifiedAndUpdatedEvent } from '../..//events/email-verified-and-updated/email-verified-and-updated.event';
 
 @Injectable()
 export class UserAggregateService extends AggregateRoot {
@@ -187,15 +193,22 @@ export class UserAggregateService extends AggregateRoot {
     this.apply(new UserAccountModifiedEvent(user));
   }
 
-  async verifyEmail(payload: VerifyEmailDto) {
+  async verifyEmailAndSetPassword(payload: VerifyEmailDto) {
     const result = this.passwordPolicy.validatePassword(payload.password);
     if (result.errors.length > 0) {
       throw new BadRequestException(result.errors);
     }
 
-    const verifiedUser = await this.user.findOne({
-      verificationCode: payload.verificationCode,
+    const verificationCode = await this.authData.findOne({
+      password: payload.verificationCode,
+      authDataType: AuthDataType.VerificationCode,
+      entity: USER,
     });
+
+    const verifiedUser = await this.user.findOne({
+      uuid: verificationCode?.entityUuid,
+    });
+
     if (!verifiedUser) throw invalidUserException;
 
     let userPassword = await this.authData.findOne({
@@ -212,10 +225,13 @@ export class UserAggregateService extends AggregateRoot {
     userPassword.password = this.crypto.hashPassword(payload.password);
     verifiedUser.password = userPassword.uuid;
     verifiedUser.disabled = false;
-    verifiedUser.verificationCode = undefined;
     verifiedUser.isEmailVerified = true;
     this.apply(
-      new EmailVerifiedAndPasswordSetEvent(verifiedUser, userPassword),
+      new EmailVerifiedAndPasswordSetEvent(
+        verifiedUser,
+        userPassword,
+        verificationCode,
+      ),
     );
   }
 
@@ -287,5 +303,104 @@ export class UserAggregateService extends AggregateRoot {
     }
   }
 
-  async verifyPhone(payload: VerifySignupViaPhoneDto) {}
+  async addUnverifiedEmail(userUuid: string, email: string) {
+    email = email.trim().toLowerCase();
+    await this.checkEmailAlreadyRegistered(email);
+
+    const user = await this.user.findOne({ uuid: userUuid });
+    if (!user) throw invalidUserException;
+
+    const unverifiedEmail =
+      (await this.authData.findOne({
+        entity: USER,
+        entityUuid: user.uuid,
+        authDataType: AuthDataType.UnverifiedEmail,
+      })) || ({} as AuthData);
+
+    unverifiedEmail.password = email;
+    unverifiedEmail.entity = USER;
+    unverifiedEmail.entityUuid = user.uuid;
+    unverifiedEmail.authDataType = AuthDataType.UnverifiedEmail;
+    const expiry = new Date();
+    expiry.setDate(expiry.getDate() + 1);
+    unverifiedEmail.expiry = expiry;
+
+    const verificationCode =
+      (await this.authData.findOne({
+        authDataType: AuthDataType.VerificationCode,
+        entity: USER,
+        entityUuid: user.uuid,
+      })) || ({} as AuthData);
+
+    verificationCode.password = randomBytes(32).toString('hex');
+    verificationCode.entity = USER;
+    verificationCode.entityUuid = user.uuid;
+    verificationCode.expiry = new Date();
+    verificationCode.authDataType = AuthDataType.VerificationCode;
+
+    this.apply(
+      new UnverifiedEmailAddedEvent(unverifiedEmail, verificationCode),
+    );
+  }
+
+  async checkEmailAlreadyRegistered(email: string) {
+    const user = await this.user.findOne({ email });
+    if (user) {
+      throw userAlreadyExistsException;
+    }
+  }
+
+  async verifyAndUpdateEmail(payload: VerifyUpdatedEmailDto) {
+    const verificationCode = await this.authData.findOne({
+      password: payload.verificationCode,
+      authDataType: AuthDataType.VerificationCode,
+      entity: USER,
+    });
+
+    if (!verificationCode) {
+      throw new InvalidVerificationCode();
+    }
+
+    const verifiedUser = await this.user.findOne({
+      uuid: verificationCode?.entityUuid,
+    });
+
+    if (!verifiedUser) {
+      throw invalidUserException;
+    }
+
+    const verifiedEmail = await this.authData.findOne({
+      entity: USER,
+      entityUuid: verifiedUser.uuid,
+      authDataType: AuthDataType.UnverifiedEmail,
+    });
+
+    if (
+      !verifiedEmail &&
+      !verifiedUser.email &&
+      !verifiedUser.isEmailVerified
+    ) {
+      throw new EmailForVerificationNotFound();
+    }
+
+    if (verifiedEmail?.password) {
+      const user = await this.user.findOne({ email: verifiedEmail?.password });
+      if (user) {
+        throw userAlreadyExistsException;
+      }
+    }
+
+    if (verifiedEmail?.password) {
+      verifiedUser.email = verifiedEmail.password;
+    }
+
+    verifiedUser.isEmailVerified = true;
+    this.apply(
+      new EmailVerifiedAndUpdatedEvent(
+        verifiedUser,
+        verifiedEmail,
+        verificationCode,
+      ),
+    );
+  }
 }

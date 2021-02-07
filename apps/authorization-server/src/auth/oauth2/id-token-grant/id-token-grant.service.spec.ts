@@ -4,6 +4,7 @@ import { OIDCKeyService } from '../../../auth/entities/oidc-key/oidc-key.service
 import { ConfigService } from '../../../config/config.service';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { UserClaimService } from '../../entities/user-claim/user-claim.service';
+import { UserService } from '../../../user-management/entities/user/user.service';
 
 describe('IDTokenGrantService', () => {
   let service: IDTokenGrantService;
@@ -33,6 +34,10 @@ describe('IDTokenGrantService', () => {
         },
         {
           provide: UserClaimService,
+          useValue: {}, // Mocked service
+        },
+        {
+          provide: UserService,
           useValue: {}, // Mocked service
         },
       ],

@@ -102,6 +102,7 @@ describe('Event: UserAccountRemovedHandler', () => {
     manager.informClients = jest.fn(() => Promise.resolve());
     userService.remove = jest.fn(() => Promise.resolve({} as User));
     authDataService.remove = jest.fn(() => Promise.resolve({} as AuthData));
+    authDataService.deleteMany = jest.fn(() => Promise.resolve({}));
     userClaimService.deleteMany = jest.fn(() => Promise.resolve({}));
     eventBus$.publish = jest.fn(() => {});
 

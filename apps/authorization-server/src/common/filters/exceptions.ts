@@ -110,3 +110,15 @@ export class PhoneRegistrationNotAllowedException extends HttpException {
     );
   }
 }
+
+export class InvalidVerificationCode extends HttpException {
+  constructor() {
+    super(i18n.__('Invalid Verification Code'), HttpStatus.UNAUTHORIZED);
+  }
+}
+
+export class EmailForVerificationNotFound extends HttpException {
+  constructor() {
+    super(i18n.__('Email for verification not found'), HttpStatus.NOT_FOUND);
+  }
+}

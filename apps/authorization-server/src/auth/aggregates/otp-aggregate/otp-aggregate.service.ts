@@ -2,6 +2,8 @@ import { Injectable, HttpService } from '@nestjs/common';
 import { AggregateRoot } from '@nestjs/cqrs';
 import { retry } from 'rxjs/operators';
 import * as speakeasy from 'speakeasy';
+import { v4 as uuidv4 } from 'uuid';
+
 import { i18n } from '../../../i18n/i18n.config';
 import { User } from '../../../user-management/entities/user/user.interface';
 import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
@@ -207,27 +209,30 @@ export class OTPAggregateService extends AggregateRoot {
       throw new PhoneRegistrationNotAllowedException();
     }
 
+    const phoneOTP = await this.checkLocalPhoneVerificationCode(user);
+    if (phoneOTP) {
+      return phoneOTP;
+    }
+
+    const newPhoneOTP = {} as AuthData;
     const secret = speakeasy.generateSecret({
       name: user.email || user.phone || user.unverifiedPhone,
     });
 
-    const phoneOTP =
-      (await this.checkLocalPhoneVerificationCode(user)) || ({} as AuthData);
-
-    phoneOTP.metaData = {
+    newPhoneOTP.metaData = {
       counter: Math.floor(Math.random() * 100),
       secret: secret.base32,
       phone: unverifiedPhone,
     };
-    phoneOTP.entity = USER;
-    phoneOTP.entityUuid = user.uuid;
-    phoneOTP.authDataType = AuthDataType.PhoneVerificationCode;
+    newPhoneOTP.entity = USER;
+    newPhoneOTP.entityUuid = user.uuid;
+    newPhoneOTP.authDataType = AuthDataType.PhoneVerificationCode;
 
     const expiry = new Date();
     expiry.setMinutes(expiry.getMinutes() + this.settings.otpExpiry);
-    phoneOTP.expiry = expiry;
+    newPhoneOTP.expiry = expiry;
 
-    return phoneOTP;
+    return newPhoneOTP;
   }
 
   async verifyPhone(userUuid: string, otp: string) {
@@ -237,7 +242,13 @@ export class OTPAggregateService extends AggregateRoot {
 
     // check local otp
     const phoneOTP = await this.checkLocalPhoneVerificationCode(user);
-    if (!phoneOTP) throw invalidOTPException;
+    if (!phoneOTP) {
+      throw invalidOTPException;
+    }
+    if (phoneOTP && phoneOTP.expiry < new Date()) {
+      throw invalidOTPException;
+    }
+
     const phone = phoneOTP.metaData.phone as string;
 
     // validate otp with payload otp
@@ -277,6 +288,11 @@ export class OTPAggregateService extends AggregateRoot {
       (await this.getUnverifiedPhoneIfAlreadyRegistered(
         payload.unverifiedPhone,
       )) || ({} as User);
+
+    if (!unverifiedUser.uuid) {
+      unverifiedUser.uuid = uuidv4();
+    }
+
     unverifiedUser.name = payload.name;
     unverifiedUser.unverifiedPhone = payload.unverifiedPhone;
     unverifiedUser.enablePasswordLess = true;

@@ -16,6 +16,7 @@ export const environment = {
     SIGNUP_VIA_PHONE: '/user_signup/v1/phone',
     VERIFY_PHONE_SIGNUP: '/user/v1/verify_phone_signup',
     GENERATE_PASSWORD: '/user/v1/generate_password',
+    VERIFY_EMAIL: '/user/v1/verify_email',
     CHECK_PASSWORD: '/auth/verify_password',
     LIST_SOCIAL_LOGINS: '/social_login/v1/list_logins',
     FORGOT_PASSWORD: '/user/v1/forgot_password',

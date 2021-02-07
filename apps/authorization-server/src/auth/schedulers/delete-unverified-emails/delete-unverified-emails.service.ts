@@ -26,6 +26,7 @@ export class DeleteUnverifiedEmailsService {
       await this.user.deleteMany({
         isEmailVerified: false,
         disabled: true,
+        phone: { $exists: false },
         creation: { $lt: new Date(Date.now() - TWENTY_FOUR_HOURS_MS) },
       });
     });

@@ -14,7 +14,7 @@ export class VerifyEmailAndSetPasswordHandler
     const { payload } = command;
 
     const aggregate = this.publisher.mergeObjectContext(this.manager);
-    await this.manager.verifyEmail(payload);
+    await aggregate.verifyEmailAndSetPassword(payload);
     aggregate.commit();
   }
 }

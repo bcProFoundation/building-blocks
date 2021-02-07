@@ -22,3 +22,5 @@ export const AVATAR_UPDATED_FAILED = 'Avatar upload failed';
 export const PASSWORD_LESS_LOGIN_ENABLED = 'Password-less login enabled';
 export const PASSWORD_LESS_LOGIN_DISABLED = 'Password-less login disabled';
 export const ENTER_VALID_PHONE = 'Please enter valid phone';
+export const PLEASE_CHECK_EMAIL_TO_VERIFY_ACCOUNT =
+  'Please check email to verify account';

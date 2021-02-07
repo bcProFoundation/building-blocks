@@ -44,7 +44,7 @@ export class UserService {
     return await this.userModel.deleteOne({ email });
   }
 
-  async findUserByEmailOrPhone(emailOrPhone: string) {
+  async findUserByEmailOrPhone(emailOrPhone: string): Promise<User> {
     let user;
     user = await this.findOne({ email: emailOrPhone });
     if (!user) user = await this.findOne({ phone: emailOrPhone });

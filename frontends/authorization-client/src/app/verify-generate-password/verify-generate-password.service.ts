@@ -13,4 +13,10 @@ export class VerifyGeneratePasswordService {
       password,
     });
   }
+
+  verifyEmail(verificationCode: string) {
+    return this.http.post(environment.routes.VERIFY_EMAIL, {
+      verificationCode,
+    });
+  }
 }

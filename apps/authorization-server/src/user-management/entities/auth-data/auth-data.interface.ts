@@ -22,4 +22,5 @@ export enum AuthDataType {
   SharedSecret = 'SharedSecret',
   TwoFactorTempSecret = 'TwoFactorTempSecret',
   VerificationCode = 'VerificationCode',
+  UnverifiedEmail = 'UnverifiedEmail',
 }

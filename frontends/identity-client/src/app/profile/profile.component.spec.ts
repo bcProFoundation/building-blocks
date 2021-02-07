@@ -1,15 +1,16 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
-import { ProfileComponent } from './profile.component';
-import { MaterialModule } from '../material.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OAuthService } from 'angular-oauth2-oidc';
-import { ProfileService } from './profile.service';
-import { from } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Component } from '@angular/core';
+import { from, of } from 'rxjs';
+import { ProfileComponent } from './profile.component';
+import { MaterialModule } from '../material.module';
+import { ProfileService } from './profile.service';
+import { IDTokenClaims } from './id-token-claims.interfaces';
 
 @Component({ selector: 'app-password-requirement', template: '' })
 class PasswordRequirementComponent {}
@@ -54,7 +55,10 @@ describe('ProfileComponent', () => {
               checkServerForPhoneRegistration() {
                 return from([]);
               },
-            },
+              getOIDCProfile() {
+                return of({} as IDTokenClaims);
+              },
+            } as Partial<ProfileService>,
           },
           MatSnackBar,
         ],

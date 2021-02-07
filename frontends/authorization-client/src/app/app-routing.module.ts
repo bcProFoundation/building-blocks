@@ -7,6 +7,7 @@ import { AuthGuardService } from './auth/auth-guard.service';
 import { VerifyGeneratePasswordComponent } from './verify-generate-password/verify-generate-password.component';
 import { ChooseAccountComponent } from './choose-account/choose-account.component';
 import { AuthenticationKeysComponent } from './authentication-keys/authentication-keys.component';
+import { VerifyEmailComponent } from './verify-email/verify-email.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'account', pathMatch: 'full' },
@@ -24,6 +25,8 @@ const routes: Routes = [
   { path: 'signup', component: SignupComponent },
   { path: 'signup/:code', component: VerifyGeneratePasswordComponent },
   { path: 'forgot/:code', component: VerifyGeneratePasswordComponent },
+  { path: 'verify/:code', component: VerifyEmailComponent },
+
   { path: '**', redirectTo: 'account', pathMatch: 'full' },
 ];
 

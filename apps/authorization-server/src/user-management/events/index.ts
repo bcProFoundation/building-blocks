@@ -11,6 +11,14 @@ import { UserRoleModifiedHandler } from './user-role-modified/user-role-modified
 import { UserClaimRemovedHandler } from './user-claim-removed/user-claim-removed.handler';
 import { UserClaimAddedHandler } from './user-claim-added/user-claim-added.handler';
 import { UserClaimUpdatedHandler } from './user-claim-updated/user-claim-updated.handler';
+import { UserSignedUpViaEmailHandler } from './user-signed-up-via-email/user-signed-up-via-email.handler';
+import { EmailVerificationCodeHandler } from '../commands/email-verification-code/email-verification-code.handler';
+
+/* eslint-disable */
+import { UnverifiedEmailVerificationCodeSentHandler } from './unverified-email-verification-code-sent/unverified-email-verification-code-sent.handler';
+import { EmailVerifiedAndUpdatedHandler } from './email-verified-and-updated/email-verified-and-updated.handler';
+export { UnverifiedEmailVerificationCodeSentEvent } from './unverified-email-verification-code-sent/unverified-email-verification-code-sent.event';
+/* eslint-enable */
 
 export const UserManagementEventHandlers = [
   UserAccountRemovedHandler,
@@ -26,4 +34,8 @@ export const UserManagementEventHandlers = [
   UserClaimAddedHandler,
   UserClaimUpdatedHandler,
   UserClaimRemovedHandler,
+  UserSignedUpViaEmailHandler,
+  EmailVerificationCodeHandler,
+  UnverifiedEmailVerificationCodeSentHandler,
+  EmailVerifiedAndUpdatedHandler,
 ];

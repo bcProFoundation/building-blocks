@@ -12,6 +12,7 @@ import { UserLogInHOTPGeneratedHandler } from './user-login-hotp-generated/user-
 import { UnverifiedPhoneAddedHandler } from './unverified-phone-added/unverified-phone-added.handler';
 import { PhoneVerifiedHandler } from './phone-verified/phone-verified.handler';
 import { BearerTokenAddedHandler } from './bearer-token-added/bearer-token-added.handler';
+import { UnverifiedEmailAddedHandler } from './unverified-email-added/unverified-email-added.handler';
 
 export { SocialLoginUserSignedUpEvent } from './social-login-user-signed-up/social-login-user-signed-up.event';
 
@@ -30,4 +31,5 @@ export const AuthEventHandlers = [
   UnverifiedPhoneAddedHandler,
   PhoneVerifiedHandler,
   BearerTokenAddedHandler,
+  UnverifiedEmailAddedHandler,
 ];

@@ -3,6 +3,7 @@ import {
   ROLES,
   SCOPE_EMAIL,
   SCOPE_PROFILE,
+  SCOPE_PHONE,
 } from '../../../constants/app-strings';
 import { forkJoin, from, of } from 'rxjs';
 import { switchMap, map, catchError } from 'rxjs/operators';
@@ -117,11 +118,20 @@ export class OAuth2Service {
                   sub: user.uuid,
                 };
 
-                if (token.scope.includes(ROLES)) claims.roles = user.roles;
-                if (token.scope.includes(SCOPE_EMAIL))
+                if (token.scope.includes(ROLES)) {
+                  claims.roles = user.roles;
+                }
+                if (token.scope.includes(SCOPE_EMAIL)) {
                   claims.email = user.email;
-                if (token.scope.includes(SCOPE_PROFILE))
+                  claims.email_verified = user.isEmailVerified;
+                }
+                if (token.scope.includes(SCOPE_PROFILE)) {
                   claims.name = user.name;
+                }
+                if (token.scope.includes(SCOPE_PHONE) && user.phone) {
+                  claims.phone_number = user.phone;
+                  claims.phone_number_verified = !user.unverifiedPhone;
+                }
 
                 return forkJoin({
                   requestClaims: of(claims),
@@ -194,7 +204,11 @@ export class OAuth2Service {
     );
   }
 
-  appendUserInfo(user: User, bearerToken: BearerToken, tokenData) {
+  appendUserInfo(
+    user: User,
+    bearerToken: BearerToken,
+    tokenData: IDTokenClaims,
+  ) {
     if (user) {
       if (bearerToken.scope.includes(ROLES)) {
         tokenData.roles = user.roles;
@@ -202,10 +216,16 @@ export class OAuth2Service {
 
       if (bearerToken.scope.includes(SCOPE_EMAIL)) {
         tokenData.email = user.email;
+        tokenData.email_verified = user.isEmailVerified;
       }
 
       if (bearerToken.scope.includes(SCOPE_PROFILE)) {
         tokenData.name = user.name;
+      }
+
+      if (bearerToken.scope.includes(SCOPE_PHONE) && user.phone) {
+        tokenData.phone_number = user.phone;
+        tokenData.phone_number_verified = !user.unverifiedPhone;
       }
     }
 

@@ -1,6 +1,6 @@
 FROM node:latest
 
-ARG BUILD_ARGS="-- --prod=true"
+ARG BUILD_ARGS="-- --prod"
 # Copy and build app
 COPY . /home/craft/admin-client
 WORKDIR /home/craft

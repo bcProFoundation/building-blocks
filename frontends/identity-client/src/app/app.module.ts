@@ -23,6 +23,7 @@ import { MultifactorComponent } from './multifactor/multifactor.component';
 import { PasswordRequirementComponent } from './password-requirement/password-requirement.component';
 import { UpdatePhoneComponent } from './update-phone/update-phone.component';
 import { UpdatePhoneService } from './update-phone/update-phone.service';
+import { UpdateEmailComponent } from './update-email/update-email.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { UpdatePhoneService } from './update-phone/update-phone.service';
     MultifactorComponent,
     PasswordRequirementComponent,
     UpdatePhoneComponent,
+    UpdateEmailComponent,
   ],
   imports: [
     BrowserModule,

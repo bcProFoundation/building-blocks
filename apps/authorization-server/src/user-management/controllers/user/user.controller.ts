@@ -23,6 +23,9 @@ import {
   UserAccountDto,
   VerifyPhoneDto,
   VerifySignupViaPhoneDto,
+  UnverifiedPhoneDto,
+  UnverifiedEmailDto,
+  VerifyUpdatedEmailDto,
 } from '../../policies';
 import { ChangePasswordCommand } from '../../commands/change-password/change-password.command';
 import { VerifyEmailAndSetPasswordCommand } from '../../commands/verify-email-and-set-password/verify-email-and-set-password.command';
@@ -40,9 +43,11 @@ import { ListSessionUsersQuery } from '../../queries/list-session-users/list-ses
 import { UpdateUserFullNameCommand } from '../../commands/update-user-full-name/update-user-full-name.command';
 import { ListQueryDto } from '../../../common/policies/list-query/list-query';
 import { AddUnverifiedMobileCommand } from '../../../auth/commands/add-unverified-phone/add-unverified-phone.command';
-import { UnverifiedPhoneDto } from '../../policies/unverified-phone/unverified-phone.dto';
 import { VerifyPhoneCommand } from '../../../auth/commands/verify-phone/verify-phone.command';
 import { BearerTokenGuard } from '../../../auth/guards/bearer-token.guard';
+import { AddUnverifiedEmailCommand } from '../../../auth/commands/add-unverified-email/add-unverified-phone.command';
+import { VerifyEmailCommand } from '../../../auth/commands/verify-email/verify-email.command';
+import { EmailVerificationCodeCommand } from '../../commands/email-verification-code/email-verification-code.command';
 
 @Controller('user')
 export class UserController {
@@ -169,7 +174,7 @@ export class UserController {
 
   @Post('v1/generate_password')
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  async verifyEmail(@Body() payload: VerifyEmailDto) {
+  async verifyEmailAndGeneratePassword(@Body() payload: VerifyEmailDto) {
     return await this.commandBus.execute(
       new VerifyEmailAndSetPasswordCommand(payload),
     );
@@ -231,6 +236,26 @@ export class UserController {
     );
   }
 
+  @Post('v1/add_unverified_email')
+  @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
+  @UseGuards(BearerTokenGuard)
+  async addUnverifiedEmail(@Body() payload: UnverifiedEmailDto, @Req() req) {
+    const userUuid = req.user.user;
+    const { unverifiedEmail } = payload;
+    return await this.commandBus.execute(
+      new AddUnverifiedEmailCommand(userUuid, unverifiedEmail),
+    );
+  }
+
+  @Post('v1/verify_email')
+  @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
+  async verifyEmail(@Body() payload: VerifyUpdatedEmailDto) {
+    const { verificationCode } = payload;
+    return await this.commandBus.execute(
+      new VerifyEmailCommand(verificationCode),
+    );
+  }
+
   @Post('v1/verify_phone')
   @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true }))
   @UseGuards(BearerTokenGuard)
@@ -248,6 +273,15 @@ export class UserController {
     });
     return await this.commandBus.execute(
       new VerifyPhoneCommand(user?.uuid, payload.otp),
+    );
+  }
+
+  @Post('v1/email_verification_code')
+  @UseGuards(BearerTokenGuard)
+  async emailVerificationCode(@Req() req) {
+    const userUuid = req?.user?.user;
+    return await this.commandBus.execute(
+      new EmailVerificationCodeCommand(userUuid),
     );
   }
 }
