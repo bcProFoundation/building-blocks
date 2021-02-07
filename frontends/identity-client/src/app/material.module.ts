@@ -15,6 +15,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   imports: [
@@ -34,6 +35,7 @@ import { MatMenuModule } from '@angular/material/menu';
     MatSlideToggleModule,
     MatSnackBarModule,
     MatMenuModule,
+    MatDialogModule,
   ],
   exports: [
     MatToolbarModule,
@@ -52,6 +54,7 @@ import { MatMenuModule } from '@angular/material/menu';
     MatSlideToggleModule,
     MatSnackBarModule,
     MatMenuModule,
+    MatDialogModule,
   ],
 })
 export class MaterialModule {}

@@ -173,7 +173,13 @@ export class AuthService {
       authDataType: AuthDataType.LoginOTP,
     });
 
-    if (!this.loginOTP) throw invalidOTPException;
+    if (!this.loginOTP) {
+      throw invalidOTPException;
+    }
+
+    if (this.loginOTP && this.loginOTP.expiry < new Date()) {
+      throw invalidOTPException;
+    }
 
     const secret = this.loginOTP.metaData.secret;
     const counter = this.loginOTP.metaData.counter;

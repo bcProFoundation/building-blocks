@@ -5,5 +5,6 @@ export class SignUpSocialLoginUserCommand implements ICommand {
     public readonly email: string,
     public readonly name: string,
     public readonly socialLogin: string,
+    public readonly isEmailVerified: boolean,
   ) {}
 }

@@ -13,6 +13,8 @@ import { RenameUserAuthenticatorHandler } from './rename-user-authenticator/rena
 import { AddUnverifiedMobileHandler } from './add-unverified-phone/add-unverified-phone.handler';
 import { VerifyPhoneHandler } from './verify-phone/verify-phone.handler';
 import { GenerateBearerTokenHandler } from './generate-bearer-token/generate-bearer-token.handler';
+import { AddUnverifiedEmailHandler } from './add-unverified-email/add-unverified-phone.handler';
+import { VerifyEmailHandler } from './verify-email/verify-email.handler';
 
 export const AuthCommandHandlers = [
   RemoveSocialLoginHandler,
@@ -30,4 +32,6 @@ export const AuthCommandHandlers = [
   AddUnverifiedMobileHandler,
   VerifyPhoneHandler,
   GenerateBearerTokenHandler,
+  AddUnverifiedEmailHandler,
+  VerifyEmailHandler,
 ];

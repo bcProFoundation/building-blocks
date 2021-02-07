@@ -21,6 +21,7 @@ import { BrandInfoComponent } from './brand-info/brand-info.component';
 import { AuthenticationKeysComponent } from './authentication-keys/authentication-keys.component';
 import { AuthenticationKeysService } from './authentication-keys/authentication-keys.service';
 import { RenameAuthKeyDialog } from './authentication-keys/rename-key-dialog.component';
+import { VerifyEmailComponent } from './verify-email/verify-email.component';
 
 let lang = navigator.language;
 if (!AVAILABLE_TRANSLATIONS.includes(lang)) {
@@ -39,6 +40,7 @@ if (!AVAILABLE_TRANSLATIONS.includes(lang)) {
     BrandInfoComponent,
     AuthenticationKeysComponent,
     RenameAuthKeyDialog,
+    VerifyEmailComponent,
   ],
   entryComponents: [RenameAuthKeyDialog],
   imports: [

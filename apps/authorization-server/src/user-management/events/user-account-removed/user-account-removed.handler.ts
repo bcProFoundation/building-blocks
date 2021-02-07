@@ -5,6 +5,7 @@ import { from } from 'rxjs';
 import { AuthDataService } from '../../entities/auth-data/auth-data.service';
 import { UserService } from '../../entities/user/user.service';
 import { UserClaimService } from '../../../auth/entities/user-claim/user-claim.service';
+import { USER } from '../../entities/user/user.schema';
 
 @EventsHandler(UserAccountRemovedEvent)
 export class UserAccountRemovedHandler
@@ -59,6 +60,16 @@ export class UserAccountRemovedHandler
     });
 
     from(this.user.remove(deletedUser)).subscribe({
+      next: success => {},
+      error: error => {},
+    });
+
+    from(
+      this.authData.deleteMany({
+        entity: USER,
+        entityUuid: deletedUser.uuid,
+      }),
+    ).subscribe({
       next: success => {},
       error: error => {},
     });

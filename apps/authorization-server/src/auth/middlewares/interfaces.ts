@@ -5,7 +5,7 @@ export interface IDTokenClaims {
   exp?: number;
   iat?: number;
   email?: string;
-  verified_email?: string;
+  email_verified?: boolean;
   name?: string;
   family_name?: string;
   given_name?: string;
@@ -23,6 +23,8 @@ export interface IDTokenClaims {
   roles?: string[];
   nonce?: string;
   at_hash?: string;
+  phone_number?: string;
+  phone_number_verified?: boolean;
   [key: string]: unknown | unknown[];
 }
 

@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { CommandBus } from '@nestjs/cqrs';
 import { SignupController } from './signup.controller';
-import { SignupService } from '../../aggregates/signup/signup.service';
 
 describe('RoleController', () => {
   let module: TestingModule;
@@ -9,7 +9,7 @@ describe('RoleController', () => {
       controllers: [SignupController],
       providers: [
         {
-          provide: SignupService,
+          provide: CommandBus,
           useValue: {},
         },
       ],

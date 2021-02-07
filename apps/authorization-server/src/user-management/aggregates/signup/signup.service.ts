@@ -1,86 +1,63 @@
-import { Injectable, HttpService, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { randomBytes } from 'crypto';
-import { handlebars } from 'hbs';
-import { CommandBus } from '@nestjs/cqrs';
+import { AggregateRoot } from '@nestjs/cqrs';
+import { v4 as uuidv4 } from 'uuid';
+
 import { UserService } from '../../entities/user/user.service';
 import { User } from '../../entities/user/user.interface';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
-import { ClientService } from '../../../client-management/entities/client/client.service';
 import { i18n } from '../../../i18n/i18n.config';
-import { SignupViaPhoneDto } from '../../policies';
-import { SignupViaPhoneCommand } from '../../commands/signup-via-phone/signup-via-phone.command';
+import { SignupViaEmailDto } from '../../policies';
+import {
+  AuthData,
+  AuthDataType,
+} from '../../entities/auth-data/auth-data.interface';
+import {
+  EmailForVerificationNotFound,
+  invalidUserException,
+  userAlreadyExistsException,
+} from '../../../common/filters/exceptions';
+import { USER } from '../../entities/user/user.schema';
+import { UserSignedUpViaEmailEvent } from '../../events/user-signed-up-via-email/user-signed-up-via-email.event';
+import { UnverifiedEmailVerificationCodeSentEvent } from '../../events';
+import { AuthDataService } from '../../entities/auth-data/auth-data.service';
 
 @Injectable()
-export class SignupService {
+export class SignupService extends AggregateRoot {
   constructor(
-    private readonly http: HttpService,
-    private readonly userService: UserService,
+    private readonly user: UserService,
+    private readonly authData: AuthDataService,
     private readonly serverSettingsService: ServerSettingsService,
-    private readonly clientService: ClientService,
-    private readonly commandBus: CommandBus,
-  ) {}
+  ) {
+    super();
+  }
 
-  async initSignup(payload, res) {
+  async initSignupViaEmail(payload: SignupViaEmailDto) {
+    await this.validateSignupEnabled();
+
+    payload.email = payload.email.trim().toLowerCase();
+    const user = await this.user.findOne({ email: payload.email });
+    if (user) {
+      throw userAlreadyExistsException;
+    }
+
     const unverifiedUser = {} as User;
+    unverifiedUser.uuid = uuidv4();
     unverifiedUser.name = payload.name;
     unverifiedUser.email = payload.email;
     unverifiedUser.disabled = true;
-    unverifiedUser.verificationCode = randomBytes(32).toString('hex');
-    await this.userService.save(unverifiedUser);
-    await this.emailRequest(unverifiedUser, res);
-    return { message: res.__('Please check your email to complete signup') };
-  }
+    unverifiedUser.isEmailVerified = false;
 
-  async initSignupViaPhone(payload: SignupViaPhoneDto) {
-    return await this.commandBus.execute(new SignupViaPhoneCommand(payload));
-  }
+    const verificationCode = {} as AuthData;
+    verificationCode.password = randomBytes(32).toString('hex');
+    verificationCode.entity = USER;
+    verificationCode.entityUuid = unverifiedUser.uuid;
+    const expiry = new Date();
+    expiry.setDate(expiry.getDate() + 1);
+    verificationCode.expiry = new Date();
+    verificationCode.authDataType = AuthDataType.VerificationCode;
 
-  async emailRequest(unverifiedUser: User, res) {
-    // Send Email
-    const settings = await this.serverSettingsService.find();
-
-    const communicationClient = await this.clientService.findOne({
-      clientId: settings.communicationServerClientId,
-    });
-
-    const requestUrl =
-      new URL(communicationClient.redirectUris[0]).origin + '/email/v1/system';
-
-    const verificationUrl =
-      settings.issuerUrl + '/signup/' + unverifiedUser.verificationCode;
-
-    const txtMessage =
-      'Visit the following link to complete signup\n' + verificationUrl;
-    const htmlMessage = this.getSignupHTML(
-      `To complete signup <a href='{{ verificationUrl }}'>click here</a>`,
-      verificationUrl,
-    );
-
-    this.http
-      .post(
-        requestUrl,
-        {
-          emailTo: unverifiedUser.email,
-          subject:
-            res.__('Please complete sign up for ') + unverifiedUser.email,
-          text: txtMessage,
-          html: htmlMessage,
-        },
-        {
-          auth: {
-            username: communicationClient.clientId,
-            password: communicationClient.clientSecret,
-          },
-        },
-      )
-      .subscribe({
-        next: response => {
-          return response;
-        },
-        error: async err => {
-          await this.userService.remove(unverifiedUser);
-        },
-      });
+    this.apply(new UserSignedUpViaEmailEvent(unverifiedUser, verificationCode));
   }
 
   async validateSignupEnabled() {
@@ -92,8 +69,38 @@ export class SignupService {
     }
   }
 
-  getSignupHTML(template: string, verificationUrl: string) {
-    const renderer = handlebars.compile(template);
-    return renderer({ verificationUrl });
+  async sendUnverifiedEmailVerificationCode(userUuid: string) {
+    const user = await this.user.findOne({ uuid: userUuid });
+    if (!user) {
+      throw invalidUserException;
+    }
+    if (user.isEmailVerified) {
+      throw new EmailForVerificationNotFound();
+    }
+
+    const verificationCode =
+      (await this.authData.findOne({
+        entity: USER,
+        entityUuid: user.uuid,
+        authDataType: AuthDataType.VerificationCode,
+      })) || ({} as AuthData);
+
+    verificationCode.entity = USER;
+    verificationCode.entityUuid = user.uuid;
+    verificationCode.authDataType = AuthDataType.VerificationCode;
+
+    if (!verificationCode.password) {
+      verificationCode.password = randomBytes(32).toString('hex');
+    }
+
+    if (!verificationCode.expiry) {
+      const expiry = new Date();
+      expiry.setDate(expiry.getDate() + 1);
+      verificationCode.expiry = new Date();
+    }
+
+    this.apply(
+      new UnverifiedEmailVerificationCodeSentEvent(user, verificationCode),
+    );
   }
 }

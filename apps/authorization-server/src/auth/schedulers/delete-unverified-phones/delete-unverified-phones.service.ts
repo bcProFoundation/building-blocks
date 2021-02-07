@@ -29,6 +29,7 @@ export class DeleteUnverifiedPhonesService {
       const users = await this.user.list(0, 100, undefined, {
         disabled: true,
         unverifiedPhone: { $exists: true },
+        isEmailVerified: false,
         creation: { $lt: new Date(Date.now() - TWENTY_FOUR_HOURS_MS) },
       });
 

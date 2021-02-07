@@ -22,9 +22,10 @@ export class SocialLoginManagementService extends AggregateRoot {
     email: string,
     name: string,
     socialLogin: string,
+    isEmailVerified: boolean,
   ) {
     this.apply(new SocialLoginUserSignedUpEvent(email, name, socialLogin));
-    return await this.userService.save({ email, name });
+    return await this.userService.save({ email, name, isEmailVerified });
   }
 
   async removeSocialLogin(uuid: string, userUuid: string) {

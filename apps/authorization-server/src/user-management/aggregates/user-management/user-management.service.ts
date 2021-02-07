@@ -142,9 +142,21 @@ export class UserManagementService extends AggregateRoot {
   async generateForgottenPassword(emailOrPhone: string) {
     const user = await this.userService.findUserByEmailOrPhone(emailOrPhone);
     if (!user) throw new NotFoundException({ user });
-    user.verificationCode = randomBytes(32).toString('hex');
-    user.modified = new Date();
-    this.apply(new ForgottenPasswordGeneratedEvent(user));
+
+    const verificationCode =
+      (await this.authDataService.findOne({
+        authDataType: AuthDataType.VerificationCode,
+        entity: USER,
+        entityUuid: user.uuid,
+      })) || ({} as AuthData);
+    verificationCode.authDataType = AuthDataType.VerificationCode;
+    verificationCode.password = randomBytes(32).toString('hex');
+    verificationCode.entity = USER;
+    verificationCode.entityUuid = user.uuid;
+    const expiry = new Date();
+    expiry.setDate(expiry.getDate() + 1);
+    verificationCode.expiry = new Date();
+    this.apply(new ForgottenPasswordGeneratedEvent(user, verificationCode));
   }
 
   async addUserAccount(userData: UserAccountDto, createdBy?: string) {

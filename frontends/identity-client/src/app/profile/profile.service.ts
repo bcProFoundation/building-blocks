@@ -17,11 +17,14 @@ import {
   FORGOT_PASSWORD,
   USER_INFO,
   INFO_ENDPOINT,
+  EMAIL_VERIFICATION_CODE_ENDPOINT,
+  ADD_UNVERIFIED_EMAIL_ENDPOINT,
 } from '../constants/url-paths';
 import { ISSUER_URL, APP_URL } from '../constants/storage';
 import { CLOSE, CURRENT_PASSWORD_MISMATCH } from '../constants/messages';
 import { NavigationService } from '../navigation/navigation.service';
 import { DURATION } from '../constants/app-constants';
+import { IDTokenClaims } from './id-token-claims.interfaces';
 
 @Injectable()
 export class ProfileService {
@@ -101,6 +104,15 @@ export class ProfileService {
   getAuthServerUser() {
     return this.http.get(
       localStorage.getItem(ISSUER_URL) + GET_AUTH_SERVER_USER,
+      {
+        headers: this.authorizationHeader,
+      },
+    );
+  }
+
+  getOIDCProfile() {
+    return this.http.get<IDTokenClaims>(
+      localStorage.getItem(ISSUER_URL) + USER_INFO,
       {
         headers: this.authorizationHeader,
       },
@@ -190,5 +202,21 @@ export class ProfileService {
 
   checkServerForPhoneRegistration() {
     return this.http.get<any>(localStorage.getItem(ISSUER_URL) + INFO_ENDPOINT);
+  }
+
+  emailVerificationCode() {
+    return this.http.post(
+      localStorage.getItem(ISSUER_URL) + EMAIL_VERIFICATION_CODE_ENDPOINT,
+      undefined,
+      { headers: this.authorizationHeader },
+    );
+  }
+
+  updateEmail(email: string) {
+    return this.http.post(
+      localStorage.getItem(ISSUER_URL) + ADD_UNVERIFIED_EMAIL_ENDPOINT,
+      { unverifiedEmail: email },
+      { headers: this.authorizationHeader },
+    );
   }
 }

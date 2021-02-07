@@ -17,7 +17,6 @@ export interface User extends Document {
   otpPeriod?: number;
   otpCounter?: string;
   twoFactorTempSecret?: string;
-  verificationCode?: string;
   deleted?: boolean;
   enablePasswordLess?: boolean;
   unverifiedPhone?: string;

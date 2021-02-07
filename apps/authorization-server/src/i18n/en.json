@@ -83,5 +83,8 @@
 	"Phone number already registered": "Phone number already registered",
 	"Server does not allow phone registration": "Server does not allow phone registration",
 	"Events service not connected": "Events service not connected",
-	"phone must be valid E164 phone number": "phone must be valid E164 phone number"
+	"phone must be valid E164 phone number": "phone must be valid E164 phone number",
+	"Invalid Verification Code": "Invalid Verification Code",
+	"Email for verification not found": "Email for verification not found",
+	"Please complete verification for ": "Please complete verification for "
 }

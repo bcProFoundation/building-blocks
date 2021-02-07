@@ -6,5 +6,6 @@ export class EmailVerifiedAndPasswordSetEvent implements IEvent {
   constructor(
     public readonly verifiedUser: User,
     public readonly userPassword: AuthData,
+    public readonly verificationCode: AuthData,
   ) {}
 }

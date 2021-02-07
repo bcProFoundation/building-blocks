@@ -16,6 +16,7 @@ import {
   SCOPE_EMAIL,
   SCOPE_PROFILE,
   INFRASTRUCTURE_CONSOLE,
+  SCOPE_PHONE,
 } from '../../../constants/app-strings';
 import { KeyPairGeneratorService } from '../../../auth/schedulers';
 
@@ -84,6 +85,7 @@ export class SetupService {
       { name: SCOPE_ROLES },
       { name: SCOPE_EMAIL },
       { name: SCOPE_PROFILE },
+      { name: SCOPE_PHONE },
     ])) as Scope[];
 
     const createdBy = await this.userService.findOne({ email });

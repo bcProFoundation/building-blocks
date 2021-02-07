@@ -12,9 +12,11 @@ import { Client } from '../../../client-management/entities/client/client.interf
 import {
   ROLES,
   SCOPE_EMAIL,
+  SCOPE_PHONE,
   SCOPE_PROFILE,
 } from '../../../constants/app-strings';
 import { UserClaimService } from '../../entities/user-claim/user-claim.service';
+import { UserService } from '../../../user-management/entities/user/user.service';
 
 @Injectable()
 export class IDTokenGrantService {
@@ -25,6 +27,7 @@ export class IDTokenGrantService {
     private readonly settingsService: ServerSettingsService,
     private readonly configService: ConfigService,
     private readonly userClaimService: UserClaimService,
+    private readonly userService: UserService,
   ) {}
 
   async grantIDToken(
@@ -58,24 +61,35 @@ export class IDTokenGrantService {
     if (!this.settings) this.settings = await this.settingsService.find();
 
     const issuedAt = Date.parse(new Date().toString()) / 1000;
-
+    const localUser = await this.userService.findOne({ uuid: user.uuid });
     const claims: IDTokenClaims = {
       iss: this.settings.issuerUrl,
       aud: clientId,
       iat: Math.trunc(issuedAt),
       exp:
         Math.trunc(issuedAt) + Number(this.configService.get(TOKEN_VALIDITY)),
-      sub: user.uuid,
+      sub: localUser.uuid,
       nonce,
     };
 
-    if (scope.includes(ROLES)) claims.roles = user.roles;
-    if (scope.includes(SCOPE_EMAIL)) claims.email = user.email;
-    if (scope.includes(SCOPE_PROFILE)) claims.name = user.name;
+    if (scope.includes(ROLES)) {
+      claims.roles = localUser.roles;
+    }
+    if (scope.includes(SCOPE_EMAIL)) {
+      claims.email = localUser.email;
+      claims.email_verified = localUser.isEmailVerified;
+    }
+    if (scope.includes(SCOPE_PROFILE)) {
+      claims.name = localUser.name;
+    }
+    if (scope.includes(SCOPE_PHONE) && localUser.phone) {
+      claims.phone_number = localUser.phone;
+      claims.phone_number_verified = !localUser.unverifiedPhone;
+    }
 
     const userClaims = await this.userClaimService.find({
       scope: { $in: scope },
-      uuid: user.uuid,
+      uuid: localUser.uuid,
     });
 
     if (userClaims && userClaims.length > 0) {

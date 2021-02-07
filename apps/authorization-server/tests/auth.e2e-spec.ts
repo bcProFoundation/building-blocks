@@ -450,7 +450,14 @@ describe('AppModule (e2e)', () => {
         return userService.findUserByEmailOrPhone(adminEmail);
       })
       .then(user => {
-        forgottenPasswordVerificationCode = user.verificationCode;
+        return authDataService.findOne({
+          entityUuid: user.uuid,
+          authDataType: AuthDataType.VerificationCode,
+          entity: USER,
+        });
+      })
+      .then(verificationCode => {
+        forgottenPasswordVerificationCode = verificationCode.password;
       });
   });
 

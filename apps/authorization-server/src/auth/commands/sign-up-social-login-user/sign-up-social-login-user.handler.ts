@@ -10,12 +10,13 @@ export class SignUpSocialLoginUserHandler
     private readonly manager: SocialLoginManagementService,
   ) {}
   async execute(command: SignUpSocialLoginUserCommand) {
-    const { email, name, socialLogin } = command;
+    const { email, name, socialLogin, isEmailVerified } = command;
     const aggregate = this.publisher.mergeObjectContext(this.manager);
     const user = await aggregate.signUpSocialLoginUser(
       email,
       name,
       socialLogin,
+      isEmailVerified,
     );
     aggregate.commit();
     return user;
