@@ -1,5 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { RouterTestingModule } from '@angular/router/testing';
+import { of } from 'rxjs';
+import { AuthServerMaterialModule } from '../auth-server-material/auth-server-material.module';
+import { VerifyGeneratePasswordService } from '../verify-generate-password/verify-generate-password.service';
 import { VerifyEmailComponent } from './verify-email.component';
 
 describe('VerifyEmailComponent', () => {
@@ -8,9 +11,17 @@ describe('VerifyEmailComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ VerifyEmailComponent ]
-    })
-    .compileComponents();
+      declarations: [VerifyEmailComponent],
+      imports: [RouterTestingModule, AuthServerMaterialModule],
+      providers: [
+        {
+          provide: VerifyGeneratePasswordService,
+          useValue: {
+            verifyEmail: (...args) => of({}),
+          },
+        },
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {

@@ -1,13 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CLOSE, INVALID_VERIFICATION_CODE, LONG_DURATION } from '../constants/app-strings';
+import {
+  CLOSE,
+  INVALID_VERIFICATION_CODE,
+  LONG_DURATION,
+} from '../constants/app-strings';
 import { VerifyGeneratePasswordService } from '../verify-generate-password/verify-generate-password.service';
 
 @Component({
   selector: 'app-verify-email',
   templateUrl: './verify-email.component.html',
-  styleUrls: ['./verify-email.component.css']
+  styleUrls: ['./verify-email.component.css'],
 })
 export class VerifyEmailComponent implements OnInit {
   verificationCode: string;
@@ -35,9 +39,9 @@ export class VerifyEmailComponent implements OnInit {
         snack.afterDismissed().subscribe({
           next: res => {
             this.router.navigate(['/']);
-          }
-        })
+          },
+        });
       },
-    })
+    });
   }
 }
