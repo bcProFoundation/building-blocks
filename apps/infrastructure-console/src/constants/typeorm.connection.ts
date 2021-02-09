@@ -27,7 +27,6 @@ export function connectTypeorm(config): MongoConnectionOptions {
     synchronize: true,
     entities: [ServerSettings, TokenCache, Service, ServiceType, BrandSettings],
     useNewUrlParser: true,
-    w: 'majority',
     useUnifiedTopology: true,
     extra: { retryWrites: true },
   };

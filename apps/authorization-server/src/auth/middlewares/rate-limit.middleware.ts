@@ -1,8 +1,6 @@
 import * as RateLimit from 'express-rate-limit';
 import * as MongoStore from 'rate-limit-mongo';
 
-import { MAJORITY } from '../../common/database.provider';
-
 /**
  *
  * @param max Maximum number of requests per time window, default 100
@@ -21,7 +19,6 @@ export function rateLimiterMiddleware(
     windowMs,
     connectionOptions: {
       useUnifiedTopology: true,
-      w: MAJORITY,
       retryWrites: true,
       useNewUrlParser: true,
     },
