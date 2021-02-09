@@ -7,7 +7,7 @@ server {
     server_name localhost;
     root /var/www/html;
 
-    location ~* ^/(login|account|signup|forgot) {
+    location ~* ^/(login|account|signup|forgot|verify) {
         try_files $uri $uri/ @index;
     }
 

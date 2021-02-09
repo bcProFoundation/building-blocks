@@ -76,7 +76,7 @@ export class WebAuthnAggregateService extends AggregateRoot {
       // Prevent users from re-registering existing authenticators
       excludeCredentials: authenticators.map(cred => {
         return {
-          id: cred.credID,
+          id: Buffer.from(cred.credID, 'base64'),
           type: 'public-key',
         };
       }),
@@ -125,11 +125,15 @@ export class WebAuthnAggregateService extends AggregateRoot {
       await this.authData.remove(authData);
 
       const authenticator = {} as UserAuthenticator;
-      const deviceInfo = verification?.authenticatorInfo;
+      const deviceInfo = verification?.attestationInfo;
       authenticator.uuid = uuidv4();
-      authenticator.credID = deviceInfo?.base64CredentialID;
+      authenticator.credID = this.urlString(
+        deviceInfo?.credentialID?.toString('base64'),
+      );
       authenticator.fmt = (deviceInfo.fmt as unknown) as Fmt;
-      authenticator.publicKey = deviceInfo?.base64PublicKey;
+      authenticator.publicKey = this.urlString(
+        deviceInfo?.credentialPublicKey.toString('base64'),
+      );
       authenticator.counter = deviceInfo.counter;
       authenticator.userUuid = userUuid;
 
@@ -156,7 +160,7 @@ export class WebAuthnAggregateService extends AggregateRoot {
     const options = generateAssertionOptions({
       // Require users to use a previously-registered authenticator
       allowCredentials: authenticators.map(cred => ({
-        id: cred.credID,
+        id: Buffer.from(cred.credID, 'base64'),
         type: 'public-key',
         // Optional
         transports: ['ble', 'internal', 'usb', 'nfc'],
@@ -212,19 +216,19 @@ export class WebAuthnAggregateService extends AggregateRoot {
         expectedOrigin: relyingParty.origin,
         expectedRPID: relyingParty.id,
         authenticator: {
-          publicKey: authenticator.publicKey,
-          credentialID: authenticator.credID,
+          credentialPublicKey: Buffer.from(authenticator.publicKey, 'base64'),
+          credentialID: Buffer.from(authenticator.credID, 'base64'),
           counter: authenticator.counter,
         },
       });
 
       await this.authData.remove(authChallenge);
-      const { verified, authenticatorInfo } = verification;
+      const { verified, assertionInfo } = verification;
       await this.authenticator.updateOne(
         { uuid: authenticator.uuid },
-        { $set: { counter: authenticatorInfo.counter } },
+        { $set: { counter: assertionInfo.newCounter } },
       );
-      authenticator.counter = authenticatorInfo.counter;
+      authenticator.counter = assertionInfo.newCounter;
 
       this.apply(new UserLoggedInWithWebAuthnEvent(user, authenticator));
       if (verified) {
@@ -324,7 +328,7 @@ export class WebAuthnAggregateService extends AggregateRoot {
     return this.urlString(challenge.toString('base64'));
   }
 
-  urlString(str) {
+  urlString(str: string) {
     return str.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
   }
 }

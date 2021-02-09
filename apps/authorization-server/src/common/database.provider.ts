@@ -19,7 +19,6 @@ import { SESSION_COLLECTION } from '../auth/entities/session/session.schema';
 
 export const MONGOOSE_CONNECTION = 'DATABASE_CONNECTION';
 export const AGENDA_CONNECTION = 'AGENDA_CONNECTION';
-export const MAJORITY = 'majority';
 export const RATE_LIMIT_CONNECTION = 'RATE_LIMIT_CONNECTION';
 export const RATE_LIMIT_COLLECTION = 'rate_limit';
 export const SESSION_CONNECTION = 'SESSION_CONNECTION';
@@ -39,7 +38,6 @@ export const databaseProviders = [
           )}?${mongoOptions}`,
           {
             useNewUrlParser: true,
-            w: MAJORITY,
             useUnifiedTopology: true,
             autoReconnect: false,
             reconnectTries: 0,
@@ -67,7 +65,6 @@ export const databaseProviders = [
           options: {
             useNewUrlParser: true,
             useUnifiedTopology: true,
-            w: MAJORITY,
             autoReconnect: false,
             reconnectTries: 0,
             reconnectInterval: 0,
@@ -111,7 +108,7 @@ export const databaseProviders = [
         stringify: false,
         mongoOptions: {
           useUnifiedTopology: true,
-          w: MAJORITY,
+          // w: MAJORITY,
           useNewUrlParser: true,
         },
       });

@@ -37,7 +37,6 @@ export function connectTypeorm(config): MongoConnectionOptions {
       Storage,
     ],
     useNewUrlParser: true,
-    w: 'majority',
     useUnifiedTopology: true,
     extra: { retryWrites: true },
   };
