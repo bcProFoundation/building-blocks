@@ -3,5 +3,5 @@
     "apps/*",
     "frontends/*"
   ],
-  "version": "6.2.9"
+  "version": "6.3.0"
 }
