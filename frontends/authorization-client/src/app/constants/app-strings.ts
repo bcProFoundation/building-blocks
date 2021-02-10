@@ -96,3 +96,4 @@ export const UNDO = 'Undo';
 export const UNDO_DURATION = 10000;
 export const REMOVE_USER_FROM_SESSION = 'User will be removed from session...';
 export const PROMPT = 'prompt';
+export const INFINITE_DURATION = -1;

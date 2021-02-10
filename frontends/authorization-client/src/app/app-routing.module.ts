@@ -25,6 +25,7 @@ const routes: Routes = [
   { path: 'signup', component: SignupComponent },
   { path: 'signup/:code', component: VerifyGeneratePasswordComponent },
   { path: 'forgot/:code', component: VerifyGeneratePasswordComponent },
+  { path: 'verify', component: VerifyEmailComponent },
   { path: 'verify/:code', component: VerifyEmailComponent },
 
   { path: '**', redirectTo: 'account', pathMatch: 'full' },

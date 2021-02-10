@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
-  CLOSE,
+  INFINITE_DURATION,
   INVALID_VERIFICATION_CODE,
-  LONG_DURATION,
 } from '../constants/app-strings';
+import { EMAIL_VERIFIED } from '../constants/messages';
 import { VerifyGeneratePasswordService } from '../verify-generate-password/verify-generate-password.service';
 
 @Component({
@@ -26,22 +26,24 @@ export class VerifyEmailComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.verifyGeneratePassword.verifyEmail(this.verificationCode).subscribe({
-      next: success => {
-        this.router.navigate(['/account']);
-      },
-      error: error => {
-        const snack = this.snackBar.open(
-          error?.error?.message || INVALID_VERIFICATION_CODE,
-          CLOSE,
-          { duration: LONG_DURATION },
-        );
-        snack.afterDismissed().subscribe({
-          next: res => {
-            this.router.navigate(['/']);
-          },
-        });
-      },
-    });
+    if (this.verificationCode) {
+      this.verifyGeneratePassword.verifyEmail(this.verificationCode).subscribe({
+        next: success => {
+          this.snackBar.open(EMAIL_VERIFIED, undefined, {
+            duration: INFINITE_DURATION,
+          });
+          this.router.navigate(['/verify']);
+        },
+        error: error => {
+          this.snackBar.open(
+            error?.error?.message ||
+              error?.toString() ||
+              INVALID_VERIFICATION_CODE,
+            undefined,
+            { duration: INFINITE_DURATION },
+          );
+        },
+      });
+    }
   }
 }
