@@ -68,7 +68,7 @@ export class WebAuthnAggregateService extends AggregateRoot {
       rpName: relyingParty.name,
       rpID: relyingParty.id,
       userID: user.uuid,
-      userName: user.email,
+      userName: user.email || user.phone,
       userDisplayName: user.name,
       // Don't prompt users for additional information about the authenticator
       // (Recommended for smoother UX)
