@@ -267,12 +267,15 @@ export class UserController {
 
   @Post('v1/verify_phone_signup')
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  async verifySignupByPhone(@Body() payload: VerifySignupViaPhoneDto) {
+  async verifySignupByPhone(
+    @Body() payload: VerifySignupViaPhoneDto,
+    @Req() request,
+  ) {
     const user = await this.userService.findOne({
       unverifiedPhone: payload.unverifiedPhone,
     });
     return await this.commandBus.execute(
-      new VerifyPhoneCommand(user?.uuid, payload.otp),
+      new VerifyPhoneCommand(user?.uuid, payload.otp, request),
     );
   }
 

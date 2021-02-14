@@ -60,7 +60,7 @@ export class SignupComponent implements OnInit {
       .subscribe({
         next: (response: any) => {
           this.snackBar.open(PLEASE_CHECK_EMAIL, CLOSE, { duration: DURATION });
-          this.router.navigateByUrl('/login');
+          this.router.navigateByUrl('/account');
         },
         error: err => {
           if (typeof err.error.message === 'string') {
@@ -101,7 +101,7 @@ export class SignupComponent implements OnInit {
   verifyPhoneSignup() {
     this.authService.verifySignupPhone(this.phone, this.otp).subscribe({
       next: success => {
-        this.router.navigateByUrl('/login');
+        this.router.navigateByUrl('/account');
       },
       error: error => {
         this.snackBar.open(error?.error?.message || error?.toString(), null, {

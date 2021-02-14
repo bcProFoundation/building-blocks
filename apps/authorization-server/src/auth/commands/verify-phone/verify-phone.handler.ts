@@ -9,9 +9,9 @@ export class VerifyPhoneHandler implements ICommandHandler<VerifyPhoneCommand> {
     private readonly publisher: EventPublisher,
   ) {}
   async execute(command: VerifyPhoneCommand) {
-    const { userUuid, otp } = command;
+    const { userUuid, otp, request } = command;
     const aggregate = this.publisher.mergeObjectContext(this.manager);
-    await aggregate.verifyPhone(userUuid, otp);
+    await aggregate.verifyPhone(userUuid, otp, request);
     aggregate.commit();
   }
 }

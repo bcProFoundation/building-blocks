@@ -96,7 +96,7 @@ export class UserAggregateService extends AggregateRoot {
       const issuerUrl = new URL(settings.issuerUrl).host;
       const otpAuthUrl = speakeasy.otpauthURL({
         secret: secret.ascii,
-        label: `${issuerUrl}:${user.email}`,
+        label: `${issuerUrl}:${user.email || user.phone}`,
         period: 30,
       });
 

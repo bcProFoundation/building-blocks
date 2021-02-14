@@ -3,6 +3,7 @@ import { AggregateRoot } from '@nestjs/cqrs';
 import { retry } from 'rxjs/operators';
 import * as speakeasy from 'speakeasy';
 import { v4 as uuidv4 } from 'uuid';
+import { Request } from 'express';
 
 import { i18n } from '../../../i18n/i18n.config';
 import { User } from '../../../user-management/entities/user/user.interface';
@@ -36,6 +37,7 @@ import {
 import { PhoneVerifiedEvent } from '../../events/phone-verified/phone-verified.event';
 import { SignupViaPhoneDto } from '../../../user-management/policies';
 import { UserAccountAddedEvent } from '../../../user-management/events/user-account-added/user-account-added.event';
+import { addSessionUser } from '../../guards/guard.utils';
 
 @Injectable()
 export class OTPAggregateService extends AggregateRoot {
@@ -235,7 +237,7 @@ export class OTPAggregateService extends AggregateRoot {
     return newPhoneOTP;
   }
 
-  async verifyPhone(userUuid: string, otp: string) {
+  async verifyPhone(userUuid: string, otp: string, req?: Request) {
     // Check user
     const user = await this.user.findOne({ uuid: userUuid });
     if (!user) throw invalidUserException;
@@ -270,6 +272,12 @@ export class OTPAggregateService extends AggregateRoot {
 
     // set user enabled
     user.disabled = false;
+
+    // Login as user
+    if (req && req.logIn) {
+      addSessionUser(req, user);
+      req.logIn(user, () => {});
+    }
 
     this.apply(new PhoneVerifiedEvent(user, phoneOTP));
   }
