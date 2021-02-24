@@ -5,12 +5,14 @@ WORKDIR /home/craft/
 RUN cd infrastructure-console \
     && npm install \
     && npm run build \
-    && rm -fr node_modules \
     && npm install --only=production
 
 FROM node:slim
 # Install dependencies
-RUN apt-get update && apt-get install -y gettext-base && apt-get clean
+RUN apt-get update \
+    && apt-get install -y gettext-base \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Setup docker-entrypoint
 COPY docker/docker-entrypoint.sh usr/local/bin/docker-entrypoint.sh
@@ -27,6 +29,8 @@ WORKDIR /home/craft/infrastructure-console
 
 # Expose port
 EXPOSE 5000
+
+USER craft
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["start"]

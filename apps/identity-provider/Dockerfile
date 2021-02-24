@@ -5,7 +5,6 @@ WORKDIR /home/craft/
 RUN cd identity-provider \
     && npm install \
     && npm run build \
-    && rm -fr node_modules \
     && npm install --only=production
 
 FROM node:slim
@@ -30,6 +29,8 @@ WORKDIR /home/craft/identity-provider
 
 # Expose port
 EXPOSE 3200
+
+USER craft
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["start"]

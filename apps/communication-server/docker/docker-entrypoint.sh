@@ -28,7 +28,7 @@ function checkEnv() {
 
 function checkConnection() {
   # Wait for services
-  su craft -c "node ./docker/check-db.js"
+  node ./docker/check-db.js
   if [[ ! -z "$EVENTS_HOST" ]] && [[ ! -z "$EVENTS_PORT" ]]; then
     echo "Connect Events . . ."
     timeout 10 bash -c 'until printf "" 2>>/dev/null >>/dev/tcp/$0/$1; do sleep 1; done' $EVENTS_HOST $EVENTS_PORT
@@ -58,16 +58,16 @@ function configureServer() {
     fi
   fi
 }
-export -f configureServer
 
 if [ "$1" = 'start' ]; then
-  # Validate if DB_HOST is set.
+  # Validate environment variables
   checkEnv
   # Validate DB Connection
   checkConnection
   # Configure server
-  su craft -c "bash -c configureServer"
-  su craft -c "node dist/out-tsc/main.js"
+  configureServer
+  # Start server
+  node dist/out-tsc/main.js
 fi
 
-exec runuser -u craft "$@"
+exec "$@"
