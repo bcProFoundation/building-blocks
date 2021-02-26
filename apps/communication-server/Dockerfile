@@ -5,7 +5,6 @@ WORKDIR /home/craft/
 RUN cd communication-server \
     && npm install \
     && npm run build \
-    && rm -fr node_modules \
     && npm install --only=production
 
 FROM node:slim
@@ -30,6 +29,8 @@ WORKDIR /home/craft/communication-server
 
 # Expose port
 EXPOSE 4100
+
+USER craft
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["start"]

@@ -5,7 +5,6 @@ WORKDIR /home/craft/
 RUN cd authorization-server \
     && npm install \
     && npm run build \
-    && rm -fr node_modules \
     && npm install --only=production
 
 FROM node:slim
@@ -26,6 +25,8 @@ RUN chown -R craft:craft /home/craft
 
 # Expose port
 EXPOSE 3000
+
+USER craft
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["start"]

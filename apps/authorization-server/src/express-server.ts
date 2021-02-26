@@ -6,8 +6,8 @@ import * as fs from 'fs';
 import { join } from 'path';
 import { INestApplication } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { MongoStore } from 'connect-mongo';
-import { SessionOptions } from 'express-session';
+import { default as MongoStore } from 'connect-mongo';
+import * as expressSession from 'express-session';
 
 import {
   ConfigService,
@@ -49,10 +49,7 @@ export class ExpressServer {
       cookie.secure = false;
     }
 
-    const { store, expressSession } = app.get<{
-      store: MongoStore;
-      expressSession: (options?: SessionOptions) => express.RequestHandler;
-    }>(SESSION_CONNECTION);
+    const store = app.get<MongoStore>(SESSION_CONNECTION);
 
     const sessionConfig = {
       name: this.config.get(SESSION_NAME),
