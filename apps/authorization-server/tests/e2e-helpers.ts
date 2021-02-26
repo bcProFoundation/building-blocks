@@ -7,9 +7,7 @@ import { Mongoose } from 'mongoose';
 import * as Agenda from 'agenda';
 import * as RateLimitMongoStore from 'rate-limit-mongo';
 import { MongoClient } from 'mongodb';
-import { RequestHandler } from 'express';
-import { MongoStore } from 'connect-mongo';
-import { SessionOptions } from 'express-session';
+import { default as MongoStore } from 'connect-mongo';
 
 import { BROADCAST_EVENT } from '../src/common/events-microservice.client';
 import {
@@ -78,10 +76,7 @@ export async function stopServices(app: INestApplication) {
   const database = app.get<Mongoose>(MONGOOSE_CONNECTION);
   const agenda = app.get<Agenda>(AGENDA_CONNECTION);
   const rateLimitStore = app.get<RateLimitMongoStore>(RATE_LIMIT_CONNECTION);
-  const { store } = app.get<{
-    store: MongoStore;
-    expressSession: (options?: SessionOptions) => RequestHandler;
-  }>(SESSION_CONNECTION);
+  const store = app.get<MongoStore>(SESSION_CONNECTION);
   const client: MongoClient = rateLimitStore.getClient();
 
   store.close();

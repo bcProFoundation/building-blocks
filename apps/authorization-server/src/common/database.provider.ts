@@ -4,8 +4,7 @@ import { Observable, defer } from 'rxjs';
 import { retryWhen, scan, delay } from 'rxjs/operators';
 import * as Agenda from 'agenda';
 import * as RateLimitMongoStore from 'rate-limit-mongo';
-import * as connectMongoDBSession from 'connect-mongo';
-import * as expressSession from 'express-session';
+import { default as ConnectMongo } from 'connect-mongo';
 
 import {
   ConfigService,
@@ -95,16 +94,15 @@ export const databaseProviders = [
     provide: SESSION_CONNECTION,
     useFactory: async (config: ConfigService) => {
       const mongoUriPrefix = config.get(MONGO_URI_PREFIX) || 'mongodb';
-      const MongoStore = connectMongoDBSession(expressSession);
       const mongoOptions = 'retryWrites=true';
-      const store = new MongoStore({
-        url: `${mongoUriPrefix}://${config.get(DB_USER)}:${config.get(
+      const store = ConnectMongo.create({
+        mongoUrl: `${mongoUriPrefix}://${config.get(DB_USER)}:${config.get(
           DB_PASSWORD,
         )}@${config.get(DB_HOST).replace(/,\s*$/, '')}/${config.get(
           DB_NAME,
         )}?${mongoOptions}`,
         touchAfter: 24 * 3600, // 24 hours * 3600 secs
-        collection: SESSION_COLLECTION,
+        collectionName: SESSION_COLLECTION,
         stringify: false,
         mongoOptions: {
           useUnifiedTopology: true,
@@ -112,10 +110,7 @@ export const databaseProviders = [
           useNewUrlParser: true,
         },
       });
-      return {
-        store,
-        expressSession,
-      };
+      return store;
     },
     inject: [ConfigService],
   },
