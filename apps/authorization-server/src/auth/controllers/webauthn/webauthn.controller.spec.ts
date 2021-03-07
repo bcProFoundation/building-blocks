@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { WebAuthnController } from './webauthn.controller';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { BearerTokenService } from '../../../auth/entities/bearer-token/bearer-token.service';
 
 describe('WebAuthn Controller', () => {
   let controller: WebAuthnController;
@@ -11,6 +12,7 @@ describe('WebAuthn Controller', () => {
       providers: [
         { provide: CommandBus, useFactory: () => jest.fn() },
         { provide: QueryBus, useFactory: () => jest.fn() },
+        { provide: BearerTokenService, useValue: {} },
       ],
     }).compile();
 

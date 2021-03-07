@@ -1,10 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { CqrsModule } from '@nestjs/cqrs';
 import { UserController } from './user.controller';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { CryptographerService } from '../../../common/services/cryptographer/cryptographer.service';
 import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
 import { UserAggregateService } from '../../../user-management/aggregates/user-aggregate/user-aggregate.service';
-import { CqrsModule } from '@nestjs/cqrs';
+import { BearerTokenService } from '../../../auth/entities/bearer-token/bearer-token.service';
 
 describe('User Controller', () => {
   let module: TestingModule;
@@ -27,6 +28,10 @@ describe('User Controller', () => {
         },
         {
           provide: UserAggregateService,
+          useValue: {},
+        },
+        {
+          provide: BearerTokenService,
           useValue: {},
         },
       ],

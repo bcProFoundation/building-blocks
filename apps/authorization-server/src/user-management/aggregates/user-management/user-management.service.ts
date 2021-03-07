@@ -15,6 +15,8 @@ import {
   cannotDeleteAdministratorException,
   invalidRoleException,
   userAlreadyExistsException,
+  UserDeleteDisabled,
+  invalidClientException,
 } from '../../../common/filters/exceptions';
 import { UserAccountRemovedEvent } from '../../events/user-account-removed/user-account-removed';
 import { RoleService } from '../../entities/role/role.service';
@@ -40,6 +42,7 @@ import { UserRoleModifiedEvent } from '../../events/user-role-modified/user-role
 import { User } from '../../entities/user/user.interface';
 import { UserAuthenticatorService } from '../../entities/user-authenticator/user-authenticator.service';
 import { USER } from '../../entities/user/user.schema';
+import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 
 @Injectable()
 export class UserManagementService extends AggregateRoot {
@@ -53,23 +56,42 @@ export class UserManagementService extends AggregateRoot {
     private readonly passwordPolicy: PasswordPolicyService,
     private readonly roleValidationPolicy: RoleValidationPolicyService,
     private readonly authenticator: UserAuthenticatorService,
+    private readonly settings: ServerSettingsService,
   ) {
     super();
   }
 
-  async deleteUser(uuid, actorUuid) {
-    const user = await this.userService.findOne({ uuid });
-    if (!user) throw invalidUserException;
-
-    if (await this.userService.checkAdministrator(uuid)) {
-      throw cannotDeleteAdministratorException;
+  async deleteUserByUser(uuid: string, actorUuid: string) {
+    const settings = await this.settings.find();
+    if (settings.isUserDeleteDisabled) {
+      throw new UserDeleteDisabled();
     }
-
+    const user = await this.fetchUserOrThrowException(uuid);
     if (
       !(await this.userService.checkAdministrator(actorUuid)) &&
       user.uuid !== actorUuid
     ) {
       throw new ForbiddenException();
+    }
+    await this.deleteUser(uuid);
+  }
+
+  async deleteUserByTrustedClient(uuid: string, clientId: string) {
+    const client = await this.clientService.findOne({ clientId });
+    if (!client) {
+      throw invalidClientException;
+    }
+    if (!client.isTrusted) {
+      throw invalidClientException;
+    }
+    await this.deleteUser(uuid);
+  }
+
+  async deleteUser(uuid: string) {
+    const user = await this.fetchUserOrThrowException(uuid);
+
+    if (await this.userService.checkAdministrator(uuid)) {
+      throw cannotDeleteAdministratorException;
     }
 
     // Remove Auth Data
@@ -105,7 +127,6 @@ export class UserManagementService extends AggregateRoot {
     user.deleted = true;
     this.apply(
       new UserAccountRemovedEvent(
-        actorUuid,
         user,
         password,
         sharedSecret,
@@ -326,5 +347,11 @@ export class UserManagementService extends AggregateRoot {
         cannotChangeRole: role.name,
       });
     }
+  }
+
+  async fetchUserOrThrowException(uuid: string) {
+    const user = await this.userService.findOne({ uuid });
+    if (!user) throw invalidUserException;
+    return user;
   }
 }

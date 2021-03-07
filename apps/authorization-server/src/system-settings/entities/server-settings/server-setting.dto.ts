@@ -88,4 +88,12 @@ export class ServerSettingDto {
     type: 'boolean',
   })
   enableUserPhone: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  @ApiProperty({
+    description: 'Disallow user to be deleted',
+    type: 'boolean',
+  })
+  isUserDeleteDisabled: boolean;
 }

@@ -4,6 +4,7 @@ import { SystemSettingsManagementService } from '../../../system-settings/aggreg
 import { RoleGuard } from '../../../auth/guards/role.guard';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { CommandBus } from '@nestjs/cqrs';
+import { BearerTokenService } from '../../../auth/entities/bearer-token/bearer-token.service';
 
 describe('ServerSettingsController', () => {
   let module: TestingModule;
@@ -17,6 +18,10 @@ describe('ServerSettingsController', () => {
         },
         {
           provide: UserService,
+          useValue: {},
+        },
+        {
+          provide: BearerTokenService,
           useValue: {},
         },
         {

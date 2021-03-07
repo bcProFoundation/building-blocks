@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { RoleController } from './role.controller';
 import { RoleGuard } from '../../../auth/guards/role.guard';
+import { BearerTokenService } from '../../../auth/entities/bearer-token/bearer-token.service';
 
 describe('RoleController', () => {
   let module: TestingModule;
@@ -16,6 +17,10 @@ describe('RoleController', () => {
         {
           provide: CommandBus,
           useFactory: () => jest.fn(),
+        },
+        {
+          provide: BearerTokenService,
+          useValue: {},
         },
       ],
     })

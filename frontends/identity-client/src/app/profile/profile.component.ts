@@ -40,6 +40,7 @@ import {
   PASSWORD_LESS_LOGIN_ENABLED,
   PASSWORD_LESS_LOGIN_DISABLED,
   PLEASE_CHECK_EMAIL_TO_VERIFY_ACCOUNT,
+  DELETE_FAILED,
 } from '../constants/messages';
 import {
   DURATION,
@@ -374,7 +375,11 @@ export class ProfileComponent implements OnInit {
               this.oauthService.logOut();
               this.logout();
             },
-            error: error => {},
+            error: error => {
+              this.snackBar.open(error?.error?.message || DELETE_FAILED, UNDO, {
+                duration: UNDO_DURATION,
+              });
+            },
           });
         }
       },

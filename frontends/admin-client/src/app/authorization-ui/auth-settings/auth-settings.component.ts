@@ -37,6 +37,7 @@ export class AuthSettingsComponent implements OnInit {
   authCodeExpiresInMinutes: number = THIRTY;
   organizationName: string;
   enableUserPhone: boolean;
+  isUserDeleteDisabled: boolean;
 
   authSettingsForm = new FormGroup({
     issuerUrl: new FormControl(),
@@ -50,6 +51,7 @@ export class AuthSettingsComponent implements OnInit {
     authCodeExpiresInMinutes: new FormControl(),
     organizationName: new FormControl(),
     enableUserPhone: new FormControl(),
+    isUserDeleteDisabled: new FormControl(),
   });
 
   constructor(
@@ -67,6 +69,7 @@ export class AuthSettingsComponent implements OnInit {
         refreshTokenExpiresInDays: number;
         authCodeExpiresInMinutes: number;
         enableUserPhone: boolean;
+        isUserDeleteDisabled: boolean;
       }) => {
         this.issuerUrl = response.issuerUrl;
         this.communicationServerClientId = response.communicationServerClientId;
@@ -75,6 +78,7 @@ export class AuthSettingsComponent implements OnInit {
         this.refreshTokenExpiresInDays = response.refreshTokenExpiresInDays;
         this.authCodeExpiresInMinutes = response.authCodeExpiresInMinutes;
         this.enableUserPhone = response.enableUserPhone;
+        this.isUserDeleteDisabled = response.isUserDeleteDisabled;
         this.populateForm(response);
       },
       error: error => {},
@@ -117,6 +121,9 @@ export class AuthSettingsComponent implements OnInit {
     this.authSettingsForm.controls.enableUserPhone.setValue(
       response.enableUserPhone,
     );
+    this.authSettingsForm.controls.isUserDeleteDisabled.setValue(
+      response.isUserDeleteDisabled,
+    );
     this.authSettingsForm.controls.organizationName.disable();
   }
 
@@ -133,6 +140,7 @@ export class AuthSettingsComponent implements OnInit {
         this.authSettingsForm.controls.authCodeExpiresInMinutes.value,
         this.authSettingsForm.controls.organizationName.value,
         this.authSettingsForm.controls.enableUserPhone.value,
+        this.authSettingsForm.controls.isUserDeleteDisabled.value,
       )
       .subscribe({
         next: response => {

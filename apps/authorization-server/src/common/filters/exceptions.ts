@@ -122,3 +122,18 @@ export class EmailForVerificationNotFound extends HttpException {
     super(i18n.__('Email for verification not found'), HttpStatus.NOT_FOUND);
   }
 }
+
+export class UserDeleteDisabled extends HttpException {
+  constructor() {
+    super(
+      i18n.__('Deleting user account is disabled'),
+      HttpStatus.UNAUTHORIZED,
+    );
+  }
+}
+
+export class InvalidRequestToDeleteUser extends HttpException {
+  constructor() {
+    super(i18n.__('user or client missing'), HttpStatus.UNAUTHORIZED);
+  }
+}
