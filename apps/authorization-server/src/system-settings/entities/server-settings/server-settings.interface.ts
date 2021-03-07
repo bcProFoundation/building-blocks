@@ -14,4 +14,5 @@ export interface ServerSettings extends Document {
   authCodeExpiresInMinutes?: number;
   organizationName?: string;
   enableUserPhone?: boolean;
+  isUserDeleteDisabled?: boolean;
 }

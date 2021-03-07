@@ -60,6 +60,7 @@ export class AuthSettingsService {
     authCodeExpiresInMinutes: number,
     organizationName?: string,
     enableUserPhone?: boolean,
+    isUserDeleteDisabled?: boolean,
   ) {
     const requestUrl = localStorage.getItem(ISSUER_URL) + '/settings/v1/update';
     if (!organizationName) organizationName = undefined;
@@ -77,6 +78,7 @@ export class AuthSettingsService {
         authCodeExpiresInMinutes,
         organizationName,
         enableUserPhone,
+        isUserDeleteDisabled,
       },
       { headers: this.headers },
     );

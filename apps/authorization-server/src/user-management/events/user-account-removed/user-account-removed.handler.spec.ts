@@ -108,7 +108,6 @@ describe('Event: UserAccountRemovedHandler', () => {
 
     await eventHandler.handle(
       new UserAccountRemovedEvent(
-        mockUser.uuid,
         mockUser,
         password,
         sharedSecret,

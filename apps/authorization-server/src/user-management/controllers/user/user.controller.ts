@@ -287,4 +287,14 @@ export class UserController {
       new EmailVerificationCodeCommand(userUuid),
     );
   }
+
+  @Post('v1/remove_user_account/:uuid')
+  @UseGuards(BearerTokenGuard)
+  async removeUserAccount(@Req() req, @Param('uuid') userUuidToDelete) {
+    const client = req.token.client;
+    await this.commandBus.execute(
+      new RemoveUserAccountCommand(undefined, userUuidToDelete, client),
+    );
+    req.logout();
+  }
 }

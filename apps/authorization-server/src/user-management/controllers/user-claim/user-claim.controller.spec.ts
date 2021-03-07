@@ -1,5 +1,6 @@
 import { CqrsModule } from '@nestjs/cqrs';
 import { Test, TestingModule } from '@nestjs/testing';
+import { BearerTokenService } from '../../../auth/entities/bearer-token/bearer-token.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
 import { AuthDataService } from '../../entities/auth-data/auth-data.service';
 import { UserService } from '../../entities/user/user.service';
@@ -16,6 +17,7 @@ describe('UserClaimController', () => {
         { provide: UserService, useValue: {} },
         { provide: AuthDataService, useValue: {} },
         { provide: ClientService, useValue: {} },
+        { provide: BearerTokenService, useValue: {} },
       ],
     }).compile();
 

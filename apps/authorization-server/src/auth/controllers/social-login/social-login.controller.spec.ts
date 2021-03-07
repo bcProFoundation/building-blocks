@@ -3,6 +3,7 @@ import { SocialLoginController } from './social-login.controller';
 import { SocialLoginService } from '../../../auth/entities/social-login/social-login.service';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { CqrsModule } from '@nestjs/cqrs';
+import { BearerTokenService } from '../../../auth/entities/bearer-token/bearer-token.service';
 
 describe('SocialLogin Controller', () => {
   let module: TestingModule;
@@ -18,6 +19,10 @@ describe('SocialLogin Controller', () => {
         },
         {
           provide: UserService,
+          useValue: {},
+        },
+        {
+          provide: BearerTokenService,
           useValue: {},
         },
       ],

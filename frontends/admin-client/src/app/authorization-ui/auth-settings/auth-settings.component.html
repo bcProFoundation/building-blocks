@@ -53,6 +53,10 @@
             type="number">
             <mat-checkbox formControlName="enableUserPhone" matSuffix>Enable User Phone</mat-checkbox>
         </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="Do not allow user to be deleted" readonly>
+          <mat-checkbox formControlName="isUserDeleteDisabled" matSuffix>Disable User Deletion</mat-checkbox>
+        </mat-form-field>
       </mat-card-content>
       <mat-card-actions>
         <button type="submit" mat-button color="primary" [disabled]="!authSettingsForm.valid">Update</button>

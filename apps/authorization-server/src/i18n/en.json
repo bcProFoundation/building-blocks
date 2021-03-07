@@ -86,5 +86,7 @@
 	"phone must be valid E164 phone number": "phone must be valid E164 phone number",
 	"Invalid Verification Code": "Invalid Verification Code",
 	"Email for verification not found": "Email for verification not found",
-	"Please complete verification for ": "Please complete verification for "
+	"Please complete verification for ": "Please complete verification for ",
+	"Deleting user account is disabled": "Deleting user account is disabled",
+	"user or client missing": "user or client missing"
 }
