@@ -1,4 +1,4 @@
-import * as internationalization from 'i18n';
+import internationalization from 'i18n';
 import { join } from 'path';
 
 let directory = join(process.cwd(), '/src/i18n');

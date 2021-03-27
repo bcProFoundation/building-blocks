@@ -1,5 +1,5 @@
-import * as Joi from 'joi';
-import * as dotenv from 'dotenv';
+import Joi from 'joi';
+import dotenv from 'dotenv';
 import { Injectable, Logger } from '@nestjs/common';
 
 export interface EnvConfig {

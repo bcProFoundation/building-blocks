@@ -1,5 +1,5 @@
-import * as RateLimit from 'express-rate-limit';
-import * as MongoStore from 'rate-limit-mongo';
+import RateLimit from 'express-rate-limit';
+import MongoStore from 'rate-limit-mongo';
 
 /**
  *

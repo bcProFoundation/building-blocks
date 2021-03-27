@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import * as Agenda from 'agenda';
+import Agenda from 'agenda';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { AuthorizationCodeService } from '../../entities/authorization-code/authorization-code.service';
 import { TEN_NUMBER } from '../../../constants/app-strings';

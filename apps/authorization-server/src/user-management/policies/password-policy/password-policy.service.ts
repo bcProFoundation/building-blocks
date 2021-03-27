@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import * as owasp from 'owasp-password-strength-test';
+import owasp from 'owasp-password-strength-test';
 
 @Injectable()
 export class PasswordPolicyService {

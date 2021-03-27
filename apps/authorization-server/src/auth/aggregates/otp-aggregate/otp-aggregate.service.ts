@@ -1,7 +1,7 @@
 import { Injectable, HttpService } from '@nestjs/common';
 import { AggregateRoot } from '@nestjs/cqrs';
 import { retry } from 'rxjs/operators';
-import * as speakeasy from 'speakeasy';
+import speakeasy from 'speakeasy';
 import { v4 as uuidv4 } from 'uuid';
 import { Request } from 'express';
 

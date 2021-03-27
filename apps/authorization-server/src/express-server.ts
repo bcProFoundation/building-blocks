@@ -1,13 +1,13 @@
-import * as express from 'express';
-import * as cookieParser from 'cookie-parser';
-import * as passport from 'passport';
-import * as helmet from 'helmet';
-import * as fs from 'fs';
+import express from 'express';
+import cookieParser from 'cookie-parser';
+import passport from 'passport';
+import helmet from 'helmet';
+import fs from 'fs';
+import expressSession from 'express-session';
 import { join } from 'path';
 import { INestApplication } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { default as MongoStore } from 'connect-mongo';
-import * as expressSession from 'express-session';
+import MongoStore from 'connect-mongo';
 
 import {
   ConfigService,

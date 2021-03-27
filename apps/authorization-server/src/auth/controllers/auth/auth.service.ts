@@ -5,7 +5,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import * as speakeasy from 'speakeasy';
+import speakeasy from 'speakeasy';
 import { v4 as uuidv4 } from 'uuid';
 import {
   userAlreadyExistsException,

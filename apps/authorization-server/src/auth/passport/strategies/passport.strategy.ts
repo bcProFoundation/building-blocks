@@ -1,4 +1,4 @@
-import * as passport from 'passport';
+import passport from 'passport';
 
 export type Type<T = any> = new (...args: any[]) => T;
 

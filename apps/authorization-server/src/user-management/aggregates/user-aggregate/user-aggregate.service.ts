@@ -4,8 +4,8 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { AggregateRoot } from '@nestjs/cqrs';
-import * as speakeasy from 'speakeasy';
-import * as QRCode from 'qrcode';
+import speakeasy from 'speakeasy';
+import QRCode from 'qrcode';
 import { v4 as uuidv4 } from 'uuid';
 import { randomBytes } from 'crypto';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';

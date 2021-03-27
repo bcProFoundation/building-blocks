@@ -1,5 +1,5 @@
 import { ExceptionFilter, Catch, ArgumentsHost } from '@nestjs/common';
-import * as AuthorizationError from 'oauth2orize-openid/lib/errors/authorizationerror';
+import AuthorizationError from 'oauth2orize-openid/lib/errors/authorizationerror';
 
 @Catch(AuthorizationError)
 export class OpenIDAuthorizationErrorFilter implements ExceptionFilter {

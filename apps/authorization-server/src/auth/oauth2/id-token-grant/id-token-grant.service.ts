@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import * as jose from 'node-jose';
-import * as crypto from 'crypto';
+import jose from 'node-jose';
+import crypto from 'crypto';
 import { IDTokenClaims } from '../../middlewares/interfaces';
 import { OIDCKeyService } from '../../../auth/entities/oidc-key/oidc-key.service';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';

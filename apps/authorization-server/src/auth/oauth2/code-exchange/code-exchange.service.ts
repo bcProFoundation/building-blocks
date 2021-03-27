@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import * as crypto from 'crypto';
+import crypto from 'crypto';
 import {
   invalidAuthorizationCodeException,
   invalidCodeChallengeException,

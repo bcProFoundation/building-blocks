@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import { OnModuleInit } from '@nestjs/common';
 import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
 import { AGENDA_CONNECTION } from '../../../common/database.provider';
-import * as Agenda from 'agenda';
+import Agenda from 'agenda';
 
 export const AUTH_DATA_DELETE_QUEUE = 'auth_data_delete_queue';
 

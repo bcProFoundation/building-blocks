@@ -4,8 +4,8 @@ import 'jest';
 import { INestApplication } from '@nestjs/common';
 import { ClientMqtt } from '@nestjs/microservices';
 import { Mongoose } from 'mongoose';
-import * as Agenda from 'agenda';
-import * as RateLimitMongoStore from 'rate-limit-mongo';
+import Agenda from 'agenda';
+import RateLimitMongoStore from 'rate-limit-mongo';
 import { MongoClient } from 'mongodb';
 import { default as MongoStore } from 'connect-mongo';
 
