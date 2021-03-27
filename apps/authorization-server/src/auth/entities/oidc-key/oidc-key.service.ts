@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Model } from 'mongoose';
-import * as jose from 'node-jose';
+import jose from 'node-jose';
 import { OIDC_KEY } from './oidc-key.schema';
 import { OIDCKey } from './oidc-key.interface';
 

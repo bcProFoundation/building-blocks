@@ -1,10 +1,10 @@
 import { Logger } from '@nestjs/common';
-import * as mongoose from 'mongoose';
+import mongoose from 'mongoose';
 import { Observable, defer } from 'rxjs';
 import { retryWhen, scan, delay } from 'rxjs/operators';
-import * as Agenda from 'agenda';
-import * as RateLimitMongoStore from 'rate-limit-mongo';
-import { default as ConnectMongo } from 'connect-mongo';
+import Agenda from 'agenda';
+import RateLimitMongoStore from 'rate-limit-mongo';
+import MongoStore from 'connect-mongo';
 
 import {
   ConfigService,
@@ -95,7 +95,7 @@ export const databaseProviders = [
     useFactory: async (config: ConfigService) => {
       const mongoUriPrefix = config.get(MONGO_URI_PREFIX) || 'mongodb';
       const mongoOptions = 'retryWrites=true';
-      const store = ConnectMongo.create({
+      const store = MongoStore.create({
         mongoUrl: `${mongoUriPrefix}://${config.get(DB_USER)}:${config.get(
           DB_PASSWORD,
         )}@${config.get(DB_HOST).replace(/,\s*$/, '')}/${config.get(

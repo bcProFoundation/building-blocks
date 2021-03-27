@@ -1,5 +1,5 @@
 import { UnauthorizedException } from '@nestjs/common';
-import * as passport from 'passport';
+import passport from 'passport';
 
 export const createPassportContext = (request, response) => (types, options) =>
   new Promise((resolve, reject) =>

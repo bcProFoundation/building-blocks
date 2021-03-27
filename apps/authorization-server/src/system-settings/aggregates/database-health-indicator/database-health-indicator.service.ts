@@ -4,7 +4,7 @@ import {
   HealthIndicatorResult,
   HealthCheckError,
 } from '@nestjs/terminus';
-import * as mongoose from 'mongoose';
+import mongoose from 'mongoose';
 
 @Injectable()
 export class DatabaseHealthIndicatorService extends HealthIndicator {

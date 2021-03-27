@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import * as Agenda from 'agenda';
+import Agenda from 'agenda';
 import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
 
 import { AGENDA_CONNECTION } from '../../../common/database.provider';

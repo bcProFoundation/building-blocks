@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
-import * as request from 'supertest';
-import * as speakeasy from 'speakeasy';
+import request from 'supertest';
+import speakeasy from 'speakeasy';
 import { INestApplication } from '@nestjs/common';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import 'jest';

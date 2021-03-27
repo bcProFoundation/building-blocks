@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { OnModuleInit } from '@nestjs/common';
-import * as Agenda from 'agenda';
+import Agenda from 'agenda';
 import { BearerTokenService } from '../../entities/bearer-token/bearer-token.service';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { THIRTY_NUMBER } from '../../../constants/app-strings';

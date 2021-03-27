@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { APP_FILTER } from '@nestjs/core';
-import * as MongoStore from 'rate-limit-mongo';
+import MongoStore from 'rate-limit-mongo';
 
 import { OAuth2orizeSetup } from './middlewares/oauth2orize.setup';
 import { OAuth2ConfirmationMiddleware } from './middlewares/oauth2-confirmation.middleware';

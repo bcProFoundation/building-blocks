@@ -1,7 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import * as oauth2orize from 'oauth2orize';
-import * as openidConnect from 'oauth2orize-openid';
-import * as pkce from 'oauth2orize-pkce';
+import oauth2orize from 'oauth2orize';
+import openidConnect from 'oauth2orize-openid';
+import pkce from 'oauth2orize-pkce';
 import { ClientService } from '../../client-management/entities/client/client.service';
 import { BearerTokenService } from '../entities/bearer-token/bearer-token.service';
 import { invalidClientException } from '../../common/filters/exceptions';

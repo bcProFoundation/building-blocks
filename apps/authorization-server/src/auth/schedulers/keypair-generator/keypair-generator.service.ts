@@ -1,5 +1,5 @@
 import { Injectable, OnModuleInit, Inject } from '@nestjs/common';
-import * as Agenda from 'agenda';
+import Agenda from 'agenda';
 import { OIDCKeyService } from '../../entities/oidc-key/oidc-key.service';
 import { AGENDA_CONNECTION } from '../../../common/database.provider';
 

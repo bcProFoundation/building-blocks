@@ -1,6 +1,6 @@
 import { Injectable, OnModuleInit, HttpService, Inject } from '@nestjs/common';
 import { retry } from 'rxjs/operators';
-import * as Agenda from 'agenda';
+import Agenda from 'agenda';
 import { ClientService } from '../../../client-management/entities/client/client.service';
 import { AGENDA_CONNECTION } from '../../../common/database.provider';
 
