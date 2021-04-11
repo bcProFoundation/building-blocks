@@ -50,7 +50,7 @@ export class KeyPairGeneratorService implements OnModuleInit {
   async generateKeyPair() {
     const countOfKeys = await this.keyService.count();
     if (countOfKeys === 0) {
-      await this.agenda.now(KEYGEN_QUEUE);
+      await this.agenda.now(KEYGEN_QUEUE, undefined);
     }
   }
 
