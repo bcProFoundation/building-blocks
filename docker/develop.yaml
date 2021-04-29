@@ -28,7 +28,7 @@ services:
 
   # Backend
   authorization-server:
-    image: registry.gitlab.com/castlecraft/building-blocks/authorization-server:latest
+    image: registry.gitlab.com/castlecraft/building-blocks/authorization-server:edge
     extra_hosts:
       admin.localhost: 172.17.0.1
       connect.localhost: 172.17.0.1
@@ -50,7 +50,7 @@ services:
       - EVENTS_PROTO=mqtt
 
   communication-server:
-    image: registry.gitlab.com/castlecraft/building-blocks/communication-server:latest
+    image: registry.gitlab.com/castlecraft/building-blocks/communication-server:edge
     extra_hosts:
       accounts.localhost: 172.17.0.1
       admin.localhost: 172.17.0.1
@@ -70,7 +70,7 @@ services:
       - 4100:4100
 
   identity-provider:
-    image: registry.gitlab.com/castlecraft/building-blocks/identity-provider:latest
+    image: registry.gitlab.com/castlecraft/building-blocks/identity-provider:edge
     extra_hosts:
       accounts.localhost: 172.17.0.1
       admin.localhost: 172.17.0.1
@@ -92,7 +92,7 @@ services:
       accounts.localhost: 172.17.0.1
       connect.localhost: 172.17.0.1
       myaccount.localhost: 172.17.0.1
-    image: registry.gitlab.com/castlecraft/building-blocks/infrastructure-console:latest
+    image: registry.gitlab.com/castlecraft/building-blocks/infrastructure-console:edge
     environment:
       - NODE_ENV=development
       - DB_HOST=mongo
@@ -109,21 +109,12 @@ services:
   event-bus:
     image: emqx/emqx:latest
     environment:
-      - EMQX_ALLOW_ANONYMOUS=false
+      - EMQX_ALLOW_ANONYMOUS=true
       - EMQX_LOADED_PLUGINS=emqx_management,emqx_auth_mnesia,emqx_recon,emqx_retainer,emqx_dashboard
     ports:
       - 1883:1883
       - 18083:18083
       - 8081:8081
-
-  event-bus-config:
-    image: byrnedo/alpine-curl:latest
-    depends_on:
-      - events
-    entrypoint: ["/bin/sh", "-c"]
-    command:
-        - sleep 5;
-          curl -i --basic -u admin:public -X POST http://events:8081/api/v4/mqtt_user -d '{"login":"user","password":"changeit","is_superuser":false}'
 
   mongo:
     image: bitnami/mongodb:latest
@@ -134,6 +125,8 @@ services:
       - "MONGODB_PASSWORD=changeit"
     volumes:
       - mongodb-vol:/bitnami/mongodb
+    ports:
+      - 27017:27017
 
   mongo-configuration:
     image: bitnami/mongodb:latest

@@ -479,6 +479,19 @@ pack_production_admin_client:
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client:$VERSION
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client:latest
 
+pack_setup_cli:
+  image: docker
+  stage: pack
+  only:
+    refs:
+      - develop
+  before_script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+    - cd scripts
+  script:
+    - docker build -t $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/setup:latest -f setup.Dockerfile .
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/setup:latest
+
 pages:
   image: node:latest
   stage: docs
