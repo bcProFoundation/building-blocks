@@ -32,11 +32,11 @@ authServer:
   # Images
   backendImage:
     repository: registry.gitlab.com/castlecraft/building-blocks/authorization-server
-    tag: "6.5.2"
+    tag: "6.5.3"
     pullPolicy: IfNotPresent
   frontendImage:
     repository: registry.gitlab.com/castlecraft/building-blocks/authorization-client
-    tag: "6.5.2"
+    tag: "6.5.3"
     pullPolicy: IfNotPresent
 
   # Service
@@ -86,7 +86,7 @@ comServer:
   # Images
   image:
     repository: registry.gitlab.com/castlecraft/building-blocks/communication-server
-    tag: "6.5.2"
+    tag: "6.5.3"
     pullPolicy: IfNotPresent
 
   # Service
@@ -135,11 +135,11 @@ idProvider:
   # Images
   backendImage:
     repository: registry.gitlab.com/castlecraft/building-blocks/identity-provider
-    tag: "6.5.2"
+    tag: "6.5.3"
     pullPolicy: IfNotPresent
   frontendImage:
     repository: registry.gitlab.com/castlecraft/building-blocks/identity-client
-    tag: "6.5.2"
+    tag: "6.5.3"
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
@@ -187,11 +187,11 @@ infraConsole:
   # Images
   backendImage:
     repository: registry.gitlab.com/castlecraft/building-blocks/infrastructure-console
-    tag: "6.5.2"
+    tag: "6.5.3"
     pullPolicy: IfNotPresent
   frontendImage:
     repository: registry.gitlab.com/castlecraft/building-blocks/admin-client
-    tag: "6.5.2"
+    tag: "6.5.3"
     pullPolicy: IfNotPresent
 
   # Service
