@@ -1,6 +1,6 @@
 FROM node:latest
 
-ARG BUILD_ARGS="--configuration production"
+ARG BUILD_ARGS="-- --configuration production"
 # Copy and build app
 COPY . /home/craft/authorization-client
 WORKDIR /home/craft
