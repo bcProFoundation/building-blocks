@@ -1,6 +1,6 @@
 FROM node:latest
 
-ARG BUILD_ARGS="-- --prod"
+ARG BUILD_ARGS="--configuration production"
 # Copy and build app
 COPY . /home/craft/identity-client
 WORKDIR /home/craft
