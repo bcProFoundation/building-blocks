@@ -5,7 +5,8 @@ import { OTPAggregateService } from '../../../auth/aggregates/otp-aggregate/otp-
 
 @CommandHandler(SignupViaPhoneCommand)
 export class SignupViaPhoneHandler
-  implements ICommandHandler<SignupViaPhoneCommand> {
+  implements ICommandHandler<SignupViaPhoneCommand>
+{
   constructor(
     private readonly manager: OTPAggregateService,
     private readonly eventPublisher: EventPublisher,

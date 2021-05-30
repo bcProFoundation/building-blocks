@@ -9,7 +9,8 @@ import { EmailRequestService } from '../../aggregates/email-request/email-reques
 
 @EventsHandler(UserSignedUpViaEmailEvent)
 export class UserSignedUpViaEmailHandler
-  implements IEventHandler<UserSignedUpViaEmailEvent> {
+  implements IEventHandler<UserSignedUpViaEmailEvent>
+{
   constructor(
     private readonly user: UserService,
     private readonly authData: AuthDataService,

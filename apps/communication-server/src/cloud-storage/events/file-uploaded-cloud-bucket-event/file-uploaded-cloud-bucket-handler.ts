@@ -6,7 +6,8 @@ import { PUBLIC, ACL_PUBLIC_PERMISSION } from '../../../constants/app-strings';
 
 @EventsHandler(FileUploadedCloudBucketEvent)
 export class FileUploadedCloudBucketHandler
-  implements IEventHandler<FileUploadedCloudBucketEvent> {
+  implements IEventHandler<FileUploadedCloudBucketEvent>
+{
   async handle(event: FileUploadedCloudBucketEvent) {
     const spacesEndpoint: any = new AWS.Endpoint(
       event.storageSettings.endpoint,

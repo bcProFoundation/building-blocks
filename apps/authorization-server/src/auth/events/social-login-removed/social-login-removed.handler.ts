@@ -5,7 +5,8 @@ import { SocialLoginService } from '../../entities/social-login/social-login.ser
 
 @EventsHandler(SocialLoginRemovedEvent)
 export class SocialLoginRemovedHandler
-  implements IEventHandler<SocialLoginRemovedEvent> {
+  implements IEventHandler<SocialLoginRemovedEvent>
+{
   constructor(private readonly socialLogin: SocialLoginService) {}
   handle(event: SocialLoginRemovedEvent) {
     const { socialLogin } = event;

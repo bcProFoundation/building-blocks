@@ -7,7 +7,8 @@ import { UserAggregateService } from '../../aggregates/user-aggregate/user-aggre
 
 @CommandHandler(TogglePasswordLessLoginCommand)
 export class TogglePasswordLessLoginHandler
-  implements ICommandHandler<TogglePasswordLessLoginCommand> {
+  implements ICommandHandler<TogglePasswordLessLoginCommand>
+{
   constructor(
     private readonly manager: UserAggregateService,
     private readonly publisher: EventPublisher,

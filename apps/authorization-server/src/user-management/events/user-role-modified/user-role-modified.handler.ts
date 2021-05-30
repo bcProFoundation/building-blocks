@@ -5,7 +5,8 @@ import { RoleService } from '../../entities/role/role.service';
 
 @EventsHandler(UserRoleModifiedEvent)
 export class UserRoleModifiedHandler
-  implements IEventHandler<UserRoleModifiedEvent> {
+  implements IEventHandler<UserRoleModifiedEvent>
+{
   constructor(private readonly role: RoleService) {}
 
   handle(event: UserRoleModifiedEvent) {

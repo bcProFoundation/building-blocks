@@ -7,7 +7,8 @@ import { AuthDataService } from '../../entities/auth-data/auth-data.service';
 
 @EventsHandler(EmailVerifiedAndUpdatedEvent)
 export class EmailVerifiedAndUpdatedHandler
-  implements IEventHandler<EmailVerifiedAndUpdatedEvent> {
+  implements IEventHandler<EmailVerifiedAndUpdatedEvent>
+{
   constructor(
     private readonly user: UserService,
     private readonly authData: AuthDataService,

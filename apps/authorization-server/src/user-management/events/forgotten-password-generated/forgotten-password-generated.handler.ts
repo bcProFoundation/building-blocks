@@ -7,7 +7,8 @@ import { AuthDataService } from '../../entities/auth-data/auth-data.service';
 
 @EventsHandler(ForgottenPasswordGeneratedEvent)
 export class ForgottenPasswordGeneratedHandler
-  implements IEventHandler<ForgottenPasswordGeneratedEvent> {
+  implements IEventHandler<ForgottenPasswordGeneratedEvent>
+{
   constructor(
     private readonly email: EmailRequestService,
     private readonly user: UserService,

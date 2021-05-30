@@ -16,9 +16,8 @@ describe('RoleController', () => {
     }).compile();
   });
   it('should be defined', () => {
-    const controller: SignupController = module.get<SignupController>(
-      SignupController,
-    );
+    const controller: SignupController =
+      module.get<SignupController>(SignupController);
     expect(controller).toBeDefined();
   });
 });

@@ -4,7 +4,8 @@ import { UserClaimRemovedEvent } from './user-claim-removed.event';
 
 @EventsHandler(UserClaimRemovedEvent)
 export class UserClaimRemovedHandler
-  implements IEventHandler<UserClaimRemovedEvent> {
+  implements IEventHandler<UserClaimRemovedEvent>
+{
   constructor(private readonly userClaim: UserClaimService) {}
   handle(event: UserClaimRemovedEvent) {
     const { claim } = event;

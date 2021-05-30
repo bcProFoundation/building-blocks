@@ -5,7 +5,8 @@ import { from } from 'rxjs';
 
 @EventsHandler(UnverifiedPhoneAddedEvent)
 export class UnverifiedPhoneAddedHandler
-  implements IEventHandler<UnverifiedPhoneAddedEvent> {
+  implements IEventHandler<UnverifiedPhoneAddedEvent>
+{
   constructor(private readonly authData: AuthDataService) {}
   handle(event: UnverifiedPhoneAddedEvent) {
     const { phoneOTP } = event;

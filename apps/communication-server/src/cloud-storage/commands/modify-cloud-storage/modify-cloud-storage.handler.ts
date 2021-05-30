@@ -4,7 +4,8 @@ import { ModifyCloudStorageAggregateService } from '../../aggregates/modify-clou
 
 @CommandHandler(ModifyCloudStorageCommand)
 export class ModifyCloudStorageHandler
-  implements ICommandHandler<ModifyCloudStorageCommand> {
+  implements ICommandHandler<ModifyCloudStorageCommand>
+{
   constructor(
     private readonly manager: ModifyCloudStorageAggregateService,
     private readonly publisher: EventPublisher,

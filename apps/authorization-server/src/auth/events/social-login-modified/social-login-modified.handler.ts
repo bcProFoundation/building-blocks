@@ -4,7 +4,8 @@ import { SocialLoginService } from '../../entities/social-login/social-login.ser
 
 @EventsHandler(SocialLoginModifiedEvent)
 export class SocialLoginModifiedHandler
-  implements IEventHandler<SocialLoginModifiedEvent> {
+  implements IEventHandler<SocialLoginModifiedEvent>
+{
   constructor(private readonly socialLogin: SocialLoginService) {}
   handle(event: SocialLoginModifiedEvent) {
     this.socialLogin

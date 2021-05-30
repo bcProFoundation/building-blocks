@@ -35,9 +35,8 @@ describe('ServerSettingsController', () => {
       .compile();
   });
   it('should be defined', () => {
-    const controller: ServerSettingsController = module.get<ServerSettingsController>(
-      ServerSettingsController,
-    );
+    const controller: ServerSettingsController =
+      module.get<ServerSettingsController>(ServerSettingsController);
     expect(controller).toBeDefined();
   });
 });

@@ -4,7 +4,8 @@ import { Oauth2ProviderAggregateService } from '../../aggregates/oauth2-provider
 
 @QueryHandler(ListOAuth2ProviderQuery)
 export class ListOAuth2ProviderHandler
-  implements IQueryHandler<ListOAuth2ProviderQuery> {
+  implements IQueryHandler<ListOAuth2ProviderQuery>
+{
   constructor(private manager: Oauth2ProviderAggregateService) {}
 
   async execute(query: ListOAuth2ProviderQuery) {

@@ -4,7 +4,8 @@ import { UserAggregateService } from '../../aggregates/user-aggregate/user-aggre
 
 @CommandHandler(VerifyEmailAndSetPasswordCommand)
 export class VerifyEmailAndSetPasswordHandler
-  implements ICommandHandler<VerifyEmailAndSetPasswordCommand> {
+  implements ICommandHandler<VerifyEmailAndSetPasswordCommand>
+{
   constructor(
     private readonly manager: UserAggregateService,
     private readonly publisher: EventPublisher,

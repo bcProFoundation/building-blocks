@@ -130,7 +130,7 @@ export class WebAuthnAggregateService extends AggregateRoot {
       authenticator.credID = this.urlString(
         deviceInfo?.credentialID?.toString('base64'),
       );
-      authenticator.fmt = (deviceInfo.fmt as unknown) as Fmt;
+      authenticator.fmt = deviceInfo.fmt as unknown as Fmt;
       authenticator.publicKey = this.urlString(
         deviceInfo?.credentialPublicKey.toString('base64'),
       );

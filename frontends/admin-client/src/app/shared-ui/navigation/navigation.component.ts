@@ -58,9 +58,8 @@ export class NavigationComponent implements OnInit {
     this.setUserSession();
 
     try {
-      this.isIdentityProviderAvailable = this.storageService.getServiceURL(
-        IDENTITY_PROVIDER,
-      );
+      this.isIdentityProviderAvailable =
+        this.storageService.getServiceURL(IDENTITY_PROVIDER);
     } catch (error) {
       this.isIdentityProviderAvailable = false;
     }

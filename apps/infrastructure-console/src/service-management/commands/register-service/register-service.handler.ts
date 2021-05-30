@@ -4,7 +4,8 @@ import { ServiceAggregateService } from '../../aggregates/service-aggregate/serv
 
 @CommandHandler(RegisterServiceCommand)
 export class RegisterServiceHandler
-  implements ICommandHandler<RegisterServiceCommand> {
+  implements ICommandHandler<RegisterServiceCommand>
+{
   constructor(
     private readonly manager: ServiceAggregateService,
     private readonly publisher: EventPublisher,

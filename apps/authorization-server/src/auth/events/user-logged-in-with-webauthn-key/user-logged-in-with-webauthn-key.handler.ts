@@ -3,6 +3,7 @@ import { UserLoggedInWithWebAuthnEvent } from './user-logged-in-with-webauthn-ke
 
 @EventsHandler(UserLoggedInWithWebAuthnEvent)
 export class UserLoggedInWithWebAuthnHandler
-  implements IEventHandler<UserLoggedInWithWebAuthnEvent> {
+  implements IEventHandler<UserLoggedInWithWebAuthnEvent>
+{
   handle(event: UserLoggedInWithWebAuthnEvent) {}
 }

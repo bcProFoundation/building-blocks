@@ -8,7 +8,8 @@ import { EmailRequestService } from '../../aggregates/email-request/email-reques
 
 @EventsHandler(UnverifiedEmailVerificationCodeSentEvent)
 export class UnverifiedEmailVerificationCodeSentHandler
-  implements IEventHandler<UnverifiedEmailVerificationCodeSentEvent> {
+  implements IEventHandler<UnverifiedEmailVerificationCodeSentEvent>
+{
   constructor(
     private readonly authData: AuthDataService,
     private readonly email: EmailRequestService,

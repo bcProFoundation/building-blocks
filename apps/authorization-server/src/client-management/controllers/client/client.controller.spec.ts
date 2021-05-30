@@ -29,9 +29,8 @@ describe('ClientController', () => {
       .compile();
   });
   it('should be defined', () => {
-    const controller: ClientController = module.get<ClientController>(
-      ClientController,
-    );
+    const controller: ClientController =
+      module.get<ClientController>(ClientController);
     expect(controller).toBeDefined();
   });
 });

@@ -5,7 +5,8 @@ import { AuthDataService } from '../../../user-management/entities/auth-data/aut
 
 @EventsHandler(WebAuthnKeyChallengeRequestedEvent)
 export class WebAuthnKeyChallengeRequestedHandler
-  implements IEventHandler<WebAuthnKeyChallengeRequestedEvent> {
+  implements IEventHandler<WebAuthnKeyChallengeRequestedEvent>
+{
   constructor(private readonly authData: AuthDataService) {}
   handle(event: WebAuthnKeyChallengeRequestedEvent) {
     const { authData } = event;

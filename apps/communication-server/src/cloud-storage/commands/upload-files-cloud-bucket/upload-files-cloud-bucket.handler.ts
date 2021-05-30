@@ -4,7 +4,8 @@ import { UploadFilesCloudBucketAggregateService } from '../../aggregates/index';
 
 @CommandHandler(UploadFilesCloudBucketCommand)
 export class UploadFilesCloudBucketHandler
-  implements ICommandHandler<UploadFilesCloudBucketCommand> {
+  implements ICommandHandler<UploadFilesCloudBucketCommand>
+{
   constructor(
     private readonly manager: UploadFilesCloudBucketAggregateService,
     private readonly publisher: EventPublisher,

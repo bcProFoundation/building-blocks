@@ -4,7 +4,8 @@ import { ProfileManagerAggregateService } from '../../../profile-management/aggr
 
 @CommandHandler(UploadNewAvatarCommand)
 export class UploadNewAvatarHandler
-  implements ICommandHandler<UploadNewAvatarCommand> {
+  implements ICommandHandler<UploadNewAvatarCommand>
+{
   constructor(
     private readonly manager: ProfileManagerAggregateService,
     private readonly publisher: EventPublisher,

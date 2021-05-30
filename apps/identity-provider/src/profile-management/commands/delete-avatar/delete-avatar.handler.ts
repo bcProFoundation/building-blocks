@@ -4,7 +4,8 @@ import { ProfileManagerAggregateService } from '../../aggregates/profile-manager
 
 @CommandHandler(DeleteAvatarCommand)
 export class DeleteAvatarHandler
-  implements ICommandHandler<DeleteAvatarCommand> {
+  implements ICommandHandler<DeleteAvatarCommand>
+{
   constructor(
     private readonly manager: ProfileManagerAggregateService,
     private readonly publisher: EventPublisher,

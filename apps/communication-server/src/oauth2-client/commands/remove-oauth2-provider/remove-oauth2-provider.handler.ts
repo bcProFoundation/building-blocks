@@ -4,7 +4,8 @@ import { Oauth2ProviderAggregateService } from '../../aggregates/oauth2-provider
 
 @CommandHandler(RemoveOAuth2ProviderCommand)
 export class RemoveOAuth2ProviderHandler
-  implements ICommandHandler<RemoveOAuth2ProviderCommand> {
+  implements ICommandHandler<RemoveOAuth2ProviderCommand>
+{
   constructor(
     private publisher: EventPublisher,
     private manager: Oauth2ProviderAggregateService,

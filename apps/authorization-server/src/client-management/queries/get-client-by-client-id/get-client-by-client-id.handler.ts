@@ -6,7 +6,8 @@ import { NotFoundException } from '@nestjs/common';
 
 @QueryHandler(GetClientByClientIdQuery)
 export class GetClientByClientIdHandler
-  implements IQueryHandler<GetClientByClientIdQuery> {
+  implements IQueryHandler<GetClientByClientIdQuery>
+{
   constructor(
     private readonly user: UserService,
     private readonly client: ClientService,

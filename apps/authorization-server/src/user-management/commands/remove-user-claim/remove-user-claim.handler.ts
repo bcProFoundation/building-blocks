@@ -4,7 +4,8 @@ import { RemoveUserClaimCommand } from './remove-user-claim.command';
 
 @CommandHandler(RemoveUserClaimCommand)
 export class RemoveUserClaimHandler
-  implements ICommandHandler<RemoveUserClaimCommand> {
+  implements ICommandHandler<RemoveUserClaimCommand>
+{
   constructor(
     private readonly publisher: EventPublisher,
     private readonly manager: UserClaimAggregateService,

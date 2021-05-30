@@ -4,7 +4,8 @@ import { BearerTokenManagerService } from '../../aggregates/bearer-token-manager
 
 @CommandHandler(RemoveBearerTokenCommand)
 export class RemoveBearerTokenHandler
-  implements ICommandHandler<RemoveBearerTokenCommand> {
+  implements ICommandHandler<RemoveBearerTokenCommand>
+{
   constructor(
     private readonly manager: BearerTokenManagerService,
     private readonly publisher: EventPublisher,

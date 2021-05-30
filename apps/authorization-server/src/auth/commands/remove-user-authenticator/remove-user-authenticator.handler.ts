@@ -4,7 +4,8 @@ import { WebAuthnAggregateService } from '../../aggregates/webauthn-aggregate/we
 
 @CommandHandler(RemoveUserAuthenticatorCommand)
 export class RemoveUserAuthenticatorHandler
-  implements ICommandHandler<RemoveUserAuthenticatorCommand> {
+  implements ICommandHandler<RemoveUserAuthenticatorCommand>
+{
   constructor(
     private readonly manager: WebAuthnAggregateService,
     private readonly publisher: EventPublisher,

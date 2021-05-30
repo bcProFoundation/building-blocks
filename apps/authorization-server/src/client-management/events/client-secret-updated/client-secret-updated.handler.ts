@@ -4,7 +4,8 @@ import { ClientService } from '../../entities/client/client.service';
 
 @EventsHandler(ClientSecretUpdatedEvent)
 export class ClientSecretUpdatedHandler
-  implements IEventHandler<ClientSecretUpdatedEvent> {
+  implements IEventHandler<ClientSecretUpdatedEvent>
+{
   constructor(private readonly client: ClientService) {}
 
   handle(command: ClientSecretUpdatedEvent) {

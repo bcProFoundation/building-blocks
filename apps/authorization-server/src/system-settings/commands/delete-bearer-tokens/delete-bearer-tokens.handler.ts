@@ -4,7 +4,8 @@ import { SystemSettingsManagementService } from '../../aggregates';
 
 @CommandHandler(DeleteBearerTokensCommand)
 export class DeleteBearerTokensHandler
-  implements ICommandHandler<DeleteBearerTokensCommand> {
+  implements ICommandHandler<DeleteBearerTokensCommand>
+{
   constructor(
     private readonly publisher: EventPublisher,
     private readonly manager: SystemSettingsManagementService,

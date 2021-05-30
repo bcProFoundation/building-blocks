@@ -5,7 +5,8 @@ import { from } from 'rxjs';
 
 @EventsHandler(SystemEmailSentEvent)
 export class SystemEmailSentHandler
-  implements IEventHandler<SystemEmailSentEvent> {
+  implements IEventHandler<SystemEmailSentEvent>
+{
   constructor(private readonly sendEmail: SendEmailService) {}
 
   handle(event: SystemEmailSentEvent) {

@@ -4,7 +4,8 @@ import { ClientManagementAggregateService } from '../../aggregates';
 
 @CommandHandler(VerifyChangedClientSecretCommand)
 export class VerifyChangedClientSecretHandler
-  implements ICommandHandler<VerifyChangedClientSecretCommand> {
+  implements ICommandHandler<VerifyChangedClientSecretCommand>
+{
   constructor(
     private readonly publisher: EventPublisher,
     private readonly manager: ClientManagementAggregateService,

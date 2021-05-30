@@ -43,7 +43,8 @@ export class CodeGrantService {
         if (!areq.codeChallengeMethod) {
           codePayload.codeChallengeMethod = 'plain';
         } else {
-          codePayload.codeChallengeMethod = areq.codeChallengeMethod.toLowerCase();
+          codePayload.codeChallengeMethod =
+            areq.codeChallengeMethod.toLowerCase();
         }
 
         if (

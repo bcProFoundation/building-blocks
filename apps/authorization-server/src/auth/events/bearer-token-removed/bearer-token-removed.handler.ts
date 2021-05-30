@@ -8,7 +8,8 @@ import { BearerTokenService } from '../../entities/bearer-token/bearer-token.ser
 
 @EventsHandler(BearerTokenRemovedEvent)
 export class BearerTokenRemovedHandler
-  implements IEventHandler<BearerTokenRemovedEvent> {
+  implements IEventHandler<BearerTokenRemovedEvent>
+{
   constructor(
     private readonly http: HttpService,
     private readonly client: ClientService,

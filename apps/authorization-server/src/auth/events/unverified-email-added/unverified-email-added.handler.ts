@@ -7,7 +7,8 @@ import { EmailRequestService } from '../../../user-management/aggregates/email-r
 
 @EventsHandler(UnverifiedEmailAddedEvent)
 export class UnverifiedEmailAddedHandler
-  implements IEventHandler<UnverifiedEmailAddedEvent> {
+  implements IEventHandler<UnverifiedEmailAddedEvent>
+{
   constructor(
     private readonly authData: AuthDataService,
     private readonly email: EmailRequestService,

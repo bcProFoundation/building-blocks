@@ -5,7 +5,8 @@ import { ScopeService } from '../../entities/scope/scope.service';
 
 @EventsHandler(OAuth2ScopeModifiedEvent)
 export class OAuth2ScopeModifiedHandler
-  implements IEventHandler<OAuth2ScopeModifiedEvent> {
+  implements IEventHandler<OAuth2ScopeModifiedEvent>
+{
   constructor(private readonly scope: ScopeService) {}
 
   handle(event: OAuth2ScopeModifiedEvent) {

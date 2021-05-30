@@ -4,7 +4,8 @@ import { WebAuthnAggregateService } from '../../aggregates/webauthn-aggregate/we
 
 @CommandHandler(RenameUserAuthenticatorCommand)
 export class RenameUserAuthenticatorHandler
-  implements ICommandHandler<RenameUserAuthenticatorCommand> {
+  implements ICommandHandler<RenameUserAuthenticatorCommand>
+{
   constructor(
     private readonly manager: WebAuthnAggregateService,
     private readonly publisher: EventPublisher,

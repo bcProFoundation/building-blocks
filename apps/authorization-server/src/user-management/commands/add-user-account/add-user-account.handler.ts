@@ -4,7 +4,8 @@ import { UserManagementService } from '../../aggregates/user-management/user-man
 
 @CommandHandler(AddUserAccountCommand)
 export class AddUserAccountHandler
-  implements ICommandHandler<AddUserAccountCommand> {
+  implements ICommandHandler<AddUserAccountCommand>
+{
   constructor(
     private readonly manager: UserManagementService,
     private readonly eventPublisher: EventPublisher,

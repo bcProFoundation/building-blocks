@@ -4,7 +4,8 @@ import { ServiceTypeService } from '../../entities/service-type/service-type.ser
 
 @QueryHandler(GetServiceTypeByUuidQuery)
 export class GetServiceTypeByUuidHandler
-  implements IQueryHandler<GetServiceTypeByUuidQuery> {
+  implements IQueryHandler<GetServiceTypeByUuidQuery>
+{
   constructor(private readonly serviceType: ServiceTypeService) {}
   async execute(query: GetServiceTypeByUuidQuery) {
     const { uuid } = query;

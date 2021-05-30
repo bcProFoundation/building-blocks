@@ -44,7 +44,8 @@ describe('Command: EmailVerificationCodeHandler', () => {
     const sendUnverifiedEmailVerificationCode = jest.fn(() =>
       Promise.resolve(),
     );
-    manager.sendUnverifiedEmailVerificationCode = sendUnverifiedEmailVerificationCode;
+    manager.sendUnverifiedEmailVerificationCode =
+      sendUnverifiedEmailVerificationCode;
     commandBus$.execute = jest.fn(() => Promise.resolve());
     publisher.mergeObjectContext = jest.fn().mockImplementation((...args) => ({
       commit: () => {},

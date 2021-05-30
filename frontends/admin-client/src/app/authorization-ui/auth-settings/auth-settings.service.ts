@@ -137,9 +137,8 @@ export class AuthSettingsService {
   }
 
   updateSystemEmailSettings(communicationServerSystemEmailAccount: string) {
-    const communicationServer = this.storageService.getServiceURL(
-      COMMUNICATION_SERVER,
-    );
+    const communicationServer =
+      this.storageService.getServiceURL(COMMUNICATION_SERVER);
     return this.getClientSettings<IAuthSettings>(communicationServer).pipe(
       switchMap(settings => {
         return this.http.post(communicationServer + '/settings/v1/update', {

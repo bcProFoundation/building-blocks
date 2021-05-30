@@ -34,9 +34,8 @@ describe('SetupController', () => {
     }).compile();
   });
   it('should be defined', () => {
-    const controller: SetupController = module.get<SetupController>(
-      SetupController,
-    );
+    const controller: SetupController =
+      module.get<SetupController>(SetupController);
     expect(controller).toBeDefined();
   });
 });

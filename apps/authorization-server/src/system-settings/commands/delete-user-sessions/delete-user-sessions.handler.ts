@@ -4,7 +4,8 @@ import { SystemSettingsManagementService } from '../../aggregates';
 
 @CommandHandler(DeleteUserSessionsCommand)
 export class DeleteUserSessionsHandler
-  implements ICommandHandler<DeleteUserSessionsCommand> {
+  implements ICommandHandler<DeleteUserSessionsCommand>
+{
   constructor(
     private readonly publisher: EventPublisher,
     private readonly manager: SystemSettingsManagementService,

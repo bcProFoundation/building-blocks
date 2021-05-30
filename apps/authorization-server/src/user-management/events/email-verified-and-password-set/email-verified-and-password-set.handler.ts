@@ -6,7 +6,8 @@ import { UserService } from '../../entities/user/user.service';
 
 @EventsHandler(EmailVerifiedAndPasswordSetEvent)
 export class EmailVerifiedAndPasswordSetHandler
-  implements IEventHandler<EmailVerifiedAndPasswordSetEvent> {
+  implements IEventHandler<EmailVerifiedAndPasswordSetEvent>
+{
   constructor(
     private readonly user: UserService,
     private readonly authData: AuthDataService,

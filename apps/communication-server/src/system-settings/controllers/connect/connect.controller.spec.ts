@@ -30,9 +30,8 @@ describe('ConnectController', () => {
       .compile();
   });
   it('should be defined', () => {
-    const controller: ConnectController = module.get<ConnectController>(
-      ConnectController,
-    );
+    const controller: ConnectController =
+      module.get<ConnectController>(ConnectController);
     expect(controller).toBeDefined();
   });
 });

@@ -4,7 +4,8 @@ import { CloudStorageAggregateService } from '../../../cloud-storage/aggregates/
 
 @CommandHandler(AddCloudStorageCommand)
 export class AddCloudStorageHandler
-  implements ICommandHandler<AddCloudStorageCommand> {
+  implements ICommandHandler<AddCloudStorageCommand>
+{
   constructor(
     private readonly manager: CloudStorageAggregateService,
     private readonly publisher: EventPublisher,

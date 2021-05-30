@@ -4,7 +4,8 @@ import { UserManagementService } from '../../../user-management/aggregates/user-
 
 @CommandHandler(RemoveUserRoleCommand)
 export class RemoveUserRoleHandler
-  implements ICommandHandler<RemoveUserRoleCommand> {
+  implements ICommandHandler<RemoveUserRoleCommand>
+{
   constructor(
     private readonly manager: UserManagementService,
     private readonly publisher: EventPublisher,

@@ -4,7 +4,8 @@ import { AddUnverifiedEmailCommand } from './add-unverified-phone.command';
 
 @CommandHandler(AddUnverifiedEmailCommand)
 export class AddUnverifiedEmailHandler
-  implements ICommandHandler<AddUnverifiedEmailCommand> {
+  implements ICommandHandler<AddUnverifiedEmailCommand>
+{
   constructor(
     private readonly manager: UserAggregateService,
     private readonly publisher: EventPublisher,

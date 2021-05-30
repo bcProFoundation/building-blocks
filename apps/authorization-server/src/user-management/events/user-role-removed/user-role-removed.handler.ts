@@ -4,7 +4,8 @@ import { RoleService } from '../../entities/role/role.service';
 
 @EventsHandler(UserRoleRemovedEvent)
 export class UserRoleRemovedHandler
-  implements IEventHandler<UserRoleRemovedEvent> {
+  implements IEventHandler<UserRoleRemovedEvent>
+{
   constructor(private readonly role: RoleService) {}
 
   async handle(event: UserRoleRemovedEvent) {

@@ -4,7 +4,8 @@ import { ClientManagementAggregateService } from '../../aggregates';
 
 @CommandHandler(ModifyClientCommand)
 export class ModifyClientHandler
-  implements ICommandHandler<ModifyClientCommand> {
+  implements ICommandHandler<ModifyClientCommand>
+{
   constructor(
     private readonly publisher: EventPublisher,
     private readonly manager: ClientManagementAggregateService,

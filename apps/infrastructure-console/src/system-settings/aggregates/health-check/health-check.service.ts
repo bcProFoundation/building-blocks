@@ -12,6 +12,7 @@ import {
 import { DatabaseHealthIndicatorService } from '../database-health-indicator/database-health-indicator.service';
 
 export const HEALTH_ENDPOINT = '/api/healthz';
+export const HEALTHCHECK_TIMEOUT = 10000;
 
 @Injectable()
 export class HealthCheckAggregateService {
@@ -34,6 +35,7 @@ export class HealthCheckAggregateService {
             host: this.config.get(EVENTS_HOST),
             port: Number(this.config.get(EVENTS_PORT)),
           },
+          timeout: HEALTHCHECK_TIMEOUT,
         }),
       );
     }

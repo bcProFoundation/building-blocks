@@ -81,7 +81,7 @@ describe('AppModule (e2e)', () => {
   });
 
   it('/GET /oauth2/profile (Invalid Token Use)', done => {
-    return request(app.getHttpServer())
+    request(app.getHttpServer())
       .get('/oauth2/profile')
       .set('Authorization', 'Bearer ' + 'fakeToken')
       .expect(401)
@@ -92,7 +92,7 @@ describe('AppModule (e2e)', () => {
   });
 
   it('/POST /auth/login', done => {
-    return request(app.getHttpServer())
+    request(app.getHttpServer())
       .post('/auth/login')
       .send({
         username: adminEmail,
@@ -108,7 +108,7 @@ describe('AppModule (e2e)', () => {
   });
 
   it('/POST /oauth2/token (Client Credentials)', done => {
-    return request(app.getHttpServer())
+    request(app.getHttpServer())
       .post('/oauth2/token')
       .send({
         grant_type: 'client_credentials',
@@ -129,7 +129,7 @@ describe('AppModule (e2e)', () => {
     const clientCredentials = Buffer.from(
       clientId + ':' + clientSecret,
     ).toString('base64');
-    return request(app.getHttpServer())
+    request(app.getHttpServer())
       .post('/oauth2/introspection')
       .send({
         token: clientAccessToken,
@@ -146,7 +146,7 @@ describe('AppModule (e2e)', () => {
     const clientCredentials = Buffer.from(
       clientId + ':' + clientSecret,
     ).toString('base64');
-    return request(app.getHttpServer())
+    request(app.getHttpServer())
       .post('/oauth2/revoke')
       .send({
         token: clientAccessToken,
@@ -167,7 +167,7 @@ describe('AppModule (e2e)', () => {
     }&state=420`;
     const req = request(app.getHttpServer()).get(authRequest);
     req.cookies = Cookies;
-    return req.end((err, response) => {
+    req.end((err, response) => {
       if (err) return done(err);
       code = getParameterByName(response.header.location, 'code');
       const state = getParameterByName(response.header.location, 'state');
@@ -184,7 +184,7 @@ describe('AppModule (e2e)', () => {
       client_id: clientId,
       scope: allowedScopes.join(' '),
     };
-    return request(app.getHttpServer())
+    request(app.getHttpServer())
       .post('/oauth2/token')
       .send(req)
       .expect(200)
@@ -196,7 +196,7 @@ describe('AppModule (e2e)', () => {
   });
 
   it('/POST /oauth2/token (Request Owner Password Credentials)', done => {
-    return request(app.getHttpServer())
+    request(app.getHttpServer())
       .post('/oauth2/token')
       .send({
         grant_type: 'password',
@@ -221,7 +221,7 @@ describe('AppModule (e2e)', () => {
     }&state=420`;
     const req = request(app.getHttpServer()).get(authRequest);
     req.cookies = Cookies;
-    return req.end((err, response) => {
+    req.end((err, response) => {
       if (err) return done(err);
       const state = getParameterByName(response.header.location, 'state');
       expect(state).toEqual('420');
@@ -230,7 +230,7 @@ describe('AppModule (e2e)', () => {
   });
 
   it('/POST /oauth2/token (Refresh Token Exchange)', done => {
-    return request(app.getHttpServer())
+    request(app.getHttpServer())
       .post('/oauth2/token')
       .send({
         grant_type: 'refresh_token',
@@ -255,7 +255,7 @@ describe('AppModule (e2e)', () => {
 
     const req = request(app.getHttpServer()).get(authRequest);
     req.cookies = Cookies;
-    return req.end((err, response) => {
+    req.end((err, response) => {
       if (err) return done(err);
       const oidcIDToken = getParameterByName(
         response.header.location,
@@ -277,7 +277,7 @@ describe('AppModule (e2e)', () => {
 
     const req = request(app.getHttpServer()).get(authRequest);
     req.cookies = Cookies;
-    return req.expect(302).end((err, response) => {
+    req.expect(302).end((err, response) => {
       if (err) return done(err);
       const oidcIDToken = getParameterByName(
         response.header.location,
@@ -304,7 +304,7 @@ describe('AppModule (e2e)', () => {
 
     const req = request(app.getHttpServer()).get(authRequest);
     req.cookies = Cookies;
-    return req.expect(302).end((err, response) => {
+    req.expect(302).end((err, response) => {
       if (err) return done(err);
       const oidcIDToken = getParameterByName(
         response.header.location,
@@ -328,7 +328,7 @@ describe('AppModule (e2e)', () => {
 
     const req = request(app.getHttpServer()).get(authRequest);
     req.cookies = Cookies;
-    return req.expect(302).end((err, response) => {
+    req.expect(302).end((err, response) => {
       if (err) return done(err);
       const oidcToken = getParameterByName(
         response.header.location,
@@ -352,7 +352,7 @@ describe('AppModule (e2e)', () => {
 
     const req = request(app.getHttpServer()).get(authRequest);
     req.cookies = Cookies;
-    return req.expect(302).end((err, response) => {
+    req.expect(302).end((err, response) => {
       if (err) return done(err);
       const oidcToken = getParameterByName(
         response.header.location,
@@ -380,7 +380,7 @@ describe('AppModule (e2e)', () => {
     }&state=420&code_challenge_method=S256&code_challenge=21XaP8MJjpxCMRxgEzBP82sZ73PRLqkyBUta1R309J0`;
     const req = request(app.getHttpServer()).get(authRequest);
     req.cookies = Cookies;
-    return req.end((err, response) => {
+    req.end((err, response) => {
       if (err) return done(err);
       codePKCE = getParameterByName(response.header.location, 'code');
       const state = getParameterByName(response.header.location, 'state');
@@ -398,7 +398,7 @@ describe('AppModule (e2e)', () => {
       scope: allowedScopes.join(' '),
       code_verifier: '420',
     };
-    return request(app.getHttpServer())
+    request(app.getHttpServer())
       .post('/oauth2/token')
       .send(req)
       .expect(200)

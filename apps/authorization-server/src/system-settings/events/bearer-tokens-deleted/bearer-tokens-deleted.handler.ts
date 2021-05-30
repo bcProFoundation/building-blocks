@@ -8,7 +8,8 @@ import { retry } from 'rxjs/operators';
 
 @EventsHandler(BearerTokensDeletedEvent)
 export class BearerTokensDeletedHandler
-  implements IEventHandler<BearerTokensDeletedEvent> {
+  implements IEventHandler<BearerTokensDeletedEvent>
+{
   constructor(
     private readonly bearerToken: BearerTokenService,
     private readonly client: ClientService,

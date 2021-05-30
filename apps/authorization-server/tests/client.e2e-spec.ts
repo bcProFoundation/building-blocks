@@ -87,7 +87,7 @@ describe('AppModule (e2e)', () => {
   });
 
   it('/POST /auth/login', done => {
-    return request(app.getHttpServer())
+    request(app.getHttpServer())
       .post('/auth/login')
       .send({
         username: adminEmail,
@@ -110,7 +110,7 @@ describe('AppModule (e2e)', () => {
     }&state=420`;
     const req = request(app.getHttpServer()).get(authRequest);
     req.cookies = Cookies;
-    return req.end((err, response) => {
+    req.end((err, response) => {
       if (err) return done(err);
       const state = getParameterByName(response.header.location, 'state');
       userAccessToken = getParameterByName(
@@ -131,7 +131,7 @@ describe('AppModule (e2e)', () => {
       name: 'E2E Test Client',
       redirectUris: ['http://e2e.localhost:3000/index.html'],
     };
-    return request(app.getHttpServer())
+    request(app.getHttpServer())
       .post('/client/v1/create')
       .set('Authorization', 'Bearer ' + userAccessToken)
       .send(clientReq)
@@ -143,7 +143,7 @@ describe('AppModule (e2e)', () => {
   });
 
   it('/GET /client/v1/list (List Clients)', done => {
-    return request(app.getHttpServer())
+    request(app.getHttpServer())
       .get('/client/v1/list')
       .set('Authorization', 'Bearer ' + userAccessToken)
       .expect(200)
@@ -156,7 +156,7 @@ describe('AppModule (e2e)', () => {
   });
 
   it('/GET /client/v1/get_by_client_id (Retrieve Client)', done => {
-    return request(app.getHttpServer())
+    request(app.getHttpServer())
       .get('/client/v1/get_by_client_id/' + clientId)
       .set('Authorization', 'Bearer ' + userAccessToken)
       .expect(200)
@@ -169,7 +169,7 @@ describe('AppModule (e2e)', () => {
   });
 
   it('/GET /client/v1/get (Retrieve Client by UUID)', done => {
-    return request(app.getHttpServer())
+    request(app.getHttpServer())
       .get('/client/v1/get/' + clientUuid)
       .set('Authorization', 'Bearer ' + userAccessToken)
       .expect(200)
@@ -182,7 +182,7 @@ describe('AppModule (e2e)', () => {
   });
 
   it('/POST /scope/v1/create (Fail to add Scope with existing name)', done => {
-    return request(app.getHttpServer())
+    request(app.getHttpServer())
       .post('/scope/v1/create')
       .set('Authorization', 'Bearer ' + userAccessToken)
       .send({ name: 'email' })
@@ -194,7 +194,7 @@ describe('AppModule (e2e)', () => {
   });
 
   it('/POST /scope/v1/update (Fail update of client used scope name)', done => {
-    return request(app.getHttpServer())
+    request(app.getHttpServer())
       .post('/scope/v1/update/' + emailScope.uuid)
       .set('Authorization', 'Bearer ' + userAccessToken)
       .send({ name: 'email_address' })
@@ -207,7 +207,7 @@ describe('AppModule (e2e)', () => {
   });
 
   it('/POST /scope/v1/delete (Fail delete of client used scope name)', done => {
-    return request(app.getHttpServer())
+    request(app.getHttpServer())
       .post('/scope/v1/delete/' + emailScope.name)
       .set('Authorization', 'Bearer ' + userAccessToken)
       .send({ name: 'admin' })

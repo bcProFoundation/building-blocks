@@ -4,7 +4,8 @@ import { SendEmailService } from '../../../email/aggregates/send-email/send-emai
 
 @CommandHandler(SendSystemEmailCommand)
 export class SendSystemEmailHandler
-  implements ICommandHandler<SendSystemEmailCommand> {
+  implements ICommandHandler<SendSystemEmailCommand>
+{
   constructor(
     private readonly manager: SendEmailService,
     private readonly publisher: EventPublisher,

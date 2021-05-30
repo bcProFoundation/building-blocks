@@ -4,7 +4,8 @@ import { ClientManagementAggregateService } from '../../aggregates';
 
 @CommandHandler(ModifyOAuth2ScopeCommand)
 export class ModifyOAuth2ScopeHandler
-  implements ICommandHandler<ModifyOAuth2ScopeCommand> {
+  implements ICommandHandler<ModifyOAuth2ScopeCommand>
+{
   constructor(
     private readonly manager: ClientManagementAggregateService,
     private readonly publisher: EventPublisher,

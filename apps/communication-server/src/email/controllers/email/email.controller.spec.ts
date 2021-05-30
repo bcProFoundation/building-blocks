@@ -47,9 +47,8 @@ describe('EmailController', () => {
       .compile();
   });
   it('should be defined', () => {
-    const controller: EmailController = module.get<EmailController>(
-      EmailController,
-    );
+    const controller: EmailController =
+      module.get<EmailController>(EmailController);
     expect(controller).toBeDefined();
   });
 });

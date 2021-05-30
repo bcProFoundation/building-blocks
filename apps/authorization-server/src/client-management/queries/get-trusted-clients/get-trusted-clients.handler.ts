@@ -4,7 +4,8 @@ import { ClientService } from '../../entities/client/client.service';
 
 @QueryHandler(GetTrustedClientsQuery)
 export class GetTrustedClientsHandler
-  implements IQueryHandler<GetTrustedClientsQuery> {
+  implements IQueryHandler<GetTrustedClientsQuery>
+{
   constructor(private readonly client: ClientService) {}
 
   async execute(query: GetTrustedClientsQuery) {

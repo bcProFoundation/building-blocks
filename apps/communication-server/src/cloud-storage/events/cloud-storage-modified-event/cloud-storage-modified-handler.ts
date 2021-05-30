@@ -4,7 +4,8 @@ import { StorageService } from '../../entities/storage/storage.service';
 
 @EventsHandler(CloudStorageModifiedEvent)
 export class CloudStorageModifiedEventHandler
-  implements IEventHandler<CloudStorageModifiedEvent> {
+  implements IEventHandler<CloudStorageModifiedEvent>
+{
   constructor(private readonly storageService: StorageService) {}
 
   async handle(event: CloudStorageModifiedEvent) {

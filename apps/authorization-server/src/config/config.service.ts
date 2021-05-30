@@ -56,9 +56,8 @@ export class ConfigService {
       [MONGO_URI_PREFIX]: Joi.string().optional(),
     });
 
-    const { error, value: validatedEnvConfig } = envVarsSchema.validate(
-      envConfig,
-    );
+    const { error, value: validatedEnvConfig } =
+      envVarsSchema.validate(envConfig);
     if (error) {
       Logger.error(error, error.stack, this.constructor.name);
       process.exit(1);

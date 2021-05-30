@@ -4,7 +4,8 @@ import { ServiceService } from '../../entities/service/service.service';
 
 @QueryHandler(GetServiceByClientIdQuery)
 export class GetServiceByClientIdHandler
-  implements IQueryHandler<GetServiceByClientIdQuery> {
+  implements IQueryHandler<GetServiceByClientIdQuery>
+{
   constructor(private readonly service: ServiceService) {}
   async execute(query: GetServiceByClientIdQuery) {
     const { clientId } = query;

@@ -4,7 +4,8 @@ import { SessionService } from '../../../auth/entities/session/session.service';
 
 @EventsHandler(UserSessionsDeletedEvent)
 export class UserSessionsDeletedHandler
-  implements IEventHandler<UserSessionsDeletedEvent> {
+  implements IEventHandler<UserSessionsDeletedEvent>
+{
   constructor(private readonly session: SessionService) {}
 
   handle(event: UserSessionsDeletedEvent) {

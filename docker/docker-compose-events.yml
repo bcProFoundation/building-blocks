@@ -3,6 +3,7 @@ version: "3"
 services:
   events:
     image: emqx/emqx:latest
+    restart: unless-stopped
     environment:
       - EMQX_ALLOW_ANONYMOUS=true
       - EMQX_LOADED_PLUGINS=emqx_management,emqx_auth_mnesia,emqx_recon,emqx_retainer,emqx_dashboard
@@ -10,18 +11,3 @@ services:
       - 1883:1883
       - 18083:18083
       - 8081:8081
-
-  events-config:
-    image: byrnedo/alpine-curl:latest
-    environment:
-      - EVENTS_USER=${EVENTS_USER?Variable EVENTS_USER not set}
-      - EVENTS_PASSWORD=${EVENTS_PASSWORD?Variable EVENTS_PASSWORD not set}
-    depends_on:
-      - events
-    entrypoint: ["/bin/sh", "-c"]
-    command:
-      - sleep 5;
-        curl -i --basic -u admin:public -X POST http://events:8081/api/v4/mqtt_user -d '{"login":"$EVENTS_USER","password":"$EVENTS_PASSWORD","is_superuser":false}'
-
-volumes:
-  events-config-vol:

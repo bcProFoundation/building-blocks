@@ -5,7 +5,8 @@ import { SignupService } from '../../aggregates/signup/signup.service';
 
 @CommandHandler(SignupViaEmailCommand)
 export class SignupViaEmailHandler
-  implements ICommandHandler<SignupViaEmailCommand> {
+  implements ICommandHandler<SignupViaEmailCommand>
+{
   constructor(
     private readonly manager: SignupService,
     private readonly eventPublisher: EventPublisher,

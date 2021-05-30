@@ -5,7 +5,8 @@ import { AuthDataService } from '../../entities/auth-data/auth-data.service';
 
 @EventsHandler(AuthDataRemovedEvent)
 export class AuthDataRemovedHandler
-  implements IEventHandler<AuthDataRemovedEvent> {
+  implements IEventHandler<AuthDataRemovedEvent>
+{
   constructor(private readonly authData: AuthDataService) {}
 
   handle(event: AuthDataRemovedEvent) {

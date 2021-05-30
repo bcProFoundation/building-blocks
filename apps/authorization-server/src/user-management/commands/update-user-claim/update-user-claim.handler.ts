@@ -4,7 +4,8 @@ import { UpdateUserClaimCommand } from './update-user-claim.command';
 
 @CommandHandler(UpdateUserClaimCommand)
 export class UpdateUserClaimHandler
-  implements ICommandHandler<UpdateUserClaimCommand> {
+  implements ICommandHandler<UpdateUserClaimCommand>
+{
   constructor(
     private readonly publisher: EventPublisher,
     private readonly manager: UserClaimAggregateService,

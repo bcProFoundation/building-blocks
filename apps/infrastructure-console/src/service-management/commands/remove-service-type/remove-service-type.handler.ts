@@ -4,7 +4,8 @@ import { ServiceAggregateService } from '../../aggregates/service-aggregate/serv
 
 @CommandHandler(RemoveServiceTypeCommand)
 export class RemoveServiceTypeHandler
-  implements ICommandHandler<RemoveServiceTypeCommand> {
+  implements ICommandHandler<RemoveServiceTypeCommand>
+{
   constructor(
     private readonly manager: ServiceAggregateService,
     private readonly publisher: EventPublisher,

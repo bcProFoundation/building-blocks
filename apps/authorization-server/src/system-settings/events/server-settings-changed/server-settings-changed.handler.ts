@@ -4,7 +4,8 @@ import { ServerSettingsService } from '../../../system-settings/entities/server-
 
 @EventsHandler(SystemSettingsChangedEvent)
 export class SystemSettingsChangedHandler
-  implements IEventHandler<SystemSettingsChangedEvent> {
+  implements IEventHandler<SystemSettingsChangedEvent>
+{
   constructor(private readonly settings: ServerSettingsService) {}
   async handle(event: SystemSettingsChangedEvent) {
     const { settings } = event;

@@ -4,7 +4,8 @@ import { OTPAggregateService } from '../../aggregates/otp-aggregate/otp-aggregat
 
 @CommandHandler(AddUnverifiedMobileCommand)
 export class AddUnverifiedMobileHandler
-  implements ICommandHandler<AddUnverifiedMobileCommand> {
+  implements ICommandHandler<AddUnverifiedMobileCommand>
+{
   constructor(
     private readonly manager: OTPAggregateService,
     private readonly publisher: EventPublisher,

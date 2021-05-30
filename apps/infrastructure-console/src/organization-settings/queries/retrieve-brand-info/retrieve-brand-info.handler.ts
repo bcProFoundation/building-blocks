@@ -5,7 +5,8 @@ import { BrandSettings } from '../../entities/brand-settings/brand-settings.enti
 
 @QueryHandler(RetrieveBrandInfoQuery)
 export class RetrieveBrandInfoHandler
-  implements IQueryHandler<RetrieveBrandInfoQuery> {
+  implements IQueryHandler<RetrieveBrandInfoQuery>
+{
   constructor(private readonly brand: BrandSettingsService) {}
   async execute(query: RetrieveBrandInfoQuery) {
     const brandInfo = (await this.brand.find()) || ({} as BrandSettings);

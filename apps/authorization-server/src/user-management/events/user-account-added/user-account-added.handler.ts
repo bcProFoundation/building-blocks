@@ -5,7 +5,8 @@ import { AuthDataService } from '../../entities/auth-data/auth-data.service';
 
 @EventsHandler(UserAccountAddedEvent)
 export class UserAccountAddedHandler
-  implements IEventHandler<UserAccountAddedEvent> {
+  implements IEventHandler<UserAccountAddedEvent>
+{
   constructor(
     private readonly user: UserService,
     private readonly authData: AuthDataService,

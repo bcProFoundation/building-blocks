@@ -3,6 +3,7 @@ import { SocialLoginUserSignedUpEvent } from './social-login-user-signed-up.even
 
 @EventsHandler(SocialLoginUserSignedUpEvent)
 export class UserSignedUpViaSocialLoginHandler
-  implements IEventHandler<SocialLoginUserSignedUpEvent> {
+  implements IEventHandler<SocialLoginUserSignedUpEvent>
+{
   handle(event: SocialLoginUserSignedUpEvent) {}
 }

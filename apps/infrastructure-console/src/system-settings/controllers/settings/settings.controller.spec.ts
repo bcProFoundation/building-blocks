@@ -37,9 +37,8 @@ describe('Settings Controller', () => {
       .compile();
   });
   it('should be defined', () => {
-    const controller: SettingsController = module.get<SettingsController>(
-      SettingsController,
-    );
+    const controller: SettingsController =
+      module.get<SettingsController>(SettingsController);
     expect(controller).toBeDefined();
   });
 });

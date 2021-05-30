@@ -4,7 +4,8 @@ import { UploadFilesCloudBucketAggregateService } from '../../aggregates';
 
 @CommandHandler(DeleteFileFromStorageCommand)
 export class DeleteFileFromStorageHandler
-  implements ICommandHandler<DeleteFileFromStorageCommand> {
+  implements ICommandHandler<DeleteFileFromStorageCommand>
+{
   constructor(
     private readonly manager: UploadFilesCloudBucketAggregateService,
     private readonly publisher: EventPublisher,

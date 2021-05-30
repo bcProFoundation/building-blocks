@@ -5,7 +5,8 @@ import { UserAuthenticatorService } from '../../../user-management/entities/user
 
 @EventsHandler(WebAuthnKeyRegisteredEvent)
 export class WebAuthnKeyRegisteredHandler
-  implements IEventHandler<WebAuthnKeyRegisteredEvent> {
+  implements IEventHandler<WebAuthnKeyRegisteredEvent>
+{
   constructor(private readonly authenticator: UserAuthenticatorService) {}
   handle(event: WebAuthnKeyRegisteredEvent) {
     const { authenticator } = event;

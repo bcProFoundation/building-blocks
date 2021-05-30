@@ -42,11 +42,10 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/GET /info', done => {
+  it('/GET /info', () => {
     return request(app.getHttpServer())
       .get('/info')
       .expect(200)
-      .expect(reqResp)
-      .end(done);
+      .expect(reqResp);
   });
 });

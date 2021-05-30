@@ -4,7 +4,8 @@ import { BrandAggregateService } from '../../aggregates/brand-aggregate/brand-ag
 
 @CommandHandler(UpdateBrandInfoCommand)
 export class UpdateBrandInfoHandler
-  implements ICommandHandler<UpdateBrandInfoCommand> {
+  implements ICommandHandler<UpdateBrandInfoCommand>
+{
   constructor(
     private readonly publisher: EventPublisher,
     private readonly manager: BrandAggregateService,

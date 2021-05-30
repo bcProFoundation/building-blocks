@@ -4,7 +4,8 @@ import { UserAggregateService } from '../../aggregates/user-aggregate/user-aggre
 
 @CommandHandler(Initialize2FACommand)
 export class Initialize2FAHandler
-  implements ICommandHandler<Initialize2FACommand> {
+  implements ICommandHandler<Initialize2FACommand>
+{
   constructor(
     private readonly manager: UserAggregateService,
     private readonly publisher: EventPublisher,

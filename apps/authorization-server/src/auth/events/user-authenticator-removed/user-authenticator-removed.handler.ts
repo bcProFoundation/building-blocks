@@ -8,7 +8,8 @@ import { UserAuthenticatorService } from '../../../user-management/entities/user
 
 @EventsHandler(UserAuthenticatorRemovedEvent)
 export class UserAuthenticatorRemovedHandler
-  implements IEventHandler<UserAuthenticatorRemovedEvent> {
+  implements IEventHandler<UserAuthenticatorRemovedEvent>
+{
   constructor(
     private readonly authData: AuthDataService,
     private readonly authenticator: UserAuthenticatorService,

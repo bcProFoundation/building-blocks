@@ -4,7 +4,8 @@ import { WebAuthnAggregateService } from '../../aggregates/webauthn-aggregate/we
 
 @CommandHandler(RegisterWebAuthnKeyCommand)
 export class RegisterWebAuthnKeyHandler
-  implements ICommandHandler<RegisterWebAuthnKeyCommand> {
+  implements ICommandHandler<RegisterWebAuthnKeyCommand>
+{
   constructor(
     private readonly manager: WebAuthnAggregateService,
     private readonly publisher: EventPublisher,

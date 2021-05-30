@@ -4,7 +4,8 @@ import { UserManagementService } from '../../../user-management/aggregates/user-
 import { InvalidRequestToDeleteUser } from '../../../common/filters/exceptions';
 @CommandHandler(RemoveUserAccountCommand)
 export class RemoveUserAccountHandler
-  implements ICommandHandler<RemoveUserAccountCommand> {
+  implements ICommandHandler<RemoveUserAccountCommand>
+{
   constructor(
     private readonly manager: UserManagementService,
     private readonly publisher: EventPublisher,

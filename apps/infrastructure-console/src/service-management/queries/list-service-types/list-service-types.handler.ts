@@ -4,7 +4,8 @@ import { ServiceTypeService } from '../../entities/service-type/service-type.ser
 
 @QueryHandler(ListServiceTypesQuery)
 export class ListServiceTypesHandler
-  implements IQueryHandler<ListServiceTypesQuery> {
+  implements IQueryHandler<ListServiceTypesQuery>
+{
   constructor(private readonly serviceType: ServiceTypeService) {}
 
   async execute(query: ListServiceTypesQuery) {

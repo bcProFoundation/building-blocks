@@ -105,7 +105,7 @@ describe('AppModule (e2e)', () => {
   });
 
   it('/POST /auth/login', done => {
-    return request(app.getHttpServer())
+    request(app.getHttpServer())
       .post('/auth/login')
       .send({
         username: adminEmail,
@@ -128,7 +128,7 @@ describe('AppModule (e2e)', () => {
     }&state=420`;
     const req = request(app.getHttpServer()).get(authRequest);
     req.cookies = Cookies;
-    return req.end((err, response) => {
+    req.end((err, response) => {
       if (err) return done(err);
       const state = getParameterByName(response.header.location, 'state');
       userAccessToken = getParameterByName(
@@ -141,7 +141,7 @@ describe('AppModule (e2e)', () => {
   });
 
   it('/POST /role/v1/create (Fail to add Role with existing name)', done => {
-    return request(app.getHttpServer())
+    request(app.getHttpServer())
       .post('/role/v1/create')
       .set('Authorization', 'Bearer ' + userAccessToken)
       .send({ name: 'administrator' })
@@ -153,7 +153,7 @@ describe('AppModule (e2e)', () => {
   });
 
   it('/POST /role/v1/update (Fail update of user used role name)', done => {
-    return request(app.getHttpServer())
+    request(app.getHttpServer())
       .post('/role/v1/update/' + adminRole.uuid)
       .set('Authorization', 'Bearer ' + userAccessToken)
       .send({ name: 'admin' })
@@ -165,7 +165,7 @@ describe('AppModule (e2e)', () => {
   });
 
   it('/POST /role/v1/delete (Fail delete of user used role name)', done => {
-    return request(app.getHttpServer())
+    request(app.getHttpServer())
       .post('/role/v1/delete/' + adminRole.name)
       .set('Authorization', 'Bearer ' + userAccessToken)
       .expect(400)
@@ -192,7 +192,7 @@ describe('AppModule (e2e)', () => {
       name: 'Tester',
       email: adminEmail,
     };
-    return request(app.getHttpServer())
+    request(app.getHttpServer())
       .post('/user/v1/create')
       .set('Authorization', 'Bearer ' + userAccessToken)
       .send(userReq)
@@ -212,7 +212,7 @@ describe('AppModule (e2e)', () => {
       name: 'Tester',
       email: 'test@user.org',
     };
-    return request(app.getHttpServer())
+    request(app.getHttpServer())
       .post('/user/v1/create')
       .set('Authorization', 'Bearer ' + userAccessToken)
       .send(userReq)
@@ -271,7 +271,7 @@ describe('AppModule (e2e)', () => {
   });
 
   it('/POST /settings/v1/update (Update settings)', done => {
-    return request(app.getHttpServer())
+    request(app.getHttpServer())
       .post('/settings/v1/update')
       .set('Authorization', 'Bearer ' + userAccessToken)
       .send({
@@ -287,7 +287,7 @@ describe('AppModule (e2e)', () => {
   });
 
   it('/POST /user/v1/change_password (Self change password)', done => {
-    return request(app.getHttpServer())
+    request(app.getHttpServer())
       .post('/user/v1/change_password')
       .set('Authorization', 'Bearer ' + userAccessToken)
       .send({ currentPassword: adminPassword, newPassword: '14Ch@rPassword' })
@@ -299,7 +299,7 @@ describe('AppModule (e2e)', () => {
   });
 
   it('/POST /user/v1/delete_me (Delete Me)', done => {
-    return request(app.getHttpServer())
+    request(app.getHttpServer())
       .post('/auth/login')
       .send({
         username: 'test@user.org',
@@ -339,7 +339,7 @@ describe('AppModule (e2e)', () => {
   });
 
   it('Initialize & Verify 2FA', done => {
-    return request(app.getHttpServer())
+    request(app.getHttpServer())
       .post('/user/v1/initialize_2fa?restart=true')
       .set('Authorization', 'Bearer ' + userAccessToken)
       .end((err, res) => {
@@ -369,7 +369,7 @@ describe('AppModule (e2e)', () => {
       secret: sharedSecret,
       encoding: 'base32',
     });
-    return request(app.getHttpServer())
+    request(app.getHttpServer())
       .post('/auth/login')
       .send({
         username: adminEmail,
@@ -462,7 +462,7 @@ describe('AppModule (e2e)', () => {
   });
 
   it('/POST /user/v1/generate_password (Verify email and set password)', done => {
-    return request(app.getHttpServer())
+    request(app.getHttpServer())
       .post('/user/v1/generate_password')
       .set('Authorization', 'Bearer ' + userAccessToken)
       .send({
@@ -477,7 +477,7 @@ describe('AppModule (e2e)', () => {
   });
 
   it('/GET /auth/logout', done => {
-    return request(app.getHttpServer())
+    request(app.getHttpServer())
       .get('/auth/logout')
       .expect(302)
       .end((err, res) => {

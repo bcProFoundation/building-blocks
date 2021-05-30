@@ -33,9 +33,8 @@ describe('OAuth2Controller', () => {
     }).compile();
   });
   it('should be defined', () => {
-    const controller: OAuth2Controller = module.get<OAuth2Controller>(
-      OAuth2Controller,
-    );
+    const controller: OAuth2Controller =
+      module.get<OAuth2Controller>(OAuth2Controller);
     expect(controller).toBeDefined();
   });
 });

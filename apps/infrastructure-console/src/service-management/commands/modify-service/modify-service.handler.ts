@@ -4,7 +4,8 @@ import { ServiceAggregateService } from '../../aggregates/service-aggregate/serv
 
 @CommandHandler(ModifyServiceCommand)
 export class ModifyServiceHandler
-  implements ICommandHandler<ModifyServiceCommand> {
+  implements ICommandHandler<ModifyServiceCommand>
+{
   constructor(
     private readonly manager: ServiceAggregateService,
     private readonly publisher: EventPublisher,

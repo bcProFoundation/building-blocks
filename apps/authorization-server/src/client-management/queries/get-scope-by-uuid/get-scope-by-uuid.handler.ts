@@ -5,7 +5,8 @@ import { ScopeService } from '../../entities/scope/scope.service';
 
 @QueryHandler(GetScopeByUuidQuery)
 export class GetScopeByUuidHandler
-  implements IQueryHandler<GetScopeByUuidQuery> {
+  implements IQueryHandler<GetScopeByUuidQuery>
+{
   constructor(private readonly scope: ScopeService) {}
 
   async execute(query: GetScopeByUuidQuery) {

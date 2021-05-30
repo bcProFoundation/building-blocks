@@ -27,9 +27,8 @@ describe('ScopeController', () => {
       .compile();
   });
   it('should be defined', () => {
-    const controller: ScopeController = module.get<ScopeController>(
-      ScopeController,
-    );
+    const controller: ScopeController =
+      module.get<ScopeController>(ScopeController);
     expect(controller).toBeDefined();
   });
 });

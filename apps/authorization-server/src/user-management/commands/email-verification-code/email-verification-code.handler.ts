@@ -4,7 +4,8 @@ import { SignupService } from '../../aggregates/signup/signup.service';
 
 @CommandHandler(EmailVerificationCodeCommand)
 export class EmailVerificationCodeHandler
-  implements ICommandHandler<EmailVerificationCodeCommand> {
+  implements ICommandHandler<EmailVerificationCodeCommand>
+{
   constructor(
     private publisher: EventPublisher,
     private readonly otpAggregate: SignupService,

@@ -47,9 +47,8 @@ export class IdpSettingsService {
     clientSecret: string,
     cloudStorageSettings: string,
   ) {
-    const identityProvider = this.storageService.getServiceURL(
-      IDENTITY_PROVIDER,
-    );
+    const identityProvider =
+      this.storageService.getServiceURL(IDENTITY_PROVIDER);
     const authServerURL = localStorage.getItem(ISSUER_URL);
     return this.http.post(identityProvider + '/settings/v1/update', {
       appURL,
@@ -61,9 +60,8 @@ export class IdpSettingsService {
   }
 
   deleteCachedTokens() {
-    const identityProvider = this.storageService.getServiceURL(
-      IDENTITY_PROVIDER,
-    );
+    const identityProvider =
+      this.storageService.getServiceURL(IDENTITY_PROVIDER);
     return this.http.post(
       identityProvider + '/settings/v1/clear_token_cache',
       {},

@@ -4,7 +4,8 @@ import { RemoveCloudStorageCommand } from './remove-cloud-storage.command';
 
 @CommandHandler(RemoveCloudStorageCommand)
 export class RemoveCloudStorageHandler
-  implements ICommandHandler<RemoveCloudStorageCommand> {
+  implements ICommandHandler<RemoveCloudStorageCommand>
+{
   constructor(
     private readonly manager: CloudStorageAggregateService,
     private readonly publisher: EventPublisher,

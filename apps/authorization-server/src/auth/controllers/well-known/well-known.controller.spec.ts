@@ -17,9 +17,8 @@ describe('WellKnown Controller', () => {
     }).compile();
   });
   it('should be defined', () => {
-    const controller: WellKnownController = module.get<WellKnownController>(
-      WellKnownController,
-    );
+    const controller: WellKnownController =
+      module.get<WellKnownController>(WellKnownController);
     expect(controller).toBeDefined();
   });
 });

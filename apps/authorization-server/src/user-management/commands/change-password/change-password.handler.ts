@@ -4,7 +4,8 @@ import { UserAggregateService } from '../../../user-management/aggregates/user-a
 
 @CommandHandler(ChangePasswordCommand)
 export class ChangePasswordHandler
-  implements ICommandHandler<ChangePasswordCommand> {
+  implements ICommandHandler<ChangePasswordCommand>
+{
   constructor(
     private readonly manager: UserAggregateService,
     private readonly publisher: EventPublisher,

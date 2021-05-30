@@ -4,7 +4,8 @@ import { UserClaimAddedEvent } from './user-claim-added.event';
 
 @EventsHandler(UserClaimAddedEvent)
 export class UserClaimAddedHandler
-  implements IEventHandler<UserClaimAddedEvent> {
+  implements IEventHandler<UserClaimAddedEvent>
+{
   constructor(private readonly userClaim: UserClaimService) {}
   handle(event: UserClaimAddedEvent) {
     const { claim } = event;

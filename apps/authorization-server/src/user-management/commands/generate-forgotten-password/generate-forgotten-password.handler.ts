@@ -4,7 +4,8 @@ import { UserManagementService } from '../../../user-management/aggregates/user-
 
 @CommandHandler(GenerateForgottenPasswordCommand)
 export class GenerateForgottenPasswordHandler
-  implements ICommandHandler<GenerateForgottenPasswordCommand> {
+  implements ICommandHandler<GenerateForgottenPasswordCommand>
+{
   constructor(
     private readonly manager: UserManagementService,
     private readonly publisher: EventPublisher,

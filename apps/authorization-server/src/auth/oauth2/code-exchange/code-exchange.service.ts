@@ -28,9 +28,8 @@ export class CodeExchangeService {
 
   async exchangeCode(client, code, redirectUri, body, issued) {
     try {
-      const localCode: AuthorizationCode = await this.authorizationCodeService.findOne(
-        { code },
-      );
+      const localCode: AuthorizationCode =
+        await this.authorizationCodeService.findOne({ code });
 
       if (!localCode) {
         issued(invalidAuthorizationCodeException);

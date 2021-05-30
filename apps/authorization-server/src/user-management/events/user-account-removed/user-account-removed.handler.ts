@@ -9,7 +9,8 @@ import { USER } from '../../entities/user/user.schema';
 
 @EventsHandler(UserAccountRemovedEvent)
 export class UserAccountRemovedHandler
-  implements IEventHandler<UserAccountRemovedEvent> {
+  implements IEventHandler<UserAccountRemovedEvent>
+{
   constructor(
     private readonly requestUserDelete: UserDeleteRequestService,
     private readonly authData: AuthDataService,

@@ -4,7 +4,8 @@ import { ProfileService } from '../../entities/profile/profile.service';
 
 @EventsHandler(ProfileDeletedEvent)
 export class ProfileDeletedHandler
-  implements IEventHandler<ProfileDeletedEvent> {
+  implements IEventHandler<ProfileDeletedEvent>
+{
   constructor(private readonly profile: ProfileService) {}
   async handle(event: ProfileDeletedEvent) {
     const { profile } = event;

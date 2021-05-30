@@ -4,7 +4,8 @@ import { ClientManagementAggregateService } from '../../../client-management/agg
 
 @CommandHandler(RemoveOAuth2ScopeCommand)
 export class RemoveOAuth2ScopeHandler
-  implements ICommandHandler<RemoveOAuth2ScopeCommand> {
+  implements ICommandHandler<RemoveOAuth2ScopeCommand>
+{
   constructor(
     private readonly manager: ClientManagementAggregateService,
     private readonly publisher: EventPublisher,

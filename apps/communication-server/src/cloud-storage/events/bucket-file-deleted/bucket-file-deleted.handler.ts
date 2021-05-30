@@ -4,7 +4,8 @@ import { BucketFileDeletedEvent } from './bucket-file-deleted.event';
 
 @EventsHandler(BucketFileDeletedEvent)
 export class BucketFileDeletedHandler
-  implements IEventHandler<BucketFileDeletedEvent> {
+  implements IEventHandler<BucketFileDeletedEvent>
+{
   handle(event: BucketFileDeletedEvent) {
     const spacesEndpoint: any = new AWS.Endpoint(event.storage.endpoint);
     const s3 = new AWS.S3({

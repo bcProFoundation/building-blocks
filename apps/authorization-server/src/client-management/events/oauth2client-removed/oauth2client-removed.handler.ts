@@ -5,7 +5,8 @@ import { ClientService } from '../../entities/client/client.service';
 
 @EventsHandler(OAuth2ClientRemovedEvent)
 export class OAuth2ClientRemovedHandler
-  implements IEventHandler<OAuth2ClientRemovedEvent> {
+  implements IEventHandler<OAuth2ClientRemovedEvent>
+{
   constructor(private readonly client: ClientService) {}
 
   handle(event: OAuth2ClientRemovedEvent) {

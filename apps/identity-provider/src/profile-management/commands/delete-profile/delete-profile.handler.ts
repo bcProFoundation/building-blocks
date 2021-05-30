@@ -4,7 +4,8 @@ import { ProfileManagerAggregateService } from '../../aggregates/profile-manager
 
 @CommandHandler(DeleteProfileCommand)
 export class DeleteProfileHandler
-  implements ICommandHandler<DeleteProfileCommand> {
+  implements ICommandHandler<DeleteProfileCommand>
+{
   constructor(
     private readonly manager: ProfileManagerAggregateService,
     private readonly publisher: EventPublisher,

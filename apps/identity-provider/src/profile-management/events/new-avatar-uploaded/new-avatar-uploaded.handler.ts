@@ -12,7 +12,8 @@ import { INVALID_TOKEN } from '../../../constants/messages';
 
 @EventsHandler(NewAvatarUploadedEvent)
 export class NewAvatarUploadedHandler
-  implements IEventHandler<NewAvatarUploadedEvent> {
+  implements IEventHandler<NewAvatarUploadedEvent>
+{
   constructor(
     private readonly http: HttpService,
     private readonly profileService: ProfileService,

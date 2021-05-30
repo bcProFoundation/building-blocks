@@ -3,7 +3,8 @@ import { BrandInfoUpdatedEvent } from './brand-info-updated.event';
 
 @EventsHandler(BrandInfoUpdatedEvent)
 export class BrandInfoUpdatedHandler
-  implements IEventHandler<BrandInfoUpdatedEvent> {
+  implements IEventHandler<BrandInfoUpdatedEvent>
+{
   handle(event: BrandInfoUpdatedEvent) {
     const { brandSettings } = event;
 

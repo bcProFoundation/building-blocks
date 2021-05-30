@@ -4,7 +4,8 @@ import { SocialLoginManagementService } from '../../aggregates/social-login-mana
 
 @CommandHandler(AddSocialLoginCommand)
 export class AddSocialLoginHandler
-  implements ICommandHandler<AddSocialLoginCommand> {
+  implements ICommandHandler<AddSocialLoginCommand>
+{
   constructor(
     private readonly manager: SocialLoginManagementService,
     private readonly publisher: EventPublisher,

@@ -4,7 +4,8 @@ import { WebAuthnAggregateService } from '../../aggregates/webauthn-aggregate/we
 
 @QueryHandler(FindUserAuthenticatorsQuery)
 export class FindUserAuthenticatorsHandler
-  implements IQueryHandler<FindUserAuthenticatorsQuery> {
+  implements IQueryHandler<FindUserAuthenticatorsQuery>
+{
   constructor(private readonly aggregate: WebAuthnAggregateService) {}
 
   async execute(query: FindUserAuthenticatorsQuery) {

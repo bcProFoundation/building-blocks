@@ -4,7 +4,8 @@ import { BearerTokenService } from '../../entities/bearer-token/bearer-token.ser
 
 @EventsHandler(BearerTokenAddedEvent)
 export class BearerTokenAddedHandler
-  implements IEventHandler<BearerTokenAddedEvent> {
+  implements IEventHandler<BearerTokenAddedEvent>
+{
   constructor(private readonly token: BearerTokenService) {}
   handle(event: BearerTokenAddedEvent) {
     const { token } = event;

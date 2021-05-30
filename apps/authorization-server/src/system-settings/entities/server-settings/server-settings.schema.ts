@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 
+export const SERVER_SETTINGS_COLLECTION_NAME = 'server_settings';
+
 export const ServerSettings = new mongoose.Schema(
   {
     uuid: { type: String, default: uuidv4 },
@@ -18,7 +20,7 @@ export const ServerSettings = new mongoose.Schema(
     enableUserPhone: { type: Boolean, default: false },
     isUserDeleteDisabled: { type: Boolean, default: false },
   },
-  { collection: 'server_settings', versionKey: false },
+  { collection: SERVER_SETTINGS_COLLECTION_NAME, versionKey: false },
 );
 
 export const SERVER_SETTINGS = 'ServerSettings';

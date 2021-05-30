@@ -4,7 +4,8 @@ import { OAuth2TokenGeneratorService } from '../../oauth2/oauth2-token-generator
 
 @CommandHandler(GenerateBearerTokenCommand)
 export class GenerateBearerTokenHandler
-  implements ICommandHandler<GenerateBearerTokenCommand> {
+  implements ICommandHandler<GenerateBearerTokenCommand>
+{
   constructor(
     private readonly manager: OAuth2TokenGeneratorService,
     private readonly publisher: EventPublisher,

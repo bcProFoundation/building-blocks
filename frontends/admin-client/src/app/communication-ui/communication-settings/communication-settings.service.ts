@@ -55,9 +55,8 @@ export class CommunicationSettingsService {
     clientSecret: string,
     communicationServerSystemEmailAccount: string,
   ) {
-    const communicationServer = this.storageService.getServiceURL(
-      COMMUNICATION_SERVER,
-    );
+    const communicationServer =
+      this.storageService.getServiceURL(COMMUNICATION_SERVER);
     const authServerURL = localStorage.getItem(ISSUER_URL);
     return this.http.post(communicationServer + '/settings/v1/update', {
       appURL,

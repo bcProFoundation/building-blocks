@@ -5,7 +5,8 @@ import { UserAuthenticatorService } from '../../../user-management/entities/user
 
 @EventsHandler(UserAuthenticatorModifiedEvent)
 export class UserAuthenticatorModifiedHandler
-  implements IEventHandler<UserAuthenticatorModifiedEvent> {
+  implements IEventHandler<UserAuthenticatorModifiedEvent>
+{
   constructor(private readonly authenticator: UserAuthenticatorService) {}
   handle(event: UserAuthenticatorModifiedEvent) {
     const { authKey } = event;

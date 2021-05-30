@@ -4,7 +4,8 @@ import { SystemSettingsManagementService } from '../../aggregates';
 
 @CommandHandler(ChangeServerSettingsCommand)
 export class ChangeServerSettingsHandler
-  implements ICommandHandler<ChangeServerSettingsCommand> {
+  implements ICommandHandler<ChangeServerSettingsCommand>
+{
   constructor(
     private readonly manager: SystemSettingsManagementService,
     private readonly publisher: EventPublisher,

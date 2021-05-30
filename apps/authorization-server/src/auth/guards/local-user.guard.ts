@@ -33,7 +33,7 @@ export class LocalUserGuard implements CanActivate {
   public async logIn<
     TRequest extends {
       logIn: (user, callback: (error) => any) => any;
-    } = any
+    } = any,
   >(request: TRequest): Promise<void> {
     const user = request[defaultOptions.property];
     await new Promise<void>((resolve, reject) =>

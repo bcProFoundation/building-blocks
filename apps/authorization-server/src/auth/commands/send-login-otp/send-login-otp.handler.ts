@@ -4,7 +4,8 @@ import { OTPAggregateService } from '../../aggregates/otp-aggregate/otp-aggregat
 
 @CommandHandler(SendLoginOTPCommand)
 export class SendLoginOTPHandler
-  implements ICommandHandler<SendLoginOTPCommand> {
+  implements ICommandHandler<SendLoginOTPCommand>
+{
   constructor(
     private publisher: EventPublisher,
     private readonly otpAggregate: OTPAggregateService,
