@@ -4,7 +4,7 @@ Docker containers with version and commit hash are published on gitlab registry.
 
 Every two weeks dependencies are upgraded.
 
-To upgrade dependencies use `npm-check`
+To upgrade dependencies use `yarn upgrade-interactive --latest`
 
 Run unit tests and integration tests.
 

@@ -3,9 +3,9 @@ FROM node:latest
 COPY . /home/craft/authorization-server
 WORKDIR /home/craft/
 RUN cd authorization-server \
-    && npm install \
-    && npm run build \
-    && npm install --only=production
+    && yarn \
+    && yarn build \
+    && yarn --production=true
 
 FROM node:slim
 # Install dependencies

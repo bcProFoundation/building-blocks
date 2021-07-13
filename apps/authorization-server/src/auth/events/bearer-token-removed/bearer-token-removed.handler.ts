@@ -1,8 +1,8 @@
 import { IEventHandler, EventsHandler } from '@nestjs/cqrs';
-import { BearerTokenRemovedEvent } from './bearer-token-removed.event';
-import { HttpService } from '@nestjs/common';
-import { ClientService } from '../../../client-management/entities/client/client.service';
+import { HttpService } from '@nestjs/axios';
 import { retry } from 'rxjs/operators';
+import { BearerTokenRemovedEvent } from './bearer-token-removed.event';
+import { ClientService } from '../../../client-management/entities/client/client.service';
 import { TOKEN_DELETE_QUEUE } from '../../schedulers/token-schedule/token-schedule.service';
 import { BearerTokenService } from '../../entities/bearer-token/bearer-token.service';
 

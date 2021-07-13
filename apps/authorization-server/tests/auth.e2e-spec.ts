@@ -1,4 +1,4 @@
-import { Test } from '@nestjs/testing';
+import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
 import speakeasy from 'speakeasy';
 import { INestApplication } from '@nestjs/common';
@@ -34,7 +34,7 @@ jest.setTimeout(30000);
 
 describe('AppModule (e2e)', () => {
   let app: INestApplication;
-  let moduleFixture;
+  let moduleFixture: TestingModule;
   let clientId: string;
   let redirectUris: string[];
   let allowedScopes: string[];

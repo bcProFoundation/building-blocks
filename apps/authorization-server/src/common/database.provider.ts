@@ -1,20 +1,19 @@
 import { Logger } from '@nestjs/common';
-import mongoose from 'mongoose';
-import { Observable, defer } from 'rxjs';
-import { retryWhen, scan, delay } from 'rxjs/operators';
 import Agenda from 'agenda';
-import RateLimitMongoStore from 'rate-limit-mongo';
 import MongoStore from 'connect-mongo';
-
+import mongoose from 'mongoose';
+import RateLimitMongoStore from 'rate-limit-mongo';
+import { defer, lastValueFrom, Observable } from 'rxjs';
+import { delay, retryWhen, scan } from 'rxjs/operators';
+import { SESSION_COLLECTION } from '../auth/entities/session/session.schema';
 import {
   ConfigService,
-  DB_USER,
-  DB_PASSWORD,
   DB_HOST,
   DB_NAME,
+  DB_PASSWORD,
+  DB_USER,
   MONGO_URI_PREFIX,
 } from '../config/config.service';
-import { SESSION_COLLECTION } from '../auth/entities/session/session.schema';
 
 export const MONGOOSE_CONNECTION = 'DATABASE_CONNECTION';
 export const AGENDA_CONNECTION = 'AGENDA_CONNECTION';
@@ -28,25 +27,25 @@ export const databaseProviders = [
     useFactory: async (config: ConfigService): Promise<typeof mongoose> => {
       const mongoUriPrefix = config.get(MONGO_URI_PREFIX) || 'mongodb';
       const mongoOptions = 'retryWrites=true';
-      return await defer(() =>
-        mongoose.connect(
-          `${mongoUriPrefix}://${config.get(DB_USER)}:${config.get(
-            DB_PASSWORD,
-          )}@${config.get(DB_HOST).replace(/,\s*$/, '')}/${config.get(
-            DB_NAME,
-          )}?${mongoOptions}`,
-          {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            autoReconnect: false,
-            reconnectTries: 0,
-            reconnectInterval: 0,
-            useCreateIndex: true,
-          },
-        ),
-      )
-        .pipe(handleRetry())
-        .toPromise();
+      return await lastValueFrom(
+        defer(() =>
+          mongoose.connect(
+            `${mongoUriPrefix}://${config.get(DB_USER)}:${config.get(
+              DB_PASSWORD,
+            )}@${config.get(DB_HOST).replace(/,\s*$/, '')}/${config.get(
+              DB_NAME,
+            )}?${mongoOptions}`,
+            {
+              useNewUrlParser: true,
+              useUnifiedTopology: true,
+              autoReconnect: false,
+              reconnectTries: 0,
+              reconnectInterval: 0,
+              useCreateIndex: true,
+            },
+          ),
+        ).pipe(handleRetry()),
+      );
     },
     inject: [ConfigService],
   },

@@ -1,12 +1,12 @@
 FROM node:latest
 
-ARG BUILD_ARGS="-- --configuration production"
+ARG BUILD_ARGS="--configuration production"
 # Copy and build app
 COPY . /home/craft/identity-client
 WORKDIR /home/craft
 RUN cd identity-client \
-    && npm install \
-    && npm run build ${BUILD_ARGS}
+    && yarn \
+    && yarn build ${BUILD_ARGS}
 
 FROM nginxinc/nginx-unprivileged:latest
 COPY --from=0 /home/craft/identity-client/dist/identity-client /var/www/html

@@ -1,4 +1,5 @@
-import { Injectable, HttpService } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { settingsAlreadyExists } from '../../../exceptions';
 import { ServerSettings } from '../../entities/server-settings/server-settings.entity';
 import { ServerSettingsService } from '../../entities/server-settings/server-settings.service';

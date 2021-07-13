@@ -1,5 +1,5 @@
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
-import { HttpService } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { BearerTokensDeletedEvent } from './bearer-tokens-deleted.event';
 import { BearerTokenService } from '../../../auth/entities/bearer-token/bearer-token.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';

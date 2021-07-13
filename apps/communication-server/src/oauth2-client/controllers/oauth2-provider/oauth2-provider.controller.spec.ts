@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { HttpService } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { QueryBus, CommandBus } from '@nestjs/cqrs';
 import { Reflector } from '@nestjs/core';
 import { Oauth2ProviderController } from './oauth2-provider.controller';

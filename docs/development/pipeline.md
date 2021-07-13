@@ -26,7 +26,7 @@
 
 ```shell
 gitbook build docs public
-npm run docs
+yarn docs
 http-server public
 ```
 ### Deployment

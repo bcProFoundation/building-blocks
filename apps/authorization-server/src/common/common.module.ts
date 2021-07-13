@@ -1,4 +1,5 @@
-import { Module, Global, HttpModule } from '@nestjs/common';
+import { Module, Global } from '@nestjs/common';
+import { HttpModule } from '@nestjs/axios';
 import { ClientsModule } from '@nestjs/microservices';
 import { CryptographerService } from './services/cryptographer/cryptographer.service';
 import { databaseProviders } from './database.provider';
@@ -15,11 +16,6 @@ import { CommonSagas } from './sagas';
     ...CommonCommandHandlers,
     ...CommonSagas,
   ],
-  exports: [
-    CryptographerService,
-    ...databaseProviders,
-    HttpModule,
-    ClientsModule.registerAsync([eventsClient]),
-  ],
+  exports: [CryptographerService, ...databaseProviders, HttpModule],
 })
 export class CommonModule {}

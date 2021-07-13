@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
 import { CqrsModule, EventBus } from '@nestjs/cqrs';
-import { HttpModule } from '@nestjs/common';
+import { HttpModule } from '@nestjs/axios';
 import { UnverifiedEmailAddedHandler } from './unverified-email-added.handler';
 import { UnverifiedEmailAddedEvent } from './unverified-email-added.event';
 import { User } from '../../../user-management/entities/user/user.interface';

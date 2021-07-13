@@ -1,14 +1,14 @@
 import { INestApplication, Logger } from '@nestjs/common';
 import { MicroserviceOptions } from '@nestjs/microservices';
+import { useEventClientFactory } from './common/events-microservice.client';
 import {
   ConfigService,
   EVENTS_HOST,
+  EVENTS_PASSWORD,
   EVENTS_PORT,
   EVENTS_PROTO,
   EVENTS_USER,
-  EVENTS_PASSWORD,
 } from './config/config.service';
-import { useEventClientFactory } from './common/events-microservice.client';
 
 const LISTENING_TO_EVENTS = 'Listening to Events';
 
@@ -26,8 +26,8 @@ export function setupEvents(app: INestApplication) {
   ) {
     const options = useEventClientFactory(config);
     const events = app.connectMicroservice<MicroserviceOptions>(options);
-    events.listen(() =>
-      Logger.log(LISTENING_TO_EVENTS, events.constructor.name),
-    );
+    events
+      .listen()
+      .then(() => Logger.log(LISTENING_TO_EVENTS, events.constructor.name));
   }
 }

@@ -25,7 +25,7 @@ export class OAuth2Controller {
   @Get('confirmation')
   @Render('dialog')
   @UseGuards(EnsureLoginGuard)
-  @UseFilters(ErrorFilter)
+  @UseFilters(new ErrorFilter())
   @ApiExcludeEndpoint()
   confirmation(@Req() request) {
     return {

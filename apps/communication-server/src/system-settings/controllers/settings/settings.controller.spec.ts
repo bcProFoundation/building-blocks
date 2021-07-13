@@ -1,5 +1,5 @@
 import { TestingModule, Test } from '@nestjs/testing';
-import { HttpModule } from '@nestjs/common';
+import { HttpModule } from '@nestjs/axios';
 import { SettingsController } from './settings.controller';
 import { TokenCacheService } from '../../../auth/entities/token-cache/token-cache.service';
 import { TokenGuard } from '../../../auth/guards/token.guard';

@@ -47,14 +47,14 @@ test_authorization_server:
     EVENTS_PASSWORD: "changeit"
   before_script:
     - cd apps/authorization-server
-    - npm install
+    - yarn
     - curl -i --basic -u admin:public -X POST http://events:8081/api/v4/mqtt_user -d '{"login":"user","password":"changeit","is_superuser":false}'
   script:
     # Check Code Quality
-    - npm run lint
-    - npm run format:check
+    - yarn lint
+    - yarn format:check
     # Test backend unit tests
-    - npm run test:server
+    - yarn test:server
     # Create .env file
     - envsubst '${NODE_ENV}
       ${SESSION_SECRET}
@@ -73,7 +73,7 @@ test_authorization_server:
     # set env variable for test
     - export NODE_ENV=test
     # Test backend e2e
-    - npm run test:e2e
+    - yarn test:e2e
   tags:
     - docker
 
@@ -91,18 +91,18 @@ test_authorization_client:
       - frontends/authorization-client/**/*
   before_script:
     - cd frontends/authorization-client
-    - npm install
+    - yarn
   script:
     # Check Code Quality
-    - npm run lint
-    - npm run format:check
+    - yarn lint
+    - yarn format:check
     # set env variable for test
     - export NODE_ENV=test
     # Test frontend
     - export DISPLAY=:99
     - Xvfb :0 -ac -screen 0 1024x768x24 &
-    - npm run test
-    - npm run e2e
+    - yarn test
+    - yarn e2e
   tags:
     - docker
 
@@ -120,17 +120,17 @@ test_communication_server:
       - apps/communication-server/**/*
   before_script:
     - cd apps/communication-server
-    - npm install
+    - yarn
   script:
     # set env variable for test
     - export NODE_ENV=test
     # Check Code Quality
-    - npm run lint
-    - npm run format:check
+    - yarn lint
+    - yarn format:check
     # Test backend unit tests
-    - npm run test:server
+    - yarn test:server
     # Test backend e2e
-    - npm run test:e2e
+    - yarn test:e2e
   tags:
     - docker
 
@@ -148,17 +148,17 @@ test_identity_provider:
       - apps/identity-provider/**/*
   before_script:
     - cd apps/identity-provider
-    - npm install
+    - yarn
   script:
     # set env variable for test
     - export NODE_ENV=test
     # Check Code Quality
-    - npm run lint
-    - npm run format:check
+    - yarn lint
+    - yarn format:check
     # Test backend unit tests
-    - npm run test:server
+    - yarn test:server
     # Test backend e2e
-    - npm run test:e2e
+    - yarn test:e2e
   tags:
     - docker
 
@@ -176,18 +176,18 @@ test_identity_client:
       - frontends/identity-client/**/*
   before_script:
     - cd frontends/identity-client
-    - npm install
+    - yarn
   script:
     # set env variable for test
     - export NODE_ENV=test
     # Check Code Quality
-    - npm run lint
-    - npm run format:check
+    - yarn lint
+    - yarn format:check
     # Test frontend
     - export DISPLAY=:99
     - Xvfb :0 -ac -screen 0 1024x768x24 &
-    - npm run test
-    - npm run e2e
+    - yarn test
+    - yarn e2e
   tags:
     - docker
 
@@ -205,17 +205,17 @@ test_infrastructure_console:
       - apps/infrastructure-console/**/*
   before_script:
     - cd apps/infrastructure-console
-    - npm install
+    - yarn
   script:
     # set env variable for test
     - export NODE_ENV=test
     # Check Code Quality
-    - npm run lint
-    - npm run format:check
+    - yarn lint
+    - yarn format:check
     # Test backend unit tests
-    - npm run test:server
+    - yarn test:server
     # Test backend e2e
-    - npm run test:e2e
+    - yarn test:e2e
   tags:
     - docker
 
@@ -233,18 +233,18 @@ test_admin_client:
       - frontends/admin-client/**/*
   before_script:
     - cd frontends/admin-client
-    - npm install
+    - yarn
   script:
     # set env variable for test
     - export NODE_ENV=test
     # Check Code Quality
-    - npm run lint
-    - npm run format:check
+    - yarn lint
+    - yarn format:check
     # Test frontend
     - export DISPLAY=:99
     - Xvfb :0 -ac -screen 0 1024x768x24 &
-    - npm run test
-    - npm run e2e
+    - yarn test
+    - yarn e2e
   tags:
     - docker
 
@@ -502,10 +502,10 @@ pages:
     - curl -fsSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
     # Install nodejs global packages
-    - npm install -g lerna docpress
+    - npm i -g lerna docpress
 
     # Install nodejs dependencies
-    - npm install
+    - yarn
     - lerna clean -y
     - lerna bootstrap
   script:
@@ -513,7 +513,7 @@ pages:
     - docpress b
 
     # Build TypeScript API docs
-    - npm run docs
+    - yarn docs
 
     # Build and package Helm Chart
     - helm package kubernetes/helm-chart --destination public

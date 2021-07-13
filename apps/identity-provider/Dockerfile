@@ -3,9 +3,9 @@ FROM node:latest
 COPY . /home/craft/identity-provider
 WORKDIR /home/craft/
 RUN cd identity-provider \
-    && npm install \
-    && npm run build \
-    && npm install --only=production
+    && yarn \
+    && yarn build \
+    && yarn --production=true
 
 FROM node:slim
 # Install dependencies

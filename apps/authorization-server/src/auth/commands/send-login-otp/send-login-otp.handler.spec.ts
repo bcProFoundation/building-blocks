@@ -42,7 +42,6 @@ describe('Command: SendLoginOTPHandler', () => {
   it('should remove sendLoginOTP using the OTPAggregateService', async () => {
     const sendLoginOTP = jest.fn(() => Promise.resolve());
     manager.sendLoginOTP = sendLoginOTP;
-    commandBus$.execute = jest.fn(() => Promise.resolve());
     publisher.mergeObjectContext = jest.fn().mockImplementation((...args) => ({
       commit: () => {},
       sendLoginOTP,

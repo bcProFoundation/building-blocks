@@ -1,4 +1,5 @@
-import { Injectable, HttpService } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { AggregateRoot } from '@nestjs/cqrs';
 import { retry } from 'rxjs/operators';
 import speakeasy from 'speakeasy';

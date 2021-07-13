@@ -1,4 +1,5 @@
-import { Injectable, HttpService } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { from, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { handlebars } from 'hbs';

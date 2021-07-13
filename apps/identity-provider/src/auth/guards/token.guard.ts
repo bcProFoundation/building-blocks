@@ -3,8 +3,8 @@ import {
   ExecutionContext,
   Injectable,
   NotImplementedException,
-  HttpService,
 } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { ServerSettingsService } from '../../system-settings/entities/server-settings/server-settings.service';
 import { TokenCache } from '../../auth/entities/token-cache/token-cache.entity';
 import { TokenCacheService } from '../../auth/entities/token-cache/token-cache.service';

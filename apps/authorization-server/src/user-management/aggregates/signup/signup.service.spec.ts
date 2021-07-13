@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { HttpService } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { CqrsModule } from '@nestjs/cqrs';
 import { SignupService } from './signup.service';
 import { UserService } from '../../entities/user/user.service';

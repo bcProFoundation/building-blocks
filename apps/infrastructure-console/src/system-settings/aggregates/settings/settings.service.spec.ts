@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SettingsService } from './settings.service';
-import { HttpModule } from '@nestjs/common';
+import { HttpModule } from '@nestjs/axios';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 
 describe('SettingsService', () => {

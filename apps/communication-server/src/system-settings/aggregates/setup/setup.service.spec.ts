@@ -3,7 +3,7 @@ import { SetupService } from './setup.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ServerSettings } from '../../entities/server-settings/server-settings.entity';
 import { ServerSettingsService } from '../../entities/server-settings/server-settings.service';
-import { HttpService } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { from } from 'rxjs';
 
 describe('SetupService', () => {

@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CloudStorageController } from './cloud-storage.controller';
-import { HttpService } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { StorageService } from '../../../cloud-storage/entities/storage/storage.service';
 import { TokenGuard } from '../../../auth/guards/token.guard';

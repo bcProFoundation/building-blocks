@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { HttpService } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { CommandBus } from '@nestjs/cqrs';
 import { SocialLoginCallbackService } from './social-login-callback.service';
 import { UserService } from '../../../user-management/entities/user/user.service';

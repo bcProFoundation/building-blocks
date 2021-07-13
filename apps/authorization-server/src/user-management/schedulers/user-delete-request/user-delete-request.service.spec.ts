@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { HttpService } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { UserDeleteRequestService } from './user-delete-request.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
 import { AGENDA_CONNECTION } from '../../../common/database.provider';
