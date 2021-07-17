@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
 import { CqrsModule, EventBus } from '@nestjs/cqrs';
-import { HttpService } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { BearerTokensDeletedHandler } from './bearer-tokens-deleted.handler';
 import { BearerTokensDeletedEvent } from './bearer-tokens-deleted.event';
 import { BearerTokenService } from '../../../auth/entities/bearer-token/bearer-token.service';

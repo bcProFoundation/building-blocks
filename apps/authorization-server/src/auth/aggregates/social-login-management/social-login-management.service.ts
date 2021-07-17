@@ -1,20 +1,19 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { AggregateRoot } from '@nestjs/cqrs';
-import { SocialLoginService } from '../../entities/social-login/social-login.service';
-import { SocialLoginRemovedEvent } from '../../events/social-login-removed/social-login-removed.event';
-import { SocialLoginUserSignedUpEvent } from '../../events';
-import { UserService } from '../../../user-management/entities/user/user.service';
+import { v4 as uuidv4 } from 'uuid';
+import { User } from '../../../user-management/entities/user/user.interface';
+import { UserAccountAddedEvent } from '../../../user-management/events/user-account-added/user-account-added.event';
 import { CreateSocialLoginDto } from '../../controllers/social-login/social-login-create.dto';
-import { SocialLoginAddedEvent } from '../../events/social-login-added/social-login-added.event';
 import { SocialLogin } from '../../entities/social-login/social-login.interface';
+import { SocialLoginService } from '../../entities/social-login/social-login.service';
+import { SocialLoginUserSignedUpEvent } from '../../events';
+import { SocialLoginAddedEvent } from '../../events/social-login-added/social-login-added.event';
 import { SocialLoginModifiedEvent } from '../../events/social-login-modified/social-login-modified.event';
+import { SocialLoginRemovedEvent } from '../../events/social-login-removed/social-login-removed.event';
 
 @Injectable()
 export class SocialLoginManagementService extends AggregateRoot {
-  constructor(
-    private readonly socialLoginService: SocialLoginService,
-    private readonly userService: UserService,
-  ) {
+  constructor(private readonly socialLoginService: SocialLoginService) {
     super();
   }
 
@@ -24,8 +23,11 @@ export class SocialLoginManagementService extends AggregateRoot {
     socialLogin: string,
     isEmailVerified: boolean,
   ) {
+    const uuid = uuidv4();
     this.apply(new SocialLoginUserSignedUpEvent(email, name, socialLogin));
-    return await this.userService.save({ email, name, isEmailVerified });
+    return this.apply(
+      new UserAccountAddedEvent({ email, name, isEmailVerified, uuid } as User),
+    );
   }
 
   async removeSocialLogin(uuid: string, userUuid: string) {

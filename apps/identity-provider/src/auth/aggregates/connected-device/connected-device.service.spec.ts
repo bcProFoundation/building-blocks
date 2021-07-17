@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConnectedDeviceService } from './connected-device.service';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
-import { HttpService } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 
 describe('ConnectedDeviceService', () => {
   let service: ConnectedDeviceService;

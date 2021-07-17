@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { OTPAggregateService } from './otp-aggregate.service';
-import { HttpService } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { ClientService } from '../../../client-management/entities/client/client.service';
 import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';

@@ -1,4 +1,5 @@
-import { Module, Global, HttpModule } from '@nestjs/common';
+import { Module, Global } from '@nestjs/common';
+import { HttpModule } from '@nestjs/axios';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Oauth2ProviderController } from './controllers/oauth2-provider/oauth2-provider.controller';
 import { OAuth2Provider } from './entities/oauth2-provider/oauth2-provider.entity';

@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { HttpService } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { ConnectedDeviceController } from './connected-device.controller';
 import { ConnectedDeviceService } from '../../aggregates/connected-device/connected-device.service';
 import { TokenGuard } from '../../guards/token.guard';

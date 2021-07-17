@@ -2,8 +2,8 @@ import {
   Injectable,
   UnauthorizedException,
   ForbiddenException,
-  HttpService,
 } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { CommandBus } from '@nestjs/cqrs';
 import { from, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';

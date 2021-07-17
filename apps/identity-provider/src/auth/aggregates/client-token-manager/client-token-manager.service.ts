@@ -1,4 +1,5 @@
-import { ForbiddenException, Injectable, HttpService } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { from, of, Observable, throwError } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
 import { stringify } from 'querystring';

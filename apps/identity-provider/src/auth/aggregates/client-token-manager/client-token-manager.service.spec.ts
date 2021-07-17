@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClientTokenManagerService } from './client-token-manager.service';
 import { TokenCacheService } from '../../entities/token-cache/token-cache.service';
-import { HttpService } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 
 describe('ClientTokenManagerService', () => {

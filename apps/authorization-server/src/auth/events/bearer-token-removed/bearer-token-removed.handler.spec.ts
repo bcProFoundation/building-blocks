@@ -1,11 +1,11 @@
-import { Test } from '@nestjs/testing';
+import { HttpModule } from '@nestjs/axios';
 import { CqrsModule, EventBus } from '@nestjs/cqrs';
-import { BearerTokenRemovedHandler } from './bearer-token-removed.handler';
-import { BearerTokenRemovedEvent } from './bearer-token-removed.event';
-import { BearerToken } from '../../entities/bearer-token/bearer-token.interface';
-import { HttpModule } from '@nestjs/common';
+import { Test } from '@nestjs/testing';
 import { ClientService } from '../../../client-management/entities/client/client.service';
+import { BearerToken } from '../../entities/bearer-token/bearer-token.interface';
 import { BearerTokenService } from '../../entities/bearer-token/bearer-token.service';
+import { BearerTokenRemovedEvent } from './bearer-token-removed.event';
+import { BearerTokenRemovedHandler } from './bearer-token-removed.handler';
 
 describe('Event: BearerTokenRemovedHandler', () => {
   let eventBus$: EventBus;

@@ -32,7 +32,7 @@ cd building-blocks
 ### Bootstrap NodeJS package dependencies
 
 ```shell
-rm -fr node_modules && npm i && lerna clean -y && lerna bootstrap
+rm -fr node_modules && yarn && lerna clean -y && lerna bootstrap
 ```
 
 ### Setup Environment Variables
@@ -92,11 +92,11 @@ Start Development backend and frontend using following commands
 ```shell
 # for packages in apps/ directory,
 # execute following command from the app package root
-npm run start:debug
+yarn start:debug
 
 # for packages in frontends/ directory,
 # execute following command from the frontend package root
-npm start
+yarn start
 ```
 
 or use VS Code Setup, refer [example](vscode.md)
@@ -179,5 +179,5 @@ lerna run lint
 lerna run format && lerna run lint -- --fix
 
 # OR execute from app or frontend package root
-npm run format && npm run lint -- --fix
+yarn format && yarn lint -- --fix
 ```

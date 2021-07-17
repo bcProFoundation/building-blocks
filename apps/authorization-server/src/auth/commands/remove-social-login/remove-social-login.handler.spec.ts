@@ -54,7 +54,6 @@ describe('Command: RemoveSocialLoginHandler', () => {
 
   it('should remove SocialLogin using the SocialLoginManagementService', async () => {
     manager.removeSocialLogin = jest.fn(() => Promise.resolve());
-    commandBus$.execute = jest.fn(() => Promise.resolve());
     publisher.mergeObjectContext = jest
       .fn()
       .mockImplementation((...args) => ({ commit: () => {} }));

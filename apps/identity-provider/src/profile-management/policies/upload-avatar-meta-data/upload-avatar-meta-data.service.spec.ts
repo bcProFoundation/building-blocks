@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UploadAvatarMetaDataService } from './upload-avatar-meta-data.service';
-import { HttpService } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 
 describe('UploadAvatarMetaDataService', () => {

@@ -96,7 +96,7 @@ export class SocialLoginController {
   @UseGuards(BearerTokenGuard, RoleGuard)
   async deleteByUUID(@Param('uuid') uuid, @Req() req) {
     const userUuid = req.user.user;
-    return await this.commandBus.execute(
+    return await this.commandBus.execute<RemoveSocialLoginCommand>(
       new RemoveSocialLoginCommand(userUuid, uuid),
     );
   }

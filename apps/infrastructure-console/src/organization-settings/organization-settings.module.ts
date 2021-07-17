@@ -1,4 +1,5 @@
-import { Module, HttpModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
+import { HttpModule } from '@nestjs/axios';
 import { BrandController } from './controllers/brand/brand.controller';
 import { CqrsModule } from '@nestjs/cqrs';
 import { OrganizationSettingsAggregates } from './aggregates';

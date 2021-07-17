@@ -1,9 +1,9 @@
 import {
   Injectable,
   BadRequestException,
-  HttpService,
   NotImplementedException,
 } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import {
   INVALID_CODE,
   INVALID_STATE,

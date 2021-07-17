@@ -1,4 +1,5 @@
-import { Module, Global, HttpModule } from '@nestjs/common';
+import { Module, Global } from '@nestjs/common';
+import { HttpModule } from '@nestjs/axios';
 import { ProfileManagementEntitiesModule } from './entities/profile-management-entities.module';
 import { ProfileController } from './controllers/profile/profile.controller';
 import { ProfileAggregate } from './aggregates';

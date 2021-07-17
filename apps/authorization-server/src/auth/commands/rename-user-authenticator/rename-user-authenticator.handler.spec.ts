@@ -45,7 +45,6 @@ describe('Command: RemoveUserAuthenticatorHandler', () => {
       Promise.resolve({ name: 'authKey.name', uuid: 'authKey.uuid' }),
     );
     manager.renameAuthenticator = renameAuthenticator;
-    commandBus$.execute = jest.fn(() => Promise.resolve());
     publisher.mergeObjectContext = jest.fn().mockImplementation((...args) => ({
       commit: () => {},
       renameAuthenticator,

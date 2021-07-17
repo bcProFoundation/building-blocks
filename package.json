@@ -2,12 +2,11 @@
   "private": true,
   "scripts": {
     "docs": "./scripts/build-docs.sh",
-    "version": "lerna clean --yes && lerna bootstrap --ignore-scripts -- --package-lock-only --no-audit && git add apps/*/package-lock.json frontends/*/package-lock.json"
+    "version": "lerna clean --yes && lerna bootstrap --ignore-scripts && git add apps/*/yarn.lock frontends/*/yarn.lock"
   },
   "devDependencies": {
-    "@compodoc/compodoc": "^1.1.11",
-    "@types/node": "^15.6.1",
-    "lerna": "^4.0.0",
-    "npm-check": "^5.9.2"
+    "@compodoc/compodoc": "^1.1.14",
+    "@types/node": "^16.3.3",
+    "lerna": "^4.0.0"
   }
 }

@@ -43,7 +43,6 @@ describe('Command: RemoveUserAuthenticatorHandler', () => {
   it('should remove Authenticator using the WebAuthnAggregateService', async () => {
     const removeAuthenticator = jest.fn(() => Promise.resolve());
     manager.removeAuthenticator = removeAuthenticator;
-    commandBus$.execute = jest.fn(() => Promise.resolve());
     publisher.mergeObjectContext = jest.fn().mockImplementation((...args) => ({
       commit: () => {},
       removeAuthenticator,

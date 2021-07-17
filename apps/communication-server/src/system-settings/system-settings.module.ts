@@ -1,4 +1,5 @@
-import { Module, Global, HttpModule } from '@nestjs/common';
+import { Module, Global } from '@nestjs/common';
+import { HttpModule } from '@nestjs/axios';
 import { TerminusModule } from '@nestjs/terminus';
 import { SystemSettingsEntitiesModule } from './entities/entities.module';
 import { SettingsController } from './controllers/settings/settings.controller';

@@ -10,7 +10,7 @@ Modular, Opinionated and scalable. Angular mandates a structure to code. Tests a
 
 ### TypeScript, Formatting and Linting
 
-All the code is built in TypeScript. Prettier (`npm run format`) does the formatting for projects. ts-lint (`npm run lint --fix`) checks and fixes the linting. This is checked as part of CI pipeline. Code format and linting errors will result in CI failure. `ts-lint` and `prettier` is used.
+All the code is built in TypeScript. Prettier (`yarn format`) does the formatting for projects. ts-lint (`yarn lint --fix`) checks and fixes the linting. This is checked as part of CI pipeline. Code format and linting errors will result in CI failure. `ts-lint` and `prettier` is used.
 
 ### Other languages
 
@@ -29,7 +29,7 @@ docpress b
 Compodoc is used to generate API documentation from TypeScript Code. It is done as part of CI automatically and linked in documentation menu. To manually generate docs following command can be executed
 
 ```shell
-npm run docs
+yarn docs
 ```
 
 ### Lerna

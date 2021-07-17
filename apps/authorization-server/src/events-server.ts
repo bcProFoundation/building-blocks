@@ -26,8 +26,8 @@ export function setupEvents(app: INestApplication) {
   ) {
     const options = useEventClientFactory(config);
     const events = app.connectMicroservice<MicroserviceOptions>(options);
-    events.listen(() =>
-      Logger.log(LISTENING_TO_EVENTS, events.constructor.name),
-    );
+    events
+      .listen()
+      .then(() => Logger.log(LISTENING_TO_EVENTS, events.constructor.name));
   }
 }

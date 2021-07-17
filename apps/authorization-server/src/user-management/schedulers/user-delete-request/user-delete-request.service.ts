@@ -1,4 +1,5 @@
-import { Injectable, OnModuleInit, HttpService, Inject } from '@nestjs/common';
+import { Injectable, OnModuleInit, Inject } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { retry } from 'rxjs/operators';
 import Agenda from 'agenda';
 import { ClientService } from '../../../client-management/entities/client/client.service';

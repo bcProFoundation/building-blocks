@@ -2,5 +2,5 @@
 
 # Script needs to be executed from
 # building-blocks lerna / monorepo root
-rm -fr node_modules && npm i
+rm -fr node_modules && yarn
 lerna clean -y && lerna bootstrap

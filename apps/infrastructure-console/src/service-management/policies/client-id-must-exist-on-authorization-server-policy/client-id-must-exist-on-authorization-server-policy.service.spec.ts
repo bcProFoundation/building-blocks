@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClientIdMustExistOnAuthorizationServerPolicyService } from './client-id-must-exist-on-authorization-server-policy.service';
-import { HttpModule } from '@nestjs/common';
+import { HttpModule } from '@nestjs/axios';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 
 describe('ClientIdMustExistOnAuthorizationServerPolicyService', () => {

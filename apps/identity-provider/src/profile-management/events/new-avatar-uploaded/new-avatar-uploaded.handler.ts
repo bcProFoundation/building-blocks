@@ -1,13 +1,15 @@
 import { IEventHandler, EventsHandler } from '@nestjs/cqrs';
-import { HttpService, ForbiddenException } from '@nestjs/common';
+import { ForbiddenException } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
+import { throwError } from 'rxjs';
+import { switchMap, catchError, retry } from 'rxjs/operators';
 import * as FormData from 'form-data';
+
 import { NewAvatarUploadedEvent } from './new-avatar-uploaded.event';
 import { PUBLIC, BEARER } from '../../../constants/app-strings';
 import { Profile } from '../../../profile-management/entities/profile/profile.entity';
 import { ProfileService } from '../../../profile-management/entities/profile/profile.service';
 import { ClientTokenManagerService } from '../../../auth/aggregates/client-token-manager/client-token-manager.service';
-import { switchMap, catchError, retry } from 'rxjs/operators';
-import { throwError } from 'rxjs';
 import { INVALID_TOKEN } from '../../../constants/messages';
 
 @EventsHandler(NewAvatarUploadedEvent)

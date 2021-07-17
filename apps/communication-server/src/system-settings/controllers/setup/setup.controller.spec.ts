@@ -4,7 +4,7 @@ import { SetupService } from '../../aggregates/setup/setup.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { ServerSettings } from '../../../system-settings/entities/server-settings/server-settings.entity';
-import { HttpService } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { from } from 'rxjs';
 
 describe('SetupController', () => {
