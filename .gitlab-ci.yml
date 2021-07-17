@@ -48,7 +48,7 @@ test_authorization_server:
   before_script:
     - cd apps/authorization-server
     - yarn
-    - curl -i --basic -u admin:public -X POST http://events:8081/api/v4/mqtt_user -d '{"login":"user","password":"changeit","is_superuser":false}'
+    - curl -i --basic -u admin:public -X POST http://events:8081/api/v4/auth_username -d '{"username":"user","password":"changeit"}'
   script:
     # Check Code Quality
     - yarn lint
