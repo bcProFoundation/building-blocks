@@ -1,7 +1,7 @@
-import { Component, isDevMode } from '@angular/core';
-import { AppService } from './app.service';
-import { OAuthService, AuthConfig } from 'angular-oauth2-oidc';
+import { Component, isDevMode, OnInit } from '@angular/core';
+import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
 import { JwksValidationHandler } from 'angular-oauth2-oidc-jwks';
+import { AppService } from './app.service';
 import { StorageService } from './common/services/storage/storage.service';
 
 @Component({
@@ -9,16 +9,14 @@ import { StorageService } from './common/services/storage/storage.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   constructor(
     private appService: AppService,
     private oauthService: OAuthService,
     private storageService: StorageService,
-  ) {
-    this.setupOIDC();
-  }
+  ) {}
 
-  setupOIDC(): void {
+  ngOnInit(): void {
     this.appService.getMessage().subscribe({
       next: response => {
         if (response.message) return; // { message: PLEASE_RUN_SETUP }
@@ -26,15 +24,16 @@ export class AppComponent {
         const authConfig: AuthConfig = {
           clientId: response.clientId,
           redirectUri: response.callbackURLs[0],
-          silentRefreshRedirectUri: response.callbackURLs[1],
           loginUrl: response.authorizationURL,
           scope: 'openid roles',
           issuer: response.authServerURL,
+          responseType: 'code',
+          useSilentRefresh: true,
         };
+
         if (isDevMode()) authConfig.requireHttps = false;
         this.oauthService.configure(authConfig);
         this.oauthService.tokenValidationHandler = new JwksValidationHandler();
-        this.oauthService.setupAutomaticSilentRefresh();
         this.oauthService.loadDiscoveryDocumentAndLogin();
       },
       error: error => {},

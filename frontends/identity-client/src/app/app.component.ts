@@ -1,16 +1,14 @@
-import { Component } from '@angular/core';
-import { AppService } from './app.service';
-import { isDevMode } from '@angular/core';
-import { OAuthService, AuthConfig } from 'angular-oauth2-oidc';
+import { Component, isDevMode } from '@angular/core';
+import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
 import { JwksValidationHandler } from 'angular-oauth2-oidc-jwks';
+import { AppService } from './app.service';
 import {
-  CLIENT_ID,
-  REDIRECT_URI,
-  SILENT_REFRESH_REDIRECT_URI,
-  LOGIN_URL,
-  ISSUER_URL,
-  ENABLE_CHOOSING_ACCOUNT,
   CLEAR_SESSION,
+  CLIENT_ID,
+  ENABLE_CHOOSING_ACCOUNT,
+  ISSUER_URL,
+  LOGIN_URL,
+  REDIRECT_URI,
 } from './constants/storage';
 
 @Component({
@@ -34,12 +32,11 @@ export class AppComponent {
         const authConfig: AuthConfig = {
           clientId: localStorage.getItem(CLIENT_ID),
           redirectUri: localStorage.getItem(REDIRECT_URI),
-          silentRefreshRedirectUri: localStorage.getItem(
-            SILENT_REFRESH_REDIRECT_URI,
-          ),
           loginUrl: localStorage.getItem(LOGIN_URL),
           scope: 'openid roles email profile phone',
           issuer: localStorage.getItem(ISSUER_URL),
+          responseType: 'code',
+          useSilentRefresh: true,
         };
 
         const enableChoosingAccount =
@@ -59,7 +56,6 @@ export class AppComponent {
         if (isDevMode()) authConfig.requireHttps = false;
         this.oauthService.configure(authConfig);
         this.oauthService.tokenValidationHandler = new JwksValidationHandler();
-        this.oauthService.setupAutomaticSilentRefresh();
         this.oauthService.loadDiscoveryDocumentAndLogin();
       },
       error: error => {},

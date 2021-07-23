@@ -123,7 +123,14 @@ export class SocialLoginCallbackService {
                         .pipe(
                           switchMap(
                             (profileResponse: { data: { email: string } }) => {
-                              const profile = profileResponse.data;
+                              const profile = profileResponse?.data;
+                              if (!profile?.email) {
+                                return done(
+                                  new ForbiddenException(
+                                    i18n.__('Invalid User'),
+                                  ),
+                                );
+                              }
                               // Check Profile and set user.
                               // TODO: Store Upstream sub claim on local server
                               return from(
@@ -156,6 +163,10 @@ export class SocialLoginCallbackService {
                                       ),
                                     );
                                   }
+
+                                  if (user.email !== profile?.email) {
+                                  }
+
                                   return of(user);
                                 }),
                               );

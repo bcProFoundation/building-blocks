@@ -41,8 +41,19 @@ export class NavigationComponent implements OnInit {
       next: ({ type }: OAuthEvent) => {
         switch (type) {
           case 'token_received':
-            this.tokenIsValid = true;
-            this.router.navigate(['profile']);
+            if (!this.tokenIsValid) {
+              this.tokenIsValid = true;
+              this.router.navigate(['profile']);
+            }
+            break;
+          case 'token_expires':
+            setTimeout(() => {
+              this.oauthService.customQueryParams = {
+                ...this.oauthService.customQueryParams,
+                redirect_uri: this.oauthService.redirectUri,
+              };
+              this.oauthService.refreshToken();
+            }, 1000);
             break;
         }
       },

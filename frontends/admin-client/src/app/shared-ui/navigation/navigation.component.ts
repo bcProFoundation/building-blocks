@@ -36,21 +36,31 @@ export class NavigationComponent implements OnInit {
     private oauthService: OAuthService,
     private router: Router,
     private storageService: StorageService,
-  ) {
+  ) {}
+
+  ngOnInit(): void {
     this.router.events
       .pipe(filter(route => route instanceof NavigationEnd))
       .subscribe((route: NavigationEnd) => {
         this.route = route.url;
       });
-  }
 
-  ngOnInit(): void {
     this.oauthService.events.subscribe(({ type }: OAuthEvent) => {
       // Silent Refresh
       switch (type) {
         case 'token_received':
-          this.setUserSession();
-          this.router.navigate(['dashboard']);
+          if (!this.tokenIsValid) {
+            this.setUserSession();
+            this.router.navigate(['dashboard']);
+          }
+          break;
+        case 'token_expires':
+          setTimeout(() => {
+            this.oauthService.customQueryParams = {
+              redirect_uri: this.oauthService.redirectUri,
+            };
+            this.oauthService.refreshToken();
+          }, 1000);
           break;
       }
     });
