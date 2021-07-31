@@ -6,7 +6,7 @@
   },
   "devDependencies": {
     "@compodoc/compodoc": "^1.1.14",
-    "@types/node": "^16.4.1",
+    "@types/node": "^16.4.8",
     "lerna": "^4.0.0"
   }
 }
