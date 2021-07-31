@@ -4,5 +4,5 @@
     "frontends/*"
   ],
   "npmClient": "yarn",
-  "version": "6.5.6"
+  "version": "6.5.7"
 }
