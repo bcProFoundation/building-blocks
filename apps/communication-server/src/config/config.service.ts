@@ -16,6 +16,7 @@ export const EVENTS_HOST = 'EVENTS_HOST';
 export const EVENTS_PORT = 'EVENTS_PORT';
 export const EVENTS_PROTO = 'EVENTS_PROTO';
 export const EVENTS_USER = 'EVENTS_USER';
+export const EVENTS_CLIENT_ID = 'EVENTS_CLIENT_ID';
 export const EVENTS_PASSWORD = 'EVENTS_PASSWORD';
 
 @Injectable()
@@ -45,6 +46,7 @@ export class ConfigService {
       [EVENTS_PORT]: Joi.string().required(),
       [EVENTS_USER]: Joi.string().required(),
       [EVENTS_PASSWORD]: Joi.string().required(),
+      [EVENTS_CLIENT_ID]: Joi.string().optional().allow(null, ''),
       [MONGO_URI_PREFIX]: Joi.string().optional(),
     });
 

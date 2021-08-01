@@ -71,6 +71,7 @@ function configureServer() {
       [[ ! -z "$EVENTS_PORT" ]]; then
       envsubst '${EVENTS_PROTO}
         ${EVENTS_USER}
+        ${EVENTS_CLIENT_ID}
         ${EVENTS_PASSWORD}
         ${EVENTS_HOST}
         ${EVENTS_PORT}'\
