@@ -3,4 +3,5 @@ DB_PASSWORD=admin
 DB_NAME=test_authorization-server
 MONGODB_ROOT_PASSWORD=admin
 EVENTS_USER=user
+EVENTS_CLIENT_ID=building-blocks
 EVENTS_PASSWORD=changeit

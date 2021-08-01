@@ -15,6 +15,7 @@ DB_PASSWORD=admin
 EVENTS_PROTO=mqtt
 EVENTS_HOST=localhost
 EVENTS_USER=user
+EVENTS_CLIENT_ID=building-blocks
 EVENTS_PASSWORD=changeit
 EVENTS_PORT=1883
 ```
