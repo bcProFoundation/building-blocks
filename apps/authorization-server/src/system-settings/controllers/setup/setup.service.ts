@@ -1,27 +1,30 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { ScopeService } from '../../../client-management/entities/scope/scope.service';
-import { ClientService } from '../../../client-management/entities/client/client.service';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { AggregateRoot } from '@nestjs/cqrs';
 import { AuthService } from '../../../auth/controllers/auth/auth.service';
-import { UserAccountDto } from '../../../user-management/policies';
-import { UserService } from '../../../user-management/entities/user/user.service';
-import { RoleService } from '../../../user-management/entities/role/role.service';
-import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
-import { Scope } from '../../../client-management/entities/scope/scope.interface';
+import { KeyPairGeneratorService } from '../../../auth/schedulers';
 import { Client } from '../../../client-management/entities/client/client.interface';
-import { i18n } from '../../../i18n/i18n.config';
+import { ClientService } from '../../../client-management/entities/client/client.service';
+import { Scope } from '../../../client-management/entities/scope/scope.interface';
+import { ScopeService } from '../../../client-management/entities/scope/scope.service';
+import { ClientModifiedEvent } from '../../../client-management/events/client-modified/client-modified.event';
 import {
   ADMINISTRATOR,
-  SCOPE_OPENID,
-  SCOPE_ROLES,
-  SCOPE_EMAIL,
-  SCOPE_PROFILE,
   INFRASTRUCTURE_CONSOLE,
+  SCOPE_EMAIL,
+  SCOPE_OPENID,
   SCOPE_PHONE,
+  SCOPE_PROFILE,
+  SCOPE_ROLES,
 } from '../../../constants/app-strings';
-import { KeyPairGeneratorService } from '../../../auth/schedulers';
+import { i18n } from '../../../i18n/i18n.config';
+import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
+import { RoleService } from '../../../user-management/entities/role/role.service';
+import { UserService } from '../../../user-management/entities/user/user.service';
+import { UserAccountModifiedEvent } from '../../../user-management/events/user-account-modified/user-account-modified.event';
+import { UserAccountDto } from '../../../user-management/policies';
 
 @Injectable()
-export class SetupService {
+export class SetupService extends AggregateRoot {
   constructor(
     private readonly scopeService: ScopeService,
     private readonly clientService: ClientService,
@@ -30,7 +33,9 @@ export class SetupService {
     private readonly authService: AuthService,
     private readonly settingsService: ServerSettingsService,
     private readonly keyPairService: KeyPairGeneratorService,
-  ) {}
+  ) {
+    super();
+  }
 
   async setupInfrastructureClient(
     fullName: string,
@@ -101,7 +106,7 @@ export class SetupService {
     client.tokenDeleteEndpoint = tokenDeleteEndpoint;
 
     const response = await this.clientService.save(client);
-
+    this.apply(new ClientModifiedEvent(response));
     return response.toObject({
       transform: (doc, ret, options) => {
         // user object has password, removed from response
@@ -129,6 +134,8 @@ export class SetupService {
       password: adminPassword,
       phone,
     };
-    return await this.authService.setupAdministrator(user, [adminRole]);
+    const admin = await this.authService.setupAdministrator(user, [adminRole]);
+    this.apply(new UserAccountModifiedEvent(admin));
+    return admin;
   }
 }
