@@ -14,7 +14,7 @@
           <mat-form-field class="full-width">
             <input matInput i18n-placeholder="@@usernameOrPhone"
             placeholder="Username or phone" formControlName="username"
-            class="form-control" #username required>
+            class="form-control" name="username" #username required>
             <mat-error>{{ serverError }}</mat-error>
           </mat-form-field>
           <div class="spacer"></div>
@@ -32,7 +32,7 @@
       <form [formGroup]="loginUserForm">
         <div hidden>
           <mat-form-field class="full-width">
-            <input matInput formControlName="username">
+            <input matInput formControlName="username" name="username">
           </mat-form-field>
         </div>
         <div class="password" [hidden]="hidePassword">
@@ -57,7 +57,7 @@
         <form [formGroup]="submitOTPForm">
           <mat-form-field class="full-width">
             <input matInput i18n-placeholder="@@otp" placeholder="OTP"
-            formControlName="code" #otp autofocus required>
+            formControlName="code" name="code" #otp autofocus required>
             <mat-error>{{ serverError }}</mat-error>
           </mat-form-field>
           <div class="spacer"></div>

@@ -1,3 +1,4 @@
+import { CqrsModule } from '@nestjs/cqrs';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AGENDA_CONNECTION } from '../../../common/database.provider';
 import { UserService } from '../../../user-management/entities/user/user.service';
@@ -8,6 +9,7 @@ describe('DeleteUnverifiedEmailsService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [CqrsModule],
       providers: [
         DeleteUnverifiedEmailsService,
         { provide: UserService, useValue: {} },

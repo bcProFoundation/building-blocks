@@ -1,5 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { CommandBus } from '@nestjs/cqrs';
 import Agenda from 'agenda';
+import { RemoveUnverifiedUserCommand } from '../../../user-management/commands/remove-unverified-user/remove-unverified-user.command';
 
 import { AGENDA_CONNECTION } from '../../../common/database.provider';
 import { UserService } from '../../../user-management/entities/user/user.service';
@@ -13,6 +15,7 @@ export class DeleteUnverifiedEmailsService {
     @Inject(AGENDA_CONNECTION)
     private readonly agenda: Agenda,
     private readonly user: UserService,
+    private readonly commandBus: CommandBus,
   ) {}
 
   async onModuleInit() {
@@ -23,17 +26,23 @@ export class DeleteUnverifiedEmailsService {
   defineQueueProcess() {
     this.agenda.define(UNVERIFIED_EMAIL_DELETE_QUEUE, async job => {
       // Delete unverified emails created 24 hours ago, user must also be disabled.
-      await this.user.deleteMany({
-        isEmailVerified: false,
-        disabled: true,
-        phone: { $exists: false },
-        creation: { $lt: new Date(Date.now() - TWENTY_FOUR_HOURS_MS) },
-      });
+      const users = await this.user.model
+        .find({
+          isEmailVerified: false,
+          disabled: true,
+          phone: { $exists: false },
+          creation: { $lt: new Date(Date.now() - TWENTY_FOUR_HOURS_MS) },
+        })
+        .limit(10);
+
+      for (const user of users) {
+        await this.commandBus.execute(new RemoveUnverifiedUserCommand(user));
+      }
     });
   }
 
   async addQueue() {
-    const every = '6 hour';
+    const every = '1 hour';
     await this.agenda.every(every, UNVERIFIED_EMAIL_DELETE_QUEUE);
   }
 }

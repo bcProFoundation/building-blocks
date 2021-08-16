@@ -8,10 +8,10 @@ import { ADMINISTRATOR } from '../../../constants/app-strings';
 
 @Injectable()
 export class UserService {
-  constructor(@Inject(USER) private readonly userModel: Model<User>) {}
+  constructor(@Inject(USER) public readonly model: Model<User>) {}
 
   public async save(params) {
-    const createdUser = new this.userModel(params);
+    const createdUser = new this.model(params);
     return await createdUser.save();
   }
 
@@ -20,15 +20,15 @@ export class UserService {
   }
 
   async findAll(): Promise<User[]> {
-    return await this.userModel.find().exec();
+    return await this.model.find().exec();
   }
 
   public async findOne(params): Promise<User> {
-    return await this.userModel.findOne(params);
+    return await this.model.findOne(params);
   }
 
   public async delete(params): Promise<any> {
-    await this.userModel.deleteOne(params);
+    await this.model.deleteOne(params);
     return { message: i18n.__('User deleted') };
   }
 
@@ -37,11 +37,11 @@ export class UserService {
   }
 
   public async find(params?) {
-    return await this.userModel.find(params).exec();
+    return await this.model.find(params).exec();
   }
 
   public async deleteByEmail(email) {
-    return await this.userModel.deleteOne({ email });
+    return await this.model.deleteOne({ email });
   }
 
   async findUserByEmailOrPhone(emailOrPhone: string): Promise<User> {
@@ -120,7 +120,7 @@ export class UserService {
       });
     }
 
-    const data = this.userModel
+    const data = this.model
       .find(query)
       .skip(Number(offset))
       .limit(Number(limit))
@@ -128,12 +128,12 @@ export class UserService {
 
     return {
       docs: await data.exec(),
-      length: await this.userModel.countDocuments(query),
+      length: await this.model.countDocuments(query),
       offset: Number(offset),
     };
   }
 
   async deleteMany(query: unknown) {
-    return await this.userModel.deleteMany(query);
+    return await this.model.deleteMany(query);
   }
 }
