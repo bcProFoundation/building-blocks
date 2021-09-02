@@ -8,7 +8,6 @@ import { ServerSettingsService } from '../../../system-settings/entities/server-
 import { ClientService } from '../../../client-management/entities/client/client.service';
 import { AuthData } from '../../entities/auth-data/auth-data.interface';
 import { i18n } from '../../../i18n/i18n.config';
-import { UserService } from '../../entities/user/user.service';
 
 @Injectable()
 export class EmailRequestService {
@@ -16,8 +15,6 @@ export class EmailRequestService {
     private readonly http: HttpService,
     private readonly settings: ServerSettingsService,
     private readonly client: ClientService,
-    private readonly user: UserService,
-    private readonly authData: UserService,
   ) {}
 
   emailForgottenPasswordVerificationCode(
@@ -104,12 +101,8 @@ export class EmailRequestService {
         },
       )
       .subscribe({
-        next: response => {
-          return response;
-        },
-        error: async err => {
-          await this.user.remove(unverifiedUser);
-        },
+        next: response => {},
+        error: err => {},
       });
   }
 
@@ -158,10 +151,7 @@ export class EmailRequestService {
       )
       .subscribe({
         next: response => {},
-        error: async err => {
-          await this.authData.remove(email);
-          await this.authData.remove(code);
-        },
+        error: async err => {},
       });
   }
 

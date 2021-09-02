@@ -24,7 +24,7 @@ export const useEventClientFactory = (config: ConfigService): MqttOptions => {
   const clientId = config.get(EVENTS_CLIENT_ID);
   return {
     transport: Transport.MQTT,
-    options: { url, clientId },
+    options: { url, clientId, protocolVersion: 5 },
   };
 };
 

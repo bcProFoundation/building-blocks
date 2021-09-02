@@ -5,10 +5,10 @@ import {
 } from '@nestjs/common';
 import { AggregateRoot } from '@nestjs/cqrs';
 import {
-  generateAttestationOptions,
-  verifyAttestationResponse,
-  generateAssertionOptions,
-  verifyAssertionResponse,
+  generateRegistrationOptions,
+  verifyRegistrationResponse,
+  generateAuthenticationOptions,
+  verifyAuthenticationResponse,
 } from '@simplewebauthn/server';
 import { v4 as uuidv4 } from 'uuid';
 import { UserService } from '../../../user-management/entities/user/user.service';
@@ -64,7 +64,7 @@ export class WebAuthnAggregateService extends AggregateRoot {
       userUuid: user.uuid,
     });
 
-    const challengeResponse = generateAttestationOptions({
+    const challengeResponse = generateRegistrationOptions({
       rpName: relyingParty.name,
       rpID: relyingParty.id,
       userID: user.uuid,
@@ -113,7 +113,7 @@ export class WebAuthnAggregateService extends AggregateRoot {
     const relyingParty = await this.getRelyingParty();
 
     try {
-      const verification = await verifyAttestationResponse({
+      const verification = await verifyRegistrationResponse({
         credential: body,
         expectedChallenge: authData?.password,
         expectedOrigin: relyingParty.origin,
@@ -125,7 +125,7 @@ export class WebAuthnAggregateService extends AggregateRoot {
       await this.authData.remove(authData);
 
       const authenticator = {} as UserAuthenticator;
-      const deviceInfo = verification?.attestationInfo;
+      const deviceInfo = verification?.registrationInfo;
       authenticator.uuid = uuidv4();
       authenticator.credID = this.urlString(
         deviceInfo?.credentialID?.toString('base64'),
@@ -157,7 +157,7 @@ export class WebAuthnAggregateService extends AggregateRoot {
       throw new BadRequestException();
     }
 
-    const options = generateAssertionOptions({
+    const options = generateAuthenticationOptions({
       // Require users to use a previously-registered authenticator
       allowCredentials: authenticators.map(cred => ({
         id: Buffer.from(cred.credID, 'base64'),
@@ -210,7 +210,7 @@ export class WebAuthnAggregateService extends AggregateRoot {
     const relyingParty = await this.getRelyingParty();
 
     try {
-      const verification = await verifyAssertionResponse({
+      const verification = await verifyAuthenticationResponse({
         credential: body,
         expectedChallenge: authChallenge.password,
         expectedOrigin: relyingParty.origin,
@@ -223,12 +223,12 @@ export class WebAuthnAggregateService extends AggregateRoot {
       });
 
       await this.authData.remove(authChallenge);
-      const { verified, assertionInfo } = verification;
+      const { verified, authenticationInfo } = verification;
       await this.authenticator.updateOne(
         { uuid: authenticator.uuid },
-        { $set: { counter: assertionInfo.newCounter } },
+        { $set: { counter: authenticationInfo.newCounter } },
       );
-      authenticator.counter = assertionInfo.newCounter;
+      authenticator.counter = authenticationInfo.newCounter;
 
       this.apply(new UserLoggedInWithWebAuthnEvent(user, authenticator));
       if (verified) {
