@@ -2,8 +2,8 @@ apiVersion: v2
 name: blocks
 description: A Helm chart for Kubernetes
 type: application
-version: 2.5.10
-appVersion: 6.5.10
+version: 2.5.11
+appVersion: 6.5.11
 dependencies:
 - name: emqx
   version: "4.2.0"
