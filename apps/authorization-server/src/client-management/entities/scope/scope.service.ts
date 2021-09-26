@@ -16,7 +16,7 @@ export class ScopeService {
     return await this.scopeModel.findOne(params);
   }
 
-  public async clear() {
+  public async clear(): Promise<any> {
     return await this.scopeModel.deleteMany({});
   }
 

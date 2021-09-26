@@ -40,7 +40,7 @@ export class UserService {
     return await this.model.find(params).exec();
   }
 
-  public async deleteByEmail(email) {
+  public async deleteByEmail(email): Promise<any> {
     return await this.model.deleteOne({ email });
   }
 
@@ -133,7 +133,7 @@ export class UserService {
     };
   }
 
-  async deleteMany(query: unknown) {
+  async deleteMany(query: unknown): Promise<any> {
     return await this.model.deleteMany(query);
   }
 }

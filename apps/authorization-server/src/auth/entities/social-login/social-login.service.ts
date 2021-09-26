@@ -19,7 +19,7 @@ export class SocialLoginService {
     return await this.socialLoginModel.findOne(params);
   }
 
-  public async clear() {
+  public async clear(): Promise<any> {
     return await this.socialLoginModel.deleteMany({});
   }
 
@@ -36,11 +36,11 @@ export class SocialLoginService {
   }
 
   async list(
-    offset: number,
-    limit: number,
     search: string,
     query: any,
     sortQuery?: any,
+    offset: number = 0,
+    limit: number = 20,
   ) {
     if (search) {
       // Search through multiple keys

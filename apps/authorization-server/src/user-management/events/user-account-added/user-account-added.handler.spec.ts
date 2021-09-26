@@ -67,8 +67,12 @@ describe('Event: UserAccountAddedHandler', () => {
   });
 
   it('should save AuthData and User using UserService and AuthDataService', async () => {
-    authDataService.save = jest.fn(() => Promise.resolve(mockAuthData));
-    userService.save = jest.fn(() => Promise.resolve(mockUser));
+    authDataService.save = jest.fn(() =>
+      Promise.resolve(mockAuthData as AuthData & { _id: any }),
+    );
+    userService.save = jest.fn(() =>
+      Promise.resolve(mockUser as User & { _id: any }),
+    );
     eventBus$.publish = jest.fn(() => {});
     await eventHandler.handle(
       new UserAccountAddedEvent(mockUser, mockAuthData),

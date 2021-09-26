@@ -45,7 +45,9 @@ describe('Command: ModifySocialLoginHandler', () => {
   });
 
   it('should remove role using the SocialLoginManagementService', async () => {
-    const modifySocialLogin = jest.fn(() => Promise.resolve({} as SocialLogin));
+    const modifySocialLogin = jest.fn(() =>
+      Promise.resolve({} as SocialLogin & { _id: any }),
+    );
     manager.modifySocialLogin = modifySocialLogin;
     commandBus$.execute = jest.fn();
     publisher.mergeObjectContext = jest.fn().mockImplementation((...args) => ({

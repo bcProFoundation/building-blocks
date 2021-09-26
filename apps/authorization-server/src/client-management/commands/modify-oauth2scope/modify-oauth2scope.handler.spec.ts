@@ -50,7 +50,9 @@ describe('Command: ModifyOAuth2ScopeHandler', () => {
   });
 
   it('should remove scope using the ClientManagementAggregateService', async () => {
-    manager.modifyScope = jest.fn((...args) => Promise.resolve(mockScope));
+    manager.modifyScope = jest.fn((...args) =>
+      Promise.resolve(mockScope as Scope & { _id: any }),
+    );
     commandBus$.execute = jest.fn();
     publisher.mergeObjectContext = jest.fn().mockImplementation((...args) => ({
       commit: () => {},

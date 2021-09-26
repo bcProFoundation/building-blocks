@@ -1,9 +1,9 @@
-import { Test } from '@nestjs/testing';
 import { CqrsModule, EventBus } from '@nestjs/cqrs';
-import { WebAuthnKeyRegisteredHandler } from './webauthn-key-registered.handler';
-import { WebAuthnKeyRegisteredEvent } from './webauthn-key-registered.event';
-import { UserAuthenticatorService } from '../../../user-management/entities/user-authenticator/user-authenticator.service';
+import { Test } from '@nestjs/testing';
 import { UserAuthenticator } from '../../../user-management/entities/user-authenticator/user-authenticator.interface';
+import { UserAuthenticatorService } from '../../../user-management/entities/user-authenticator/user-authenticator.service';
+import { WebAuthnKeyRegisteredEvent } from './webauthn-key-registered.event';
+import { WebAuthnKeyRegisteredHandler } from './webauthn-key-registered.handler';
 
 describe('Event: WebAuthnKeyRegisteredHandler', () => {
   let eventBus$: EventBus;
@@ -44,7 +44,9 @@ describe('Event: WebAuthnKeyRegisteredHandler', () => {
   });
 
   it('should save AuthData using UserAuthenticatorService', async () => {
-    authenticator.save = jest.fn(() => Promise.resolve(mockAuthenticator));
+    authenticator.save = jest.fn(() =>
+      Promise.resolve(mockAuthenticator as UserAuthenticator & { _id: any }),
+    );
     eventBus$.publish = jest.fn(() => {});
     await eventHandler.handle(
       new WebAuthnKeyRegisteredEvent(mockAuthenticator),

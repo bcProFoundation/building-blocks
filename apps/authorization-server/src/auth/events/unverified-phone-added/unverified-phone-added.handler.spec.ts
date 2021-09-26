@@ -38,7 +38,9 @@ describe('Event: UnverifiedPhoneAddedHandler', () => {
   });
 
   it('should save phoneOTP using AuthDataService', async () => {
-    authData.save = jest.fn(() => Promise.resolve({} as AuthData));
+    authData.save = jest.fn(() =>
+      Promise.resolve({} as AuthData & { _id: any }),
+    );
     eventBus$.publish = jest.fn(() => {});
     await eventHandler.handle(
       new UnverifiedPhoneAddedEvent({} as User, {} as AuthData, '420710'),

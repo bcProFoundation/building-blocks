@@ -19,6 +19,6 @@ export class ListClientsHandler implements IQueryHandler<ListClientsQuery> {
     }
 
     const sortQuery = { name: sort };
-    return await this.client.list(offset, limit, search, where, sortQuery);
+    return await this.client.list(search, where, sortQuery, offset, limit);
   }
 }

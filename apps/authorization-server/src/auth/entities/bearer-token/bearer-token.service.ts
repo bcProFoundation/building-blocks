@@ -41,7 +41,7 @@ export class BearerTokenService {
     return await this.bearerTokenModel.find(params);
   }
 
-  async clear() {
+  async clear(): Promise<any> {
     return await this.bearerTokenModel.deleteMany({});
   }
 
@@ -49,7 +49,7 @@ export class BearerTokenService {
     return await this.bearerTokenModel.find().exec();
   }
 
-  async deleteMany(params) {
+  async deleteMany(params): Promise<any> {
     return await this.bearerTokenModel.deleteMany(params);
   }
 

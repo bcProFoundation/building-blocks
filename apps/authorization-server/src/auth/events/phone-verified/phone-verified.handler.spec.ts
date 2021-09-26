@@ -41,7 +41,7 @@ describe('Event: UnverifiedPhoneAddedHandler', () => {
 
   it('should save User and remove phoneOTP using IO Services', async () => {
     authData.remove = jest.fn(() => Promise.resolve({} as AuthData));
-    user.save = jest.fn(() => Promise.resolve({} as User));
+    user.save = jest.fn(() => Promise.resolve({} as User & { _id: any }));
     eventBus$.publish = jest.fn(() => {});
     await eventHandler.handle(
       new PhoneVerifiedEvent({} as User, {} as AuthData),

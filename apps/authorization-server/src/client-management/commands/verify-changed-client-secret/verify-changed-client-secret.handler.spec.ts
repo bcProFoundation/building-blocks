@@ -44,7 +44,9 @@ describe('Command: VerifyChangedClientSecretHandler', () => {
   });
 
   it('should modify client using the ClientManagementAggregateService', async () => {
-    manager.verifyChangedSecret = jest.fn(() => Promise.resolve({} as Client));
+    manager.verifyChangedSecret = jest.fn(() =>
+      Promise.resolve({} as Client & { _id: any }),
+    );
     commandBus$.execute = jest.fn();
     publisher.mergeObjectContext = jest.fn().mockImplementation((...args) => ({
       commit: () => {},

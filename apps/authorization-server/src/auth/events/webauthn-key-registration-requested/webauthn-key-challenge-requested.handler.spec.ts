@@ -48,7 +48,9 @@ describe('Event: WebAuthnKeyRegistrationRequestedHandler', () => {
   });
 
   it('should save AuthData using AuthDataService', async () => {
-    authData.save = jest.fn(() => Promise.resolve(mockAuthData));
+    authData.save = jest.fn(() =>
+      Promise.resolve(mockAuthData as AuthData & { _id: any }),
+    );
     eventBus$.publish = jest.fn(() => {});
     await eventHandler.handle(
       new WebAuthnKeyChallengeRequestedEvent(

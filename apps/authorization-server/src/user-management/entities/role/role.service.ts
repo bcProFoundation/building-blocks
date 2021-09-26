@@ -17,7 +17,7 @@ export class RoleService {
     return await this.roleModel.findOne(params);
   }
 
-  async clear() {
+  async clear(): Promise<any> {
     return await this.roleModel.deleteMany({});
   }
 

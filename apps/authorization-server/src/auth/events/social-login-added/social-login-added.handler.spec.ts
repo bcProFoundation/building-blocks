@@ -38,7 +38,9 @@ describe('Event: SocialLoginAddedHandler', () => {
   });
 
   it('should add Client using SocialLoginService', async () => {
-    socialLogin.save = jest.fn((...args) => Promise.resolve({} as SocialLogin));
+    socialLogin.save = jest.fn((...args) =>
+      Promise.resolve({} as SocialLogin & { _id: any }),
+    );
     eventBus$.publish = jest.fn(() => {});
     await eventHandler.handle(new SocialLoginAddedEvent({} as SocialLogin));
     expect(socialLogin.save).toHaveBeenCalledTimes(1);

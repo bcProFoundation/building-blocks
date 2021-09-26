@@ -1,5 +1,6 @@
 import { Test } from '@nestjs/testing';
 import { CqrsModule, EventBus } from '@nestjs/cqrs';
+import { DeleteResult } from 'mongodb';
 import { UserDeleteRequestService } from '../../schedulers/user-delete-request/user-delete-request.service';
 import { UserAccountRemovedHandler } from './user-account-removed.handler';
 import { User } from '../../entities/user/user.interface';
@@ -102,8 +103,12 @@ describe('Event: UserAccountRemovedHandler', () => {
     manager.informClients = jest.fn(() => Promise.resolve());
     userService.remove = jest.fn(() => Promise.resolve({} as User));
     authDataService.remove = jest.fn(() => Promise.resolve({} as AuthData));
-    authDataService.deleteMany = jest.fn(() => Promise.resolve({}));
-    userClaimService.deleteMany = jest.fn(() => Promise.resolve({}));
+    authDataService.deleteMany = jest.fn(() =>
+      Promise.resolve({} as DeleteResult),
+    );
+    userClaimService.deleteMany = jest.fn(() =>
+      Promise.resolve({} as DeleteResult),
+    );
     eventBus$.publish = jest.fn(() => {});
 
     await eventHandler.handle(

@@ -169,7 +169,7 @@ export class UserManagementService extends AggregateRoot {
         authDataType: AuthDataType.VerificationCode,
         entity: USER,
         entityUuid: user.uuid,
-      })) || ({} as AuthData);
+      })) || ({} as AuthData & { _id: any });
     verificationCode.authDataType = AuthDataType.VerificationCode;
     verificationCode.password = randomBytes(32).toString('hex');
     verificationCode.entity = USER;
@@ -200,7 +200,7 @@ export class UserManagementService extends AggregateRoot {
     user.roles = userData.roles;
 
     // create Password
-    const authData = {} as AuthData;
+    const authData = {} as AuthData & { _id: any };
     authData.uuid = uuidv4();
     authData.password = this.crypto.hashPassword(userData.password);
     authData.authDataType = AuthDataType.Password;
@@ -253,7 +253,7 @@ export class UserManagementService extends AggregateRoot {
       });
 
       if (!authData) {
-        authData = {} as AuthData;
+        authData = {} as AuthData & { _id: any };
         authData.uuid = uuidv4();
       }
 

@@ -42,7 +42,7 @@ describe('Event: UserAuthenticatorRemovedHandler', () => {
 
   it('should remove UserAuthenticator using UserAuthenticatorService', async () => {
     authenticator.save = jest.fn(() =>
-      Promise.resolve({} as UserAuthenticator),
+      Promise.resolve({} as UserAuthenticator & { _id: any }),
     );
     eventBus$.publish = jest.fn(() => {});
     await eventHandler.handle(

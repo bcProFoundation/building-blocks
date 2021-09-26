@@ -22,7 +22,7 @@ export class AuthorizationCodeService {
     return await this.authCodeModel.findOne(params);
   }
 
-  async delete(params) {
+  async delete(params): Promise<any> {
     return await this.authCodeModel.deleteOne(params);
   }
 
@@ -30,7 +30,7 @@ export class AuthorizationCodeService {
     return await this.authCodeModel.find(params);
   }
 
-  async clear() {
+  async clear(): Promise<any> {
     return await this.authCodeModel.deleteMany({});
   }
 }

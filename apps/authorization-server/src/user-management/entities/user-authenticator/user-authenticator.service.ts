@@ -19,7 +19,7 @@ export class UserAuthenticatorService {
     return await this.userAuthenticatorModel.findOne(params);
   }
 
-  async clear() {
+  async clear(): Promise<any> {
     return await this.userAuthenticatorModel.deleteMany({});
   }
 
@@ -62,11 +62,11 @@ export class UserAuthenticatorService {
     };
   }
 
-  async deleteMany(params) {
+  async deleteMany(params): Promise<any> {
     return await this.userAuthenticatorModel.deleteMany(params);
   }
 
-  async updateOne(query, params) {
+  async updateOne(query, params): Promise<any> {
     return await this.userAuthenticatorModel.updateOne(query, params);
   }
 }

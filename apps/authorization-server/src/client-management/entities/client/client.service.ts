@@ -26,32 +26,32 @@ export class ClientService {
     return await this.clientModel.find(params).exec();
   }
 
-  async clear() {
+  async clear(): Promise<any> {
     return await this.clientModel.deleteMany({});
   }
 
-  async deleteClientsByUser(uuid) {
+  async deleteClientsByUser(uuid): Promise<any> {
     return await this.clientModel.deleteMany({ createdBy: uuid, isTrusted: 0 });
   }
 
-  async deleteByUUID(uuid) {
+  async deleteByUUID(uuid): Promise<any> {
     return await this.clientModel.deleteOne({ uuid });
   }
 
-  async deleteByClientId(clientId) {
+  async deleteByClientId(clientId): Promise<any> {
     return await this.clientModel.deleteOne({ clientId });
   }
 
-  async updateOne(query, params) {
+  async updateOne(query, params): Promise<any> {
     return await this.clientModel.updateOne(query, params);
   }
 
   async list(
-    offset: number,
-    limit: number,
     search: string,
     query: any,
     sortQuery?: any,
+    offset: number = 0,
+    limit: number = 20,
   ) {
     if (search) {
       // Search through multiple keys

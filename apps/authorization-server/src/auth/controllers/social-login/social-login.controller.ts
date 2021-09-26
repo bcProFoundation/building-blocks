@@ -66,11 +66,11 @@ export class SocialLoginController {
     const where: { createdBy?: string } = {};
     const sortQuery = { name: sort };
     return await this.socialLoginService.list(
-      offset,
-      limit,
       search,
       where,
       sortQuery,
+      offset,
+      limit,
     );
   }
 

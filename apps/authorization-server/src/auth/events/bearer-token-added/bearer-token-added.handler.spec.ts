@@ -37,7 +37,9 @@ describe('Event: BearerTokenAddedHandler', () => {
   });
 
   it('should add BearerToken using BearerTokenService', async () => {
-    token.save = jest.fn(() => Promise.resolve({} as BearerToken));
+    token.save = jest.fn(() =>
+      Promise.resolve({} as BearerToken & { _id: any }),
+    );
     eventBus$.publish = jest.fn(() => {});
     await eventHandler.handle(new BearerTokenAddedEvent({} as BearerToken));
     expect(token.save).toHaveBeenCalledTimes(1);

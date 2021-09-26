@@ -1,5 +1,6 @@
 import { Test } from '@nestjs/testing';
 import { CqrsModule, EventBus } from '@nestjs/cqrs';
+import { DeleteResult } from 'mongodb';
 import { UserAuthenticatorRemovedHandler } from './user-authenticator-removed.handler';
 import { UserAuthenticatorRemovedEvent } from './user-authenticator-removed.event';
 import { UserAuthenticatorService } from '../../../user-management/entities/user-authenticator/user-authenticator.service';
@@ -51,7 +52,7 @@ describe('Event: UserAuthenticatorRemovedHandler', () => {
     authenticator.remove = jest.fn(() =>
       Promise.resolve({} as UserAuthenticator),
     );
-    authData.deleteMany = jest.fn(() => Promise.resolve({}));
+    authData.deleteMany = jest.fn(() => Promise.resolve({} as DeleteResult));
     eventBus$.publish = jest.fn(() => {});
     await eventHandler.handle(
       new UserAuthenticatorRemovedEvent({} as UserAuthenticator),

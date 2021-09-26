@@ -79,7 +79,9 @@ describe('Event: EmailVerifiedAndPasswordSetHandler', () => {
 
   it('should save User with UserService and AuthData with AuthDataService', async () => {
     userService.update = jest.fn(() => Promise.resolve(mockUser));
-    authDataService.save = jest.fn(() => Promise.resolve(mockAuthData));
+    authDataService.save = jest.fn(() =>
+      Promise.resolve(mockAuthData as AuthData & { _id: any }),
+    );
     authDataService.remove = jest.fn(() => Promise.resolve(mockAuthData));
     eventBus$.publish = jest.fn(() => {});
     await eventHandler.handle(

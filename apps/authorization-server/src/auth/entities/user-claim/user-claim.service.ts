@@ -23,7 +23,7 @@ export class UserClaimService {
     return await this.userClaimModel.find(params);
   }
 
-  async clear() {
+  async clear(): Promise<any> {
     return await this.userClaimModel.deleteMany({});
   }
 
@@ -31,11 +31,11 @@ export class UserClaimService {
     return await this.userClaimModel.find().exec();
   }
 
-  async deleteMany(params) {
+  async deleteMany(params): Promise<any> {
     return await this.userClaimModel.deleteMany(params);
   }
 
-  async deleteOne(params) {
+  async deleteOne(params): Promise<any> {
     return await this.userClaimModel.deleteOne(params);
   }
 
@@ -43,7 +43,7 @@ export class UserClaimService {
     return await claim.remove();
   }
 
-  async updateOne(query, params) {
+  async updateOne(query, params): Promise<any> {
     return await this.userClaimModel.updateOne(query, params);
   }
 

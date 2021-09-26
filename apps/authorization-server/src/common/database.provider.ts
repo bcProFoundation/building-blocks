@@ -35,14 +35,6 @@ export const databaseProviders = [
             )}@${config.get(DB_HOST).replace(/,\s*$/, '')}/${config.get(
               DB_NAME,
             )}?${mongoOptions}`,
-            {
-              useNewUrlParser: true,
-              useUnifiedTopology: true,
-              autoReconnect: false,
-              reconnectTries: 0,
-              reconnectInterval: 0,
-              useCreateIndex: true,
-            },
           ),
         ).pipe(handleRetry()),
       );
@@ -60,13 +52,6 @@ export const databaseProviders = [
           )}@${config.get(DB_HOST).replace(/,\s*$/, '')}/${config.get(
             DB_NAME,
           )}`,
-          options: {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            autoReconnect: false,
-            reconnectTries: 0,
-            reconnectInterval: 0,
-          },
         },
       });
       await agenda.start();
@@ -103,11 +88,6 @@ export const databaseProviders = [
         touchAfter: 24 * 3600, // 24 hours * 3600 secs
         collectionName: SESSION_COLLECTION,
         stringify: false,
-        mongoOptions: {
-          useUnifiedTopology: true,
-          // w: MAJORITY,
-          useNewUrlParser: true,
-        },
       });
       return store;
     },

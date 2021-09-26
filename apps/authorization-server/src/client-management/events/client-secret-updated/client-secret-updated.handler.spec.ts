@@ -40,7 +40,9 @@ describe('Event: ClientSecretUpdatedHandler', () => {
   });
 
   it('should modify Client using ClientService', async () => {
-    client.save = jest.fn((...args) => Promise.resolve({} as Client));
+    client.save = jest.fn((...args) =>
+      Promise.resolve({} as Client & { _id: any }),
+    );
     eventBus$.publish = jest.fn(() => {});
     await eventHandler.handle(new ClientSecretUpdatedEvent({} as Client));
     expect(client.save).toHaveBeenCalledTimes(1);

@@ -76,10 +76,11 @@ export class UserAggregateService extends AggregateRoot {
       const secret = speakeasy.generateSecret({ name: user.email });
 
       // Find existing AuthData or create new
-      let twoFactorTempSecret = await this.checkLocalAuthData(
-        user.uuid,
-        AuthDataType.TwoFactorTempSecret,
-      );
+      let twoFactorTempSecret: AuthData & { _id?: any } =
+        await this.checkLocalAuthData(
+          user.uuid,
+          AuthDataType.TwoFactorTempSecret,
+        );
       if (!twoFactorTempSecret) {
         twoFactorTempSecret = this.getNewAuthData(
           user.uuid,
@@ -215,7 +216,7 @@ export class UserAggregateService extends AggregateRoot {
       uuid: verifiedUser.password,
     });
     if (!userPassword) {
-      userPassword = {} as AuthData;
+      userPassword = {} as AuthData & { _id: any };
       userPassword.authDataType = AuthDataType.Password;
       userPassword.uuid = uuidv4();
     }
