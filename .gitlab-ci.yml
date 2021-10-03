@@ -10,7 +10,7 @@ variables:
   MONGODB_USERNAME: "admin"
   MONGODB_PASSWORD: "admin"
   MONGODB_DATABASE: "test_authorization-server"
-  EMQX_ALLOW_ANONYMOUS: "false"
+  EMQX_ALLOW_ANONYMOUS: "true"
   EMQX_LOADED_PLUGINS: "emqx_management,emqx_auth_mnesia,emqx_recon,emqx_retainer,emqx_dashboard"
 
 stages:
@@ -48,7 +48,6 @@ test_authorization_server:
   before_script:
     - cd apps/authorization-server
     - yarn
-    - curl -i --basic -u admin:public -X POST http://events:8081/api/v4/auth_username -d '{"username":"user","password":"changeit"}'
   script:
     # Check Code Quality
     - yarn lint
