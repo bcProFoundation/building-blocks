@@ -18,6 +18,7 @@ export class FetchUserForTrustedClientHandler implements IQueryHandler {
     if (!client?.isTrusted) {
       throw new ForbiddenException({ isTrusted: client?.isTrusted || 0 });
     }
-    return await this.user.getAuthorizedUser(query?.uuid);
+    const user = await this.user.findUserByEmailOrPhone(query?.emailOrPhone);
+    return this.user.getUserWithoutSecrets(user);
   }
 }

@@ -166,11 +166,14 @@ export class UserController {
     return await this.userService.getAuthorizedUser(uuid);
   }
 
-  @Get('v1/fetch_for_trusted_client/:uuid')
+  @Get('v1/fetch_for_trusted_client/:emailOrPhone')
   @UseGuards(BearerTokenGuard, RoleGuard)
-  async findOneForTrustedClient(@Param('uuid') uuid: string, @Req() req) {
+  async findOneForTrustedClient(
+    @Param('emailOrPhone') emailOrPhone: string,
+    @Req() req,
+  ) {
     return await this.queryBus.execute(
-      new FetchUserForTrustedClientQuery(req?.token, uuid),
+      new FetchUserForTrustedClientQuery(req?.token, emailOrPhone),
     );
   }
 
