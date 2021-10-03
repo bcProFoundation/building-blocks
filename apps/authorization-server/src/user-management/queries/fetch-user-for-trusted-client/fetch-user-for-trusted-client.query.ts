@@ -4,6 +4,6 @@ import { BearerToken } from '../../../auth/entities/bearer-token/bearer-token.in
 export class FetchUserForTrustedClientQuery implements IQuery {
   constructor(
     public readonly token: BearerToken,
-    public readonly uuid: string,
+    public readonly emailOrPhone: string,
   ) {}
 }
