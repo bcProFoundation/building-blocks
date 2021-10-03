@@ -48,6 +48,7 @@ import { BearerTokenGuard } from '../../../auth/guards/bearer-token.guard';
 import { AddUnverifiedEmailCommand } from '../../../auth/commands/add-unverified-email/add-unverified-phone.command';
 import { VerifyEmailCommand } from '../../../auth/commands/verify-email/verify-email.command';
 import { EmailVerificationCodeCommand } from '../../commands/email-verification-code/email-verification-code.command';
+import { FetchUserForTrustedClientQuery } from '../../queries/fetch-user-for-trusted-client/fetch-user-for-trusted-client.query';
 
 @Controller('user')
 export class UserController {
@@ -163,6 +164,14 @@ export class UserController {
   @UseGuards(BearerTokenGuard, RoleGuard)
   async findOne(@Param('uuid') uuid: string, @Req() req) {
     return await this.userService.getAuthorizedUser(uuid);
+  }
+
+  @Get('v1/fetch_for_trusted_client/:uuid')
+  @UseGuards(BearerTokenGuard, RoleGuard)
+  async findOneForTrustedClient(@Param('uuid') uuid: string, @Req() req) {
+    return await this.queryBus.execute(
+      new FetchUserForTrustedClientQuery(req?.token, uuid),
+    );
   }
 
   @Post('v1/forgot_password')
