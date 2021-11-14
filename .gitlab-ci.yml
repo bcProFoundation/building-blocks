@@ -10,8 +10,8 @@ variables:
   MONGODB_USERNAME: "admin"
   MONGODB_PASSWORD: "admin"
   MONGODB_DATABASE: "test_authorization-server"
+  MONGODB_ROOT_PASSWORD: "admin"
   EMQX_ALLOW_ANONYMOUS: "true"
-  EMQX_LOADED_PLUGINS: "emqx_management,emqx_auth_mnesia,emqx_recon,emqx_retainer,emqx_dashboard"
 
 stages:
   - tests
