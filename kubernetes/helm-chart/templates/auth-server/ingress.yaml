@@ -1,11 +1,7 @@
 {{- if and .Values.authServer.ingress.enabled .Values.authServer.enabled -}}
 {{- $fullName := include "blocks.fullname" . -}}
 {{- $svcPort := .Values.authServer.service.port -}}
-{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
-apiVersion: networking.k8s.io/v1beta1
-{{- else -}}
-apiVersion: extensions/v1beta1
-{{- end }}
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ $fullName }}-auth-server
@@ -33,9 +29,12 @@ spec:
         paths:
         {{- range .paths }}
           - path: {{ . }}
+            pathType: ImplementationSpecific
             backend:
-              serviceName: {{ $fullName }}-auth-server
-              servicePort: {{ $svcPort }}
+              service:
+                name: {{ $fullName }}-auth-server
+                port:
+                  number: {{ $svcPort }}
         {{- end }}
   {{- end }}
 {{- end }}

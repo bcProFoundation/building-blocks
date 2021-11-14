@@ -38,9 +38,16 @@
         <div class="password" [hidden]="hidePassword">
           <mat-form-field class="full-width">
             <input matInput i18n-placeholder="@@password"
-            placeholder="Password" type="password"
+            placeholder="Password" [type]="isPassHidden ? 'password' : 'text'"
             #password
             formControlName="password" required>
+            <button mat-icon-button matSuffix (click)="isPassHidden = !isPassHidden"
+              [attr.aria-label]="'Hide password'" [attr.aria-pressed]="isPassHidden">
+              <mat-icon>{{isPassHidden ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            <button mat-icon-button matSuffix (click)="clearLoginForm()" [attr.aria-label]="'Login with another account'" fxFlex="10">
+              <mat-icon>refresh</mat-icon>
+            </button>
             <mat-error>{{ serverError }}</mat-error>
           </mat-form-field>
           <div class="spacer"></div>

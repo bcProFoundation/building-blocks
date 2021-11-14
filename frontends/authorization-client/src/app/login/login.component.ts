@@ -43,6 +43,7 @@ export class LoginComponent implements OnInit {
   disableVerifyUserButton: boolean = false;
   disableVerifyPasswordButton: boolean = false;
   disableOnSubmitOTPButton: boolean = false;
+  isPassHidden: boolean = true;
 
   @ViewChild('password', { static: true }) passwordRef: ElementRef;
   @ViewChild('otp', { static: true }) otpRef: ElementRef;
@@ -343,5 +344,11 @@ export class LoginComponent implements OnInit {
     } else if (loginType === 'add_account') {
       this.chooseAccount();
     }
+  }
+
+  clearLoginForm() {
+    this.hideUsername = false;
+    this.hidePassword = true;
+    this.hideCode = true;
   }
 }
