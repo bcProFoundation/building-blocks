@@ -55,7 +55,8 @@
             <button (click)="onSubmitPassword()"
               [disabled]="disableVerifyPasswordButton"
               mat-raised-button color="primary"
-              i18n="@@login">Login</button>
+              i18n="@@login" #btnLogin=matButton
+              [autofocus]="btnLogin.focus()">Login</button>
             <a (click)="forgotPassword()" mat-button href="#" class="left-margin-30" i18n="@@forgot">Forgot?</a>
           </div>
         </div>
