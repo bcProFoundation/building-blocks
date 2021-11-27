@@ -351,4 +351,8 @@ export class LoginComponent implements OnInit {
     this.hidePassword = true;
     this.hideCode = true;
   }
+
+  togglePassHidden() {
+    this.isPassHidden = !this.isPassHidden;
+  }
 }
