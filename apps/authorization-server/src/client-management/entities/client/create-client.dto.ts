@@ -42,7 +42,7 @@ export class CreateClientDto {
       'Client app endpoint which will receive the token/code',
     ),
   })
-  @IsUrl({ allow_underscores: true }, { each: true })
+  @IsUrl({ allow_underscores: true, require_tld: false }, { each: true })
   redirectUris: string[];
 
   @ApiProperty({
