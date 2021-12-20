@@ -88,5 +88,6 @@
 	"Email for verification not found": "Email for verification not found",
 	"Please complete verification for ": "Please complete verification for ",
 	"Deleting user account is disabled": "Deleting user account is disabled",
-	"user or client missing": "user or client missing"
+	"user or client missing": "user or client missing",
+	"Invalid or expired verification code used. Please signup again or reset password for the user.": "Invalid or expired verification code used. Please signup again or reset password for the user."
 }

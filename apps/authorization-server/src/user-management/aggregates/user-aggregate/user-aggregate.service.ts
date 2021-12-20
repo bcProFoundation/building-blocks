@@ -28,6 +28,7 @@ import {
   userAlreadyExistsException,
   InvalidVerificationCode,
   EmailForVerificationNotFound,
+  VerificationExpiredOrInvalid,
 } from '../../../common/filters/exceptions';
 import { CryptographerService } from '../../../common/services/cryptographer/cryptographer.service';
 import {
@@ -210,7 +211,9 @@ export class UserAggregateService extends AggregateRoot {
       uuid: verificationCode?.entityUuid,
     });
 
-    if (!verifiedUser) throw invalidUserException;
+    if (!verifiedUser) {
+      throw new VerificationExpiredOrInvalid();
+    }
 
     let userPassword = await this.authData.findOne({
       uuid: verifiedUser.password,

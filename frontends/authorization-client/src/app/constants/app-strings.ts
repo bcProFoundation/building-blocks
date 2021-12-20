@@ -85,7 +85,8 @@ export const AVAILABLE_TRANSLATIONS = [
   'zh',
   'zh-TW',
 ];
-export const INVALID_VERIFICATION_CODE = 'Invalid Verification Code';
+export const SOMETHING_WENT_WRONG =
+  'Something went wrong! Please contact support.';
 export const DURATION = 5000;
 export const LONG_DURATION = 20000;
 export const NEW_PASSWORD_MISMATCH = 'Please check repeated password';

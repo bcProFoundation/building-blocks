@@ -4,7 +4,7 @@ import { VerifyGeneratePasswordService } from './verify-generate-password.servic
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   CLOSE,
-  INVALID_VERIFICATION_CODE,
+  SOMETHING_WENT_WRONG,
   DURATION,
   NEW_PASSWORD_MISMATCH,
 } from '../constants/app-strings';
@@ -18,6 +18,9 @@ export class VerifyGeneratePasswordComponent implements OnInit {
   verificationCode: string;
   newPassword: string;
   repeatPassword: string;
+  isNewPwHidden = true;
+  isRepeatPwHidden = true;
+
   constructor(
     private route: ActivatedRoute,
     private verifyGeneratePassword: VerifyGeneratePasswordService,
@@ -37,7 +40,7 @@ export class VerifyGeneratePasswordComponent implements OnInit {
             window.location.href = '/login';
           },
           error: error => {
-            let message = INVALID_VERIFICATION_CODE;
+            let message = error?.error?.message || SOMETHING_WENT_WRONG;
             if (Array.isArray(error.error.message)) {
               message = error.error.message[0];
             }

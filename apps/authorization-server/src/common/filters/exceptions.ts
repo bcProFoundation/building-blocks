@@ -137,3 +137,14 @@ export class InvalidRequestToDeleteUser extends HttpException {
     super(i18n.__('user or client missing'), HttpStatus.UNAUTHORIZED);
   }
 }
+
+export class VerificationExpiredOrInvalid extends HttpException {
+  constructor() {
+    super(
+      i18n.__(
+        'Invalid or expired verification code used. Please signup again or reset password for the user.',
+      ),
+      HttpStatus.BAD_REQUEST,
+    );
+  }
+}
