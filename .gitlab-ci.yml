@@ -77,7 +77,7 @@ test_authorization_server:
     - docker
 
 test_authorization_client:
-  image: registry.gitlab.com/castlecraft/docker-craft/node-latest-headless-chrome:latest
+  image: node:latest
   stage: tests
   cache:
     key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
@@ -156,7 +156,7 @@ test_identity_provider:
     - docker
 
 test_identity_client:
-  image: registry.gitlab.com/castlecraft/docker-craft/node-latest-headless-chrome:latest
+  image: node:latest
   stage: tests
   cache:
     key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
@@ -207,7 +207,7 @@ test_infrastructure_console:
     - docker
 
 test_admin_client:
-  image: registry.gitlab.com/castlecraft/docker-craft/node-latest-headless-chrome:latest
+  image: node:latest
   stage: tests
   cache:
     key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
@@ -229,110 +229,110 @@ test_admin_client:
   tags:
     - docker
 
-pack_staging_authorization_server:
+pack_latest_authorization_server:
   image: docker
   stage: pack
   only:
     refs:
-      - develop
+      - main
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
     # Authorization Server
     - docker build -t authorization-server apps/authorization-server
-    - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:edge
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:edge
+    - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:latest
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:latest
 
-pack_staging_authorization_client:
+pack_latest_authorization_client:
   image: docker
   stage: pack
   only:
     refs:
-      - develop
+      - main
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
     # Authorization Client
     - docker build -t authorization-client frontends/authorization-client
-    - docker tag authorization-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-client:edge
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-client:edge
+    - docker tag authorization-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-client:latest
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-client:latest
 
-pack_staging_communication_server:
+pack_latest_communication_server:
   image: docker
   stage: pack
   only:
     refs:
-      - develop
+      - main
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
     # Communication Server
     - docker build -t communication-server apps/communication-server
-    - docker tag communication-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/communication-server:edge
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/communication-server:edge
+    - docker tag communication-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/communication-server:latest
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/communication-server:latest
 
-pack_staging_identity_provider:
+pack_latest_identity_provider:
   image: docker
   stage: pack
   only:
     refs:
-      - develop
+      - main
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
     # Identity Provider
     - docker build -t identity-provider apps/identity-provider
-    - docker tag identity-provider $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:edge
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:edge
+    - docker tag identity-provider $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:latest
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:latest
 
-pack_staging_identity_client:
+pack_latest_identity_client:
   image: docker
   stage: pack
   only:
     refs:
-      - develop
+      - main
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
     # Identity Client
     - docker build --build-arg BUILD_ARGS="-- --prod=false" -t identity-client frontends/identity-client
-    - docker tag identity-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-client:edge
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-client:edge
+    - docker tag identity-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-client:latest
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-client:latest
 
-pack_staging_infrastructure_console:
+pack_latest_infrastructure_console:
   image: docker
   stage: pack
   only:
     refs:
-      - develop
+      - main
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
     # Infrastructure Console
     - docker build -t infrastructure-console apps/infrastructure-console
-    - docker tag infrastructure-console $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:edge
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:edge
+    - docker tag infrastructure-console $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:latest
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:latest
 
-pack_staging_admin_client:
+pack_latest_admin_client:
   image: docker
   stage: pack
   only:
     refs:
-      - develop
+      - main
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
     # Admin Client
     - docker build --build-arg BUILD_ARGS="-- --prod=false" -t admin-client frontends/admin-client
-    - docker tag admin-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client:edge
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client:edge
+    - docker tag admin-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client:latest
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client:latest
 
-pack_production_authorization_server:
+pack_tag_authorization_server:
   image: docker
   stage: pack
   only:
     refs:
-      - master
+      - tags
   before_script:
     - apk add git
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
@@ -342,16 +342,14 @@ pack_production_authorization_server:
     - export VERSION=$(git tag --list --sort=-version:refname | sed -n 1p | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
     - docker build -t authorization-server apps/authorization-server
     - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:$VERSION
-    - docker tag authorization-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:$VERSION
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-server:latest
 
-pack_production_authorization_client:
+pack_tag_authorization_client:
   image: docker
   stage: pack
   only:
     refs:
-      - master
+      - tags
   before_script:
     - apk add git
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
@@ -361,16 +359,14 @@ pack_production_authorization_client:
     - export VERSION=$(git tag --list --sort=-version:refname | sed -n 1p | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
     - docker build -t authorization-client frontends/authorization-client
     - docker tag authorization-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-client:$VERSION
-    - docker tag authorization-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-client:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-client:$VERSION
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/authorization-client:latest
 
-pack_production_communication_server:
+pack_tag_communication_server:
   image: docker
   stage: pack
   only:
     refs:
-      - master
+      - tags
   before_script:
     - apk add git
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
@@ -380,16 +376,14 @@ pack_production_communication_server:
     - export VERSION=$(git tag --list --sort=-version:refname | sed -n 1p | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
     - docker build -t communication-server apps/communication-server
     - docker tag communication-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/communication-server:$VERSION
-    - docker tag communication-server $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/communication-server:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/communication-server:$VERSION
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/communication-server:latest
 
-pack_production_identity_provider:
+pack_tag_identity_provider:
   image: docker
   stage: pack
   only:
     refs:
-      - master
+      - tags
   before_script:
     - apk add git
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
@@ -399,16 +393,14 @@ pack_production_identity_provider:
     - export VERSION=$(git tag --list --sort=-version:refname | sed -n 1p | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
     - docker build -t identity-provider apps/identity-provider
     - docker tag identity-provider $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:$VERSION
-    - docker tag identity-provider $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:$VERSION
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-provider:latest
 
-pack_production_identity_client:
+pack_tag_identity_client:
   image: docker
   stage: pack
   only:
     refs:
-      - master
+      - tags
   before_script:
     - apk add git
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
@@ -418,16 +410,14 @@ pack_production_identity_client:
     - export VERSION=$(git tag --list --sort=-version:refname | sed -n 1p | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
     - docker build -t identity-client frontends/identity-client
     - docker tag identity-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-client:$VERSION
-    - docker tag identity-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-client:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-client:$VERSION
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-client:latest
 
-pack_production_infrastructure_console:
+pack_tag_infrastructure_console:
   image: docker
   stage: pack
   only:
     refs:
-      - master
+      - tags
   before_script:
     - apk add git
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
@@ -437,16 +427,14 @@ pack_production_infrastructure_console:
     - export VERSION=$(git tag --list --sort=-version:refname | sed -n 1p | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
     - docker build -t infrastructure-console apps/infrastructure-console
     - docker tag infrastructure-console $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:$VERSION
-    - docker tag infrastructure-console $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:$VERSION
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/infrastructure-console:latest
 
-pack_production_admin_client:
+pack_tag_admin_client:
   image: docker
   stage: pack
   only:
     refs:
-      - master
+      - tags
   before_script:
     - apk add git
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
@@ -456,29 +444,15 @@ pack_production_admin_client:
     - export VERSION=$(git tag --list --sort=-version:refname | sed -n 1p | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
     - docker build -t admin-client frontends/admin-client
     - docker tag admin-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client:$VERSION
-    - docker tag admin-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client:$VERSION
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client:latest
-
-pack_setup_cli:
-  image: docker
-  stage: pack
-  only:
-    refs:
-      - develop
-  before_script:
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
-    - cd scripts
-  script:
-    - docker build -t $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/setup:latest -f setup.Dockerfile .
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/setup:latest
 
 pages:
   image: node:latest
   stage: docs
   only:
-    - master
+    - main
   before_script:
+    # Install zip
     # Install Helm
     - curl -fsSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
@@ -495,6 +469,17 @@ pages:
 
     # Build TypeScript API docs
     - yarn docs
+
+    # Download and extract existing artifacts for helm charts
+    - |
+      curl --location \
+        --header "JOB-TOKEN: $CI_JOB_TOKEN" \
+        --output artifacts.zip \
+        "https://gitlab.com/$CI_PROJECT_NAMESPACE/building-blocks/-/jobs/artifacts/master/download?job=pages"
+    - unzip artifacts.zip -d charts
+    - mv charts/public/index.yaml public/index.yaml
+    - mv charts/public/blocks-*.tgz public/
+    - rm -fr artifacts.zip charts
 
     # Build and package Helm Chart
     - helm package kubernetes/helm-chart --destination public
