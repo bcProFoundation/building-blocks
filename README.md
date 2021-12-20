@@ -10,24 +10,20 @@ This installs the infra locally using containers.
 Download the `docker-compose.yml` file:
 
 ```shell
-wget https://gitlab.com/castlecraft/building-blocks/-/raw/develop/docker/develop.yaml -O docker-compose.yml
+git clone https://gitlab.com/castlecraft/building-blocks.git
+cd building-blocks
 ```
 
 Start the containers
 
 ```shell
-docker-compose up -d
+docker-compose -f docker/develop.yaml up -d
 ```
 
 Initial Setup
 
 ```shell
-docker run -it \
-  --add-host accounts.localhost:172.17.0.1 \
-  --add-host myaccount.localhost:172.17.0.1 \
-  --add-host admin.localhost:172.17.0.1 \
-  --add-host connect.localhost:172.17.0.1 \
-  registry.gitlab.com/castlecraft/building-blocks/setup:latest # --help
+./scripts/setup-wizard
 ```
 
 Command will result in following output
@@ -57,6 +53,6 @@ Tear down
 docker-compose -f docker/develop.yaml stop
 docker-compose -f docker/develop.yaml rm
 
-# Caution: remove volumes of all stopped containers!
+# Caution: clean volumes of all removed containers!
 docker volume prune -f
 ```

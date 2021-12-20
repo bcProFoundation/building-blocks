@@ -3,7 +3,7 @@ version: "3"
 services:
   # Frontend
   authorization-client:
-    image: registry.gitlab.com/castlecraft/building-blocks/authorization-client:edge
+    image: registry.gitlab.com/castlecraft/building-blocks/authorization-client:latest
     environment:
       - API_HOST=authorization-server
       - API_PORT=3000
@@ -11,7 +11,7 @@ services:
       - 4210:8080
 
   admin-client:
-    image: registry.gitlab.com/castlecraft/building-blocks/admin-client:edge
+    image: registry.gitlab.com/castlecraft/building-blocks/admin-client:latest
     environment:
       - API_HOST=infrastructure-console
       - API_PORT=5000
@@ -19,7 +19,7 @@ services:
       - 4220:8080
 
   identity-client:
-    image: registry.gitlab.com/castlecraft/building-blocks/identity-client:edge
+    image: registry.gitlab.com/castlecraft/building-blocks/identity-client:latest
     environment:
       - API_HOST=identity-provider
       - API_PORT=3200
@@ -28,7 +28,7 @@ services:
 
   # Backend
   authorization-server:
-    image: registry.gitlab.com/castlecraft/building-blocks/authorization-server:edge
+    image: registry.gitlab.com/castlecraft/building-blocks/authorization-server:latest
     extra_hosts:
       admin.localhost: 172.17.0.1
       connect.localhost: 172.17.0.1
@@ -50,7 +50,7 @@ services:
       - EVENTS_PROTO=mqtt
 
   communication-server:
-    image: registry.gitlab.com/castlecraft/building-blocks/communication-server:edge
+    image: registry.gitlab.com/castlecraft/building-blocks/communication-server:latest
     extra_hosts:
       accounts.localhost: 172.17.0.1
       admin.localhost: 172.17.0.1
@@ -70,7 +70,7 @@ services:
       - 4100:4100
 
   identity-provider:
-    image: registry.gitlab.com/castlecraft/building-blocks/identity-provider:edge
+    image: registry.gitlab.com/castlecraft/building-blocks/identity-provider:latest
     extra_hosts:
       accounts.localhost: 172.17.0.1
       admin.localhost: 172.17.0.1
@@ -92,7 +92,7 @@ services:
       accounts.localhost: 172.17.0.1
       connect.localhost: 172.17.0.1
       myaccount.localhost: 172.17.0.1
-    image: registry.gitlab.com/castlecraft/building-blocks/infrastructure-console:edge
+    image: registry.gitlab.com/castlecraft/building-blocks/infrastructure-console:latest
     environment:
       - NODE_ENV=development
       - DB_HOST=mongo

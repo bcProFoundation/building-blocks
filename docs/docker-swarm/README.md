@@ -13,8 +13,8 @@ Easiest single server setup can be achieved using docker swarm setup.
 Download the stack and setup environment variables.
 
 ```shell
-wget https://gitlab.com/castlecraft/building-blocks/raw/develop/docker/swarm/mongodb-stack.yml
-wget https://gitlab.com/castlecraft/building-blocks/raw/develop/docker/swarm/env-mongodb.sh
+wget https://gitlab.com/castlecraft/building-blocks/raw/main/docker/swarm/mongodb-stack.yml
+wget https://gitlab.com/castlecraft/building-blocks/raw/main/docker/swarm/env-mongodb.sh
 ```
 
 Change and source the variables as per need.
@@ -50,8 +50,8 @@ mongo authorization-server \
 Download the stack yaml and setup environment variables.
 
 ```shell
-wget https://gitlab.com/castlecraft/building-blocks/raw/develop/docker/swarm/building-blocks-stack.yml
-wget https://gitlab.com/castlecraft/building-blocks/raw/develop/docker/swarm/env-building-blocks.sh
+wget https://gitlab.com/castlecraft/building-blocks/raw/main/docker/swarm/building-blocks-stack.yml
+wget https://gitlab.com/castlecraft/building-blocks/raw/main/docker/swarm/env-building-blocks.sh
 ```
 
 Change and source the variables as per need.

@@ -43,7 +43,7 @@ services:
         curl -i --basic -u admin:public -X POST http://events:8081/api/v4/mqtt_user -d '{"login":"$EVENTS_USER","password":"$EVENTS_PASSWORD","is_superuser":false}'
 
   authorization-service:
-    image: registry.gitlab.com/castlecraft/building-blocks/authorization-server:edge
+    image: registry.gitlab.com/castlecraft/building-blocks/authorization-server:latest
     ports:
       - "3000:3000"
     depends_on:

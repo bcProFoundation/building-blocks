@@ -3,7 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   INFINITE_DURATION,
-  INVALID_VERIFICATION_CODE,
+  SOMETHING_WENT_WRONG,
 } from '../constants/app-strings';
 import { EMAIL_VERIFIED } from '../constants/messages';
 import { VerifyGeneratePasswordService } from '../verify-generate-password/verify-generate-password.service';
@@ -36,9 +36,7 @@ export class VerifyEmailComponent implements OnInit {
         },
         error: error => {
           this.snackBar.open(
-            error?.error?.message ||
-              error?.toString() ||
-              INVALID_VERIFICATION_CODE,
+            error?.error?.message || error?.toString() || SOMETHING_WENT_WRONG,
             undefined,
             { duration: INFINITE_DURATION },
           );
