@@ -475,7 +475,7 @@ pages:
       curl --location \
         --header "JOB-TOKEN: $CI_JOB_TOKEN" \
         --output artifacts.zip \
-        "https://gitlab.com/$CI_PROJECT_NAMESPACE/building-blocks/-/jobs/artifacts/master/download?job=pages"
+        "https://gitlab.com/$CI_PROJECT_NAMESPACE/building-blocks/-/jobs/artifacts/main/download?job=pages"
     - unzip artifacts.zip -d charts
     - mv charts/public/index.yaml public/index.yaml
     - mv charts/public/blocks-*.tgz public/
