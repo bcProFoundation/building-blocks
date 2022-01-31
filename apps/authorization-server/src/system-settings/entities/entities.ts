@@ -14,7 +14,7 @@ export const SystemSettingsModuleEntities = [
         SERVER_SETTINGS,
         ServerSettings,
         SERVER_SETTINGS_COLLECTION_NAME,
-        process.env.NODE_ENV === 'test-e2e',
+        { overwriteModels: process.env.NODE_ENV === 'test-e2e' },
       ),
     inject: [MONGOOSE_CONNECTION],
   },

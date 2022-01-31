@@ -1,4 +1,4 @@
-import RateLimit from 'express-rate-limit';
+import rateLimit from 'express-rate-limit';
 import MongoStore from 'rate-limit-mongo';
 
 /**
@@ -13,14 +13,5 @@ export function rateLimiterMiddleware(
   store: MongoStore,
 ) {
   // defaults to max 100 requests per
-  return new RateLimit({
-    store,
-    max,
-    windowMs,
-    connectionOptions: {
-      useUnifiedTopology: true,
-      retryWrites: true,
-      useNewUrlParser: true,
-    },
-  });
+  return rateLimit({ store, max, windowMs });
 }
