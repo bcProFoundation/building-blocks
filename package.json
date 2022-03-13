@@ -5,8 +5,8 @@
     "version": "lerna clean --yes && lerna bootstrap --ignore-scripts && git add apps/*/yarn.lock frontends/*/yarn.lock"
   },
   "devDependencies": {
-    "@compodoc/compodoc": "^1.1.18",
-    "@types/node": "^17.0.13",
+    "@compodoc/compodoc": "^1.1.19",
+    "@types/node": "^17.0.21",
     "lerna": "^4.0.0"
   }
 }
