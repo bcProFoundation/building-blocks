@@ -19,53 +19,51 @@ describe('ProfileComponent', () => {
   let component: ProfileComponent;
   let fixture: ComponentFixture<ProfileComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      const oauthServiceStub: Partial<OAuthService> = {
-        getIdentityClaims() {
-          return { roles: ['administrator'] };
-        },
-      };
+  beforeEach(waitForAsync(() => {
+    const oauthServiceStub: Partial<OAuthService> = {
+      getIdentityClaims() {
+        return { roles: ['administrator'] };
+      },
+    };
 
-      TestBed.configureTestingModule({
-        imports: [
-          MaterialModule,
-          ReactiveFormsModule,
-          FormsModule,
-          BrowserAnimationsModule,
-          RouterTestingModule,
-        ],
-        providers: [
-          {
-            provide: OAuthService,
-            useValue: oauthServiceStub,
-          },
-          {
-            provide: ProfileService,
-            useValue: {
-              getPersonalDetails() {
-                return from([]);
-              },
-              getAuthServerUser() {
-                return from([]);
-              },
-              getProfileDetails() {
-                return from([]);
-              },
-              checkServerForPhoneRegistration() {
-                return from([]);
-              },
-              getOIDCProfile() {
-                return of({} as IDTokenClaims);
-              },
-            } as Partial<ProfileService>,
-          },
-          MatSnackBar,
-        ],
-        declarations: [ProfileComponent, PasswordRequirementComponent],
-      }).compileComponents();
-    }),
-  );
+    TestBed.configureTestingModule({
+      imports: [
+        MaterialModule,
+        ReactiveFormsModule,
+        FormsModule,
+        BrowserAnimationsModule,
+        RouterTestingModule,
+      ],
+      providers: [
+        {
+          provide: OAuthService,
+          useValue: oauthServiceStub,
+        },
+        {
+          provide: ProfileService,
+          useValue: {
+            getPersonalDetails() {
+              return from([]);
+            },
+            getAuthServerUser() {
+              return from([]);
+            },
+            getProfileDetails() {
+              return from([]);
+            },
+            checkServerForPhoneRegistration() {
+              return from([]);
+            },
+            getOIDCProfile() {
+              return of({} as IDTokenClaims);
+            },
+          } as Partial<ProfileService>,
+        },
+        MatSnackBar,
+      ],
+      declarations: [ProfileComponent, PasswordRequirementComponent],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ProfileComponent);

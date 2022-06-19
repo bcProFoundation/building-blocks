@@ -24,29 +24,27 @@ describe('UserComponent', () => {
   let component: UserComponent;
   let fixture: ComponentFixture<UserComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [
-          MaterialModule,
-          FormsModule,
-          ReactiveFormsModule,
-          HttpClientTestingModule,
-          RouterTestingModule,
-          BrowserAnimationsModule,
-        ],
-        providers: [
-          HttpErrorHandler,
-          MessageService,
-          {
-            provide: OAuthService,
-            useValue: oauthServiceStub,
-          },
-        ],
-        declarations: [UserComponent, ClaimsListingComponent],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        MaterialModule,
+        FormsModule,
+        ReactiveFormsModule,
+        HttpClientTestingModule,
+        RouterTestingModule,
+        BrowserAnimationsModule,
+      ],
+      providers: [
+        HttpErrorHandler,
+        MessageService,
+        {
+          provide: OAuthService,
+          useValue: oauthServiceStub,
+        },
+      ],
+      declarations: [UserComponent, ClaimsListingComponent],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(UserComponent);

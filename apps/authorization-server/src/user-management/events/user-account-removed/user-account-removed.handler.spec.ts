@@ -1,7 +1,6 @@
 import { Test } from '@nestjs/testing';
 import { CqrsModule, EventBus } from '@nestjs/cqrs';
 import { DeleteResult } from 'mongodb';
-import { UserDeleteRequestService } from '../../schedulers/user-delete-request/user-delete-request.service';
 import { UserAccountRemovedHandler } from './user-account-removed.handler';
 import { User } from '../../entities/user/user.interface';
 import { UserAccountRemovedEvent } from './user-account-removed';
@@ -12,7 +11,6 @@ import { UserClaimService } from '../../../auth/entities/user-claim/user-claim.s
 
 describe('Event: UserAccountRemovedHandler', () => {
   let eventBus$: EventBus;
-  let manager: UserDeleteRequestService;
   let eventHandler: UserAccountRemovedHandler;
 
   const mockUser = {
@@ -65,10 +63,6 @@ describe('Event: UserAccountRemovedHandler', () => {
           useFactory: () => jest.fn(),
         },
         {
-          provide: UserDeleteRequestService,
-          useFactory: () => jest.fn(),
-        },
-        {
           provide: UserService,
           useFactory: () => jest.fn(),
         },
@@ -84,7 +78,6 @@ describe('Event: UserAccountRemovedHandler', () => {
     }).compile();
 
     eventBus$ = module.get<EventBus>(EventBus);
-    manager = module.get<UserDeleteRequestService>(UserDeleteRequestService);
     eventHandler = module.get<UserAccountRemovedHandler>(
       UserAccountRemovedHandler,
     );
@@ -95,12 +88,10 @@ describe('Event: UserAccountRemovedHandler', () => {
 
   it('should be defined', () => {
     expect(eventBus$).toBeDefined();
-    expect(manager).toBeDefined();
     expect(eventHandler).toBeDefined();
   });
 
   it('should inform client the User is deleted using the UserDeleteRequestService', async () => {
-    manager.informClients = jest.fn(() => Promise.resolve());
     userService.remove = jest.fn(() => Promise.resolve({} as User));
     authDataService.remove = jest.fn(() => Promise.resolve({} as AuthData));
     authDataService.deleteMany = jest.fn(() =>
@@ -120,6 +111,6 @@ describe('Event: UserAccountRemovedHandler', () => {
         twoFactorTempSecret,
       ),
     );
-    expect(manager.informClients).toHaveBeenCalledTimes(1);
+    expect(userService.remove).toHaveBeenCalledTimes(1);
   });
 });

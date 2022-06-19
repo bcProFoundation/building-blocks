@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TokenSchedulerService } from './token-schedule.service';
 import { BearerTokenService } from '../../entities/bearer-token/bearer-token.service';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
-import { AGENDA_CONNECTION } from '../../../common/database.provider';
 import { OAuth2Service } from '../../controllers/oauth2/oauth2.service';
 
 describe('TokenSchedulerService', () => {
@@ -15,10 +14,6 @@ describe('TokenSchedulerService', () => {
         {
           provide: BearerTokenService,
           useValue: {}, // mock
-        },
-        {
-          provide: AGENDA_CONNECTION,
-          useValue: {},
         },
         {
           provide: ServerSettingsService,
