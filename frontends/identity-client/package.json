@@ -1,6 +1,6 @@
 {
   "name": "identity-client",
-  "version": "6.6.9",
+  "version": "6.7.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.config.json  --host \"myaccount.localhost\" --port 4420",
