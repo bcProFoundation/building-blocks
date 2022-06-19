@@ -295,7 +295,7 @@ pack_latest_identity_client:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
     # Identity Client
-    - docker build --build-arg BUILD_ARGS="-- --prod=false" -t identity-client frontends/identity-client
+    - docker build --build-arg BUILD_ARGS="--configuration=production" -t identity-client frontends/identity-client
     - docker tag identity-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-client:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/identity-client:latest
 
@@ -323,7 +323,7 @@ pack_latest_admin_client:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
     # Admin Client
-    - docker build --build-arg BUILD_ARGS="-- --prod=false" -t admin-client frontends/admin-client
+    - docker build --build-arg BUILD_ARGS="--configuration=production" -t admin-client frontends/admin-client
     - docker tag admin-client $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/building-blocks/admin-client:latest
 
