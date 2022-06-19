@@ -2,7 +2,7 @@ version: "3"
 
 services:
   events:
-    image: emqx/emqx:4.3.10
+    image: emqx/emqx:5.0.0
     restart: unless-stopped
     environment:
       - EMQX_ALLOW_ANONYMOUS=true

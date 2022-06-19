@@ -1,6 +1,5 @@
 import { CqrsModule } from '@nestjs/cqrs';
 import { Test, TestingModule } from '@nestjs/testing';
-import { AGENDA_CONNECTION } from '../../../common/database.provider';
 import { UserService } from '../../../user-management/entities/user/user.service';
 import { DeleteUnverifiedEmailsService } from './delete-unverified-emails.service';
 
@@ -13,10 +12,6 @@ describe('DeleteUnverifiedEmailsService', () => {
       providers: [
         DeleteUnverifiedEmailsService,
         { provide: UserService, useValue: {} },
-        {
-          provide: AGENDA_CONNECTION,
-          useValue: {},
-        },
       ],
     }).compile();
 

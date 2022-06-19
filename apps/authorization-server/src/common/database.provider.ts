@@ -1,5 +1,4 @@
 import { Logger } from '@nestjs/common';
-import Agenda from 'agenda';
 import MongoStore from 'connect-mongo';
 import mongoose from 'mongoose';
 import RateLimitMongoStore from 'rate-limit-mongo';
@@ -16,7 +15,6 @@ import {
 } from '../config/config.service';
 
 export const MONGOOSE_CONNECTION = 'DATABASE_CONNECTION';
-export const AGENDA_CONNECTION = 'AGENDA_CONNECTION';
 export const RATE_LIMIT_CONNECTION = 'RATE_LIMIT_CONNECTION';
 export const RATE_LIMIT_COLLECTION = 'rate_limit';
 export const SESSION_CONNECTION = 'SESSION_CONNECTION';
@@ -38,24 +36,6 @@ export const databaseProviders = [
           ),
         ).pipe(handleRetry()),
       );
-    },
-    inject: [ConfigService],
-  },
-  {
-    provide: AGENDA_CONNECTION,
-    useFactory: async (config: ConfigService) => {
-      const mongoUriPrefix = config.get(MONGO_URI_PREFIX) || 'mongodb';
-      const agenda = new Agenda({
-        db: {
-          address: `${mongoUriPrefix}://${config.get(DB_USER)}:${config.get(
-            DB_PASSWORD,
-          )}@${config.get(DB_HOST).replace(/,\s*$/, '')}/${config.get(
-            DB_NAME,
-          )}`,
-        },
-      });
-      await agenda.start();
-      return agenda;
     },
     inject: [ConfigService],
   },

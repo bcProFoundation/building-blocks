@@ -1,26 +1,15 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import cron from 'node-cron';
 import { OnModuleInit } from '@nestjs/common';
 import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
-import { AGENDA_CONNECTION } from '../../../common/database.provider';
-import Agenda from 'agenda';
-
-export const AUTH_DATA_DELETE_QUEUE = 'auth_data_delete_queue';
 
 @Injectable()
 export class AuthDataScheduleService implements OnModuleInit {
-  constructor(
-    @Inject(AGENDA_CONNECTION)
-    private readonly agenda: Agenda,
-    private readonly authData: AuthDataService,
-  ) {}
+  constructor(private readonly authData: AuthDataService) {}
 
-  async onModuleInit() {
-    this.defineQueueProcess();
-    await this.addQueue();
-  }
-
-  defineQueueProcess() {
-    this.agenda.define(AUTH_DATA_DELETE_QUEUE, async job => {
+  onModuleInit() {
+    // Every hour
+    cron.schedule('0 * * * *', async () => {
       const authDataCollection = await this.authData.find({
         expiry: { $lt: new Date() },
       });
@@ -28,10 +17,5 @@ export class AuthDataScheduleService implements OnModuleInit {
         await this.authData.remove(authData);
       }
     });
-  }
-
-  async addQueue() {
-    const every = '1 hour';
-    await this.agenda.every(every, AUTH_DATA_DELETE_QUEUE);
   }
 }

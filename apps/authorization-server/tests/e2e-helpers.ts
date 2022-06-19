@@ -4,14 +4,12 @@ import 'jest';
 import { INestApplication } from '@nestjs/common';
 import { ClientMqtt } from '@nestjs/microservices';
 import { Mongoose } from 'mongoose';
-import Agenda from 'agenda';
 import RateLimitMongoStore from 'rate-limit-mongo';
 import { MongoClient } from 'mongodb';
 import { default as MongoStore } from 'connect-mongo';
 
 import { BROADCAST_EVENT } from '../src/common/events-microservice.client';
 import {
-  AGENDA_CONNECTION,
   MONGOOSE_CONNECTION,
   RATE_LIMIT_CONNECTION,
   SESSION_CONNECTION,
@@ -67,14 +65,12 @@ export const delay = (milliseconds: number) => promise =>
 export async function stopServices(app: INestApplication) {
   app.get<ClientMqtt>(BROADCAST_EVENT).close();
   const database = app.get<Mongoose>(MONGOOSE_CONNECTION);
-  const agenda = app.get<Agenda>(AGENDA_CONNECTION);
   const rateLimitStore = app.get<RateLimitMongoStore>(RATE_LIMIT_CONNECTION);
   const store = app.get<MongoStore>(SESSION_CONNECTION);
   const client: MongoClient = await rateLimitStore.getClient();
 
   store.close();
   await client.close();
-  await agenda.stop();
   await database.connection.close();
   await database.disconnect();
   await app.close();

@@ -6,7 +6,6 @@ import { UserManagementCommandHandlers } from './commands';
 import { UserManagementSagas } from './sagas';
 import { UserManagementAggregates } from './aggregates';
 import { UserManagementControllers } from './controllers';
-import { UserManagementSchedulers } from './schedulers';
 import { UserManagementPolicies } from './policies';
 import { UserManagementQueryHandlers } from './queries';
 
@@ -22,7 +21,6 @@ import { UserManagementQueryHandlers } from './queries';
     ...UserManagementCommandHandlers,
     ...UserManagementEventHandlers,
     ...UserManagementSagas,
-    ...UserManagementSchedulers,
     ...UserManagementPolicies,
     ...UserManagementQueryHandlers,
   ],
@@ -30,7 +28,6 @@ import { UserManagementQueryHandlers } from './queries';
   exports: [
     UserManagementEntitiesModule,
     ...UserManagementAggregates,
-    ...UserManagementSchedulers,
     ...UserManagementPolicies,
   ],
 })

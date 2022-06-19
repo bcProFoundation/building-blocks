@@ -17,7 +17,11 @@ export class LocalUserGuard implements CanActivate {
     ];
 
     const passportFn = createPassportContext(request, response);
-    const user = await passportFn('local', { session: true, callback });
+    const user = await passportFn('local', {
+      session: true,
+      callback,
+      keepSessionInfo: true,
+    });
     request[defaultOptions.property] = user;
 
     const reqUser = user as RequestUser;

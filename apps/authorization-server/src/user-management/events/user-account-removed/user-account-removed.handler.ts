@@ -1,18 +1,16 @@
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
-import { UserAccountRemovedEvent } from './user-account-removed';
-import { UserDeleteRequestService } from '../../schedulers/user-delete-request/user-delete-request.service';
 import { from } from 'rxjs';
-import { AuthDataService } from '../../entities/auth-data/auth-data.service';
-import { UserService } from '../../entities/user/user.service';
 import { UserClaimService } from '../../../auth/entities/user-claim/user-claim.service';
+import { AuthDataService } from '../../entities/auth-data/auth-data.service';
 import { USER } from '../../entities/user/user.schema';
+import { UserService } from '../../entities/user/user.service';
+import { UserAccountRemovedEvent } from './user-account-removed';
 
 @EventsHandler(UserAccountRemovedEvent)
 export class UserAccountRemovedHandler
   implements IEventHandler<UserAccountRemovedEvent>
 {
   constructor(
-    private readonly requestUserDelete: UserDeleteRequestService,
     private readonly authData: AuthDataService,
     private readonly user: UserService,
     private readonly userClaim: UserClaimService,
@@ -71,11 +69,6 @@ export class UserAccountRemovedHandler
         entityUuid: deletedUser.uuid,
       }),
     ).subscribe({
-      next: success => {},
-      error: error => {},
-    });
-
-    from(this.requestUserDelete.informClients(deletedUser.uuid)).subscribe({
       next: success => {},
       error: error => {},
     });
