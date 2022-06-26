@@ -315,14 +315,15 @@ export class AuthService {
 
   logout(req, res) {
     req.session.users = [];
-    req.logout();
-    delete req.session.selectedUser;
+    req.logout(() => {
+      delete req.session.selectedUser;
 
-    if (req.query && req.query.redirect) {
-      return res.redirect(req.query.redirect);
-    }
+      if (req.query && req.query.redirect) {
+        return res.redirect(req.query.redirect);
+      }
 
-    return res.redirect('/');
+      return res.redirect('/');
+    });
   }
 
   logoutUuid(uuid: string, req, res) {
@@ -339,18 +340,18 @@ export class AuthService {
 
       // Check if uuid is passport session user
       if (req.session.user && req.session.user.uuid === uuid) {
-        req.logout();
-        delete req.session.selectedUser;
+        req.logout(() => {
+          delete req.session.selectedUser;
+          if (req.query.redirect) {
+            return res.redirect(req.query.redirect);
+          }
+
+          return res.json({ message: SUCCESS });
+        });
       }
     } else {
       throw invalidUserException;
     }
-
-    if (req.query.redirect) {
-      return res.redirect(req.query.redirect);
-    }
-
-    return res.json({ message: SUCCESS });
   }
 
   async passwordLess(payload, req) {

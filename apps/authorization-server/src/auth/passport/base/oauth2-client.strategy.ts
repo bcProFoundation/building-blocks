@@ -10,6 +10,8 @@ export const SESSION = 'session';
 
 export class PassportOAuth2ClientStrategy extends Strategy {
   protected verify: (...args) => any | void;
+  name = 'oauth2-client';
+
   constructor(verify: (...args) => any | void) {
     super();
     if (!verify) {
