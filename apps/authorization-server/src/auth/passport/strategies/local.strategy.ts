@@ -1,11 +1,11 @@
-import { Strategy } from 'passport-local';
-import { AuthService } from '../../controllers/auth/auth.service';
-import { PassportStrategy } from './passport.strategy';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ACCOUNTS_ROUTE } from '../../../constants/app-strings';
+import { AuthService } from '../../controllers/auth/auth.service';
+import { PassportLocalStrategy } from '../base/local.strategy';
+import { PassportStrategy } from './passport.strategy';
 
 @Injectable()
-export class LocalStrategy extends PassportStrategy(Strategy) {
+export class LocalStrategy extends PassportStrategy(PassportLocalStrategy) {
   constructor(private readonly authService: AuthService) {
     super({
       passReqToCallback: true,

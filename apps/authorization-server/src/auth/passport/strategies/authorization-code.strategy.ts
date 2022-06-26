@@ -1,11 +1,13 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { PassportStrategy } from './passport.strategy';
-import { Strategy } from 'passport-oauth2-code';
-import { ClientService } from '../../../client-management/entities/client/client.service';
 import { ClientAuthentication } from '../../../client-management/entities/client/client.interface';
+import { ClientService } from '../../../client-management/entities/client/client.service';
+import { PassportOAuth2CodeStrategy } from '../base/oauth2-code.strategy';
+import { PassportStrategy } from './passport.strategy';
 
 @Injectable()
-export class AuthorizationCodeStrategy extends PassportStrategy(Strategy) {
+export class AuthorizationCodeStrategy extends PassportStrategy(
+  PassportOAuth2CodeStrategy,
+) {
   constructor(private readonly clientService: ClientService) {
     super({ passReqToCallback: true });
   }

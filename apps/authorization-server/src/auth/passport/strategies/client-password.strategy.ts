@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { PassportStrategy } from './passport.strategy';
-import { Strategy } from 'passport-oauth2-client-password';
 import { ClientService } from '../../../client-management/entities/client/client.service';
+import { PassportOAuth2ClientPasswordStrategy } from '../base/oauth2-client-password.strategy';
+import { PassportStrategy } from './passport.strategy';
 
 @Injectable()
-export class ClientPasswordStrategy extends PassportStrategy(Strategy) {
+export class ClientPasswordStrategy extends PassportStrategy(
+  PassportOAuth2ClientPasswordStrategy,
+) {
   constructor(private readonly clientService: ClientService) {
-    super();
+    super({ passReqToCallback: true });
   }
 
   async validate(clientId, clientSecret, done: (err, user) => any) {

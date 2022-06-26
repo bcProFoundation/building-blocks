@@ -229,7 +229,7 @@ export class UserController {
   async deleteMe(@Req() req) {
     const user = req.user.user;
     await this.commandBus.execute(new RemoveUserAccountCommand(user, user));
-    req.logout();
+    req.logout(() => {});
   }
 
   @Get('v1/list_session_users')
@@ -307,6 +307,6 @@ export class UserController {
     await this.commandBus.execute(
       new RemoveUserAccountCommand(undefined, userUuidToDelete, client),
     );
-    req.logout();
+    req.logout(() => {});
   }
 }

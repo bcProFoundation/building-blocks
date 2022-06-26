@@ -1,19 +1,26 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { PassportStrategy } from './passport.strategy';
-import { Strategy } from 'passport-http-bearer';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Request } from 'express';
+import { BearerTokenService } from '../../../auth/entities/bearer-token/bearer-token.service';
 import { ConfigService, TOKEN_VALIDITY } from '../../../config/config.service';
 import { i18n } from '../../../i18n/i18n.config';
-import { BearerTokenService } from '../../../auth/entities/bearer-token/bearer-token.service';
+import { PassportHttpBearerStrategy } from '../base/http-bearer.strategy';
+import { PassportStrategy } from './passport.strategy';
 
 @Injectable()
-export class HttpBearerStrategy extends PassportStrategy(Strategy) {
+export class HttpBearerStrategy extends PassportStrategy(
+  PassportHttpBearerStrategy,
+) {
   constructor(
     private readonly bearerTokenService: BearerTokenService,
     private readonly configService: ConfigService,
   ) {
-    super();
+    super({ passReqToCallback: true });
   }
-  async validate(token: any, done: (err?, user?, info?) => any) {
+  async validate(
+    req: Request,
+    token: string,
+    done: (err?, user?, info?) => any,
+  ) {
     try {
       const unauthorizedError = new HttpException(
         i18n.__('Unauthorized'),
