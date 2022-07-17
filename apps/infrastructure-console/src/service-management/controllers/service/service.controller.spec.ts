@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ServiceController } from './service.controller';
 import { CqrsModule } from '@nestjs/cqrs';
-import { HttpService } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { TokenGuard } from '../../../auth/guards/token.guard';
 import { RoleGuard } from '../../../auth/guards/role.guard';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';

@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
 import { CqrsModule, EventBus } from '@nestjs/cqrs';
-import { HttpModule } from '@nestjs/common';
+import { HttpModule } from '@nestjs/axios';
 import { BearerToken } from '../../entities/bearer-token/bearer-token.interface';
 import { ClientService } from '../../../client-management/entities/client/client.service';
 import { BearerTokenService } from '../../entities/bearer-token/bearer-token.service';

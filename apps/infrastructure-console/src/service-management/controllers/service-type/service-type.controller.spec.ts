@@ -3,7 +3,7 @@ import { ServiceTypeController } from './service-type.controller';
 import { CqrsModule } from '@nestjs/cqrs';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { TokenCacheService } from '../../../auth/entities/token-cache/token-cache.service';
-import { HttpService } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { TokenGuard } from '../../../auth/guards/token.guard';
 import { RoleGuard } from '../../../auth/guards/role.guard';
 

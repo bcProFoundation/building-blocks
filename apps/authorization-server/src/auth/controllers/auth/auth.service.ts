@@ -5,7 +5,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import speakeasy from 'speakeasy';
+import { hotp, totp } from 'otplib';
 import { v4 as uuidv4 } from 'uuid';
 import {
   userAlreadyExistsException,
@@ -184,20 +184,15 @@ export class AuthService {
     const secret = this.loginOTP.metaData.secret;
     const counter = this.loginOTP.metaData.counter;
 
-    return speakeasy.hotp({
-      secret,
-      encoding: 'base32',
-      counter,
-    });
+    return hotp.generate(secret as string, Number(counter));
   }
 
   isUserTOTPValid(sharedSecret: AuthData, code: string) {
     if (sharedSecret) {
-      return speakeasy.totp.verify({
+      totp.options = { window: 2 };
+      return totp.verify({
         secret: sharedSecret.password,
-        encoding: 'base32',
         token: code,
-        window: 2,
       });
     }
   }

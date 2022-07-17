@@ -4,7 +4,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { AggregateRoot } from '@nestjs/cqrs';
-import speakeasy from 'speakeasy';
+import { authenticator, totp } from 'otplib';
 import QRCode from 'qrcode';
 import { v4 as uuidv4 } from 'uuid';
 import { randomBytes } from 'crypto';
@@ -74,7 +74,7 @@ export class UserAggregateService extends AggregateRoot {
       const settings = await this.settings.find();
 
       // Save secret on AuthData
-      const secret = speakeasy.generateSecret({ name: user.email });
+      const secret = authenticator.generateSecret();
 
       // Find existing AuthData or create new
       let twoFactorTempSecret: AuthData & { _id?: any } =
@@ -91,17 +91,18 @@ export class UserAggregateService extends AggregateRoot {
       }
 
       // Save generated base32 secret
-      twoFactorTempSecret.password = secret.base32;
+      twoFactorTempSecret.password = secret;
       this.apply(new PasswordChangedEvent(twoFactorTempSecret));
       this.apply(new UserAccountModifiedEvent(user));
 
       const issuerUrl = new URL(settings.issuerUrl).host;
-      const otpAuthUrl = speakeasy.otpauthURL({
-        secret: secret.ascii,
-        label: `${issuerUrl}:${user.email || user.phone}`,
-        period: 30,
-      });
 
+      authenticator.options = { step: 30 };
+      const otpAuthUrl = authenticator.keyuri(
+        encodeURIComponent(user.email || user.phone),
+        issuerUrl,
+        secret,
+      );
       const qrImage = await QRCode.toDataURL(otpAuthUrl);
 
       return {
@@ -129,11 +130,10 @@ export class UserAggregateService extends AggregateRoot {
         AuthDataType.TwoFactorTempSecret,
       );
       const base32secret = twoFactorTempSecret.password;
-      const verified = speakeasy.totp.verify({
+      totp.options = { window: 2 };
+      const verified = totp.verify({
         secret: base32secret,
-        encoding: 'base32',
         token: otp,
-        window: 2,
       });
       if (verified) {
         const sharedSecret = await this.checkLocalAuthData(

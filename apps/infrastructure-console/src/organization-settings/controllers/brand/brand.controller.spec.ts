@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { of } from 'rxjs';
 import { BrandController } from './brand.controller';
-import { HttpService } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { TokenGuard } from '../../../auth/guards/token.guard';
 
 describe('Brand Controller', () => {

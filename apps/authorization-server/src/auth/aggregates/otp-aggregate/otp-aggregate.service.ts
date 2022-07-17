@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { AggregateRoot } from '@nestjs/cqrs';
 import { retry } from 'rxjs/operators';
-import speakeasy from 'speakeasy';
+import { authenticator, hotp } from 'otplib';
 import { v4 as uuidv4 } from 'uuid';
 import { Request } from 'express';
 
@@ -94,13 +94,11 @@ export class OTPAggregateService extends AggregateRoot {
   }
 
   async generateLoginOTP(user: User) {
-    const secret = speakeasy.generateSecret({
-      name: user.email || user.phone,
-    });
+    const secret = authenticator.generateSecret();
 
     this.otp.metaData = {
       counter: Math.floor(Math.random() * 100),
-      secret: secret.base32,
+      secret,
     };
     this.otp.entity = USER;
     this.otp.entityUuid = user.uuid;
@@ -115,11 +113,10 @@ export class OTPAggregateService extends AggregateRoot {
 
   async generateHOTP(user: User): Promise<string> {
     await this.checkLocalOTP(user);
-    return speakeasy.hotp({
-      secret: this.otp.metaData.secret,
-      encoding: 'base32',
-      counter: this.otp.metaData.counter,
-    });
+    return hotp.generate(
+      this.otp.metaData.secret as string,
+      Number(this.otp.metaData.counter),
+    );
   }
 
   sendEmail(communicationClient: Client, user: User, hotp: string) {
@@ -162,13 +159,12 @@ export class OTPAggregateService extends AggregateRoot {
     // Generate OTP and broadcast Event
     const phoneOTP = await this.getPhoneVerificationCode(user, unverifiedPhone);
 
-    const hotp = speakeasy.hotp({
-      secret: phoneOTP.metaData.secret,
-      encoding: 'base32',
-      counter: phoneOTP.metaData.counter,
-    });
+    const generatedHOTP = hotp.generate(
+      phoneOTP.metaData.secret as string,
+      Number(phoneOTP.metaData.counter),
+    );
 
-    this.apply(new UnverifiedPhoneAddedEvent(user, phoneOTP, hotp));
+    this.apply(new UnverifiedPhoneAddedEvent(user, phoneOTP, generatedHOTP));
   }
 
   async checkLocalPhoneVerificationCode(user: User) {
@@ -218,13 +214,11 @@ export class OTPAggregateService extends AggregateRoot {
     }
 
     const newPhoneOTP = {} as AuthData;
-    const secret = speakeasy.generateSecret({
-      name: user.email || user.phone || user.unverifiedPhone,
-    });
+    const secret = authenticator.generateSecret();
 
     newPhoneOTP.metaData = {
       counter: Math.floor(Math.random() * 100),
-      secret: secret.base32,
+      secret,
       phone: unverifiedPhone,
     };
     newPhoneOTP.entity = USER;
@@ -255,12 +249,11 @@ export class OTPAggregateService extends AggregateRoot {
     const phone = phoneOTP.metaData.phone as string;
 
     // validate otp with payload otp
-    const hotp = speakeasy.hotp({
-      secret: phoneOTP.metaData.secret,
-      encoding: 'base32',
-      counter: phoneOTP.metaData.counter,
-    });
-    if (hotp !== otp) {
+    const validHOTP = hotp.generate(
+      phoneOTP.metaData.secret as string,
+      Number(phoneOTP.metaData.counter),
+    );
+    if (validHOTP !== otp) {
       throw invalidOTPException;
     }
 
@@ -316,13 +309,14 @@ export class OTPAggregateService extends AggregateRoot {
       unverifiedUser.unverifiedPhone,
     );
 
-    const hotp = speakeasy.hotp({
-      secret: phoneOTP.metaData.secret,
-      encoding: 'base32',
-      counter: phoneOTP.metaData.counter,
-    });
+    const validHOTP = hotp.generate(
+      phoneOTP.metaData.secret as string,
+      Number(phoneOTP.metaData.counter),
+    );
 
-    this.apply(new UnverifiedPhoneAddedEvent(unverifiedUser, phoneOTP, hotp));
+    this.apply(
+      new UnverifiedPhoneAddedEvent(unverifiedUser, phoneOTP, validHOTP),
+    );
 
     return payload;
   }

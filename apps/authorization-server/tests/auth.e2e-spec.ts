@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
-import speakeasy from 'speakeasy';
+import { hotp, totp } from 'otplib';
 import { INestApplication } from '@nestjs/common';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import 'jest';
@@ -345,10 +345,7 @@ describe('AppModule (e2e)', () => {
       .end((err, res) => {
         if (err) return done(err);
         sharedSecret = res.body.key;
-        const otp = speakeasy.totp({
-          secret: sharedSecret,
-          encoding: 'base32',
-        });
+        const otp = totp.generate(sharedSecret);
         const verify2faReq = request(app.getHttpServer())
           .post('/user/v1/verify_2fa')
           .send({ otp })
@@ -365,10 +362,7 @@ describe('AppModule (e2e)', () => {
   });
 
   it('/POST /auth/login (2FA TOTP Login)', done => {
-    const otp = speakeasy.totp({
-      secret: sharedSecret,
-      encoding: 'base32',
-    });
+    const otp = totp.generate(sharedSecret);
     request(app.getHttpServer())
       .post('/auth/login')
       .send({
@@ -408,11 +402,10 @@ describe('AppModule (e2e)', () => {
         });
       })
       .then(otpCounter => {
-        const otp = speakeasy.hotp({
-          secret: otpCounter.metaData.secret,
-          encoding: 'base32',
-          counter: otpCounter.metaData.counter,
-        });
+        const otp = hotp.generate(
+          otpCounter.metaData.secret as string,
+          Number(otpCounter.metaData.counter),
+        );
 
         return request(app.getHttpServer())
           .post('/auth/login')

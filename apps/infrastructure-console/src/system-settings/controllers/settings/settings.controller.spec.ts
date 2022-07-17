@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SettingsController } from './settings.controller';
-import { HttpModule, HttpService } from '@nestjs/common';
+import { HttpModule, HttpService } from '@nestjs/axios';
 import { SettingsService } from '../../../system-settings/aggregates/settings/settings.service';
 import { TokenGuard } from '../../../auth/guards/token.guard';
 import { TokenCacheService } from '../../../auth/entities/token-cache/token-cache.service';
