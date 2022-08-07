@@ -26,7 +26,13 @@ export class EmailRequestService {
     return from(this.settings.find()).pipe(
       switchMap(settings => {
         generateForgottenPasswordUrl =
-          settings.issuerUrl + '/forgot/' + verificationCode.password;
+          settings.issuerUrl +
+          '/forgot/' +
+          verificationCode.password +
+          (verificationCode.metaData?.redirect
+            ? '?redirect=' +
+              encodeURIComponent(verificationCode.metaData?.redirect)
+            : '');
         return from(
           this.client.findOne({
             clientId: settings.communicationServerClientId,
@@ -74,7 +80,12 @@ export class EmailRequestService {
       new URL(communicationClient.redirectUris[0]).origin + '/email/v1/system';
 
     const verificationUrl =
-      settings.issuerUrl + '/signup/' + verificationCode.password;
+      settings.issuerUrl +
+      '/signup/' +
+      verificationCode.password +
+      (verificationCode.metaData?.redirect
+        ? '?redirect=' + encodeURIComponent(verificationCode.metaData?.redirect)
+        : '');
 
     const txtMessage =
       'Visit the following link to complete signup\n' + verificationUrl;

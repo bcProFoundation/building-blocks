@@ -12,10 +12,10 @@ export class GenerateForgottenPasswordHandler
   ) {}
 
   async execute(command: GenerateForgottenPasswordCommand) {
-    const { userEmailOrPhone } = command;
+    const { userEmailOrPhone, redirect } = command;
 
     const aggregate = this.publisher.mergeObjectContext(this.manager);
-    await this.manager.generateForgottenPassword(userEmailOrPhone);
+    await this.manager.generateForgottenPassword(userEmailOrPhone, redirect);
     aggregate.commit();
   }
 }

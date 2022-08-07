@@ -232,7 +232,11 @@ export class OTPAggregateService extends AggregateRoot {
     return newPhoneOTP;
   }
 
-  async verifyPhone(userUuid: string, otp: string, req?: Request) {
+  async verifyPhone(
+    userUuid: string,
+    otp: string,
+    req?: Request & { session: { users?: unknown[] } & unknown },
+  ) {
     // Check user
     const user = await this.user.findOne({ uuid: userUuid });
     if (!user) throw invalidUserException;
@@ -269,8 +273,15 @@ export class OTPAggregateService extends AggregateRoot {
 
     // Login as user
     if (req && req.logIn) {
-      addSessionUser(req, user);
-      req.logIn(user, () => {});
+      const users = req.session?.users;
+      req.logIn(user, () => {
+        req.session.users = users;
+        addSessionUser(req, {
+          uuid: user.uuid,
+          email: user.email,
+          phone: user.phone,
+        });
+      });
     }
 
     this.apply(new PhoneVerifiedEvent(user, phoneOTP));

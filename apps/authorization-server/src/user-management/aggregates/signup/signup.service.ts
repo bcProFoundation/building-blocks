@@ -50,6 +50,9 @@ export class SignupService extends AggregateRoot {
 
     const verificationCode = {} as AuthData;
     verificationCode.password = randomBytes(32).toString('hex');
+    if (payload.redirect) {
+      verificationCode.metaData = { redirect: payload.redirect };
+    }
     verificationCode.entity = USER;
     verificationCode.entityUuid = unverifiedUser.uuid;
     const expiry = new Date();
