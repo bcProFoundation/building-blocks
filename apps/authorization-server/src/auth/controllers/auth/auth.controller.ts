@@ -88,7 +88,9 @@ export class AuthController {
   ) {
     const user = await this.authService.chooseUser(req, uuid);
     return {
-      user: user.email,
+      uuid: user.uuid,
+      email: user.email,
+      phone: user.phone,
       path: redirect,
     };
   }

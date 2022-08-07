@@ -2,6 +2,7 @@ import { Injectable, NestMiddleware } from '@nestjs/common';
 import { stringify } from 'querystring';
 import { ServerSettingsService } from '../../system-settings/entities/server-settings/server-settings.service';
 import { UserService } from '../../user-management/entities/user/user.service';
+import { addSessionUser } from '../guards/guard.utils';
 
 export const ACCOUNT_CHOOSE_ROUTE = '/account/choose';
 export const SELECT_ACCOUNT = 'select_account';
@@ -31,7 +32,15 @@ export class ChooseAccountMiddleware implements NestMiddleware {
 
     if (reqUser) {
       const user = await this.user.findOne({ uuid: reqUser.uuid });
-      req.logIn(user, () => {});
+      const users = req.session?.users;
+      req.logIn(user, () => {
+        req.session.users = users;
+        addSessionUser(req, {
+          uuid: user.uuid,
+          email: user.email,
+          phone: user.phone,
+        });
+      });
       delete req.session.selectedUser;
       return next();
     }

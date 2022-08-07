@@ -304,7 +304,6 @@ export class AuthService {
     }
 
     req.session.selectedUser = uuid;
-    req.logIn(reqUser, () => {});
     return userFromSessionUsers;
   }
 
@@ -335,15 +334,18 @@ export class AuthService {
 
       // Check if uuid is passport session user
       if (req.session.user && req.session.user.uuid === uuid) {
-        req.logout(() => {
-          delete req.session.selectedUser;
-          if (req.query.redirect) {
-            return res.redirect(req.query.redirect);
-          }
-
-          return res.json({ message: SUCCESS });
-        });
+        delete req.session.selectedUser;
       }
+      const users = req.session?.users;
+
+      req.logout(() => {
+        req.session.users = users;
+        req.session.save();
+        if (req.query.redirect) {
+          return res.redirect(req.query.redirect);
+        }
+        return res.json({ message: SUCCESS });
+      });
     } else {
       throw invalidUserException;
     }
@@ -351,12 +353,15 @@ export class AuthService {
 
   async passwordLess(payload, req) {
     const user = await this.passwordLessLogin(payload);
-    addSessionUser(req, {
-      uuid: user.uuid,
-      email: user.email,
-      phone: user.phone,
+    const users = req.session?.users;
+    req.logIn(user, () => {
+      req.session.users = users;
+      addSessionUser(req, {
+        uuid: user.uuid,
+        email: user.email,
+        phone: user.phone,
+      });
     });
-    req.logIn(user, () => {});
     return {
       user: user.email,
       path: payload.redirect,
