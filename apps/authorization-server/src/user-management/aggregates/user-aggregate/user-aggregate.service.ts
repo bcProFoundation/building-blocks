@@ -1,52 +1,52 @@
 import {
-  Injectable,
   BadRequestException,
   ForbiddenException,
+  Injectable,
 } from '@nestjs/common';
 import { AggregateRoot } from '@nestjs/cqrs';
+import { randomBytes } from 'crypto';
 import { authenticator, totp } from 'otplib';
 import QRCode from 'qrcode';
 import { v4 as uuidv4 } from 'uuid';
-import { randomBytes } from 'crypto';
-import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
-import { UserService } from '../../entities/user/user.service';
-import { User } from '../../entities/user/user.interface';
-import { ADMINISTRATOR } from '../../../constants/app-strings';
-import { AuthDataService } from '../../entities/auth-data/auth-data.service';
+import { UnverifiedEmailAddedEvent } from '../../../auth/events/unverified-email-added/unverified-email-added.event';
 import {
-  AuthDataType,
-  AuthData,
-} from '../../entities/auth-data/auth-data.interface';
-import {
-  twoFactorEnabledException,
-  twoFactorNotEnabledException,
+  CommunicationServerNotFoundException,
+  EmailForVerificationNotFound,
   invalidOTPException,
   invalidUserException,
+  InvalidVerificationCode,
   passwordLessLoginAlreadyEnabledException,
   passwordLessLoginNotEnabledException,
-  CommunicationServerNotFoundException,
+  twoFactorEnabledException,
+  twoFactorNotEnabledException,
   userAlreadyExistsException,
-  InvalidVerificationCode,
-  EmailForVerificationNotFound,
   VerificationExpiredOrInvalid,
 } from '../../../common/filters/exceptions';
 import { CryptographerService } from '../../../common/services/cryptographer/cryptographer.service';
+import { ConfigService, NODE_ENV } from '../../../config/config.service';
+import { ADMINISTRATOR } from '../../../constants/app-strings';
+import { i18n } from '../../../i18n/i18n.config';
+import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
+import { EmailVerifiedAndUpdatedEvent } from '../..//events/email-verified-and-updated/email-verified-and-updated.event';
+import {
+  AuthData,
+  AuthDataType,
+} from '../../entities/auth-data/auth-data.interface';
+import { AuthDataService } from '../../entities/auth-data/auth-data.service';
+import { UserAuthenticatorService } from '../../entities/user-authenticator/user-authenticator.service';
+import { User } from '../../entities/user/user.interface';
+import { USER } from '../../entities/user/user.schema';
+import { UserService } from '../../entities/user/user.service';
+import { AuthDataRemovedEvent } from '../../events/auth-data-removed/auth-data-removed.event';
+import { EmailVerifiedAndPasswordSetEvent } from '../../events/email-verified-and-password-set/email-verified-and-password-set.event';
+import { PasswordChangedEvent } from '../../events/password-changed/password-changed.event';
+import { UserAccountModifiedEvent } from '../../events/user-account-modified/user-account-modified.event';
 import {
   ChangePasswordDto,
   VerifyEmailDto,
   VerifyUpdatedEmailDto,
 } from '../../policies';
-import { PasswordChangedEvent } from '../../events/password-changed/password-changed.event';
 import { PasswordPolicyService } from '../../policies/password-policy/password-policy.service';
-import { EmailVerifiedAndPasswordSetEvent } from '../../events/email-verified-and-password-set/email-verified-and-password-set.event';
-import { UserAccountModifiedEvent } from '../../events/user-account-modified/user-account-modified.event';
-import { USER } from '../../entities/user/user.schema';
-import { AuthDataRemovedEvent } from '../../events/auth-data-removed/auth-data-removed.event';
-import { i18n } from '../../../i18n/i18n.config';
-import { UserAuthenticatorService } from '../../entities/user-authenticator/user-authenticator.service';
-import { ConfigService, NODE_ENV } from '../../../config/config.service';
-import { UnverifiedEmailAddedEvent } from '../../../auth/events/unverified-email-added/unverified-email-added.event';
-import { EmailVerifiedAndUpdatedEvent } from '../..//events/email-verified-and-updated/email-verified-and-updated.event';
 
 @Injectable()
 export class UserAggregateService extends AggregateRoot {
@@ -129,12 +129,9 @@ export class UserAggregateService extends AggregateRoot {
         user.uuid,
         AuthDataType.TwoFactorTempSecret,
       );
-      const base32secret = twoFactorTempSecret.password;
+      const secret = twoFactorTempSecret.password;
       totp.options = { window: 2 };
-      const verified = totp.verify({
-        secret: base32secret,
-        token: otp,
-      });
+      const verified = authenticator.verify({ secret, token: otp });
       if (verified) {
         const sharedSecret = await this.checkLocalAuthData(
           user.uuid,

@@ -1,35 +1,35 @@
 import {
-  Injectable,
-  UnauthorizedException,
   BadRequestException,
   ForbiddenException,
+  Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { hotp, totp } from 'otplib';
+import { authenticator, hotp, totp } from 'otplib';
 import { v4 as uuidv4 } from 'uuid';
 import {
-  userAlreadyExistsException,
   invalidOTPException,
   invalidUserException,
   passwordLessLoginNotEnabledException,
+  userAlreadyExistsException,
 } from '../../../common/filters/exceptions';
-import { i18n } from '../../../i18n/i18n.config';
-import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
-import { UserService } from '../../../user-management/entities/user/user.service';
 import { CryptographerService } from '../../../common/services/cryptographer/cryptographer.service';
-import { UserAccountDto } from '../../../user-management/policies';
-import { Role } from '../../../user-management/entities/role/role.interface';
-import { User } from '../../../user-management/entities/user/user.interface';
+import { SUCCESS } from '../../../constants/app-strings';
+import { i18n } from '../../../i18n/i18n.config';
 import {
   AuthData,
   AuthDataType,
 } from '../../../user-management/entities/auth-data/auth-data.interface';
+import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
+import { Role } from '../../../user-management/entities/role/role.interface';
+import { User } from '../../../user-management/entities/user/user.interface';
+import { USER } from '../../../user-management/entities/user/user.schema';
+import { UserService } from '../../../user-management/entities/user/user.service';
+import { UserAccountDto } from '../../../user-management/policies';
 import { PasswordPolicyService } from '../../../user-management/policies/password-policy/password-policy.service';
 import { SendLoginOTPCommand } from '../../commands/send-login-otp/send-login-otp.command';
-import { USER } from '../../../user-management/entities/user/user.schema';
+import { addSessionUser, defaultOptions } from '../../guards/guard.utils';
 import { PasswordLessDto } from '../../policies/password-less/password-less.dto';
-import { SUCCESS } from '../../../constants/app-strings';
-import { addSessionUser } from '../../guards/guard.utils';
 
 @Injectable()
 export class AuthService {
@@ -190,7 +190,7 @@ export class AuthService {
   isUserTOTPValid(sharedSecret: AuthData, code: string) {
     if (sharedSecret) {
       totp.options = { window: 2 };
-      return totp.verify({
+      return authenticator.verify({
         secret: sharedSecret.password,
         token: code,
       });
@@ -353,14 +353,14 @@ export class AuthService {
 
   async passwordLess(payload, req) {
     const user = await this.passwordLessLogin(payload);
+    req[defaultOptions.property] = user;
     const users = req.session?.users;
-    req.logIn(user, () => {
-      req.session.users = users;
-      addSessionUser(req, {
-        uuid: user.uuid,
-        email: user.email,
-        phone: user.phone,
-      });
+    await this.requestLogIn(req);
+    req.session.users = users;
+    addSessionUser(req, {
+      uuid: user.uuid,
+      email: user.email,
+      phone: user.phone,
     });
     return {
       user: user.email,
@@ -372,5 +372,16 @@ export class AuthService {
     if (this.loginOTP) {
       await this.authDataService.remove(this.loginOTP);
     }
+  }
+
+  async requestLogIn<
+    TRequest extends {
+      logIn: (user, callback: (error) => any) => any;
+    } = any,
+  >(request: TRequest): Promise<void> {
+    const user = request[defaultOptions.property];
+    await new Promise<void>((resolve, reject) =>
+      request.logIn(user, err => (err ? reject(err) : resolve())),
+    );
   }
 }

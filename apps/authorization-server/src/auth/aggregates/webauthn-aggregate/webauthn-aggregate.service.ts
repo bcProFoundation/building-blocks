@@ -1,42 +1,43 @@
 import {
-  Injectable,
-  ForbiddenException,
   BadRequestException,
+  ForbiddenException,
+  Injectable,
 } from '@nestjs/common';
 import { AggregateRoot } from '@nestjs/cqrs';
 import {
-  generateRegistrationOptions,
-  verifyRegistrationResponse,
   generateAuthenticationOptions,
+  generateRegistrationOptions,
   verifyAuthenticationResponse,
+  verifyRegistrationResponse,
 } from '@simplewebauthn/server';
 import { v4 as uuidv4 } from 'uuid';
-import { UserService } from '../../../user-management/entities/user/user.service';
-import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
+import { invalidUserException } from '../../../common/filters/exceptions';
+import { ConfigService, NODE_ENV } from '../../../config/config.service';
+import { SERVICE, TEN_NUMBER } from '../../../constants/app-strings';
+import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import {
   AuthData,
   AuthDataType,
 } from '../../../user-management/entities/auth-data/auth-data.interface';
+import { AuthDataService } from '../../../user-management/entities/auth-data/auth-data.service';
+import {
+  Fmt,
+  UserAuthenticator,
+} from '../../../user-management/entities/user-authenticator/user-authenticator.interface';
+import { UserAuthenticatorService } from '../../../user-management/entities/user-authenticator/user-authenticator.service';
 import { User } from '../../../user-management/entities/user/user.interface';
 import { USER } from '../../../user-management/entities/user/user.schema';
-import { TEN_NUMBER, SERVICE } from '../../../constants/app-strings';
-import { UserAuthenticatorService } from '../../../user-management/entities/user-authenticator/user-authenticator.service';
-import {
-  UserAuthenticator,
-  Fmt,
-} from '../../../user-management/entities/user-authenticator/user-authenticator.interface';
-import { invalidUserException } from '../../../common/filters/exceptions';
-import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
-import { addSessionUser } from '../../guards/guard.utils';
-import {
-  WebAuthnKeyChallengeRequestedEvent,
-  WebauthnChallengeType,
-} from '../../events/webauthn-key-registration-requested/webauthn-key-challenge-requested.event';
-import { WebAuthnKeyRegisteredEvent } from '../../events/webauthn-key-registered/webauthn-key-registered.event';
-import { UserLoggedInWithWebAuthnEvent } from '../../events/user-logged-in-with-webauthn-key/user-logged-in-with-webauthn-key.event';
+import { UserService } from '../../../user-management/entities/user/user.service';
 import { UserAccountModifiedEvent } from '../../../user-management/events/user-account-modified/user-account-modified.event';
+import { AuthService } from '../../controllers/auth/auth.service';
 import { UserAuthenticatorRemovedEvent } from '../../events/user-authenticator-removed/user-authenticator-removed.event';
-import { ConfigService, NODE_ENV } from '../../../config/config.service';
+import { UserLoggedInWithWebAuthnEvent } from '../../events/user-logged-in-with-webauthn-key/user-logged-in-with-webauthn-key.event';
+import { WebAuthnKeyRegisteredEvent } from '../../events/webauthn-key-registered/webauthn-key-registered.event';
+import {
+  WebauthnChallengeType,
+  WebAuthnKeyChallengeRequestedEvent,
+} from '../../events/webauthn-key-registration-requested/webauthn-key-challenge-requested.event';
+import { addSessionUser, defaultOptions } from '../../guards/guard.utils';
 
 @Injectable()
 export class WebAuthnAggregateService extends AggregateRoot {
@@ -46,6 +47,7 @@ export class WebAuthnAggregateService extends AggregateRoot {
     private readonly authenticator: UserAuthenticatorService,
     private readonly settings: ServerSettingsService,
     private readonly config: ConfigService,
+    private readonly auth: AuthService,
   ) {
     super();
   }
@@ -232,14 +234,14 @@ export class WebAuthnAggregateService extends AggregateRoot {
 
       this.apply(new UserLoggedInWithWebAuthnEvent(user, authenticator));
       if (verified) {
+        req[defaultOptions.property] = user;
         const users = req.session?.users;
-        req.logIn(user, () => {
-          req.session.users = users;
-          addSessionUser(req, {
-            uuid: user.uuid,
-            email: user.email,
-            phone: user.phone,
-          });
+        await this.auth.requestLogIn(req);
+        req.session.users = users;
+        addSessionUser(req, {
+          uuid: user.uuid,
+          email: user.email,
+          phone: user.phone,
         });
       }
       return {
