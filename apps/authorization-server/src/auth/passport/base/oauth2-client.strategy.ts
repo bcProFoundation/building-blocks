@@ -13,7 +13,7 @@ export class PassportOAuth2ClientStrategy extends Strategy {
   protected verify: (...args) => any | void;
   name = 'oauth2-client';
 
-  constructor(verify: (...args) => any | void) {
+  constructor(private options, verify: (...args) => any | void) {
     super();
     if (!verify) {
       throw new TypeError('OAuth2Client requires a verify callback');
@@ -53,7 +53,11 @@ export class PassportOAuth2ClientStrategy extends Strategy {
     }
 
     try {
-      this.verify(req, storedState, verified);
+      if (this.options.passReqToCallback) {
+        this.verify(req, storedState, verified);
+      } else {
+        this.verify(storedState, verified);
+      }
     } catch (ex) {
       return self.error(ex);
     }

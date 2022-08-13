@@ -1,34 +1,34 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import request from 'supertest';
-import { hotp, totp } from 'otplib';
 import { INestApplication } from '@nestjs/common';
 import { ExpressAdapter } from '@nestjs/platform-express';
+import { Test, TestingModule } from '@nestjs/testing';
 import 'jest';
+import { authenticator, hotp } from 'otplib';
+import request from 'supertest';
 
 import { AppModule } from '../src/app.module';
-import { ExpressServer } from '../src/express-server';
-import {
-  getParameterByName,
-  OIDCKey,
-  validateUsersAndAuthData,
-  delay,
-  stopServices,
-} from './e2e-helpers';
-import { UserService } from '../src/user-management/entities/user/user.service';
 import { OIDCKeyService } from '../src/auth/entities/oidc-key/oidc-key.service';
-import { ConfigService } from '../src/config/config.service';
 import { KeyPairGeneratorService } from '../src/auth/schedulers';
-import { RoleService } from '../src/user-management/entities/role/role.service';
-import { Role } from '../src/user-management/entities/role/role.interface';
+import { ClientService } from '../src/client-management/entities/client/client.service';
+import { ConfigService } from '../src/config/config.service';
 import {
   ADMINISTRATOR,
   INFRASTRUCTURE_CONSOLE,
 } from '../src/constants/app-strings';
+import { ExpressServer } from '../src/express-server';
 import { AuthDataType } from '../src/user-management/entities/auth-data/auth-data.interface';
-import { USER } from '../src/user-management/entities/user/user.schema';
-import { User } from '../src/user-management/entities/user/user.interface';
 import { AuthDataService } from '../src/user-management/entities/auth-data/auth-data.service';
-import { ClientService } from '../src/client-management/entities/client/client.service';
+import { Role } from '../src/user-management/entities/role/role.interface';
+import { RoleService } from '../src/user-management/entities/role/role.service';
+import { User } from '../src/user-management/entities/user/user.interface';
+import { USER } from '../src/user-management/entities/user/user.schema';
+import { UserService } from '../src/user-management/entities/user/user.service';
+import {
+  delay,
+  getParameterByName,
+  OIDCKey,
+  stopServices,
+  validateUsersAndAuthData,
+} from './e2e-helpers';
 
 jest.setTimeout(30000);
 
@@ -345,7 +345,7 @@ describe('AppModule (e2e)', () => {
       .end((err, res) => {
         if (err) return done(err);
         sharedSecret = res.body.key;
-        const otp = totp.generate(sharedSecret);
+        const otp = authenticator.generate(sharedSecret);
         const verify2faReq = request(app.getHttpServer())
           .post('/user/v1/verify_2fa')
           .send({ otp })
@@ -362,7 +362,7 @@ describe('AppModule (e2e)', () => {
   });
 
   it('/POST /auth/login (2FA TOTP Login)', done => {
-    const otp = totp.generate(sharedSecret);
+    const otp = authenticator.generate(sharedSecret);
     request(app.getHttpServer())
       .post('/auth/login')
       .send({
