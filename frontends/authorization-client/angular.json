@@ -147,5 +147,8 @@
       }
     }
   },
-  "defaultProject": "authorization-client"
+  "defaultProject": "authorization-client",
+  "cli": {
+    "analytics": false
+  }
 }
