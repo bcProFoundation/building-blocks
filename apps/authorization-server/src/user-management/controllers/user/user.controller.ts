@@ -178,9 +178,12 @@ export class UserController {
   }
 
   @Post('v1/forgot_password')
-  async forgotPassword(@Body('emailOrPhone') emailOrPhone: string) {
+  async forgotPassword(
+    @Body('emailOrPhone') emailOrPhone: string,
+    @Body('redirect') redirect?: string,
+  ) {
     return await this.commandBus.execute(
-      new GenerateForgottenPasswordCommand(emailOrPhone),
+      new GenerateForgottenPasswordCommand(emailOrPhone, redirect),
     );
   }
 

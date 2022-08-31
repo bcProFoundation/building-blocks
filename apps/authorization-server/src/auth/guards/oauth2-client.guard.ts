@@ -21,12 +21,14 @@ export class OAuth2ClientGuard implements CanActivate {
     request[defaultOptions.property] = user;
 
     const reqUser = user as RequestUser;
+    const users = request.session?.users;
+    await this.logIn(request);
+    request.session.users = users;
     addSessionUser(request, {
       uuid: reqUser.uuid,
       email: reqUser.email,
       phone: reqUser.phone,
     });
-    await this.logIn(request);
 
     return true;
   }

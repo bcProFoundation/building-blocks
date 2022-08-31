@@ -232,12 +232,15 @@ export class WebAuthnAggregateService extends AggregateRoot {
 
       this.apply(new UserLoggedInWithWebAuthnEvent(user, authenticator));
       if (verified) {
-        addSessionUser(req, {
-          uuid: user.uuid,
-          email: user.email,
-          phone: user.phone,
+        const users = req.session?.users;
+        req.logIn(user, () => {
+          req.session.users = users;
+          addSessionUser(req, {
+            uuid: user.uuid,
+            email: user.email,
+            phone: user.phone,
+          });
         });
-        req.logIn(user, () => {});
       }
       return {
         verified,

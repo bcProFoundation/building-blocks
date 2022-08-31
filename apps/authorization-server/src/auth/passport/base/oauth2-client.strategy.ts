@@ -1,4 +1,5 @@
 import { Strategy } from 'passport';
+import { addSessionUser } from '../../guards/guard.utils';
 
 export interface OAuth2ClientOptions {
   badRequestMessage?: string;
@@ -39,7 +40,15 @@ export class PassportOAuth2ClientStrategy extends Strategy {
         );
       }
       req.user = user;
-      req.logIn(user, () => {});
+      const users = req.session?.users;
+      req.logIn(user, () => {
+        req.session.users = users;
+        addSessionUser(req, {
+          uuid: user.uuid,
+          email: user.email,
+          phone: user.phone,
+        });
+      });
       self.success(user, info);
     }
 

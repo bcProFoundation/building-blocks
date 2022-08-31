@@ -66,11 +66,13 @@ export class AuthService {
     email: string,
     phone: string,
     password: string,
+    redirect?: string,
   ) {
     if (communicationEnabled) {
       return this.http.post(environment.routes.SIGNUP_VIA_EMAIL, {
         name,
         email,
+        redirect,
       });
     }
     return this.http.post(environment.routes.SIGNUP, {
