@@ -12,6 +12,7 @@ export { VerifySignupViaPhoneDto } from './verify-signup-via-phone/verify-signup
 export { UnverifiedPhoneDto } from './unverified-phone/unverified-phone.dto';
 export { UnverifiedEmailDto } from './unverified-email/unverified-email.dto';
 export { VerifyUpdatedEmailDto } from './verify-updated-email/verify-updated-email.dto';
+export { SignupViaEmailNoVerifiedDto } from './signup-via-email-no-verified/signup-via-email-no-verified.dto'
 
 export const UserManagementPolicies = [
   PasswordPolicyService,

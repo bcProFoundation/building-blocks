@@ -18,6 +18,7 @@ import { RemoveUserClaimHandler } from './remove-user-claim/remove-user-claim.ha
 import { SignupViaPhoneHandler } from './signup-via-phone/signup-via-phone.handler';
 import { SignupViaEmailHandler } from './signup-via-email/signup-via-email.handler';
 import { RemoveUnverifiedUserCommandHandler } from './remove-unverified-user/remove-unverified-user.handler';
+import { SignupViaEmailNoVerifiedHandler } from './signup-via-email-no-verified/signup-via-email-no-verified.handler';
 
 export const UserManagementCommandHandlers = [
   RemoveUserAccountHandler,
@@ -40,4 +41,5 @@ export const UserManagementCommandHandlers = [
   SignupViaPhoneHandler,
   SignupViaEmailHandler,
   RemoveUnverifiedUserCommandHandler,
+  SignupViaEmailNoVerifiedHandler
 ];

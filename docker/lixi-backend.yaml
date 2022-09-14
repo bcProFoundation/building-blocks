@@ -1,0 +1,155 @@
+version: "3"
+
+services:
+  # Backend
+  authorization-server:
+    # image: registry.gitlab.com/castlecraft/building-blocks/authorization-server:latest
+    build: 
+      context: ../apps/authorization-server
+      dockerfile: Dockerfile
+    extra_hosts:
+      admin.localhost: 172.17.0.1
+      connect.localhost: 172.17.0.1
+      myaccount.localhost: 172.17.0.1
+    environment:
+      - NODE_ENV=development
+      - SESSION_SECRET=secret
+      - COOKIE_MAX_AGE=7.884e+9
+      - SESSION_NAME=AS_SESSION
+      - TOKEN_VALIDITY=3600
+      - DB_HOST=mongo
+      - DB_NAME=authorization-server
+      - DB_USER=authorization-server
+      - DB_PASSWORD=admin
+      - EVENTS_HOST=event-bus
+      - EVENTS_USER=user
+      - EVENTS_PASSWORD=admin123
+      - EVENTS_PORT=1883
+      - EVENTS_PROTO=mqtt
+    ports:
+      - 3000:3000
+
+  communication-server:
+    # image: registry.gitlab.com/castlecraft/building-blocks/communication-server:latest
+    build: 
+      context: ../apps/communication-server
+      dockerfile: Dockerfile
+    extra_hosts:
+      accounts.localhost: 172.17.0.1
+      admin.localhost: 172.17.0.1
+      myaccount.localhost: 172.17.0.1
+    environment:
+      - NODE_ENV=development
+      - DB_HOST=mongo
+      - DB_NAME=communication-server
+      - DB_USER=communication-server
+      - DB_PASSWORD=admin
+      - EVENTS_HOST=event-bus
+      - EVENTS_USER=user
+      - EVENTS_PASSWORD=admin123
+      - EVENTS_PORT=1883
+      - EVENTS_PROTO=mqtt
+    ports:
+      - 4100:4100
+
+  identity-provider:
+    # image: registry.gitlab.com/castlecraft/building-blocks/identity-provider:latest
+    build: 
+      context: ../apps/identity-provider
+      dockerfile: Dockerfile
+    extra_hosts:
+      accounts.localhost: 172.17.0.1
+      admin.localhost: 172.17.0.1
+      connect.localhost: 172.17.0.1
+    environment:
+      - NODE_ENV=development
+      - DB_HOST=mongo
+      - DB_NAME=identity-provider
+      - DB_USER=identity-provider
+      - DB_PASSWORD=admin
+      - EVENTS_HOST=event-bus
+      - EVENTS_USER=user
+      - EVENTS_PASSWORD=admin123
+      - EVENTS_PORT=1883
+      - EVENTS_PROTO=mqtt
+    ports:
+      - 3200:3200
+
+  infrastructure-console:
+    build: 
+      context: ../apps/infrastructure-console
+      dockerfile: Dockerfile
+    extra_hosts:
+      accounts.localhost: 172.17.0.1
+      connect.localhost: 172.17.0.1
+      myaccount.localhost: 172.17.0.1
+    # image: registry.gitlab.com/castlecraft/building-blocks/infrastructure-console:latest
+    environment:
+      - NODE_ENV=development
+      - DB_HOST=mongo
+      - DB_NAME=infrastructure-console
+      - DB_USER=infrastructure-console
+      - DB_PASSWORD=admin
+      - EVENTS_HOST=event-bus
+      - EVENTS_USER=user
+      - EVENTS_PASSWORD=admin123
+      - EVENTS_PORT=1883
+      - EVENTS_PROTO=mqtt
+    ports:
+      - 5000:5000
+
+  event-bus:
+    image: emqx/emqx:latest
+    environment:
+      - EMQX_ALLOW_ANONYMOUS=true
+      - EMQX_LOADED_PLUGINS=emqx_management,emqx_auth_mnesia,emqx_recon,emqx_retainer,emqx_dashboard
+    ports:
+      - 1883:1883
+      - 18083:18083
+      - 8081:8081
+
+  mongo:
+    image: bitnami/mongodb:latest
+    environment:
+      - "MONGODB_ROOT_PASSWORD=admin"
+      - "MONGODB_DATABASE=authorization-server"
+      - "MONGODB_USERNAME=authorization-server"
+      - "MONGODB_PASSWORD=admin"
+    volumes:
+      - mongodb-vol:/bitnami/mongodb
+    ports:
+      - 27017:27017
+  
+  mongo-configuration:
+    image: bitnami/mongodb:latest
+    command:
+      - bash
+      - -c
+      - >
+        sleep 10;
+        mongosh identity-provider \
+          --host mongo \
+          --port 27017 \
+          -u root \
+          -p admin \
+          --authenticationDatabase admin \
+          --eval "db.createUser({user: 'identity-provider', pwd: 'admin', roles:[{role:'dbOwner', db: 'identity-provider'}]});";
+
+        mongosh infrastructure-console \
+          --host mongo \
+          --port 27017 \
+          -u root \
+          -p admin \
+          --authenticationDatabase admin \
+          --eval "db.createUser({user: 'infrastructure-console', pwd: 'admin', roles:[{role:'dbOwner', db: 'infrastructure-console'}]});";
+
+        mongosh communication-server \
+          --host mongo \
+          --port 27017 \
+          -u root \
+          -p admin \
+          --authenticationDatabase admin \
+          --eval "db.createUser({user: 'communication-server', pwd: 'admin', roles:[{role:'dbOwner', db: 'communication-server'}]});";
+
+volumes:
+  mongodb-vol:

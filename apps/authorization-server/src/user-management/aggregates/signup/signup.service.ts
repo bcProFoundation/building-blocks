@@ -7,7 +7,7 @@ import { UserService } from '../../entities/user/user.service';
 import { User } from '../../entities/user/user.interface';
 import { ServerSettingsService } from '../../../system-settings/entities/server-settings/server-settings.service';
 import { i18n } from '../../../i18n/i18n.config';
-import { SignupViaEmailDto } from '../../policies';
+import { SignupViaEmailDto, SignupViaEmailNoVerifiedDto } from '../../policies';
 import {
   AuthData,
   AuthDataType,
@@ -19,8 +19,11 @@ import {
 } from '../../../common/filters/exceptions';
 import { USER } from '../../entities/user/user.schema';
 import { UserSignedUpViaEmailEvent } from '../../events/user-signed-up-via-email/user-signed-up-via-email.event';
+import { UserSignedUpViaEmailNoVerifiedEvent } from '../../events/user-signed-up-via-email-no-verified/user-signed-up-via-email-no-verified.event';
 import { UnverifiedEmailVerificationCodeSentEvent } from '../../events';
 import { AuthDataService } from '../../entities/auth-data/auth-data.service';
+import { PasswordPolicyService } from '../../policies/password-policy/password-policy.service';
+import { CryptographerService } from '../../../common/services/cryptographer/cryptographer.service';
 
 @Injectable()
 export class SignupService extends AggregateRoot {
@@ -28,6 +31,8 @@ export class SignupService extends AggregateRoot {
     private readonly user: UserService,
     private readonly authData: AuthDataService,
     private readonly serverSettingsService: ServerSettingsService,
+    private readonly passwordPolicy: PasswordPolicyService,
+    private readonly crypto: CryptographerService,
   ) {
     super();
   }
@@ -50,9 +55,6 @@ export class SignupService extends AggregateRoot {
 
     const verificationCode = {} as AuthData;
     verificationCode.password = randomBytes(32).toString('hex');
-    if (payload.redirect) {
-      verificationCode.metaData = { redirect: payload.redirect };
-    }
     verificationCode.entity = USER;
     verificationCode.entityUuid = unverifiedUser.uuid;
     const expiry = new Date();
@@ -105,5 +107,37 @@ export class SignupService extends AggregateRoot {
     this.apply(
       new UnverifiedEmailVerificationCodeSentEvent(user, verificationCode),
     );
+  }
+
+  async initSignupViaEmailNoVerified(payload: SignupViaEmailNoVerifiedDto) {
+    await this.validateSignupEnabled();
+
+    payload.email = payload.email.trim().toLowerCase();
+    const user = await this.user.findOne({ email: payload.email });
+    if (user) {
+      throw userAlreadyExistsException;
+    }
+    const result = this.passwordPolicy.validatePassword(payload.password);
+    if (result.errors.length > 0) {
+      throw new BadRequestException(result.errors);
+    }
+
+    const verifiedUser = {} as User;
+    verifiedUser.uuid = uuidv4();
+    verifiedUser.name = payload.name;
+    verifiedUser.email = payload.email;
+    verifiedUser.disabled = false;
+    verifiedUser.isEmailVerified = true;
+
+    const userPassword = {} as AuthData & { _id: any };
+    userPassword.authDataType = AuthDataType.Password;
+    userPassword.uuid = uuidv4();
+    userPassword.entity = USER;
+    userPassword.entityUuid = verifiedUser.uuid;
+    userPassword.password = this.crypto.hashPassword(payload.password);
+
+    verifiedUser.password = userPassword.uuid;
+
+    this.apply(new UserSignedUpViaEmailNoVerifiedEvent(verifiedUser, userPassword));
   }
 }
