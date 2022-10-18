@@ -12,7 +12,7 @@
 2. Navigate to docker folder and run the following command for the backend service
 
 ```shell
-   docker compose -p lixi-frontend -f lixi-frontend.yaml up
+   docker compose -p lixi-backend -f lixi-backend.yaml up
 ```
 
 3. After that, open a new terminal and run the following command for frontend service
