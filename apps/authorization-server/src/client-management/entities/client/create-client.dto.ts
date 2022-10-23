@@ -51,7 +51,7 @@ export class CreateClientDto {
   @IsString({ each: true })
   allowedScopes: string[];
 
-  @IsUrl()
+  @IsUrl({ require_tld: false })
   @IsOptional()
   @ApiProperty({
     description: i18n.__(
