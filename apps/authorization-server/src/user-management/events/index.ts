@@ -13,6 +13,7 @@ import { UserClaimAddedHandler } from './user-claim-added/user-claim-added.handl
 import { UserClaimUpdatedHandler } from './user-claim-updated/user-claim-updated.handler';
 import { UserSignedUpViaEmailHandler } from './user-signed-up-via-email/user-signed-up-via-email.handler';
 import { EmailVerificationCodeHandler } from '../commands/email-verification-code/email-verification-code.handler';
+import { UserSignedUpViaEmailNoVerifiedHandler } from './user-signed-up-via-email-no-verified/user-signed-up-via-email-no-verified.handler'
 
 /* eslint-disable */
 import { UnverifiedEmailVerificationCodeSentHandler } from './unverified-email-verification-code-sent/unverified-email-verification-code-sent.handler';
@@ -38,4 +39,5 @@ export const UserManagementEventHandlers = [
   EmailVerificationCodeHandler,
   UnverifiedEmailVerificationCodeSentHandler,
   EmailVerifiedAndUpdatedHandler,
+  UserSignedUpViaEmailNoVerifiedHandler
 ];
